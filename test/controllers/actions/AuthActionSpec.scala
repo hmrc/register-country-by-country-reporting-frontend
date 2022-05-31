@@ -149,11 +149,11 @@ class AuthActionSpec extends SpecBase  {
       }
     }
 
-    "must redirect the user to MDR file upload service when assistant with MDR credentials" in {
+    "must redirect the user to CBC file upload service when assistant with CBC credentials" in {
       val mockAuthConnector: AuthConnector = mock[AuthConnector]
-      val mdrEnrolment                     = Enrolment(key = "HMRC-MDR-ORG")
+      val cbcEnrolment                     = Enrolment(key = "HMRC-CBC-ORG")
 
-      val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(mdrEnrolment)) ~ None ~ Some(Assistant)
+      val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(cbcEnrolment)) ~ None ~ Some(Assistant)
       when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(retrieval)
 
       val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers).apply()
@@ -181,11 +181,11 @@ class AuthActionSpec extends SpecBase  {
       redirectLocation(result) mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url) //TODO change to Some(controllers.routes.UnauthorisedAssistantController.onPageLoad().url)
     }
 
-    "must redirect the user to MDR file upload service when Individual with MDR credentials" in {
+    "must redirect the user to CBC file upload service when Individual with CBC credentials" in {
       val mockAuthConnector: AuthConnector = mock[AuthConnector]
-      val mdrEnrolment                     = Enrolment(key = "HMRC-MDR-ORG")
+      val cbcEnrolment                     = Enrolment(key = "HMRC-CBC-ORG")
 
-      val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(mdrEnrolment)) ~ Some(Individual) ~ None
+      val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(cbcEnrolment)) ~ Some(Individual) ~ None
       when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(retrieval)
 
       val authAction     = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers).apply()
@@ -199,11 +199,11 @@ class AuthActionSpec extends SpecBase  {
       redirectLocation(result) mustBe Some(expectedRedirectUrl)
     }
 
-    "must redirect the user to MDR file upload service when Organisation with MDR credentials" in {
+    "must redirect the user to CBC file upload service when Organisation with CBC credentials" in {
       val mockAuthConnector: AuthConnector = mock[AuthConnector]
-      val mdrEnrolment                     = Enrolment(key = "HMRC-MDR-ORG")
+      val cbcEnrolment                     = Enrolment(key = "HMRC-CBC-ORG")
 
-      val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(mdrEnrolment)) ~ Some(Organisation) ~ None
+      val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(cbcEnrolment)) ~ Some(Organisation) ~ None
       when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(retrieval)
 
       val authAction     = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers).apply()

@@ -53,6 +53,9 @@ trait SpecBase
   final val mockSessionRepository: SessionRepository     = mock[SessionRepository]
   protected val cbcrFakeNavigator: CBCRNavigator         = new FakeCBCRNavigator(onwardRoute)
 
+  protected def retrieveNoData(): Unit =
+    when(mockDataRetrievalAction.apply()).thenReturn(new FakeDataRetrievalAction(None))
+
   protected def retrieveUserAnswersData(userAnswers: UserAnswers): Unit =
     when(mockDataRetrievalAction.apply()).thenReturn(new FakeDataRetrievalAction(Some(userAnswers)))
 

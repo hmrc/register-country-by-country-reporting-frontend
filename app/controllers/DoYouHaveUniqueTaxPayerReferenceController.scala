@@ -57,7 +57,7 @@ class DoYouHaveUniqueTaxPayerReferenceController @Inject()(
         Ok(view(preparedForm))
     }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.identifiedUserWithInitializedData().async {
     implicit request =>
       form
         .bindFromRequest()

@@ -34,8 +34,6 @@ import scala.concurrent.Future
 
 class DoYouHaveUniqueTaxPayerReferenceControllerSpec extends SpecBase with MockitoSugar {
 
-  val submitRoute = routes.DoYouHaveUniqueTaxPayerReferenceController.onSubmit
-
   val formProvider = new DoYouHaveUniqueTaxPayerReferenceFormProvider()
   val form         = formProvider()
 
@@ -63,18 +61,16 @@ class DoYouHaveUniqueTaxPayerReferenceControllerSpec extends SpecBase with Mocki
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder().build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request =
-          FakeRequest(POST, DoYouHaveUniqueTaxPayerReferenceRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+          FakeRequest(POST, DoYouHaveUniqueTaxPayerReferenceRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual submitRoute.url
+        redirectLocation(result).value mustEqual onwardRoute.url
       }
     }
 
