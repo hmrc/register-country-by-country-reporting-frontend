@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package navigation
+package utils
 
-import play.api.mvc.Call
-import pages._
-import models.{Mode, UserAnswers}
+import uk.gov.hmrc.auth.core.retrieve.~
 
-class FakeNavigator(desiredRoute: Call) extends Navigator {
+object RetrievalOps {
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    desiredRoute
-}
-
-class FakeCBCRNavigator(desiredRoute: Call) extends CBCRNavigator {
-
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
+  implicit class Ops[A](a: A) {
+    def ~[B](b: B): A ~ B = new ~(a, b)
+  }
 }

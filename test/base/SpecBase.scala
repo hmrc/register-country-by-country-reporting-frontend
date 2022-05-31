@@ -18,19 +18,27 @@ package base
 
 import controllers.actions._
 import models.UserAnswers
+import navigation.{CBCRNavigator, FakeCBCRNavigator}
+import org.mockito.MockitoSugar
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.Call
 import play.api.test.FakeRequest
+import repositories.SessionRepository
+import uk.gov.hmrc.http.HeaderCarrier
 
 trait SpecBase
   extends AnyFreeSpec
+    with GuiceOneAppPerSuite
     with Matchers
+    with MockitoSugar
     with TryValues
     with OptionValues
     with ScalaFutures
@@ -38,7 +46,17 @@ trait SpecBase
 
   val userAnswersId: String = "id"
 
-  def emptyUserAnswers : UserAnswers = UserAnswers(userAnswersId)
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  def onwardRoute: Call                                  = Call("GET", "/foo")
+  final val mockDataRetrievalAction: DataRetrievalAction = mock[DataRetrievalAction]
+  final val mockSessionRepository: SessionRepository     = mock[SessionRepository]
+  protected val cbcrFakeNavigator: CBCRNavigator         = new FakeCBCRNavigator(onwardRoute)
+
+  protected def retrieveUserAnswersData(userAnswers: UserAnswers): Unit =
+    when(mockDataRetrievalAction.apply()).thenReturn(new FakeDataRetrievalAction(Some(userAnswers)))
+
+  def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
@@ -47,6 +65,8 @@ trait SpecBase
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
+        bind[SessionRepository].toInstance(mockSessionRepository),
+        bind[CBCRNavigator].toInstance(cbcrFakeNavigator),
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalActionProvider(userAnswers))
       )
 }

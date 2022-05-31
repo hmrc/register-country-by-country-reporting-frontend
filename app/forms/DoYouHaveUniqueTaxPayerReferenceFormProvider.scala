@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package navigation
+package forms
 
-import play.api.mvc.Call
-import pages._
-import models.{Mode, UserAnswers}
+import forms.mappings.Mappings
+import play.api.data.Form
 
-class FakeNavigator(desiredRoute: Call) extends Navigator {
+import javax.inject.Inject
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    desiredRoute
-}
+class DoYouHaveUniqueTaxPayerReferenceFormProvider @Inject() extends Mappings {
 
-class FakeCBCRNavigator(desiredRoute: Call) extends CBCRNavigator {
-
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("doYouHaveUniqueTaxPayerReference.error.required")
+    )
 }
