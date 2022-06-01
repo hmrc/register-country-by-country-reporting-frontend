@@ -19,43 +19,53 @@ package controllers.actions
 import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import controllers.routes
-import play.api.mvc.{BodyParsers, Results}
+import models.requests.IdentifierRequest
+import org.mockito.ArgumentMatchers.any
+import play.api.inject
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.RetrievalOps._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionSpec extends SpecBase {
+class AuthActionSpec extends SpecBase  {
 
-  class Harness(authAction: IdentifierAction) {
-    def onPageLoad() = authAction { _ => Results.Ok }
+  type AuthAction = ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
+
+  class Harness(authAction: AuthAction) {
+
+    def onPageLoad() = authAction {
+      _ => Results.Ok
+    }
   }
+
+  type AuthRetrievals = Option[String] ~ Enrolments ~ Option[AffinityGroup] ~ Option[CredentialRole]
+
+    applicationBuilder()
+    .overrides(inject.bind[AuthConnector].toInstance(mockAuthConnector))
+
+  val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  val bodyParsers                      = app.injector.instanceOf[BodyParsers.Default]
+  val appConfig                        = app.injector.instanceOf[FrontendAppConfig]
 
   "Auth Action" - {
 
     "when the user hasn't logged in" - {
 
       "must redirect the user to log in " in {
+        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new MissingBearerToken), appConfig, bodyParsers)
+        val controller = new Harness(authAction)
+        val result     = controller.onPageLoad()(FakeRequest())
 
-        val application = applicationBuilder(userAnswers = None).build()
-
-        running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig   = application.injector.instanceOf[FrontendAppConfig]
-
-          val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new MissingBearerToken), appConfig, bodyParsers)
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(FakeRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value must startWith(appConfig.loginUrl)
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value must startWith(appConfig.loginUrl)
       }
     }
 
@@ -63,19 +73,12 @@ class AuthActionSpec extends SpecBase {
 
       "must redirect the user to log in " in {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new BearerTokenExpired), appConfig, bodyParsers)
+        val controller = new Harness(authAction)
+        val result     = controller.onPageLoad()(FakeRequest())
 
-        running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig   = application.injector.instanceOf[FrontendAppConfig]
-
-          val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new BearerTokenExpired), appConfig, bodyParsers)
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(FakeRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value must startWith(appConfig.loginUrl)
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value must startWith(appConfig.loginUrl)
       }
     }
 
@@ -83,19 +86,12 @@ class AuthActionSpec extends SpecBase {
 
       "must redirect the user to the unauthorised page" in {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new InsufficientEnrolments), appConfig, bodyParsers)
+        val controller = new Harness(authAction)
+        val result     = controller.onPageLoad()(FakeRequest())
 
-        running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig   = application.injector.instanceOf[FrontendAppConfig]
-
-          val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new InsufficientEnrolments), appConfig, bodyParsers)
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(FakeRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe routes.UnauthorisedController.onPageLoad.url
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe controllers.routes.JourneyRecoveryController.onPageLoad().url //TODO change to controllers.routes.ThereIsAProblemController.onPageLoad().url
       }
     }
 
@@ -103,19 +99,13 @@ class AuthActionSpec extends SpecBase {
 
       "must redirect the user to the unauthorised page" in {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val authAction =
+          new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new InsufficientConfidenceLevel), appConfig, bodyParsers)
+        val controller = new Harness(authAction)
+        val result     = controller.onPageLoad()(FakeRequest())
 
-        running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig   = application.injector.instanceOf[FrontendAppConfig]
-
-          val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new InsufficientConfidenceLevel), appConfig, bodyParsers)
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(FakeRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe routes.UnauthorisedController.onPageLoad.url
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe controllers.routes.JourneyRecoveryController.onPageLoad().url //TODO change to controllers.routes.ThereIsAProblemController.onPageLoad().url
       }
     }
 
@@ -123,19 +113,12 @@ class AuthActionSpec extends SpecBase {
 
       "must redirect the user to the unauthorised page" in {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedAuthProvider), appConfig, bodyParsers)
+        val controller = new Harness(authAction)
+        val result     = controller.onPageLoad()(FakeRequest())
 
-        running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig   = application.injector.instanceOf[FrontendAppConfig]
-
-          val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedAuthProvider), appConfig, bodyParsers)
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(FakeRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe routes.UnauthorisedController.onPageLoad.url
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe controllers.routes.JourneyRecoveryController.onPageLoad().url //TODO change to controllers.routes.ThereIsAProblemController.onPageLoad().url
       }
     }
 
@@ -143,19 +126,12 @@ class AuthActionSpec extends SpecBase {
 
       "must redirect the user to the unauthorised page" in {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedAffinityGroup), appConfig, bodyParsers)
+        val controller = new Harness(authAction)
+        val result = controller.onPageLoad()(FakeRequest())
 
-        running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig   = application.injector.instanceOf[FrontendAppConfig]
-
-          val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedAffinityGroup), appConfig, bodyParsers)
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(FakeRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe controllers.routes.JourneyRecoveryController.onPageLoad().url //TODO change to controllers.routes.ThereIsAProblemController.onPageLoad().url
       }
     }
 
@@ -163,25 +139,86 @@ class AuthActionSpec extends SpecBase {
 
       "must redirect the user to the unauthorised page" in {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedCredentialRole), appConfig, bodyParsers)
+        val controller = new Harness(authAction)
+        val result     = controller.onPageLoad()(FakeRequest())
 
-        running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig   = application.injector.instanceOf[FrontendAppConfig]
-
-          val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedCredentialRole), appConfig, bodyParsers)
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(FakeRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe controllers.routes.JourneyRecoveryController.onPageLoad().url //TODO change to controllers.routes.ThereIsAProblemController.onPageLoad().url
       }
+    }
+
+    "must redirect the user to CBC file upload service when assistant with CBC credentials" in {
+      val mockAuthConnector: AuthConnector = mock[AuthConnector]
+      val cbcEnrolment                     = Enrolment(key = "HMRC-CBC-ORG")
+
+      val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(cbcEnrolment)) ~ None ~ Some(Assistant)
+      when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(retrieval)
+
+      val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
+      val controller = new Harness(authAction)
+      val result     = controller.onPageLoad()(FakeRequest())
+
+      val expectedRedirectUrl = s"${appConfig.countryByCountryReportingFrontendUrl}"
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(expectedRedirectUrl)
+    }
+
+    "must redirect the user to unauthorised page when assistant" in {
+      val mockAuthConnector: AuthConnector = mock[AuthConnector]
+      val emptyEnrolments: Enrolment       = Enrolment(key = "")
+
+      val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(emptyEnrolments)) ~ None ~ Some(Assistant)
+      when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(retrieval)
+
+      val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
+      val controller = new Harness(authAction)
+      val result     = controller.onPageLoad()(FakeRequest())
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url) //TODO change to Some(controllers.routes.UnauthorisedAssistantController.onPageLoad().url)
+    }
+
+    "must redirect the user to CBC file upload service when Individual with CBC credentials" in {
+      val mockAuthConnector: AuthConnector = mock[AuthConnector]
+      val cbcEnrolment                     = Enrolment(key = "HMRC-CBC-ORG")
+
+      val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(cbcEnrolment)) ~ Some(Individual) ~ None
+      when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(retrieval)
+
+      val authAction     = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
+      val enrolledAction = new CheckEnrolledToServiceActionProvider(appConfig).apply()
+      val controller     = new Harness(authAction andThen enrolledAction)
+      val result         = controller.onPageLoad()(FakeRequest())
+
+      val expectedRedirectUrl = s"${appConfig.countryByCountryReportingFrontendUrl}"
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(expectedRedirectUrl)
+    }
+
+    "must redirect the user to CBC file upload service when Organisation with CBC credentials" in {
+      val mockAuthConnector: AuthConnector = mock[AuthConnector]
+      val cbcEnrolment                     = Enrolment(key = "HMRC-CBC-ORG")
+
+      val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(cbcEnrolment)) ~ Some(Organisation) ~ None
+      when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(retrieval)
+
+      val authAction     = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
+      val enrolledAction = new CheckEnrolledToServiceActionProvider(appConfig).apply()
+      val controller     = new Harness(authAction andThen enrolledAction)
+      val result         = controller.onPageLoad()(FakeRequest())
+
+      val expectedRedirectUrl = s"${appConfig.countryByCountryReportingFrontendUrl}"
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(expectedRedirectUrl)
     }
   }
 }
 
-class FakeFailingAuthConnector @Inject()(exceptionToReturn: Throwable) extends AuthConnector {
+class FakeFailingAuthConnector @Inject() (exceptionToReturn: Throwable) extends AuthConnector {
   val serviceUrl: String = ""
 
   override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] =

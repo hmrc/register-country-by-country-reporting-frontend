@@ -37,6 +37,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val loginUrl: String         = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String       = configuration.get[String]("urls.signOut")
+  lazy val lostUTRUrl: String  = configuration.get[String]("urls.lostUTR")
 
   lazy val enrolmentStoreProxyUrl: String =
     s"${configuration.get[Service]("microservice.services.enrolment-store-proxy").baseUrl}${configuration.get[String]("microservice.services.enrolment-store-proxy.startUrl")}"
@@ -56,4 +57,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 
   val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
+
+  val enrolmentKey: String                             = configuration.get[String](s"keys.enrolmentKey.cbcr")
+  lazy val countryByCountryReportingFrontendUrl: String = configuration.get[String]("urls.country-by-country-reporting-frontend")
 }

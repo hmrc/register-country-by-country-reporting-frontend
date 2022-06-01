@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package navigation
+package pages
 
-import play.api.mvc.Call
-import pages._
-import models.{Mode, UserAnswers}
+import pages.behaviours.PageBehaviours
 
-class FakeNavigator(desiredRoute: Call) extends Navigator {
+class DoYouHaveUTRPageSpec extends PageBehaviours {
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    desiredRoute
-}
+  "DoYouHaveUTRPage" - {
 
-class FakeCBCRNavigator(desiredRoute: Call) extends CBCRNavigator {
+    beRetrievable[Boolean](DoYouHaveUTRPage)
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
+    beSettable[Boolean](DoYouHaveUTRPage)
+
+    beRemovable[Boolean](DoYouHaveUTRPage)
+  }
 }

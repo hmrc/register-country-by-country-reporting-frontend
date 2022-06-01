@@ -26,13 +26,14 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-
-class AuthController @Inject()(
-                                val controllerComponents: MessagesControllerComponents,
-                                config: FrontendAppConfig,
-                                sessionRepository: SessionRepository,
-                                identify: IdentifierAction
-                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class AuthController @Inject() (
+                                 val controllerComponents: MessagesControllerComponents,
+                                 config: FrontendAppConfig,
+                                 sessionRepository: SessionRepository,
+                                 identify: IdentifierAction
+                               )(implicit ec: ExecutionContext)
+  extends FrontendBaseController
+    with I18nSupport {
 
   def signOut(): Action[AnyContent] = identify.async {
     implicit request =>
@@ -40,17 +41,17 @@ class AuthController @Inject()(
         .clear(request.userId)
         .map {
           _ =>
-            Redirect(config.signOutUrl, Map("continue" -> Seq(config.exitSurveyUrl)))
-      }
+            Redirect(config.signOutUrl).withSession()
+        }
   }
 
   def signOutNoSurvey(): Action[AnyContent] = identify.async {
     implicit request =>
-    sessionRepository
-      .clear(request.userId)
-      .map {
-        _ =>
-        Redirect(config.signOutUrl, Map("continue" -> Seq(routes.SignedOutController.onPageLoad.url)))
-      }
+      sessionRepository
+        .clear(request.userId)
+        .map {
+          _ =>
+            Redirect(config.signOutUrl, Map("continue" -> Seq(routes.SignedOutController.onPageLoad.url)))
+        }
   }
 }

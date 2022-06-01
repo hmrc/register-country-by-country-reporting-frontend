@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package navigation
+package pages
 
-import play.api.mvc.Call
-import pages._
-import models.{Mode, UserAnswers}
+import models.UserAnswers
+import play.api.libs.json.JsPath
 
-class FakeNavigator(desiredRoute: Call) extends Navigator {
+import scala.util.Try
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    desiredRoute
-}
+case object DoYouHaveUTRPage extends QuestionPage[Boolean] {
 
-class FakeCBCRNavigator(desiredRoute: Call) extends CBCRNavigator {
+  override def path: JsPath = JsPath \ toString
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
+  override def toString: String = "doYouHaveUTR"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case _           => super.cleanup(value, userAnswers)
+  }
 }

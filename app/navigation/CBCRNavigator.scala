@@ -16,17 +16,24 @@
 
 package navigation
 
-import play.api.mvc.Call
+import controllers.routes
+import models._
 import pages._
-import models.{Mode, UserAnswers}
+import play.api.mvc.Call
 
-class FakeNavigator(desiredRoute: Call) extends Navigator {
+import javax.inject.{Inject, Singleton}
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    desiredRoute
-}
+// @formatter:off
+@Singleton
+class CBCRNavigator @Inject()() extends Navigator {
 
-class FakeCBCRNavigator(desiredRoute: Call) extends CBCRNavigator {
+  override val normalRoutes: Page => UserAnswers => Call = {
+    case DoYouHaveUTRPage   => _ => routes.DoYouHaveUTRController.onPageLoad //TODO change to doYouHaveUTR(NormalMode)
+  }
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
+  override val checkRouteMap: Page => UserAnswers => Call = {
+    case DoYouHaveUTRPage  => _ => routes.DoYouHaveUTRController.onPageLoad //TODO change to doYouHaveUTR(CheckMode)
+    case _  => _ => controllers.routes.CheckYourAnswersController.onPageLoad
+  }
+
 }

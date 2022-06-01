@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package navigation
+@this()
 
-import play.api.mvc.Call
-import pages._
-import models.{Mode, UserAnswers}
+@(href: String, key: String, id: Option[String] = None, openInNewWindow: Boolean = false)(implicit messages: Messages)
 
-class FakeNavigator(desiredRoute: Call) extends Navigator {
-
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    desiredRoute
-}
-
-class FakeCBCRNavigator(desiredRoute: Call) extends CBCRNavigator {
-
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
-}
+<a class="govuk-link" @if(id.isDefined){id="@id"} href="@href" @if(openInNewWindow) {target="_blank" rel="noopener noreferrer"}>@messages(key)</a>

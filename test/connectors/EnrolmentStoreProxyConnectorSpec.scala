@@ -31,7 +31,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class EnrolmentStoreProxyConnectorSpec extends SpecBase with WireMockServerHandler with Generators with ScalaCheckPropertyChecks {
 
-  lazy val app: Application = new GuiceApplicationBuilder()
+  lazy override val app: Application = new GuiceApplicationBuilder()
     .configure(
       conf = "microservice.services.enrolment-store-proxy.port" -> server.port()
     )
