@@ -22,14 +22,13 @@ import config.FrontendAppConfig
 import models.requests.IdentifierRequest
 import org.mockito.ArgumentMatchers.any
 import play.api.inject
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
+import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.{~, Retrieval}
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.RetrievalOps._
 

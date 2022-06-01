@@ -18,7 +18,6 @@ package controllers
 
 import base.SpecBase
 import org.mockito.ArgumentMatchers.any
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository

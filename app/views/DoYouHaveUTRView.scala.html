@@ -14,12 +14,16 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
+
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    link: components.Link,
+    appConfig: FrontendAppConfig
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
@@ -36,7 +40,7 @@
             RadiosViewModel.yesNo(
                 field = form("value"),
                 legend = LegendViewModel(messages("doYouHaveUTR.heading")).asPageHeading()
-            ).withHint(HintViewModel(Text(messages("doYouHaveUTR.hint"))))
+            ).withHint(HintViewModel(HtmlContent(Html(messages("doYouHaveUTR.hint", link(appConfig.lostUTRUrl, "doYouHaveUTR.hint.link", openInNewWindow = true))))))
         )
 
         @govukButton(

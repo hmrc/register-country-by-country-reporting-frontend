@@ -23,7 +23,6 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import repositories.SessionRepository
-import uk.gov.hmrc.auth.core.AffinityGroup
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

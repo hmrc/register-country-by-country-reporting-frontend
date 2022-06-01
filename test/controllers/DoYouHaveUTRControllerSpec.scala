@@ -18,16 +18,10 @@ package controllers
 
 import base.SpecBase
 import forms.DoYouHaveUTRFormProvider
-import models.UserAnswers
-import navigation.{CBCRNavigator, FakeCBCRNavigator, FakeNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.scalatestplus.mockito.MockitoSugar
-import pages.doYouHaveUTRPage
-import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import views.html.DoYouHaveUTRView
 
 import scala.concurrent.Future
