@@ -72,4 +72,5 @@ trait SpecBase
         bind[CBCRNavigator].toInstance(cbcrFakeNavigator),
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalActionProvider(userAnswers))
       )
+
 }

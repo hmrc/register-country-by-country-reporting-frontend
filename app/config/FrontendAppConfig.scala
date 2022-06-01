@@ -39,6 +39,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val signOutUrl: String       = configuration.get[String]("urls.signOut")
   lazy val lostUTRUrl: String  = configuration.get[String]("urls.lostUTR")
 
+  lazy val enrolmentStoreProxyUrl: String =
+    s"${configuration.get[Service]("microservice.services.enrolment-store-proxy").baseUrl}${configuration.get[String]("microservice.services.enrolment-store-proxy.startUrl")}"
+
   private val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
   val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/register-country-by-country-reporting-frontend"
 
