@@ -21,7 +21,7 @@ import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-case object DoYouHaveUniqueTaxPayerReferencePage extends QuestionPage[Boolean] {
+case object doYouHaveUTRPage extends QuestionPage[Boolean] {
 
   private val businessPages = List(
 //    BusinessTypePage,
@@ -64,7 +64,7 @@ case object DoYouHaveUniqueTaxPayerReferencePage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "doYouHaveUniqueTaxPayerReference"
+  override def toString: String = "doYouHaveUTR"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
     case Some(true)  => individualPages.foldLeft(Try(userAnswers))(PageLists.removePage)

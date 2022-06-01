@@ -17,40 +17,40 @@
 package controllers
 
 import base.SpecBase
-import forms.DoYouHaveUniqueTaxPayerReferenceFormProvider
+import forms.DoYouHaveUTRFormProvider
 import models.UserAnswers
 import navigation.{CBCRNavigator, FakeCBCRNavigator, FakeNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.scalatestplus.mockito.MockitoSugar
-import pages.DoYouHaveUniqueTaxPayerReferencePage
+import pages.doYouHaveUTRPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.DoYouHaveUniqueTaxPayerReferenceView
+import views.html.DoYouHaveUTRView
 
 import scala.concurrent.Future
 
-class DoYouHaveUniqueTaxPayerReferenceControllerSpec extends SpecBase with MockitoSugar {
+class DoYouHaveUTRControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new DoYouHaveUniqueTaxPayerReferenceFormProvider()
+  val formProvider = new DoYouHaveUTRFormProvider()
   val form         = formProvider()
 
-  lazy val DoYouHaveUniqueTaxPayerReferenceRoute = routes.DoYouHaveUniqueTaxPayerReferenceController.onPageLoad.url
+  lazy val doYouHaveUTRRoute = routes.DoYouHaveUTRController.onPageLoad.url
 
-  "DoYouHaveUniqueTaxPayerReference Controller" - {
+  "doYouHaveUTR Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder().build()
 
       running(application) {
-        val request = FakeRequest(GET, DoYouHaveUniqueTaxPayerReferenceRoute)
+        val request = FakeRequest(GET, doYouHaveUTRRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[DoYouHaveUniqueTaxPayerReferenceView]
+        val view = application.injector.instanceOf[DoYouHaveUTRView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form)(request, messages(application)).toString
@@ -65,7 +65,7 @@ class DoYouHaveUniqueTaxPayerReferenceControllerSpec extends SpecBase with Mocki
 
       running(application) {
         val request =
-          FakeRequest(POST, DoYouHaveUniqueTaxPayerReferenceRoute).withFormUrlEncodedBody(("value", "true"))
+          FakeRequest(POST, doYouHaveUTRRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
@@ -80,12 +80,12 @@ class DoYouHaveUniqueTaxPayerReferenceControllerSpec extends SpecBase with Mocki
 
       running(application) {
         val request =
-          FakeRequest(POST, DoYouHaveUniqueTaxPayerReferenceRoute)
+          FakeRequest(POST, doYouHaveUTRRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[DoYouHaveUniqueTaxPayerReferenceView]
+        val view = application.injector.instanceOf[DoYouHaveUTRView]
 
         val result = route(application, request).value
 

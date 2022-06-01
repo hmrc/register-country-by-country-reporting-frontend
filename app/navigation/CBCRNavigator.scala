@@ -29,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 class CBCRNavigator @Inject()() extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = {
-    case DoYouHaveUniqueTaxPayerReferencePage   => _ => routes.DoYouHaveUniqueTaxPayerReferenceController.onPageLoad //TODO change to doYouHaveUniqueTaxPayerReference(NormalMode)
+    case doYouHaveUTRPage   => _ => routes.DoYouHaveUTRController.onPageLoad //TODO change to doYouHaveUTR(NormalMode)
 //    case WhatAreYouRegisteringAsPage            => whatAreYouRegisteringAs(NormalMode)
 //    case DoYouHaveNINPage                       => doYouHaveNINORoutes(NormalMode)
 //    case WhatIsYourNationalInsuranceNumberPage  => _ => Some(routes.WhatIsYourNameController.onPageLoad(NormalMode))
@@ -55,7 +55,7 @@ class CBCRNavigator @Inject()() extends Navigator {
   }
 
   override val checkRouteMap: Page => UserAnswers => Call = {
-    case DoYouHaveUniqueTaxPayerReferencePage  => _ => routes.DoYouHaveUniqueTaxPayerReferenceController.onPageLoad //TODO change to doYouHaveUniqueTaxPayerReference(CheckMode)
+    case doYouHaveUTRPage  => _ => routes.DoYouHaveUTRController.onPageLoad //TODO change to doYouHaveUTR(CheckMode)
 //    case WhatAreYouRegisteringAsPage           => whatAreYouRegisteringAs(CheckMode)
 //    case BusinessHaveDifferentNamePage         => businessHaveDifferentNameRoutes(CheckMode)
 //    case DoYouHaveNINPage                      => doYouHaveNINORoutes(CheckMode)
@@ -125,8 +125,8 @@ class CBCRNavigator @Inject()() extends Navigator {
     case _  => _ => controllers.routes.CheckYourAnswersController.onPageLoad
   }
 //
-//  private def doYouHaveUniqueTaxPayerReference(mode: Mode)(ua: UserAnswers): Option[Call] =
-//    ua.get(DoYouHaveUniqueTaxPayerReferencePage) map {
+//  private def doYouHaveUTR(mode: Mode)(ua: UserAnswers): Option[Call] =
+//    ua.get(doYouHaveUTRPage) map {
 //      case true => routes.BusinessTypeController.onPageLoad(mode)
 //      case false => routes.WhatAreYouRegisteringAsController.onPageLoad(mode)
 //    }

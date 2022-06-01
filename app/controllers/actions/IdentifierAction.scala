@@ -70,7 +70,7 @@ class AuthenticatedIdentifierActionWithRegime @Inject() (
           Future.successful(Redirect(config.countryByCountryReportingFrontendUrl))
         case _ ~ _ ~ _ ~ Some(Assistant) =>
           Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad())) //TODO Change to UnauthorizedAssistantController when implemented
-        case Some(internalID) ~ enrolments ~ Some(affinityGroup) ~ _ => block(IdentifierRequest(request, internalID, enrolments.enrolments))
+        case Some(internalID) ~ enrolments ~ _ ~ _ => block(IdentifierRequest(request, internalID, enrolments.enrolments))
         case _                                                       => throw new UnauthorizedException("Unable to retrieve internal Id")
       }
       .recover {

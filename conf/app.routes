@@ -14,8 +14,8 @@ GET         /there-is-a-problem                          controllers.JourneyReco
 
 GET         /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
 
-GET         /register/have-utr                           controllers.DoYouHaveUniqueTaxPayerReferenceController.onPageLoad
-POST        /register/have-utr                           controllers.DoYouHaveUniqueTaxPayerReferenceController.onSubmit
+GET         /register/have-utr                           controllers.DoYouHaveUTRController.onPageLoad
+POST        /register/have-utr                           controllers.DoYouHaveUTRController.onSubmit
 
 GET         /account/sign-out-survey                     controllers.auth.AuthController.signOut
 GET         /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey

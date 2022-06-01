@@ -24,9 +24,9 @@
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("doYouHaveUniqueTaxPayerReference.title"))) {
+@layout(pageTitle = title(form, messages("doYouHaveUTR.title"))) {
 
-    @formHelper(action = routes.DoYouHaveUniqueTaxPayerReferenceController.onSubmit, 'autoComplete -> "off") {
+    @formHelper(action = routes.DoYouHaveUTRController.onSubmit, 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -35,8 +35,8 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("doYouHaveUniqueTaxPayerReference.heading")).asPageHeading()
-            ).withHint(HintViewModel(Text(messages("doYouHaveUniqueTaxPayerReference.hint"))))
+                legend = LegendViewModel(messages("doYouHaveUTR.heading")).asPageHeading()
+            ).withHint(HintViewModel(Text(messages("doYouHaveUTR.hint"))))
         )
 
         @govukButton(

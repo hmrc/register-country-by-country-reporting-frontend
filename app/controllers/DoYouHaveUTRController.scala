@@ -16,30 +16,28 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import controllers.actions.StandardActionSets
-import forms.DoYouHaveUniqueTaxPayerReferenceFormProvider
-import models.{Mode, NormalMode}
+import forms.DoYouHaveUTRFormProvider
+import models.NormalMode
 import navigation.CBCRNavigator
-import pages.DoYouHaveUniqueTaxPayerReferencePage
+import pages.doYouHaveUTRPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.DoYouHaveUniqueTaxPayerReferenceView
+import views.html.DoYouHaveUTRView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DoYouHaveUniqueTaxPayerReferenceController @Inject()(
-                                                            override val messagesApi: MessagesApi,
-                                                            appConfig: FrontendAppConfig,
-                                                            sessionRepository: SessionRepository,
-                                                            navigator: CBCRNavigator,
-                                                            standardActionSets: StandardActionSets,
-                                                            formProvider: DoYouHaveUniqueTaxPayerReferenceFormProvider,
-                                                            val controllerComponents: MessagesControllerComponents,
-                                                            view: DoYouHaveUniqueTaxPayerReferenceView
+class DoYouHaveUTRController @Inject()(
+                                        override val messagesApi: MessagesApi,
+                                        sessionRepository: SessionRepository,
+                                        navigator: CBCRNavigator,
+                                        standardActionSets: StandardActionSets,
+                                        formProvider: DoYouHaveUTRFormProvider,
+                                        val controllerComponents: MessagesControllerComponents,
+                                        view: DoYouHaveUTRView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -49,7 +47,7 @@ class DoYouHaveUniqueTaxPayerReferenceController @Inject()(
   def onPageLoad: Action[AnyContent] =
     standardActionSets.identifiedUserWithInitializedData() {
       implicit request =>
-        val preparedForm = request.userAnswers.get(DoYouHaveUniqueTaxPayerReferencePage) match {
+        val preparedForm = request.userAnswers.get(doYouHaveUTRPage) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -65,9 +63,9 @@ class DoYouHaveUniqueTaxPayerReferenceController @Inject()(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DoYouHaveUniqueTaxPayerReferencePage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(doYouHaveUTRPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DoYouHaveUniqueTaxPayerReferencePage, NormalMode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(doYouHaveUTRPage, NormalMode, updatedAnswers))
         )
   }
 }

@@ -22,7 +22,7 @@ import pages.behaviours.PageBehaviours
 
 import java.time.LocalDate
 
-class DoYouHaveUniqueTaxPayerReferencePageSpec extends PageBehaviours {
+class doYouHaveUTRPageSpec extends PageBehaviours {
 
 //  private val address =
 //    Address("He lives in a house", Some("a very big house"), "In the country", Some("blur 1995"), Some("BritPop"), Country("", "GB", "Great Britain"))
@@ -37,13 +37,13 @@ class DoYouHaveUniqueTaxPayerReferencePageSpec extends PageBehaviours {
 //    "D3B0R4H"
 //  )
 //
-//  "DoYouHaveUniqueTaxPayerReferencePage" - {
+//  "doYouHaveUTRPage" - {
 //
-//    beRetrievable[Boolean](DoYouHaveUniqueTaxPayerReferencePage)
+//    beRetrievable[Boolean](doYouHaveUTRPage)
 //
-//    beSettable[Boolean](DoYouHaveUniqueTaxPayerReferencePage)
+//    beSettable[Boolean](doYouHaveUTRPage)
 //
-//    beRemovable[Boolean](DoYouHaveUniqueTaxPayerReferencePage)
+//    beRemovable[Boolean](doYouHaveUTRPage)
 //  }
 //
 //  "cleanup" - {
@@ -103,7 +103,7 @@ class DoYouHaveUniqueTaxPayerReferencePageSpec extends PageBehaviours {
 //            .set(RegistrationInfoPage, OrgRegistrationInfo(SafeId("safeId"), "Organisation", AddressResponse("Address", None, None, None, None, "GB")))
 //            .success
 //            .value
-//            .set(DoYouHaveUniqueTaxPayerReferencePage, false)
+//            .set(doYouHaveUTRPage, false)
 //            .success
 //            .value
 //
@@ -182,7 +182,7 @@ class DoYouHaveUniqueTaxPayerReferencePageSpec extends PageBehaviours {
 //            .set(RegistrationInfoPage, OrgRegistrationInfo(SafeId("safeId"), "Organisation", AddressResponse("Address", None, None, None, None, "GB")))
 //            .success
 //            .value
-//            .set(DoYouHaveUniqueTaxPayerReferencePage, true)
+//            .set(doYouHaveUTRPage, true)
 //            .success
 //            .value
 //

@@ -19,12 +19,12 @@ package forms
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class DoYouHaveUniqueTaxPayerReferenceFormProviderSpec extends BooleanFieldBehaviours {
+class DoYouHaveUTRFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "doYouHaveUniqueTaxPayerReference.error.required"
+  val requiredKey = "doYouHaveUTR.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new DoYouHaveUniqueTaxPayerReferenceFormProvider()()
+  val form = new DoYouHaveUTRFormProvider()()
 
   ".value" - {
 

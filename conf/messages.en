@@ -56,10 +56,10 @@ signedOut.guidance = We did not save your answers.
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-doYouHaveUniqueTaxPayerReference.title = Do you have a UK Unique Taxpayer Reference (UTR)?
-doYouHaveUniqueTaxPayerReference.checkYourAnswersLabel =  Do you have a UK Unique Taxpayer Reference?
-doYouHaveUniqueTaxPayerReference.checkYourAnswersLabel.hiddenText =  if you have a Unique Taxpayer Reference
-doYouHaveUniqueTaxPayerReference.heading = Do you have a UK Unique Taxpayer Reference (UTR)?
-doYouHaveUniqueTaxPayerReference.hint = This is a 10 digit number issued by HMRC and is used to identify individual taxpayers. It will be on tax returns and other letters about Self Assessment or Corporation Tax. You can
-doYouHaveUniqueTaxPayerReference.hint.link = find a lost UTR number (opens in a new tab)
-doYouHaveUniqueTaxPayerReference.error.required = Select yes if you have a UTR
+doYouHaveUTR.title = Do you have a UK Unique Taxpayer Reference (UTR)?
+doYouHaveUTR.checkYourAnswersLabel =  Do you have a UK Unique Taxpayer Reference?
+doYouHaveUTR.checkYourAnswersLabel.hiddenText =  if you have a Unique Taxpayer Reference
+doYouHaveUTR.heading = Do you have a UK Unique Taxpayer Reference (UTR)?
+doYouHaveUTR.hint = This is a 10 digit number issued by HMRC and is used to identify individual taxpayers. It will be on tax returns and other letters about Self Assessment or Corporation Tax. You can
+doYouHaveUTR.hint.link = find a lost UTR number (opens in a new tab)
+doYouHaveUTR.error.required = Select yes if you have a UTR

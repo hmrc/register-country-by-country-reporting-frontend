@@ -21,10 +21,10 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class DoYouHaveUniqueTaxPayerReferenceFormProvider @Inject() extends Mappings {
+class DoYouHaveUTRFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("doYouHaveUniqueTaxPayerReference.error.required")
+      "value" -> boolean("doYouHaveUTR.error.required")
     )
 }
