@@ -32,10 +32,10 @@ class StandardActionSets @Inject()(identify: IdentifierAction,
     identify andThen checkEnrolment()
 
   def identifiedUserWithInitializedData(): ActionBuilder[DataRequest, AnyContent] =
-    identifiedUserWithEnrolmentCheck() andThen getData() andThen initializeData()
+    identifiedUserWithEnrolmentCheck() andThen getData() andThen initializeData
 
   def identifiedWithoutEnrolmentCheck(): ActionBuilder[DataRequest, AnyContent] =
-    identify andThen getData() andThen initializeData()
+    identify andThen getData() andThen initializeData
 
   def identifiedUserWithData(): ActionBuilder[DataRequest, AnyContent] =
     identifiedUserWithEnrolmentCheck() andThen getData() andThen requireData()
