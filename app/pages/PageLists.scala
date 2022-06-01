@@ -27,36 +27,14 @@ object PageLists {
 
   val businessWithIDPages =
     List(
-//      UTRPage,
-//      BusinessNamePage,
-//      SoleNamePage,
-//      IsThisYourBusinessPage
     )
 
   val businessWithOutIDPages = List(
-//    BusinessWithoutIDNamePage,
-//    BusinessHaveDifferentNamePage,
-//    WhatIsTradingNamePage,
-//    BusinessAddressWithoutIdPage,
-//    AddressLookupPage,
-//    AddressUKPage
   )
 
   val individualWithIDPages = List(
-//    WhatIsYourNationalInsuranceNumberPage,
-//    WhatIsYourNamePage,
-//    WhatIsYourDateOfBirthPage
   )
 
   val individualWithOutIDPages = List(
-//    DoYouHaveNINPage,
-//    NonUkNamePage,
-//    DoYouLiveInTheUKPage,
-//    WhatIsYourPostcodePage,
-//    BusinessAddressWithoutIdPage,
-//    AddressLookupPage,
-//    AddressUKPage,
-//    SelectAddressPage,
-//    SelectedAddressLookupPage
   )
 }
