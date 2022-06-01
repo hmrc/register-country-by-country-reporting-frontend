@@ -32,6 +32,7 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
+
 trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
 
 class AuthenticatedIdentifierAction @Inject() (
@@ -40,11 +41,12 @@ class AuthenticatedIdentifierAction @Inject() (
                                                 val parser: BodyParsers.Default
                                               )(implicit val executionContext: ExecutionContext)
   extends IdentifierAction
-    with AuthorisedFunctions {
-
-  val enrolmentKey: String = config.enrolmentKey
+    with AuthorisedFunctions
+    with Logging {
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
+
+    val enrolmentKey: String = config.enrolmentKey
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     authorised()

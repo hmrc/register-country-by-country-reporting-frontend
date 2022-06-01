@@ -23,7 +23,10 @@ import play.api.mvc.{ActionRefiner, Result}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataInitializeActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends DataInitializeAction {
+trait DataInitializeAction extends ActionRefiner[OptionalDataRequest, DataRequest]
+
+class DataInitializeActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends DataInitializeAction  {
+
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
     request.userAnswers match {
       case None =>
@@ -32,5 +35,3 @@ class DataInitializeActionImpl @Inject() (implicit val executionContext: Executi
         Future.successful(Right(DataRequest(request.request, request.userId, data)))
     }
 }
-
-trait DataInitializeAction extends ActionRefiner[OptionalDataRequest, DataRequest]
