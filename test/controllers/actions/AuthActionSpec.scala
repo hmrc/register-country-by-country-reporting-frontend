@@ -60,7 +60,7 @@ class AuthActionSpec extends SpecBase  {
     "when the user hasn't logged in" - {
 
       "must redirect the user to log in " in {
-        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new MissingBearerToken), appConfig, bodyParsers).apply()
+        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new MissingBearerToken), appConfig, bodyParsers)
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(FakeRequest())
 
@@ -73,7 +73,7 @@ class AuthActionSpec extends SpecBase  {
 
       "must redirect the user to log in " in {
 
-        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new BearerTokenExpired), appConfig, bodyParsers).apply()
+        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new BearerTokenExpired), appConfig, bodyParsers)
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(FakeRequest())
 
@@ -86,7 +86,7 @@ class AuthActionSpec extends SpecBase  {
 
       "must redirect the user to the unauthorised page" in {
 
-        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new InsufficientEnrolments), appConfig, bodyParsers).apply()
+        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new InsufficientEnrolments), appConfig, bodyParsers)
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(FakeRequest())
 
@@ -100,7 +100,7 @@ class AuthActionSpec extends SpecBase  {
       "must redirect the user to the unauthorised page" in {
 
         val authAction =
-          new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new InsufficientConfidenceLevel), appConfig, bodyParsers).apply()
+          new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new InsufficientConfidenceLevel), appConfig, bodyParsers)
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(FakeRequest())
 
@@ -113,7 +113,7 @@ class AuthActionSpec extends SpecBase  {
 
       "must redirect the user to the unauthorised page" in {
 
-        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedAuthProvider), appConfig, bodyParsers).apply()
+        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedAuthProvider), appConfig, bodyParsers)
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(FakeRequest())
 
@@ -126,7 +126,7 @@ class AuthActionSpec extends SpecBase  {
 
       "must redirect the user to the unauthorised page" in {
 
-        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedAffinityGroup), appConfig, bodyParsers).apply()
+        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedAffinityGroup), appConfig, bodyParsers)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(FakeRequest())
 
@@ -139,7 +139,7 @@ class AuthActionSpec extends SpecBase  {
 
       "must redirect the user to the unauthorised page" in {
 
-        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedCredentialRole), appConfig, bodyParsers).apply()
+        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedCredentialRole), appConfig, bodyParsers)
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(FakeRequest())
 
@@ -155,7 +155,7 @@ class AuthActionSpec extends SpecBase  {
       val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(cbcEnrolment)) ~ None ~ Some(Assistant)
       when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(retrieval)
 
-      val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers).apply()
+      val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
       val controller = new Harness(authAction)
       val result     = controller.onPageLoad()(FakeRequest())
 
@@ -172,7 +172,7 @@ class AuthActionSpec extends SpecBase  {
       val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(emptyEnrolments)) ~ None ~ Some(Assistant)
       when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(retrieval)
 
-      val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers).apply()
+      val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
       val controller = new Harness(authAction)
       val result     = controller.onPageLoad()(FakeRequest())
 
@@ -187,7 +187,7 @@ class AuthActionSpec extends SpecBase  {
       val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(cbcEnrolment)) ~ Some(Individual) ~ None
       when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(retrieval)
 
-      val authAction     = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers).apply()
+      val authAction     = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
       val enrolledAction = new CheckEnrolledToServiceActionProvider(appConfig).apply()
       val controller     = new Harness(authAction andThen enrolledAction)
       val result         = controller.onPageLoad()(FakeRequest())
@@ -205,7 +205,7 @@ class AuthActionSpec extends SpecBase  {
       val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(cbcEnrolment)) ~ Some(Organisation) ~ None
       when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(retrieval)
 
-      val authAction     = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers).apply()
+      val authAction     = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
       val enrolledAction = new CheckEnrolledToServiceActionProvider(appConfig).apply()
       val controller     = new Harness(authAction andThen enrolledAction)
       val result         = controller.onPageLoad()(FakeRequest())
