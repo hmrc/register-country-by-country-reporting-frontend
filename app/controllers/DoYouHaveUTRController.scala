@@ -20,7 +20,7 @@ import controllers.actions.StandardActionSets
 import forms.DoYouHaveUTRFormProvider
 import models.NormalMode
 import navigation.CBCRNavigator
-import pages.doYouHaveUTRPage
+import pages.DoYouHaveUTRPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.SessionRepository
@@ -47,7 +47,7 @@ class DoYouHaveUTRController @Inject()(
   def onPageLoad: Action[AnyContent] =
     standardActionSets.identifiedUserWithInitializedData() {
       implicit request =>
-        val preparedForm = request.userAnswers.get(doYouHaveUTRPage) match {
+        val preparedForm = request.userAnswers.get(DoYouHaveUTRPage) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -63,9 +63,9 @@ class DoYouHaveUTRController @Inject()(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(doYouHaveUTRPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DoYouHaveUTRPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(doYouHaveUTRPage, NormalMode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(DoYouHaveUTRPage, NormalMode, updatedAnswers))
         )
   }
 }

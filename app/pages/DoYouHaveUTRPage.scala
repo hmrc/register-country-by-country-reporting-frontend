@@ -16,11 +16,18 @@
 
 package pages
 
-import  models.UserAnswers
-import org.scalacheck.Arbitrary.arbitrary
-import pages.behaviours.PageBehaviours
+import models.UserAnswers
+import play.api.libs.json.JsPath
 
-import java.time.LocalDate
+import scala.util.Try
 
-class doYouHaveUTRPageSpec extends PageBehaviours {
+case object DoYouHaveUTRPage extends QuestionPage[Boolean] {
+
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "doYouHaveUTR"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case _           => super.cleanup(value, userAnswers)
+  }
 }

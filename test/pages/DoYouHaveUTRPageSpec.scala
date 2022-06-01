@@ -16,25 +16,16 @@
 
 package pages
 
-import models.UserAnswers
+import pages.behaviours.PageBehaviours
 
-import scala.util.Try
+class DoYouHaveUTRPageSpec extends PageBehaviours {
 
-object PageLists {
+  "DoYouHaveUTRPage" - {
 
-  val removePage: (Try[UserAnswers], QuestionPage[_]) => Try[UserAnswers] =
-    (ua: Try[UserAnswers], page: QuestionPage[_]) => ua.flatMap(_.remove(page))
+    beRetrievable[Boolean](DoYouHaveUTRPage)
 
-  val businessWithIDPages =
-    List(
-    )
+    beSettable[Boolean](DoYouHaveUTRPage)
 
-  val businessWithOutIDPages = List(
-  )
-
-  val individualWithIDPages = List(
-  )
-
-  val individualWithOutIDPages = List(
-  )
+    beRemovable[Boolean](DoYouHaveUTRPage)
+  }
 }

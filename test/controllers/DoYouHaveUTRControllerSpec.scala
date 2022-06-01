@@ -33,7 +33,7 @@ class DoYouHaveUTRControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val doYouHaveUTRRoute = routes.DoYouHaveUTRController.onPageLoad.url
 
-  "doYouHaveUTR Controller" - {
+  "DoYouHaveUTR Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
