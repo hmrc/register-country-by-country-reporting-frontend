@@ -14,15 +14,32 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
+import forms.behaviours.OptionFieldBehaviours
 import models.BusinessType
-import org.scalacheck.{Arbitrary, Gen}
+import play.api.data.FormError
 
-trait ModelGenerators {
+class BusinessTypeFormProviderSpec extends OptionFieldBehaviours {
 
-  implicit lazy val arbitraryBusinessType: Arbitrary[BusinessType] =
-    Arbitrary {
-      Gen.oneOf(BusinessType.values.toSeq)
-    }
+  val form = new BusinessTypeFormProvider()()
+
+  ".value" - {
+
+    val fieldName = "value"
+    val requiredKey = "businessType.error.required"
+
+    behave like optionsField[BusinessType](
+      form,
+      fieldName,
+      validValues  = BusinessType.values,
+      invalidError = FormError(fieldName, "error.invalid")
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

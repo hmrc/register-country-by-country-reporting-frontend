@@ -23,7 +23,6 @@ import models.requests.IdentifierRequest
 import play.api.Logging
 import play.api.mvc.Results._
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, credentialRole}
@@ -33,9 +32,7 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait IdentifierAction {
-  def apply(): ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
-}
+trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
 
 class AuthenticatedIdentifierAction @Inject() (
                                                 override val authConnector: AuthConnector,
@@ -44,20 +41,6 @@ class AuthenticatedIdentifierAction @Inject() (
                                               )(implicit val executionContext: ExecutionContext)
   extends IdentifierAction
     with AuthorisedFunctions {
-
-  override def apply(): ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest] =
-    new AuthenticatedIdentifierActionWithRegime(authConnector, config, parser)
-}
-
-class AuthenticatedIdentifierActionWithRegime @Inject() (
-                                                          val authConnector: AuthConnector,
-                                                          config: FrontendAppConfig,
-                                                          val parser: BodyParsers.Default
-                                                        )(implicit val executionContext: ExecutionContext)
-  extends ActionBuilder[IdentifierRequest, AnyContent]
-    with ActionFunction[Request, IdentifierRequest]
-    with AuthorisedFunctions
-    with Logging {
 
   val enrolmentKey: String = config.enrolmentKey
 
@@ -69,7 +52,7 @@ class AuthenticatedIdentifierActionWithRegime @Inject() (
         case _ ~ enrolments ~ _ ~ Some(Assistant) if enrolments.enrolments.exists(_.key == enrolmentKey) =>
           Future.successful(Redirect(config.countryByCountryReportingFrontendUrl))
         case _ ~ _ ~ _ ~ Some(Assistant) =>
-          Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad())) //TODO Change to UnauthorizedAssistantController when implemented
+          Future.successful(Redirect(routes.UnauthorisedController.onPageLoad)) //TODO Change to UnauthorizedAssistantController when implemented
         case Some(internalID) ~ enrolments ~ _ ~ _ => block(IdentifierRequest(request, internalID, enrolments.enrolments))
         case _                                                       => throw new UnauthorizedException("Unable to retrieve internal Id")
       }
@@ -77,7 +60,7 @@ class AuthenticatedIdentifierActionWithRegime @Inject() (
         case _: NoActiveSession =>
           Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
         case _: AuthorisationException =>
-          Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()) //TODO Change to ThereIsAProblemController when implemented
+          Redirect(controllers.routes.UnauthorisedController.onPageLoad) //TODO Change to ThereIsAProblemController when implemented
       }
   }
 }

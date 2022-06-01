@@ -22,3 +22,8 @@ GET         /account/sign-out                            controllers.auth.AuthCo
 GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad
 
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
+
+GET        /register/business-type                       controllers.BusinessTypeController.onPageLoad(mode: Mode = NormalMode)
+POST       /register/business-type                       controllers.BusinessTypeController.onSubmit(mode: Mode = NormalMode)
+GET        /register/change-business-type                controllers.BusinessTypeController.onPageLoad(mode: Mode = CheckMode)
+POST       /register/change-business-type                controllers.BusinessTypeController.onSubmit(mode: Mode = CheckMode)

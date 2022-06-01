@@ -28,12 +28,28 @@ import javax.inject.{Inject, Singleton}
 class CBCRNavigator @Inject()() extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = {
-    case DoYouHaveUTRPage   => _ => routes.DoYouHaveUTRController.onPageLoad //TODO change to doYouHaveUTR(NormalMode)
+    case DoYouHaveUTRPage   => ua => yesNoPage(
+      ua,
+      DoYouHaveUTRPage,
+      routes.BusinessTypeController.onPageLoad(NormalMode),
+      routes.DoYouHaveUTRController.onPageLoad //TODO change when next pages are implemented
+    )
+    case BusinessTypePage   => _ => routes.BusinessTypeController.onPageLoad(NormalMode) //TODO change when next pages are implemented
   }
 
   override val checkRouteMap: Page => UserAnswers => Call = {
-    case DoYouHaveUTRPage  => _ => routes.DoYouHaveUTRController.onPageLoad //TODO change to doYouHaveUTR(CheckMode)
+    case DoYouHaveUTRPage  => _ => routes.BusinessTypeController.onPageLoad(CheckMode)
+    case BusinessTypePage   => ua => yesNoPage(
+      ua,
+      DoYouHaveUTRPage,
+      routes.BusinessTypeController.onPageLoad(NormalMode),
+      routes.DoYouHaveUTRController.onPageLoad //TODO change when next pages are implemented
+    )
     case _  => _ => controllers.routes.CheckYourAnswersController.onPageLoad
   }
 
+  def yesNoPage(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call =
+    ua.get(fromPage)
+      .map(if (_) yesCall else noCall)
+      .getOrElse(routes.JourneyRecoveryController.onPageLoad()) //TODO: Change to routes.ThereIsAProblemController.onPageLoad() when implemented
 }

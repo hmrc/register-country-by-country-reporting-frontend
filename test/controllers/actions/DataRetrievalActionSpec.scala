@@ -31,7 +31,7 @@ class DataRetrievalActionSpec extends SpecBase with ScalaFutures {
 
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
 
-  class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionProvider(sessionRepository) {
+  class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionImpl(sessionRepository) {
     def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
 

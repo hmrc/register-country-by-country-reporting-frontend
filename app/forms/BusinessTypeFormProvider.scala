@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-package models.requests
+package forms
 
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.Enrolment
+import javax.inject.Inject
 
-case class IdentifierRequest[A](request: Request[A], userId: String, enrolments: Set[Enrolment] = Set.empty)
-  extends WrappedRequest[A](request)
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.BusinessType
+
+class BusinessTypeFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[BusinessType] =
+    Form(
+      "value" -> enumerable[BusinessType]("businessType.error.required")
+    )
+}
