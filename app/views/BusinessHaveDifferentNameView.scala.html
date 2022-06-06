@@ -14,23 +14,19 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
-
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    link: components.Link,
-    appConfig: FrontendAppConfig
+    govukButton: GovukButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("doYouHaveUTR.title"))) {
+@layout(pageTitle = title(form, messages("businessHaveDifferentName.title"))) {
 
-    @formHelper(action = routes.DoYouHaveUTRController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.BusinessHaveDifferentNameController.onSubmit(mode), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -39,12 +35,12 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("doYouHaveUTR.heading")).asPageHeading()
-            ).withHint(HintViewModel(HtmlContent(Html(messages("doYouHaveUTR.hint", link(appConfig.lostUTRUrl, "doYouHaveUTR.hint.link", openInNewWindow = true))))))
+                legend = LegendViewModel(messages("businessHaveDifferentName.heading")).asPageHeading()
+            )
         )
 
         @govukButton(
-            ButtonViewModel(messages("site.continue")).withAttribute("id", "submit")
+            ButtonViewModel(messages("site.continue"))
         )
     }
 }

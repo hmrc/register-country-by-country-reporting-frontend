@@ -18,6 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.DoYouHaveUTRFormProvider
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
@@ -31,7 +32,7 @@ class DoYouHaveUTRControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new DoYouHaveUTRFormProvider()
   val form         = formProvider()
 
-  lazy val doYouHaveUTRRoute = routes.DoYouHaveUTRController.onPageLoad.url
+  lazy val doYouHaveUTRRoute = routes.DoYouHaveUTRController.onPageLoad(NormalMode).url
 
   "DoYouHaveUTR Controller" - {
 
@@ -47,7 +48,7 @@ class DoYouHaveUTRControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[DoYouHaveUTRView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -84,7 +85,7 @@ class DoYouHaveUTRControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
       }
     }
 
