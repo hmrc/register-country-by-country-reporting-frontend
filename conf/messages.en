@@ -113,3 +113,9 @@ businessWithoutIDName.checkYourAnswersLabel = What is the name of your business?
 businessWithoutIDName.error.required = Enter the name of your business
 businessWithoutIDName.error.length = Business name must be 105 characters or less
 businessWithoutIDName.change.hidden = what is the name of your business?
+
+businessHaveDifferentName.title = Does your business trade under a different name?
+businessHaveDifferentName.heading = Does your business trade under a different name?
+businessHaveDifferentName.checkYourAnswersLabel = Does your business trade under a different name?
+businessHaveDifferentName.error.required = Select yes if your business trades under a different name
+businessHaveDifferentName.change.hidden = does your business trade under a different name?
