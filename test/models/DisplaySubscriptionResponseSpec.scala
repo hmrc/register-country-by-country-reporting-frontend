@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-package models.requests
+package models
 
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.Enrolment
+import base.SpecBase
+import play.api.libs.json.Json
 
-case class IdentifierRequest[A](request: Request[A], userId: String, enrolments: Set[Enrolment] = Set.empty)
-  extends WrappedRequest[A](request)
+class DisplaySubscriptionResponseSpec extends SpecBase {
+
+    "DisplaySubscriptionResponse" - {
+      "must read DisplaySubscriptionForCBCResponse" in {
+        val json = Json.parse("""{"displaySubscriptionForCBCResponse": {"responseDetail":{"subscriptionID": "id"}}}""".stripMargin)
+        json.as[DisplaySubscriptionResponse] mustBe DisplaySubscriptionResponse(SubscriptionID("id"))
+      }
+    }
+}

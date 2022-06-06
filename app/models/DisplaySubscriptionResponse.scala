@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-package models.requests
+package models
 
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.Enrolment
+import play.api.libs.json.{Reads, __}
 
-case class IdentifierRequest[A](request: Request[A], userId: String, enrolments: Set[Enrolment] = Set.empty)
-  extends WrappedRequest[A](request)
+case class DisplaySubscriptionResponse(subscriptionID: SubscriptionID)
+
+object DisplaySubscriptionResponse {
+
+  implicit val reads: Reads[DisplaySubscriptionResponse] = {
+    import play.api.libs.functional.syntax._
+    (__ \ "displaySubscriptionForCBCResponse" \ "responseDetail" \ "subscriptionID").read[String] fmap (id => DisplaySubscriptionResponse(SubscriptionID(id)))
+  }
+}

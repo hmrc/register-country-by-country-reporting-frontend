@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package models.requests
+package connectors
 
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.Enrolment
+import play.api.libs.json.{Json, OFormat}
 
-case class IdentifierRequest[A](request: Request[A], userId: String, enrolments: Set[Enrolment] = Set.empty)
-  extends WrappedRequest[A](request)
+case class SafeId(value: String)
+
+object SafeId {
+  implicit val format: OFormat[SafeId] = Json.format[SafeId]
+}
