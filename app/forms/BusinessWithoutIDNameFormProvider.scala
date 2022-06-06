@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import org.scalacheck.Arbitrary
-import pages.{BusinessNamePage, BusinessTypePage, BusinessWithoutIDNamePage}
+import javax.inject.Inject
 
-trait PageGenerators {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  implicit lazy val arbitraryBusinessWithoutIDNamePage: Arbitrary[BusinessWithoutIDNamePage.type] =
-    Arbitrary(BusinessWithoutIDNamePage)
+class BusinessWithoutIDNameFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryBusinessNamePage: Arbitrary[BusinessNamePage.type] =
-    Arbitrary(BusinessNamePage)
-
-  implicit lazy val arbitraryBusinessTypePage: Arbitrary[BusinessTypePage.type] =
-    Arbitrary(BusinessTypePage)
+  def apply(): Form[String] =
+    Form(
+      "value" -> validatedTextMaxLength(
+        "businessWithoutIDName.error.required",
+        "businessWithoutIDName.error.length",
+        105
+      )
+    )
 }

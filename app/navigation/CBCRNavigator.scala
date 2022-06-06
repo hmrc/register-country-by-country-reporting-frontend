@@ -32,21 +32,14 @@ class CBCRNavigator @Inject()() extends Navigator {
       ua,
       DoYouHaveUTRPage,
       routes.BusinessTypeController.onPageLoad(NormalMode),
-      routes.DoYouHaveUTRController.onPageLoad //TODO change when next pages are implemented
+      routes.BusinessWithoutIDNameController.onPageLoad(NormalMode)
     )
     case BusinessTypePage   => _ => routes.BusinessNameController.onPageLoad(NormalMode)
     case BusinessNamePage   => _ => routes.BusinessNameController.onPageLoad(NormalMode) //TODO change when next pages are implemented
+    case BusinessWithoutIDNamePage   => _ => routes.BusinessWithoutIDNameController.onPageLoad(NormalMode) //TODO change when next pages are implemented
   }
 
   override val checkRouteMap: Page => UserAnswers => Call = {
-    case DoYouHaveUTRPage  => ua => yesNoPage(
-      ua,
-      DoYouHaveUTRPage,
-      routes.BusinessTypeController.onPageLoad(NormalMode),
-      routes.DoYouHaveUTRController.onPageLoad //TODO change when next pages are implemented
-    )
-    case BusinessTypePage   => _ => routes.BusinessNameController.onPageLoad(NormalMode)
-    case BusinessNamePage   => _ => routes.BusinessNameController.onPageLoad(NormalMode) //TODO change when next pages are implemented
     case _  => _ => controllers.routes.CheckYourAnswersController.onPageLoad
   }
 
