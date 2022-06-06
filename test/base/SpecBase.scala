@@ -54,10 +54,10 @@ trait SpecBase
   protected val cbcrFakeNavigator: CBCRNavigator         = new FakeCBCRNavigator(onwardRoute)
 
   protected def retrieveNoData(): Unit =
-    when(mockDataRetrievalAction.apply()).thenReturn(new FakeDataRetrievalAction(None))
+    when(mockDataRetrievalAction).thenReturn(new FakeDataRetrievalAction(None))
 
   protected def retrieveUserAnswersData(userAnswers: UserAnswers): Unit =
-    when(mockDataRetrievalAction.apply()).thenReturn(new FakeDataRetrievalAction(Some(userAnswers)))
+    when(mockDataRetrievalAction).thenReturn(new FakeDataRetrievalAction(Some(userAnswers)))
 
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
@@ -70,7 +70,7 @@ trait SpecBase
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[SessionRepository].toInstance(mockSessionRepository),
         bind[CBCRNavigator].toInstance(cbcrFakeNavigator),
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalActionProvider(userAnswers))
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
       )
 
 }

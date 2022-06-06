@@ -24,9 +24,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class FakeIdentifierAction @Inject() (bodyParsers: PlayBodyParsers)
-  extends IdentifierAction
-    with ActionBuilder[IdentifierRequest, AnyContent]
-    with ActionFunction[Request, IdentifierRequest] {
+  extends IdentifierAction {
 
   val affinityGroup: AffinityGroup = AffinityGroup.Organisation
 

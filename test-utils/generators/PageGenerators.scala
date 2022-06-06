@@ -16,5 +16,11 @@
 
 package generators
 
+import org.scalacheck.Arbitrary
+import pages.BusinessTypePage
+
 trait PageGenerators {
+
+  implicit lazy val arbitraryBusinessTypePage: Arbitrary[BusinessTypePage.type] =
+    Arbitrary(BusinessTypePage)
 }

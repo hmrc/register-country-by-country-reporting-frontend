@@ -54,7 +54,7 @@ class AuthenticatedIdentifierAction @Inject() (
         case _ ~ enrolments ~ _ ~ Some(Assistant) if enrolments.enrolments.exists(_.key == enrolmentKey) =>
           Future.successful(Redirect(config.countryByCountryReportingFrontendUrl))
         case _ ~ _ ~ _ ~ Some(Assistant) =>
-          Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad())) //TODO Change to UnauthorizedAssistantController when implemented
+          Future.successful(Redirect(routes.UnauthorisedController.onPageLoad)) //TODO Change to UnauthorizedAssistantController when implemented
         case Some(internalID) ~ enrolments ~ _ ~ _ => block(IdentifierRequest(request, internalID, enrolments.enrolments))
         case _                                                       => throw new UnauthorizedException("Unable to retrieve internal Id")
       }
@@ -62,7 +62,7 @@ class AuthenticatedIdentifierAction @Inject() (
         case _: NoActiveSession =>
           Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
         case _: AuthorisationException =>
-          Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()) //TODO Change to ThereIsAProblemController when implemented
+          Redirect(controllers.routes.UnauthorisedController.onPageLoad) //TODO Change to ThereIsAProblemController when implemented
       }
   }
 }

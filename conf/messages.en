@@ -63,3 +63,14 @@ doYouHaveUTR.heading = Do you have a UK Unique Taxpayer Reference (UTR)?
 doYouHaveUTR.hint = This is a 10 digit number issued by HMRC and is used to identify individual taxpayers. It will be on tax returns and other letters about Self Assessment or Corporation Tax. You can {0}.
 doYouHaveUTR.hint.link = find a lost UTR number (opens in a new tab)
 doYouHaveUTR.error.required = Select yes if you have a UTR
+
+businessType.title = What type of business do you have?
+businessType.heading = What type of business do you have?
+businessType.hint = Select one option.
+businessType.limited = Limited Company
+businessType.partnership = Partnership
+businessType.limitedPartnership = Limited partnership or limited liability partnership
+businessType.unincorporatedAssociation = Unincorporated association or trust
+businessType.checkYourAnswersLabel = What type of business do you have?
+businessType.error.required = Select the type of business you have
+businessType.change.hidden = what type of business do you have?
