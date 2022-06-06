@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import org.scalacheck.Arbitrary
-import pages.{BusinessNamePage, BusinessTypePage}
+import javax.inject.Inject
+import forms.mappings.Mappings
+import models.BusinessType
+import play.api.data.Form
 
-trait PageGenerators {
+class BusinessNameFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryBusinessNamePage: Arbitrary[BusinessNamePage.type] =
-    Arbitrary(BusinessNamePage)
-
-  implicit lazy val arbitraryBusinessTypePage: Arbitrary[BusinessTypePage.type] =
-    Arbitrary(BusinessTypePage)
+  def apply(key: BusinessType): Form[String] =
+    Form(
+      "value" -> validatedTextMaxLength(s"businessName.error.required.$key", s"businessName.error.length.$key", 105)
+    )
 }

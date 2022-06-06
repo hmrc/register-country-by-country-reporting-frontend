@@ -74,3 +74,35 @@ businessType.unincorporatedAssociation = Unincorporated association or trust
 businessType.checkYourAnswersLabel = What type of business do you have?
 businessType.error.required = Select the type of business you have
 businessType.change.hidden = what type of business do you have?
+
+businessName.title.limited = What is the registered name of your business?
+businessName.heading.limited = What is the registered name of your business?
+businessName.hint.limited = This is the registered name on your incorporation certificate. Enter the name in full as it appears on the certificate.
+businessName.checkYourAnswersLabel.limited = What is the registered name of your business?
+businessName.error.required.limited = Enter the registered name of your business
+businessName.error.length.limited = Registered name of your business must be 105 characters or less
+businessName.change.hidden.limited = what is the registered name of your business?
+
+businessName.title.limitedPartnership = What is the registered name of your business?
+businessName.heading.limitedPartnership = What is the registered name of your business?
+businessName.hint.limitedPartnership = This is the registered name on your incorporation certificate. Enter the name in full as it appears on the certificate.
+businessName.checkYourAnswersLabel.limitedPartnership = What is the registered name of your business?
+businessName.error.required.limitedPartnership = Enter the registered name of your business
+businessName.error.length.limitedPartnership = Registered name of your business must be 105 characters or less
+businessName.change.hidden.limitedPartnership = what is the registered name of your business?
+
+businessName.title.partnership = What is the partnership name?
+businessName.heading.partnership = What is the partnership name?
+businessName.hint.partnership = This is the name that you registered with HMRC.
+businessName.checkYourAnswersLabel.partnership = What is the partnership name?
+businessName.error.required.partnership = Enter the partnership name
+businessName.error.length.partnership = Partnership name must be 105 characters or less
+businessName.change.hidden.partnership = what is the partnership name?
+
+businessName.title.unincorporatedAssociation = What is the name of your organisation?
+businessName.heading.unincorporatedAssociation = What is the name of your organisation?
+businessName.hint.unincorporatedAssociation = This is the name on your governing document.
+businessName.checkYourAnswersLabel.unincorporatedAssociation = What is the name of your organisation?
+businessName.error.required.unincorporatedAssociation = Enter the name of your organisation
+businessName.error.length.unincorporatedAssociation = Organisation name must be 105 characters of less
+businessName.change.hidden.unincorporatedAssociation = what is the name of your organisation?
