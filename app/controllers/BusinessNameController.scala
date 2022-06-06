@@ -34,16 +34,14 @@ class BusinessNameController @Inject()(
                                         override val messagesApi: MessagesApi,
                                         sessionRepository: SessionRepository,
                                         navigator: CBCRNavigator,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
+                                        standardActionSets: StandardActionSets,
                                         formProvider: BusinessNameFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: BusinessNameView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
       request.userAnswers.get(BusinessTypePage).map { businessType =>
         val preparedForm = request.userAnswers.get(BusinessNamePage) match {
@@ -55,7 +53,7 @@ class BusinessNameController @Inject()(
       }.getOrElse(Redirect(routes.JourneyRecoveryController.onPageLoad())) //TODO: Change to ThereIsAProblemController
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
     implicit request =>
       request.userAnswers.get(BusinessTypePage).map { businessType =>
         formProvider(businessType).bindFromRequest().fold(

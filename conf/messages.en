@@ -106,3 +106,10 @@ businessName.checkYourAnswersLabel.unincorporatedAssociation = What is the name 
 businessName.error.required.unincorporatedAssociation = Enter the name of your organisation
 businessName.error.length.unincorporatedAssociation = Organisation name must be 105 characters of less
 businessName.change.hidden.unincorporatedAssociation = what is the name of your organisation?
+
+businessWithoutIDName.title = What is the name of your business?
+businessWithoutIDName.heading = What is the name of your business?
+businessWithoutIDName.checkYourAnswersLabel = What is the name of your business?
+businessWithoutIDName.error.required = Enter the name of your business
+businessWithoutIDName.error.length = Business name must be 105 characters or less
+businessWithoutIDName.change.hidden = what is the name of your business?
