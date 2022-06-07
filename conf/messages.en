@@ -119,3 +119,18 @@ businessHaveDifferentName.heading = Does your business trade under a different n
 businessHaveDifferentName.checkYourAnswersLabel = Does your business trade under a different name?
 businessHaveDifferentName.error.required = Select yes if your business trades under a different name
 businessHaveDifferentName.change.hidden = does your business trade under a different name?
+
+whatIsTradingName.title = What is the trading name of your business?
+whatIsTradingName.heading = What is the trading name of your business?
+whatIsTradingName.checkYourAnswersLabel = Trading name
+whatIsTradingName.checkYourAnswersLabel.hiddenText = trading name
+whatIsTradingName.error.required = Enter the trading name of your business
+whatIsTradingName.error.invalid = Trading name must only include letters a to z, numbers 0-9, apostrophes, slashes, ampersands and spaces
+whatIsTradingName.error.length = Trading name must be 80 characters or less
+
+whatIsTradingName.title = whatIsTradingName
+whatIsTradingName.heading = whatIsTradingName
+whatIsTradingName.checkYourAnswersLabel = whatIsTradingName
+whatIsTradingName.error.required = Enter whatIsTradingName
+whatIsTradingName.error.length = WhatIsTradingName must be 80 characters or less
+whatIsTradingName.change.hidden = WhatIsTradingName
