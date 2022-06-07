@@ -151,8 +151,16 @@ whatIsTradingName.error.required = Enter the trading name of your business
 whatIsTradingName.error.invalid = Trading name must only include letters a to z, numbers 0-9, apostrophes, slashes, ampersands and spaces
 whatIsTradingName.error.length = Trading name must be 80 characters or less
 
+contactName.title = Who can we contact if we have questions about your reports?
+contactName.heading = Who can we contact if we have questions about your reports?
+contactName.hint = For example, ''Tax team'' or ''Ashley Smith''.
+contactName.error.required = Enter the name of the individual or team we should contact if we have any questions about your reports
+contactName.error.invalid = Name must only include letters a to z, apostrophes, grave accents, ampersands, hyphens, backslashes, carets and spaces
+contactName.error.length = Name must be 35 characters or less
+
 contactPhone.title = What is the telephone number?
 contactPhone.heading = What is the telephone number for {0}?
+contactPhone.hint = Enter a telephone number, like&nbsp;01632&nbsp;960&nbsp;001, 07700&nbsp;900&nbsp;982 or +44&nbsp;808&nbsp;157&nbsp;0192.
 contactPhone.checkYourAnswersLabel = What is the telephone number for {0}?
 contactPhone.error.required = Enter a telephone number
 contactPhone.error.length = Telephone number must be 24 characters or less

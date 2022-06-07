@@ -1,29 +1,29 @@
 # microservice specific routes
 
-->          /hmrc-frontend                               hmrcfrontend.Routes
+->          /hmrc-frontend                                  hmrcfrontend.Routes
 
-GET         /                                            controllers.IndexController.onPageLoad
+GET         /                                               controllers.IndexController.onPageLoad
 
-GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                                   controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /language/:lang                                 controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET         /refresh-session                             controllers.KeepAliveController.keepAlive
+GET         /refresh-session                                controllers.KeepAliveController.keepAlive
 
-GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
+GET         /there-is-a-problem                             controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
+GET         /check-your-answers                             controllers.CheckYourAnswersController.onPageLoad
 
-GET         /register/without-id/trading-name            controllers.WhatIsTradingNameController.onPageLoad(mode: Mode = NormalMode)
-POST        /register/without-id/trading-name            controllers.WhatIsTradingNameController.onSubmit(mode: Mode = NormalMode)
-GET         /register/without-id/change-trading-name     controllers.WhatIsTradingNameController.onPageLoad(mode: Mode = CheckMode)
-POST        /register/without-id/change-trading-name     controllers.WhatIsTradingNameController.onSubmit(mode: Mode = CheckMode)
+GET         /register/without-id/trading-name               controllers.WhatIsTradingNameController.onPageLoad(mode: Mode = NormalMode)
+POST        /register/without-id/trading-name               controllers.WhatIsTradingNameController.onSubmit(mode: Mode = NormalMode)
+GET         /register/without-id/change-trading-name        controllers.WhatIsTradingNameController.onPageLoad(mode: Mode = CheckMode)
+POST        /register/without-id/change-trading-name        controllers.WhatIsTradingNameController.onSubmit(mode: Mode = CheckMode)
 
-GET         /account/sign-out-survey                     controllers.auth.AuthController.signOut
-GET         /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey
-GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad
+GET         /account/sign-out-survey                        controllers.auth.AuthController.signOut
+GET         /account/sign-out                               controllers.auth.AuthController.signOutNoSurvey
+GET         /account/signed-out                             controllers.auth.SignedOutController.onPageLoad
 
-GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
+GET         /unauthorised                                   controllers.UnauthorisedController.onPageLoad
 
 GET        /register/have-utr                               controllers.DoYouHaveUTRController.onPageLoad(mode: Mode = NormalMode)
 POST       /register/have-utr                               controllers.DoYouHaveUTRController.onSubmit(mode: Mode = NormalMode)
@@ -55,7 +55,12 @@ POST       /register/without-id/address                     controllers.Business
 GET        /register/without-id/change-address              controllers.BusinessWithoutIdAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /register/without-id/change-address              controllers.BusinessWithoutIdAddressController.onSubmit(mode: Mode = CheckMode)
 
-GET        /contactPhone                        controllers.ContactPhoneController.onPageLoad(mode: Mode = NormalMode)
-POST       /contactPhone                        controllers.ContactPhoneController.onSubmit(mode: Mode = NormalMode)
-GET        /changeContactPhone                  controllers.ContactPhoneController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeContactPhone                  controllers.ContactPhoneController.onSubmit(mode: Mode = CheckMode)
+GET        /register/contact-name                           controllers.ContactNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /register/contact-name                           controllers.ContactNameController.onSubmit(mode: Mode = NormalMode)
+GET        /register/change-contact-name                    controllers.ContactNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /register/change-contact-name                    controllers.ContactNameController.onSubmit(mode: Mode = CheckMode)
+
+GET        /register/phone                                  controllers.ContactPhoneController.onPageLoad(mode: Mode = NormalMode)
+POST       /register/phone                                  controllers.ContactPhoneController.onSubmit(mode: Mode = NormalMode)
+GET        /register/change-phone                           controllers.ContactPhoneController.onPageLoad(mode: Mode = CheckMode)
+POST       /register/change-phone                           controllers.ContactPhoneController.onSubmit(mode: Mode = CheckMode)

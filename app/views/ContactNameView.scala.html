@@ -24,11 +24,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], contactName: String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("contactPhone.title"))) {
+@layout(pageTitle = title(form, messages("contactName.title"))) {
 
-    @formHelper(action = routes.ContactPhoneController.onSubmit(mode)) {
+    @formHelper(action = routes.ContactNameController.onSubmit(mode)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -37,10 +37,9 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("contactPhone.heading", contactName)).asPageHeading()
+                label = LabelViewModel(messages("contactName.heading")).asPageHeading()
             )
-                    .withHint(HintViewModel(HtmlContent(Html(messages("contactPhone.hint")))))
-            .withWidth(Full)
+            .withWidth(ThreeQuarters).withHint(HintViewModel(messages("contactName.hint")))
         )
 
         @govukButton(
