@@ -166,6 +166,15 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     chars <- listOfN(length, Gen.numChar)
   } yield chars.mkString
 
+  def validEmailAddress: Gen[String] = RegexpGen.from(emailRegex)
+
+  def validEmailAddressToLong(maxLength: Int): Gen[String] =
+    for {
+      part <- listOfN(maxLength, Gen.alphaChar).map(_.mkString)
+
+    } yield s"$part.$part@$part.$part"
+
+
   def validPhoneNumberTooLong(minLength: Int): Gen[String] = for {
     maxLength <- (minLength * 2).max(100)
     length    <- Gen.chooseNum(minLength + 1, maxLength)
