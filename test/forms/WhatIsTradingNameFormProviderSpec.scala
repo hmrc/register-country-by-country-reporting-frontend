@@ -28,9 +28,9 @@ class WhatIsTradingNameFormProviderSpec extends StringFieldBehaviours with Regex
   ".businessName" - {
 
     val fieldName   = "value"
-    val requiredKey = "whatIsTradingName.error.businessName.required"
-    val lengthKey   = "whatIsTradingName.error.businessName.length"
-    val invalidKey  = "whatIsTradingName.error.businessName.invalid"
+    val requiredKey = "whatIsTradingName.error.required"
+    val lengthKey   = "whatIsTradingName.error.length"
+    val invalidKey  = "whatIsTradingName.error.invalid"
     val maxLength   = 80
 
     behave like fieldThatBindsValidDataWithoutInvalidError(
