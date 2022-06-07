@@ -17,10 +17,10 @@
 package forms.mappings
 
 import java.time.LocalDate
-
-import play.api.data.FieldMapping
+import play.api.data.{FieldMapping, FormError}
 import play.api.data.Forms.of
 import models.Enumerable
+import play.api.data.format.Formatter
 
 trait Mappings extends Formatters with Constraints {
 
@@ -54,4 +54,37 @@ trait Mappings extends Formatters with Constraints {
 
   protected def validatedTextMaxLength(requiredKey: String, lengthKey: String, maxLength: Int): FieldMapping[String] =
     of(textMaxLengthFormatter(requiredKey, lengthKey, maxLength))
+
+  protected def validatedText(requiredKey: String,
+                              invalidKey: String,
+                              lengthKey: String,
+                              regex: String,
+                              maxLength: Int,
+                              msgArg: String = ""
+                             ): FieldMapping[String] =
+    of(validatedTextFormatter(requiredKey, invalidKey, lengthKey, regex, maxLength, msgArg))
+
+  protected def validatedTextFormatter(requiredKey: String,
+                                       invalidKey: String,
+                                       lengthKey: String,
+                                       regex: String,
+                                       maxLength: Int,
+                                       msgArg: String = ""
+                                      ): Formatter[String] =
+    new Formatter[String] {
+      private val dataFormatter: Formatter[String] = stringTrimFormatter(requiredKey, msgArg)
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
+        dataFormatter
+          .bind(key, data)
+          .right
+          .flatMap {
+            case str if !str.matches(regex)    => Left(Seq(FormError(key, invalidKey)))
+            case str if str.length > maxLength => Left(Seq(FormError(key, lengthKey)))
+            case str                           => Right(str)
+          }
+
+      override def unbind(key: String, value: String): Map[String, String] =
+        Map(key -> value)
+    }
 }
