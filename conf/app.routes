@@ -59,3 +59,8 @@ GET        /register/contact-name                           controllers.ContactN
 POST       /register/contact-name                           controllers.ContactNameController.onSubmit(mode: Mode = NormalMode)
 GET        /register/change-contact-name                    controllers.ContactNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /register/change-contact-name                    controllers.ContactNameController.onSubmit(mode: Mode = CheckMode)
+
+GET        /register/utr                        controllers.UTRController.onPageLoad(mode: Mode = NormalMode)
+POST       /register/utr                        controllers.UTRController.onSubmit(mode: Mode = NormalMode)
+GET        /register/change-utr                  controllers.UTRController.onPageLoad(mode: Mode = CheckMode)
+POST       /register/change-utr                  controllers.UTRController.onSubmit(mode: Mode = CheckMode)

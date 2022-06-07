@@ -18,8 +18,9 @@ package forms.behaviours
 
 import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
+import utils.RegexConstants
 
-trait StringFieldBehaviours extends FieldBehaviours {
+trait StringFieldBehaviours extends FieldBehaviours with RegexConstants {
 
     def fieldWithMaxLength(form: Form[_],
                            fieldName: String,
@@ -56,6 +57,23 @@ trait StringFieldBehaviours extends FieldBehaviours {
     s"must not bind strings longer than $maxLength characters" in {
 
       forAll(stringsLongerThanAlpha(maxLength) -> "longString") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors mustEqual Seq(lengthError)
+      }
+    }
+
+  def fieldWithNonEmptyWhitespace(form: Form[_], fieldName: String, requiredError: FormError): Unit =
+    s"must not bind strings of only whitespace" in {
+
+      val result = form.bind(Map(fieldName -> " ")).apply(fieldName)
+      result.errors mustEqual Seq(requiredError)
+    }
+
+  def fieldWithFixedLengthNumeric(form: Form[_], fieldName: String, length: Int, lengthError: FormError): Unit =
+    s"must not bind strings that are not $length characters" in {
+
+      forAll(stringsNotOfFixedLengthNumeric(length) -> "longString") {
         string =>
           val result = form.bind(Map(fieldName -> string)).apply(fieldName)
           result.errors mustEqual Seq(lengthError)
