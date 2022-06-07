@@ -21,13 +21,11 @@ import config.FrontendAppConfig
 import forms.BusinessWithoutIdAddressFormProvider
 import models.{Address, Country, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.scalatestplus.mockito.MockitoSugar
 import pages.BusinessWithoutIdAddressPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 import utils.CountryListFactory
 import views.html.BusinessWithoutIdAddressView
 
