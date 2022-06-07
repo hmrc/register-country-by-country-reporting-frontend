@@ -28,9 +28,9 @@ class WhatIsTradingNameFormProvider @Inject() extends Mappings with RegexConstan
 
   def apply(): Form[String] = Form(
     "value" -> validatedText(
-      "whatIsTradingName.error.businessName.required",
-      "whatIsTradingName.error.businessName.invalid",
-      "whatIsTradingName.error.businessName.length",
+      "whatIsTradingName.error.required",
+      "whatIsTradingName.error.invalid",
+      "whatIsTradingName.error.length",
       apiOrganisationNameRegex,
       maxLength
     )
