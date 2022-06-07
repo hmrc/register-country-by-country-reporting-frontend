@@ -67,7 +67,7 @@ doYouHaveUTR.error.required = Select yes if you have a UTR
 businessType.title = What type of business do you have?
 businessType.heading = What type of business do you have?
 businessType.hint = Select one option.
-businessType.limited = Limited Company
+businessType.limited = Limited company
 businessType.partnership = Partnership
 businessType.limitedPartnership = Limited partnership or limited liability partnership
 businessType.unincorporatedAssociation = Unincorporated association or trust
@@ -155,7 +155,7 @@ whatIsTradingName.error.length = Trading name must be 80 characters or less
 
 contactName.title = Who can we contact if we have questions about your reports?
 contactName.heading = Who can we contact if we have questions about your reports?
-contactName.hint = For example, ''Tax team'' or ''Ashley Smith''.
+contactName.hint = For example, '‘Tax team’' or '‘Ashley Smith’'.
 contactName.error.required = Enter the name of the individual or team we should contact if we have any questions about your reports
 contactName.error.invalid = Name must only include letters a to z, apostrophes, grave accents, ampersands, hyphens, backslashes, carets and spaces
 contactName.error.length = Name must be 35 characters or less
