@@ -16,11 +16,11 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-import play.api.data.{FieldMapping, FormError}
-import play.api.data.Forms.of
 import models.Enumerable
-import play.api.data.format.Formatter
+import play.api.data.FieldMapping
+import play.api.data.Forms.of
+
+import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
 
@@ -64,27 +64,15 @@ trait Mappings extends Formatters with Constraints {
                              ): FieldMapping[String] =
     of(validatedTextFormatter(requiredKey, invalidKey, lengthKey, regex, maxLength, msgArg))
 
-  protected def validatedTextFormatter(requiredKey: String,
-                                       invalidKey: String,
-                                       lengthKey: String,
-                                       regex: String,
-                                       maxLength: Int,
-                                       msgArg: String = ""
-                                      ): Formatter[String] =
-    new Formatter[String] {
-      private val dataFormatter: Formatter[String] = stringTrimFormatter(requiredKey, msgArg)
+  protected def validatedOptionalText(invalidKey: String, lengthKey: String, regex: String, length: Int): FieldMapping[Option[String]] =
+    of(validatedOptionalTextFormatter(invalidKey, lengthKey, regex, length))
 
-      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
-        dataFormatter
-          .bind(key, data)
-          .right
-          .flatMap {
-            case str if !str.matches(regex)    => Left(Seq(FormError(key, invalidKey)))
-            case str if str.length > maxLength => Left(Seq(FormError(key, lengthKey)))
-            case str                           => Right(str)
-          }
+  protected def optionalPostcode(requiredKey: String,
+                                 lengthKey: String,
+                                 invalidKey: String,
+                                 regex: String,
+                                 countryFieldName: String
+                                ): FieldMapping[Option[String]] =
+    of(optionalPostcodeFormatter(requiredKey, lengthKey, invalidKey, regex, countryFieldName))
 
-      override def unbind(key: String, value: String): Map[String, String] =
-        Map(key -> value)
-    }
 }

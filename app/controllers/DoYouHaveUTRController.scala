@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions.StandardActionSets
 import forms.DoYouHaveUTRFormProvider
-import models.{Mode, NormalMode}
+import models.Mode
 import navigation.CBCRNavigator
 import pages.DoYouHaveUTRPage
 import play.api.i18n.{I18nSupport, MessagesApi}

@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package viewmodels
+package pages
 
-package object govuk {
+import models.Address
+import play.api.libs.json.JsPath
 
-  object all
-    extends ImplicitConversions
-      with BackLinkFluency
-      with ButtonFluency
-      with CheckboxFluency
-      with DateFluency
-      with ErrorSummaryFluency
-      with FieldsetFluency
-      with HintFluency
-      with InputFluency
-      with SelectFluency
-      with LabelFluency
-      with RadiosFluency
-      with SummaryListFluency
-      with TagFluency
+case object BusinessWithoutIdAddressPage extends QuestionPage[Address] {
+
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "businessWithoutIdAddress"
 }
