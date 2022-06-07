@@ -136,8 +136,12 @@ businessWithoutIdAddress.error.country.required = Select country
 businessWithoutIdAddress.error.postcode.required = If the address is in Jersey, Guernsey or the Isle of Man, enter postcode
 businessWithoutIdAddress.error.addressLine1.length = Address line 1 must be 35 characters or less
 businessWithoutIdAddress.error.addressLine2.length = Address line 2 must be 35 characters or less
-businessWithoutIdAddress.error.addressLine3.length = City must be must be 35 characters or less
+businessWithoutIdAddress.error.addressLine3.length = City must be 35 characters or less
 businessWithoutIdAddress.error.addressLine4.length = Region must be 35 characters or less
+businessWithoutIdAddress.error.addressLine1.invalid = Address line 1 must only include letters a to z, numbers 0 to 9, apostrophes, commas, ampersands, hyphens, full stops and spaces
+businessWithoutIdAddress.error.addressLine2.invalid = Address line 2 must only include letters a to z, numbers 0 to 9, apostrophes, commas, ampersands, hyphens, full stops and spaces
+businessWithoutIdAddress.error.addressLine3.invalid = City must only include letters a to z, numbers 0 to 9, apostrophes, commas, ampersands, hyphens, full stops and spaces
+businessWithoutIdAddress.error.addressLine4.invalid = Region must only include letters a to z, numbers 0 to 9, apostrophes, commas, ampersands, hyphens, full stops and spaces
 businessWithoutIdAddress.error.postcode.length = Postcode must be 10 characters or less
 businessWithoutIdAddress.error.postcode.invalid = Enter a postcode, like AA1 1AA
 
