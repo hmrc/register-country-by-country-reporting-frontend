@@ -140,3 +140,11 @@ businessWithoutIdAddress.error.addressLine3.length = City must be must be 35 cha
 businessWithoutIdAddress.error.addressLine4.length = Region must be 35 characters or less
 businessWithoutIdAddress.error.postcode.length = Postcode must be 10 characters or less
 businessWithoutIdAddress.error.postcode.invalid = Enter a postcode, like AA1 1AA
+
+whatIsTradingName.title = What is the trading name of your business?
+whatIsTradingName.heading = What is the trading name of your business?
+whatIsTradingName.checkYourAnswersLabel = Trading name
+whatIsTradingName.change.hidden = trading name
+whatIsTradingName.error.required = Enter the trading name of your business
+whatIsTradingName.error.invalid = Trading name must only include letters a to z, numbers 0-9, apostrophes, slashes, ampersands and spaces
+whatIsTradingName.error.length = Trading name must be 80 characters or less
