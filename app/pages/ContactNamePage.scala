@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package utils
+package pages
 
-trait RegexConstants {
+import play.api.libs.json.JsPath
 
-  final val apiOrganisationNameRegex    = """^[a-zA-Z0-9 '&\\/]*$"""
-  final val orgNameRegex                = """^[a-zA-Z0-9 &`\-\'\\\^]*$"""
+case object ContactNamePage extends QuestionPage[String] {
 
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "contactName"
 }

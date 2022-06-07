@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-package utils
+package pages
 
-trait RegexConstants {
+import pages.behaviours.PageBehaviours
 
-  final val apiOrganisationNameRegex    = """^[a-zA-Z0-9 '&\\/]*$"""
-  final val orgNameRegex                = """^[a-zA-Z0-9 &`\-\'\\\^]*$"""
 
+class ContactNamePageSpec extends PageBehaviours {
+
+  "ContactNamePage" - {
+
+    beRetrievable[String](ContactNamePage)
+
+    beSettable[String](ContactNamePage)
+
+    beRemovable[String](ContactNamePage)
+  }
 }

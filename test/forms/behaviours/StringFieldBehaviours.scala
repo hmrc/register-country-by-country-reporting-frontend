@@ -44,4 +44,11 @@ trait StringFieldBehaviours extends FieldBehaviours {
           result.errors mustEqual Seq(lengthError)
       }
     }
+
+  def fieldWithNonEmptyWhitespace(form: Form[_], fieldName: String, requiredError: FormError): Unit =
+    s"must not bind strings of only whitespace" in {
+
+      val result = form.bind(Map(fieldName -> " ")).apply(fieldName)
+      result.errors mustEqual Seq(requiredError)
+    }
 }
