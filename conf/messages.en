@@ -207,6 +207,15 @@ secondContactHavePhone.checkYourAnswersLabel = Can we contact them by telephone?
 secondContactHavePhone.error.required = Select yes if they can be contacted by telephone
 secondContactHavePhone.change.hidden = can we contact them by telephone?
 
+contactEmail.title = What is the email address for {0}?
+contactEmail.heading = What is the email address for {0}?
+contactEmail.hint = We will use this to send confirmation of your reports or if we have any questions about them.
+contactEmail.checkYourAnswersLabel = Email address
+contactEmail.error.required = Enter an email address
+contactEmail.error.length = Email address must be 132 characters or less
+contactEmail.error.invalid = Enter an email address in the correct format, like name@example.com
+contactEmail.change.hidden = ContactEmail
+
 secondContactPhone.title = What is their telephone number?
 secondContactPhone.heading = What is the telephone number for {0}?
 secondContactPhone.hint = Enter a telephone number, like&nbsp;01632&nbsp;960&nbsp;001, 07700&nbsp;900&nbsp;982 or +44&nbsp;808&nbsp;157&nbsp;0192.
