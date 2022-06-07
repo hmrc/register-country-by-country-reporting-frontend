@@ -148,3 +148,10 @@ whatIsTradingName.change.hidden = trading name
 whatIsTradingName.error.required = Enter the trading name of your business
 whatIsTradingName.error.invalid = Trading name must only include letters a to z, numbers 0-9, apostrophes, slashes, ampersands and spaces
 whatIsTradingName.error.length = Trading name must be 80 characters or less
+
+contactPhone.title = contactPhone
+contactPhone.heading = contactPhone
+contactPhone.checkYourAnswersLabel = contactPhone
+contactPhone.error.required = Enter contactPhone
+contactPhone.error.length = ContactPhone must be 24 characters or less
+contactPhone.change.hidden = ContactPhone
