@@ -35,6 +35,8 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 
+default.firstContact.name = your first contact
+
 index.title = register-country-by-country-reporting-frontend
 index.heading = register-country-by-country-reporting-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
@@ -149,9 +151,10 @@ whatIsTradingName.error.required = Enter the trading name of your business
 whatIsTradingName.error.invalid = Trading name must only include letters a to z, numbers 0-9, apostrophes, slashes, ampersands and spaces
 whatIsTradingName.error.length = Trading name must be 80 characters or less
 
-contactPhone.title = contactPhone
-contactPhone.heading = contactPhone
-contactPhone.checkYourAnswersLabel = contactPhone
-contactPhone.error.required = Enter contactPhone
-contactPhone.error.length = ContactPhone must be 24 characters or less
-contactPhone.change.hidden = ContactPhone
+contactPhone.title = What is the telephone number?
+contactPhone.heading = What is the telephone number for {0}?
+contactPhone.checkYourAnswersLabel = What is the telephone number for {0}?
+contactPhone.error.required = Enter a telephone number
+contactPhone.error.length = Telephone number must be 24 characters or less
+contactPhone.error.invalid = Enter a telephone number in the correct format
+contactPhone.change.hidden = what is the telephone number for {0}?

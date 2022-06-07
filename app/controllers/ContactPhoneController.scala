@@ -4,10 +4,10 @@ import controllers.actions._
 import forms.ContactPhoneFormProvider
 
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, UserAnswers}
 import navigation.{CBCRNavigator, Navigator}
-import pages.ContactPhonePage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import pages.{ContactNamePage, ContactPhonePage}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -35,15 +35,21 @@ class ContactPhoneController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, getContactName(request.userAnswers),  mode))
   }
+
+  private def getContactName(userAnswers: UserAnswers)(implicit messages: Messages) =
+    userAnswers.get(ContactNamePage) match {
+      case Some(contactName) => contactName
+      case _                 => messages("default.firstContact.name")
+    }
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, getContactName(request.userAnswers), mode))),
 
         value =>
           for {
