@@ -16,7 +16,7 @@
 
 package generators
 
-import models.BusinessType
+import models.{Address, BusinessType}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
@@ -29,6 +29,14 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       for {
         page  <- arbitrary[ContactNamePage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryBusinessWithoutIdAddressUserAnswersEntry: Arbitrary[(BusinessWithoutIdAddressPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[BusinessWithoutIdAddressPage.type]
+        value <- arbitrary[Address].map(Json.toJson(_))
       } yield (page, value)
     }
 

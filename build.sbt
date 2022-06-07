@@ -37,8 +37,8 @@ lazy val root = (project in file("."))
       "viewmodels.govuk.all._"
     ),
     PlayKeys.playDefaultPort := 10026,
-    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*components.*;" +
-      ".*Routes.*;.*viewmodels.govuk.*;",
+    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*components.*;.*repositories.*;" +
+      ".*Routes.*;.*viewmodels.govuk.*;.*LanguageSwitchController;",
     ScoverageKeys.coverageMinimumStmtTotal := 78,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
@@ -52,7 +52,9 @@ lazy val root = (project in file("."))
     Concat.groups := Seq(
       "javascripts/application.js" ->
         group(Seq(
-          "javascripts/app.js"
+          "javascripts/app.js",
+          "javascripts/accessible-autocomplete.min.js",
+          "javascripts/countries-autocomplete.js"
         ))
     ),
     // prevent removal of unused code which generates warning errors due to use of third-party libs

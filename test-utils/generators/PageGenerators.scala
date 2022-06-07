@@ -24,6 +24,9 @@ trait PageGenerators {
   implicit lazy val arbitraryContactNamePage: Arbitrary[ContactNamePage.type] =
     Arbitrary(ContactNamePage)
 
+  implicit lazy val arbitraryBusinessWithoutIdAddressPage: Arbitrary[BusinessWithoutIdAddressPage.type] =
+    Arbitrary(BusinessWithoutIdAddressPage)
+
   implicit lazy val arbitraryWhatIsTradingNamePage: Arbitrary[WhatIsTradingNamePage.type] =
     Arbitrary(WhatIsTradingNamePage)
 

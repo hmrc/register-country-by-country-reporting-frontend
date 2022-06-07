@@ -1,0 +1,18 @@
+
+@import "accessible-autocomplete.min.css";
+
+svg.autocomplete__dropdown-arrow-down {
+  pointer-events: none;
+}
+
+.hide-field {
+  display: none;
+}
+
+.bottom-margin {
+  margin-bottom: 2em;
+}
+
+body:not(.js-enabled) .js-enabled {
+  display: none;
+}
