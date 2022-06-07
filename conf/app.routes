@@ -44,3 +44,8 @@ GET        /register/without-id/have-trading-name           controllers.Business
 POST       /register/without-id/have-trading-name           controllers.BusinessHaveDifferentNameController.onSubmit(mode: Mode = NormalMode)
 GET        /register/without-id/change-have-trading-name    controllers.BusinessHaveDifferentNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /register/without-id/change-have-trading-name    controllers.BusinessHaveDifferentNameController.onSubmit(mode: Mode = CheckMode)
+
+GET        /register/without-id/address                     controllers.BusinessWithoutIdAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /register/without-id/address                     controllers.BusinessWithoutIdAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /register/without-id/change-address              controllers.BusinessWithoutIdAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /register/without-id/change-address              controllers.BusinessWithoutIdAddressController.onSubmit(mode: Mode = CheckMode)
