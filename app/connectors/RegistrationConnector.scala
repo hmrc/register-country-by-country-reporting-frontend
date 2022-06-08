@@ -48,12 +48,6 @@ class RegistrationConnector @Inject()(val config: FrontendAppConfig, val http: H
         Left(InternalServerError)
     }
 
-  def registerWithoutID(registration: RegisterWithoutId
-                                )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[HttpResponse, RegisterWithIDResponse]] =
-    http.POST[RegisterWithoutId, HttpResponse](s"$registrationUrl/noId", registration) map {
-      case response if is2xx(response.status) =>
-        Right(response.json.as[RegisterWithIDResponse])
-      case response => Left(response)
-    }
+
 
 }
