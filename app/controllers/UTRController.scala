@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.UTRFormProvider
 import models.BusinessType.{LimitedCompany, UnincorporatedAssociation}
 import models.{Mode, UserAnswers}
-import navigation.Navigator
+import navigation.CBCRNavigator
 import pages.{BusinessTypePage, UTRPage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,13 +32,13 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UTRController @Inject()(
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  navigator: Navigator,
-  standardActionSets: StandardActionSets,
-  formProvider: UTRFormProvider,
-  val controllerComponents: MessagesControllerComponents,
-  view: UTRView
+                               override val messagesApi: MessagesApi,
+                               sessionRepository: SessionRepository,
+                               navigator: CBCRNavigator,
+                               standardActionSets: StandardActionSets,
+                               formProvider: UTRFormProvider,
+                               val controllerComponents: MessagesControllerComponents,
+                               view: UTRView
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {

@@ -34,11 +34,20 @@ class CBCRNavigator @Inject()() extends Navigator {
       routes.BusinessTypeController.onPageLoad(NormalMode),
       routes.BusinessWithoutIDNameController.onPageLoad(NormalMode)
     )
-    case BusinessTypePage   => _ => routes.BusinessNameController.onPageLoad(NormalMode)
+    case BusinessTypePage   => _ => routes.UTRController.onPageLoad(NormalMode)
+    case UTRPage   => _ => routes.BusinessNameController.onPageLoad(NormalMode)
     case BusinessNamePage   => _ => routes.BusinessNameController.onPageLoad(NormalMode) //TODO change when next pages are implemented
     case BusinessWithoutIDNamePage   => _ => routes.BusinessHaveDifferentNameController.onPageLoad(NormalMode)
-    case WhatIsTradingNamePage   => _ => routes.WhatIsTradingNameController.onPageLoad(NormalMode) //TODO change when next pages are implemented
-    case ContactNamePage   => _ => routes.HaveTelephoneController.onPageLoad(NormalMode)
+    case BusinessHaveDifferentNamePage   => ua => yesNoPage(
+      ua,
+      BusinessHaveDifferentNamePage,
+      routes.WhatIsTradingNameController.onPageLoad(NormalMode),
+      routes.BusinessWithoutIdAddressController.onPageLoad(NormalMode)
+    )
+    case WhatIsTradingNamePage   => _ => routes.BusinessWithoutIdAddressController.onPageLoad(NormalMode)
+    case BusinessWithoutIdAddressPage   => _ => routes.ContactNameController.onPageLoad(NormalMode)
+    case ContactNamePage   => _ => routes.ContactEmailController.onPageLoad(NormalMode)
+    case ContactEmailPage   => _ => routes.HaveTelephoneController.onPageLoad(NormalMode)
     case HaveTelephonePage   => ua => yesNoPage(
       ua,
       HaveTelephonePage,
@@ -51,16 +60,9 @@ class CBCRNavigator @Inject()() extends Navigator {
       ua,
       SecondContactHavePhonePage,
       routes.SecondContactPhoneController.onPageLoad(NormalMode),
-      routes.SecondContactHavePhoneController.onPageLoad(NormalMode) //TODO change when next pages are implemented
+      routes.CheckYourAnswersController.onPageLoad
     )
-    case SecondContactPhonePage => _ => routes.SecondContactPhoneController.onPageLoad(NormalMode) //TODO change when next pages are implemented
-    case BusinessHaveDifferentNamePage   => ua => yesNoPage(
-      ua,
-      BusinessHaveDifferentNamePage,
-      routes.BusinessHaveDifferentNameController.onPageLoad(NormalMode), //TODO change when next pages are implemented
-      routes.BusinessWithoutIdAddressController.onPageLoad(NormalMode)
-    )
-    case BusinessWithoutIdAddressPage   => _ => routes.BusinessWithoutIdAddressController.onPageLoad(NormalMode) //TODO change when next pages are implemented
+    case SecondContactPhonePage => _ => routes.CheckYourAnswersController.onPageLoad
   }
 
   override val checkRouteMap: Page => UserAnswers => Call = {
