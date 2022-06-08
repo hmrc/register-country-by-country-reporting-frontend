@@ -250,5 +250,5 @@ secondContactEmail.checkYourAnswersLabel = Email address
 secondContactEmail.error.required = Enter an email address
 secondContactEmail.error.length = Email address must be 132 characters or less
 secondContactEmail.error.invalid = Enter an email address in the correct format, like name@example.com
-
+secondContactEmail.change.hidden = Email Address
 
