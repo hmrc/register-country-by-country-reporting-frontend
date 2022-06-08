@@ -99,3 +99,8 @@ GET        /register/second-contact-phone                   controllers.SecondCo
 POST       /register/second-contact-phone                   controllers.SecondContactPhoneController.onSubmit(mode: Mode = NormalMode)
 GET        /register/change-second-contact-phone            controllers.SecondContactPhoneController.onPageLoad(mode: Mode = CheckMode)
 POST       /register/change-second-contact-phone            controllers.SecondContactPhoneController.onSubmit(mode: Mode = CheckMode)
+
+GET        /register/second-contact-name                    controllers.SecondContactNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /register/second-contact-name                    controllers.SecondContactNameController.onSubmit(mode: Mode = NormalMode)
+GET        /register/change-second-contact-name             controllers.SecondContactNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /register/change-second-contact-name             controllers.SecondContactNameController.onSubmit(mode: Mode = CheckMode)

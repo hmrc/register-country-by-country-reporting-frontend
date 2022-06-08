@@ -233,3 +233,12 @@ secondContactPhone.error.required = Enter a telephone number
 secondContactPhone.error.invalid = Enter a telephone number in the correct format
 secondContactPhone.error.length = Telephone number must be 24 characters or less
 secondContactPhone.change.hidden = what is their telephone number?
+
+secondContactName.title = What is the name of the individual or team we should contact?
+secondContactName.heading = What is the name of the individual or team we should contact?
+secondContactName.hint = For example, '’Tax team’' or '’Ashley Smith’'.
+secondContactName.checkYourAnswersLabel = Second contact name
+secondContactName.checkYourAnswersLabel.hiddenText = second contact name
+secondContactName.error.required = Enter the name of the individual or team we should contact
+secondContactName.error.invalid = Name of the individual or team must only include letters a to z, numbers 0 to 9, apostrophes, grave accents, ampersands, hyphens, backslashes, carets and spaces
+secondContactName.error.length = Individual or team must be 35 characters or less
