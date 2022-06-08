@@ -106,3 +106,5 @@ GET        /register/change-second-contact-email                  controllers.Se
 POST       /register/change-second-contact-email                  controllers.SecondContactEmailController.onSubmit(mode: Mode = CheckMode)
 
 GET        /register/confirm-registration                   controllers.RegistrationConfirmationController.onPageLoad()
+
+GET        /problem/individual-sign-in-problem                       controllers.UnauthorisedIndividualController.onPageLoad()
