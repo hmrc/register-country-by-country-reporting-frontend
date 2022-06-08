@@ -162,7 +162,7 @@ contactName.error.length = Name must be 35 characters or less
 
 secondContactName.title = What is the name of the individual or team we should contact?
 secondContactName.heading = What is the name of the individual or team we should contact?
-secondContactName.hint = For example, ''Tax team'' or ''Ashley Smith''.
+secondContactName.hint = For example, '’Tax team’' or '’Ashley Smith’'.
 secondContactName.checkYourAnswersLabel = Second contact name
 secondContactName.checkYourAnswersLabel.hiddenText = second contact name
 secondContactName.error.required = Enter the name of the individual or team we should contact
