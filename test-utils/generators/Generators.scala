@@ -20,8 +20,10 @@ import java.time.{Instant, LocalDate, ZoneOffset}
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Gen, Shrink}
+import utils.RegexConstants
+import wolfendale.scalacheck.regexp.RegexpGen
 
-trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators {
+trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators with RegexConstants {
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
 
@@ -163,4 +165,21 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     length <- Gen.chooseNum(1, maxLength).suchThat(_ != givenLength)
     chars <- listOfN(length, Gen.numChar)
   } yield chars.mkString
+  
+  def validPhoneNumberTooLong(minLength: Int): Gen[String] = for {
+    maxLength <- (minLength * 2).max(100)
+    length    <- Gen.chooseNum(minLength + 1, maxLength)
+    chars     <- listOfN(length, arbitrary[Byte])
+  } yield chars.map(math.abs(_)).mkString
+
+  def validEmailAddress: Gen[String] = RegexpGen.from(emailRegex)
+
+  def validEmailAddressToLong(maxLength: Int): Gen[String] =
+    for {
+      part <- listOfN(maxLength, Gen.alphaChar).map(_.mkString)
+
+    } yield s"$part.$part@$part.$part"
+
 }
+
+

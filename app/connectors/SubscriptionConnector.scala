@@ -17,7 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.{DisplaySubscriptionResponse, SubscriptionID}
+import models.{DisplaySubscriptionResponse, SafeId, SubscriptionID}
 import play.api.Logging
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.HttpReads.is2xx

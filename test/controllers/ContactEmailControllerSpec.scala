@@ -17,95 +17,65 @@
 package controllers
 
 import base.SpecBase
-import forms.UTRFormProvider
-import models.BusinessType.{LimitedCompany, Partnership}
+import forms.ContactEmailFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{BusinessTypePage, UTRPage}
+import pages.{ContactEmailPage, ContactNamePage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.UTRView
+import views.html.ContactEmailView
 
 import scala.concurrent.Future
 
-class UTRControllerSpec extends SpecBase with MockitoSugar {
+class ContactEmailControllerSpec extends SpecBase with MockitoSugar {
 
-  lazy val uTRRoute = routes.UTRController.onPageLoad(NormalMode).url
-  val formProvider = new UTRFormProvider()
-  val form: Form[String] = formProvider("")
-  val caTaxType = "Corporation Tax"
-  val saTaxType = "Self Assessment"
+  val formProvider = new ContactEmailFormProvider()
+  val form: Form[String] = formProvider()
+  val contactName = "Some Contact"
 
-  "UTR Controller" - {
+  lazy val contactEmailRoute = routes.ContactEmailController.onPageLoad(NormalMode).url
 
-    "must return OK and the correct view for a GET when businessType is Limited Company" in {
+  "ContactEmail Controller" - {
 
-      val userAnswers: UserAnswers = UserAnswers(userAnswersId)
-        .set(BusinessTypePage, LimitedCompany)
-        .success
-        .value
+    "must return OK and the correct view for a GET" in {
 
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(ContactNamePage, contactName).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, uTRRoute)
+        val request = FakeRequest(GET, contactEmailRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[UTRView]
+        val view = application.injector.instanceOf[ContactEmailView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, caTaxType)(request, messages(application)).toString
-      }
-    }
-
-
-    "must return OK and the correct view for a GET when businessType is Partnership" in {
-
-      val userAnswers: UserAnswers = UserAnswers(userAnswersId)
-        .set(BusinessTypePage, Partnership)
-        .success
-        .value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, uTRRoute)
-
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[UTRView]
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, saTaxType)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, contactName)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = UserAnswers(userAnswersId)
-        .set(BusinessTypePage, Partnership)
-        .success
-        .value
-        .set(UTRPage, "answer")
-        .success
-        .value
+        .set(ContactNamePage, contactName).success.value
+        .set(ContactEmailPage, "email@email.com").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, uTRRoute)
+        val request = FakeRequest(GET, contactEmailRoute)
 
-        val view = application.injector.instanceOf[UTRView]
+        val view = application.injector.instanceOf[ContactEmailView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, saTaxType)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("email@email.com"), NormalMode, contactName)(request, messages(application)).toString
       }
     }
 
@@ -122,8 +92,8 @@ class UTRControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, uTRRoute)
-            .withFormUrlEncodedBody(("value", "1234567890"))
+          FakeRequest(POST, contactEmailRoute)
+            .withFormUrlEncodedBody(("value", "email@email.com"))
 
         val result = route(application, request).value
 
@@ -134,27 +104,24 @@ class UTRControllerSpec extends SpecBase with MockitoSugar {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers: UserAnswers = UserAnswers(userAnswersId)
-        .set(BusinessTypePage, LimitedCompany)
-        .success
-        .value
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(ContactNamePage, contactName).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, uTRRoute)
+          FakeRequest(POST, contactEmailRoute)
             .withFormUrlEncodedBody(("value", ""))
 
-        val form: Form[String] = formProvider(caTaxType)
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[UTRView]
+        val view = application.injector.instanceOf[ContactEmailView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, caTaxType)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, contactName)(request, messages(application)).toString
       }
     }
   }
