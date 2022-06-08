@@ -37,6 +37,8 @@ class UTRControllerSpec extends SpecBase with MockitoSugar {
   lazy val uTRRoute = routes.UTRController.onPageLoad(NormalMode).url
   val formProvider = new UTRFormProvider()
   val form: Form[String] = formProvider("")
+  val caTaxType = "Corporation Tax"
+  val saTaxType = "Self Assessment"
 
   "UTR Controller" - {
 
@@ -57,7 +59,7 @@ class UTRControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[UTRView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, "Corporation Tax")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, caTaxType)(request, messages(application)).toString
       }
     }
 
@@ -79,13 +81,19 @@ class UTRControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[UTRView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, "Self Assessment")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, saTaxType)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(UTRPage, "answer").success.value
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(BusinessTypePage, Partnership)
+        .success
+        .value
+        .set(UTRPage, "answer")
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -97,7 +105,7 @@ class UTRControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, "")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, saTaxType)(request, messages(application)).toString
       }
     }
 
@@ -126,13 +134,19 @@ class UTRControllerSpec extends SpecBase with MockitoSugar {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers: UserAnswers = UserAnswers(userAnswersId)
+        .set(BusinessTypePage, LimitedCompany)
+        .success
+        .value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request =
           FakeRequest(POST, uTRRoute)
             .withFormUrlEncodedBody(("value", ""))
 
+        val form: Form[String] = formProvider(caTaxType)
         val boundForm = form.bind(Map("value" -> ""))
 
         val view = application.injector.instanceOf[UTRView]
@@ -140,7 +154,7 @@ class UTRControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, "")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, caTaxType)(request, messages(application)).toString
       }
     }
   }
