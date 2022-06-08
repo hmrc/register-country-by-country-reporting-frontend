@@ -64,3 +64,13 @@ GET        /register/utr                        controllers.UTRController.onPage
 POST       /register/utr                        controllers.UTRController.onSubmit(mode: Mode = NormalMode)
 GET        /register/change-utr                  controllers.UTRController.onPageLoad(mode: Mode = CheckMode)
 POST       /register/change-utr                  controllers.UTRController.onSubmit(mode: Mode = CheckMode)
+
+GET        /register/have-phone                             controllers.HaveTelephoneController.onPageLoad(mode: Mode = NormalMode)
+POST       /register/have-phone                             controllers.HaveTelephoneController.onSubmit(mode: Mode = NormalMode)
+GET        /register/change-have-phone                      controllers.HaveTelephoneController.onPageLoad(mode: Mode = CheckMode)
+POST       /register/change-have-phone                      controllers.HaveTelephoneController.onSubmit(mode: Mode = CheckMode)
+
+GET        /register/phone                                  controllers.ContactPhoneController.onPageLoad(mode: Mode = NormalMode)
+POST       /register/phone                                  controllers.ContactPhoneController.onSubmit(mode: Mode = NormalMode)
+GET        /register/change-phone                           controllers.ContactPhoneController.onPageLoad(mode: Mode = CheckMode)
+POST       /register/change-phone                           controllers.ContactPhoneController.onSubmit(mode: Mode = CheckMode)

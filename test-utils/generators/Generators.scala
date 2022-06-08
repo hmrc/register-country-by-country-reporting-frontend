@@ -66,6 +66,16 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     } yield s"$pt1$pt2$pt3 $pt4$pt5a$pt5b"
   }
 
+  def validPhoneNumber(ln: Int): Gen[String] = for {
+    length <- Gen.chooseNum(1, ln - 1)
+    chars  <- listOfN(length, Gen.chooseNum(0, 9))
+  } yield "+" + chars.mkString
+
+  def phoneMaxLength(ln: Int): Gen[String] = for {
+    length <- Gen.chooseNum(ln, 24)
+    chars  <- listOfN(length, Gen.chooseNum(0, 9))
+  } yield "+" + chars.mkString
+
   def intsInRangeWithCommas(min: Int, max: Int): Gen[String] = {
     val numberGen = choose[Int](min, max).map(_.toString)
     genIntersperseString(numberGen, ",")
