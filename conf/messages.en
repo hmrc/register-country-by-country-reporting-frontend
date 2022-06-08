@@ -158,11 +158,18 @@ contactName.error.required = Enter the name of the individual or team we should 
 contactName.error.invalid = Name must only include letters a to z, apostrophes, grave accents, ampersands, hyphens, backslashes, carets and spaces
 contactName.error.length = Name must be 35 characters or less
 
-contactPhone.title = What is the telephone number?
+contactPhone.title = What is their telephone number?
 contactPhone.heading = What is the telephone number for {0}?
 contactPhone.hint = Enter a telephone number, like&nbsp;01632&nbsp;960&nbsp;001, 07700&nbsp;900&nbsp;982 or +44&nbsp;808&nbsp;157&nbsp;0192.
-contactPhone.checkYourAnswersLabel = What is the telephone number for {0}?
+contactPhone.checkYourAnswersLabel = What is their telephone number?
 contactPhone.error.required = Enter a telephone number
 contactPhone.error.length = Telephone number must be 24 characters or less
 contactPhone.error.invalid = Enter a telephone number in the correct format
-contactPhone.change.hidden = what is the telephone number for {0}?
+contactPhone.change.hidden = what is their telephone number?
+
+haveTelephone.title = Can we contact them by telephone?
+haveTelephone.heading = Can we contact {0} by telephone?
+haveTelephone.hint = We will use this to keep in touch and if we have any questions about your reports.
+haveTelephone.checkYourAnswersLabel = Can we contact them by telephone?
+haveTelephone.error.required = Select yes if they can be contacted by telephone
+haveTelephone.change.hidden = can we contact them by telephone?

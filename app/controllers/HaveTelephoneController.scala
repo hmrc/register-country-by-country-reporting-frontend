@@ -17,40 +17,40 @@
 package controllers
 
 import controllers.actions._
-import forms.ContactPhoneFormProvider
+import forms.HaveTelephoneFormProvider
 import models.{Mode, UserAnswers}
 import navigation.CBCRNavigator
-import pages.{ContactNamePage, ContactPhonePage}
+import pages.{ContactNamePage, HaveTelephonePage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.ContactPhoneView
+import views.html.HaveTelephoneView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ContactPhoneController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        navigator: CBCRNavigator,
-                                        standardActionSets: StandardActionSets,
-                                        formProvider: ContactPhoneFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: ContactPhoneView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class HaveTelephoneController @Inject()(
+                                         override val messagesApi: MessagesApi,
+                                         sessionRepository: SessionRepository,
+                                         navigator: CBCRNavigator,
+                                         standardActionSets: StandardActionSets,
+                                         formProvider: HaveTelephoneFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         view: HaveTelephoneView
+                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(ContactPhonePage) match {
+      val preparedForm = request.userAnswers.get(HaveTelephonePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, getContactName(request.userAnswers),  mode))
+      Ok(view(preparedForm, getContactName(request.userAnswers), mode))
   }
 
   private def getContactName(userAnswers: UserAnswers)(implicit messages: Messages) =
@@ -68,9 +68,9 @@ class ContactPhoneController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ContactPhonePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(HaveTelephonePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ContactPhonePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(HaveTelephonePage, mode, updatedAnswers))
       )
   }
 }
