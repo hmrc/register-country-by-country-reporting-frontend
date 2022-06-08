@@ -95,6 +95,11 @@ POST       /register/second-contact-phone                   controllers.SecondCo
 GET        /register/change-second-contact-phone            controllers.SecondContactPhoneController.onPageLoad(mode: Mode = CheckMode)
 POST       /register/change-second-contact-phone            controllers.SecondContactPhoneController.onSubmit(mode: Mode = CheckMode)
 
+GET        /register/have-second-contact                        controllers.DoYouHaveSecondContactController.onPageLoad(mode: Mode = NormalMode)
+POST       /register/have-second-contact                        controllers.DoYouHaveSecondContactController.onSubmit(mode: Mode = NormalMode)
+GET        /register/change-have-second-contact                  controllers.DoYouHaveSecondContactController.onPageLoad(mode: Mode = CheckMode)
+POST       /register/change-have-second-contact                  controllers.DoYouHaveSecondContactController.onSubmit(mode: Mode = CheckMode)
+
 GET        /register/second-contact-name                    controllers.SecondContactNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /register/second-contact-name                    controllers.SecondContactNameController.onSubmit(mode: Mode = NormalMode)
 GET        /register/change-second-contact-name             controllers.SecondContactNameController.onPageLoad(mode: Mode = CheckMode)
