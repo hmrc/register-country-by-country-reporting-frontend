@@ -193,6 +193,27 @@ trait Formatters extends Transforms {
         baseFormatter.unbind(key, value.toString)
     }
 
+  protected def validatedUtrFormatter(requiredKey: String, invalidKey: String, lengthKey: String, regex: String, msgArg: String = ""): Formatter[String] =
+    new Formatter[String] {
+
+      def formatError(key: String, errorKey: String, msgArg: String = ""): FormError =
+        if (msgArg.isEmpty) FormError(key, errorKey) else FormError(key, errorKey, Seq(msgArg))
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
+        val fixedLength = 10
+        val trimmedUtr  = data.get(key).map(_.replaceAll("\\s", ""))
+        trimmedUtr match {
+          case None | Some("")                    => Left(Seq(formatError(key, requiredKey, msgArg)))
+          case Some(s) if !s.matches(regex)       => Left(Seq(formatError(key, invalidKey, msgArg)))
+          case Some(s) if s.length != fixedLength => Left(Seq(formatError(key, lengthKey, msgArg)))
+          case Some(s)                            => Right(s)
+        }
+      }
+
+      override def unbind(key: String, value: String): Map[String, String] =
+        Map(key -> value)
+    }
+
 
   private[mappings] def enumerableFormatter[A](requiredKey: String, invalidKey: String, args: Seq[String] = Seq.empty)(implicit ev: Enumerable[A]): Formatter[A] =
     new Formatter[A] {

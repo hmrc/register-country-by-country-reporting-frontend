@@ -36,6 +36,9 @@ trait PageGenerators {
   implicit lazy val arbitraryWhatIsTradingNamePage: Arbitrary[WhatIsTradingNamePage.type] =
     Arbitrary(WhatIsTradingNamePage)
 
+  implicit lazy val arbitraryUTRPage: Arbitrary[UTRPage.type] =
+    Arbitrary(UTRPage)
+
   implicit lazy val arbitraryBusinessHaveDifferentNamePage: Arbitrary[BusinessHaveDifferentNamePage.type] =
     Arbitrary(BusinessHaveDifferentNamePage)
 
