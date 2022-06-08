@@ -159,3 +159,15 @@ contactName.hint = For example, '‘Tax team’' or '‘Ashley Smith’'.
 contactName.error.required = Enter the name of the individual or team we should contact if we have any questions about your reports
 contactName.error.invalid = Name must only include letters a to z, apostrophes, grave accents, ampersands, hyphens, backslashes, carets and spaces
 contactName.error.length = Name must be 35 characters or less
+
+utr.title = What is your {0} Unique Taxpayer Reference?
+utr.heading = What is your {0} Unique Taxpayer Reference?
+utr.hint = This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about {0}. It may be called ‘reference’, ‘UTR’ or ‘official use’. You can
+utr.hint.link = find a lost UTR number (opens in new tab)
+utr.checkYourAnswersLabel = What is your Unique Taxpayer Reference?
+utr.error.required = Enter your {0} Unique Taxpayer Reference
+utr.error.length = {0} Unique Taxpayer Reference must be 10 numbers
+utr.error.invalid = {0} Unique Taxpayer Reference must only include numbers 0 to 9
+utr.change.hidden = UTR
+utr.selfAssessment = Self Assessment
+utr.corporationTax = Corporation Tax
