@@ -17,39 +17,39 @@
 package controllers
 
 import base.SpecBase
-import forms.SecondContactHavePhoneFormProvider
+import forms.SecondContactPhoneFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{SecondContactHavePhonePage, SecondContactNamePage}
+import pages.{SecondContactNamePage, SecondContactPhonePage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.SecondContactHavePhoneView
+import views.html.SecondContactPhoneView
 
 import scala.concurrent.Future
 
-class SecondContactHavePhoneControllerSpec extends SpecBase with MockitoSugar {
+class SecondContactPhoneControllerSpec extends SpecBase with MockitoSugar {
 
   val secondContactName = "Second Contact"
-  val formProvider = new SecondContactHavePhoneFormProvider()
+  val formProvider = new SecondContactPhoneFormProvider()
   val form = formProvider()
 
   val baseUserAnswers = emptyUserAnswers.set(SecondContactNamePage, secondContactName).success.value
 
-  lazy val secondContactHavePhoneRoute = routes.SecondContactHavePhoneController.onPageLoad(NormalMode).url
+  lazy val secondContactPhoneRoute = routes.SecondContactPhoneController.onPageLoad(NormalMode).url
 
-  "SecondContactHavePhone Controller" - {
+  "SecondContactPhone Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(baseUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, secondContactHavePhoneRoute)
+        val request = FakeRequest(GET, secondContactPhoneRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[SecondContactHavePhoneView]
+        val view = application.injector.instanceOf[SecondContactPhoneView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, secondContactName, NormalMode)(request, messages(application)).toString
@@ -58,19 +58,19 @@ class SecondContactHavePhoneControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = baseUserAnswers.set(SecondContactHavePhonePage, true).success.value
+      val userAnswers = baseUserAnswers.set(SecondContactPhonePage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, secondContactHavePhoneRoute)
+        val request = FakeRequest(GET, secondContactPhoneRoute)
 
-        val view = application.injector.instanceOf[SecondContactHavePhoneView]
+        val view = application.injector.instanceOf[SecondContactPhoneView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), secondContactName, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), secondContactName, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -83,8 +83,8 @@ class SecondContactHavePhoneControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, secondContactHavePhoneRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+          FakeRequest(POST, secondContactPhoneRoute)
+            .withFormUrlEncodedBody(("value", "99999"))
 
         val result = route(application, request).value
 
@@ -99,12 +99,12 @@ class SecondContactHavePhoneControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, secondContactHavePhoneRoute)
+          FakeRequest(POST, secondContactPhoneRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[SecondContactHavePhoneView]
+        val view = application.injector.instanceOf[SecondContactPhoneView]
 
         val result = route(application, request).value
 
@@ -118,7 +118,7 @@ class SecondContactHavePhoneControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, secondContactHavePhoneRoute)
+        val request = FakeRequest(GET, secondContactPhoneRoute)
 
         val result = route(application, request).value
 
@@ -133,8 +133,8 @@ class SecondContactHavePhoneControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, secondContactHavePhoneRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+          FakeRequest(POST, secondContactPhoneRoute)
+            .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
 

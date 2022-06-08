@@ -206,3 +206,12 @@ secondContactHavePhone.hint = We will use this to keep in touch and if we have a
 secondContactHavePhone.checkYourAnswersLabel = Can we contact them by telephone?
 secondContactHavePhone.error.required = Select yes if they can be contacted by telephone
 secondContactHavePhone.change.hidden = can we contact them by telephone?
+
+secondContactPhone.title = What is their telephone number?
+secondContactPhone.heading = What is the telephone number for {0}?
+secondContactPhone.hint = Enter a telephone number, like&nbsp;01632&nbsp;960&nbsp;001, 07700&nbsp;900&nbsp;982 or +44&nbsp;808&nbsp;157&nbsp;0192.
+secondContactPhone.checkYourAnswersLabel = What is their telephone number?
+secondContactPhone.error.required = Enter a telephone number
+secondContactPhone.error.invalid = Enter a telephone number in the correct format
+secondContactPhone.error.length = Telephone number must be 24 characters or less
+secondContactPhone.change.hidden = what is their telephone number?
