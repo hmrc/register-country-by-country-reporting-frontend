@@ -95,15 +95,4 @@ trait StringFieldBehaviours extends FieldBehaviours with RegexConstants {
       }
     }
 
-  def fieldWithMaxLengthEmail(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
-    s"must not bind strings longer than $maxLength characters" in {
-
-      forAll(validEmailAddressToLong(maxLength) -> "longString") {
-        string =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors mustEqual Seq(lengthError)
-      }
-    }
-
-
 }

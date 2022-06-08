@@ -90,11 +90,6 @@ POST       /register/second-contact-have-phone              controllers.SecondCo
 GET        /register/change-second-contact-have-phone       controllers.SecondContactHavePhoneController.onPageLoad(mode: Mode = CheckMode)
 POST       /register/change-second-contact-have-phone       controllers.SecondContactHavePhoneController.onSubmit(mode: Mode = CheckMode)
 
-GET        /register/email                        controllers.ContactEmailController.onPageLoad(mode: Mode = NormalMode)
-POST       /register/email                        controllers.ContactEmailController.onSubmit(mode: Mode = NormalMode)
-GET        /register/change-email                  controllers.ContactEmailController.onPageLoad(mode: Mode = CheckMode)
-POST       /register/change-email                  controllers.ContactEmailController.onSubmit(mode: Mode = CheckMode)
-
 GET        /register/second-contact-phone                   controllers.SecondContactPhoneController.onPageLoad(mode: Mode = NormalMode)
 POST       /register/second-contact-phone                   controllers.SecondContactPhoneController.onSubmit(mode: Mode = NormalMode)
 GET        /register/change-second-contact-phone            controllers.SecondContactPhoneController.onPageLoad(mode: Mode = CheckMode)
