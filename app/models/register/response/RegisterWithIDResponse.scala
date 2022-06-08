@@ -21,7 +21,7 @@ import models.register.response.details.{AddressResponse, OrganisationResponse}
 import play.api.libs.json.{Reads, __}
 
 case class RegisterWithIDResponse(
-                                   SAFEID: SafeId,
+                                   safeId: SafeId,
                                    organisation: OrganisationResponse,
                                    address: AddressResponse
                                  )

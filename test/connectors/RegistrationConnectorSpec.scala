@@ -44,7 +44,7 @@ class RegistrationConnectorSpec extends SpecBase
 
   lazy val connector: RegistrationConnector = app.injector.instanceOf[RegistrationConnector]
   private val registrationUrl = "/register-country-by-country-reporting/registration"
-  private val errorCodes: Gen[Int]          = Gen.oneOf(Seq(400, 403, 500, 501, 502, 503, 504))
+  private val errorCodes: Gen[Int] = Gen.oneOf(Seq(400, 403, 500, 501, 502, 503, 504))
 
   private val requestCommon: RequestCommon =
     RequestCommon("2016-08-16T15:55:30Z", "MDR", "ec031b045855445e96f98a569ds56cd2", Some(Seq(RequestParameter("REGIME", "MDR"))))
@@ -53,6 +53,16 @@ class RegistrationConnectorSpec extends SpecBase
     RegisterWithIDRequest(
       requestCommon,
       RequestWithIDDetails("UTR", "utr", requiresNameMatch = true, isAnAgent = false, WithIDOrganisation("name", "0001"))
+    )
+  )
+
+  private val addressRequest: Address = Address("100 Parliament Street", None, "", Some("London"), Some("SW1A 2BQ"), "GB")
+  private val contactDetails: ContactDetails = ContactDetails(Some("1111111"), Some("2222222"), Some("1111111"), Some("test@test.org"))
+
+  private val registrationWithoutIDPayload: RegisterWithoutId = RegisterWithoutId(
+    RegisterWithoutIDRequest(
+      requestCommon,
+      RequestDetails(NoIdOrganisation("name"), addressRequest, contactDetails, None)
     )
   )
 
@@ -90,6 +100,32 @@ class RegistrationConnectorSpec extends SpecBase
 
         val result = connector.registerWithID(registrationWithOrganisationIDPayload)
         result.futureValue mustBe Left(NotFoundError)
+      }
+    }
+
+    "registerWithoutId" - {
+
+      "must return 'SafeId' for the valid input request" in {
+
+        stubResponse(s"$registrationUrl/noId", OK, businessWithoutIdJsonResponse)
+
+        val result = connector.registerWithoutID(registrationWithoutIDPayload)
+        result.futureValue mustBe Some(SafeId("XE0000123456789"))
+      }
+
+      "must return 'None' when safeId is missing in the businessWithIdResponse" in {
+        stubResponse(s"$registrationUrl/noId", OK, businessWithoutIdMissingSafeIdJson)
+
+        val result = connector.registerWithoutID(registrationWithoutIDPayload)
+        result.futureValue mustBe None
+      }
+
+      "must return 'None' when EIS returns Error status" in {
+        val errorStatus: Int = errorCodes.sample.value
+        stubResponse(s"$registrationUrl/noId", errorStatus, businessWithoutIdJsonResponse)
+
+        val result = connector.registerWithoutID(registrationWithoutIDPayload)
+        result.futureValue mustBe None
       }
 
     }
@@ -166,5 +202,38 @@ trait JsonFixture {
       |} }
       |} }
       |""".stripMargin
+
+  val businessWithoutIdJsonResponse: String =
+    """
+      |{
+      |"registerWithoutIDResponse": {
+      |    "responseCommon": {
+      |"status": "OK",
+      |"processingDate": "2001-12-17T09:30:47Z",
+      |"returnParameters": [
+      |{
+      | "paramName": "SAP_NUMBER", "paramValue": "0123456789"
+      |} ]
+      |},
+      |"responseDetail": {
+      |"SAFEID": "XE0000123456789",
+      |"ARN": "ZARN1234567"
+      |}}}""".stripMargin
+
+  val businessWithoutIdMissingSafeIdJson: String =
+    """
+      |{
+      |"registerWithoutIDResponse": {
+      |    "responseCommon": {
+      |"status": "OK",
+      |"processingDate": "2001-12-17T09:30:47Z",
+      |"returnParameters": [
+      |{
+      | "paramName": "SAP_NUMBER", "paramValue": "0123456789"
+      |} ]
+      |},
+      |"responseDetail": {
+      |"ARN": "ZARN1234567"
+      |}}}""".stripMargin
 
 }

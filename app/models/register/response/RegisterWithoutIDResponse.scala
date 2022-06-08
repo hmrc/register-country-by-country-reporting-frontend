@@ -16,12 +16,18 @@
 
 package models.register.response
 
-import models.register.response.details.{AddressResponse, OrganisationResponse}
+import models.SafeId
+import play.api.libs.json.{Reads, __}
 
-case class RegisterWithoutIDResponse(
-                                   SAFEID: String,
-                                   organisation: OrganisationResponse,
-                                   address: AddressResponse
-                                 )
+case class RegisterWithoutIDResponse(safeId: SafeId)
+
+object RegisterWithoutIDResponse {
+
+  implicit val reads: Reads[RegisterWithoutIDResponse] = {
+    import play.api.libs.functional.syntax._
+    (__ \ "registerWithoutIDResponse" \ "responseDetail" \ "SAFEID").read[String] fmap (id => RegisterWithoutIDResponse(SafeId(id)))
+  }
+
+}
 
 

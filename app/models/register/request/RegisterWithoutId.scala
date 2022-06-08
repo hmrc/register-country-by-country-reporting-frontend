@@ -36,7 +36,7 @@ case class Address(
 )
 
 object Address {
-  implicit val addressFormat = Json.format[Address]
+  implicit val addressFormat: OFormat[Address] = Json.format[Address]
 }
 
 case class ContactDetails(
@@ -47,7 +47,7 @@ case class ContactDetails(
 )
 
 object ContactDetails {
-  implicit val contactFormats = Json.format[ContactDetails]
+  implicit val contactFormats: OFormat[ContactDetails] = Json.format[ContactDetails]
 }
 
 case class Identification(
@@ -57,13 +57,13 @@ case class Identification(
 )
 
 object Identification {
-  implicit val indentifierFormats = Json.format[Identification]
+  implicit val indentifierFormats: OFormat[Identification] = Json.format[Identification]
 }
 
 case class RequestParameter(paramName: String, paramValue: String)
 
 object RequestParameter {
-  implicit val indentifierFormats = Json.format[RequestParameter]
+  implicit val indentifierFormats: OFormat[RequestParameter] = Json.format[RequestParameter]
 }
 
 case class RequestCommon(
@@ -74,7 +74,7 @@ case class RequestCommon(
 )
 
 object RequestCommon {
-  implicit val requestCommonFormats = Json.format[RequestCommon]
+  implicit val requestCommonFormats: OFormat[RequestCommon] = Json.format[RequestCommon]
 }
 
 case class RequestDetails(
@@ -86,7 +86,7 @@ case class RequestDetails(
 
 object RequestDetails {
 
-  implicit lazy val residentWrites = Json.writes[RequestDetails]
+  implicit lazy val residentWrites: OWrites[RequestDetails] = Json.writes[RequestDetails]
 
   implicit lazy val reads: Reads[RequestDetails] = {
     import play.api.libs.functional.syntax._
@@ -107,7 +107,7 @@ case class RegisterWithoutIDRequest(
 )
 
 object RegisterWithoutIDRequest {
-  implicit val format = Json.format[RegisterWithoutIDRequest]
+  implicit val format: OFormat[RegisterWithoutIDRequest] = Json.format[RegisterWithoutIDRequest]
 }
 
 case class RegisterWithoutId(
@@ -115,5 +115,5 @@ case class RegisterWithoutId(
 )
 
 object RegisterWithoutId {
-  implicit val format = Json.format[RegisterWithoutId]
+  implicit val format: OFormat[RegisterWithoutId] = Json.format[RegisterWithoutId]
 }

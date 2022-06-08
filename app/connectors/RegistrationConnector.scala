@@ -18,8 +18,8 @@ package connectors
 
 import config.FrontendAppConfig
 import models.register.request.{RegisterWithID, RegisterWithoutId}
-import models.register.response.RegisterWithIDResponse
-import models.{ApiError, InternalServerError, NotFoundError}
+import models.register.response.{RegisterWithIDResponse, RegisterWithoutIDResponse}
+import models.{ApiError, InternalServerError, NotFoundError, SafeId}
 import play.api.Logging
 import play.api.http.Status.NOT_FOUND
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
@@ -48,6 +48,14 @@ class RegistrationConnector @Inject()(val config: FrontendAppConfig, val http: H
         Left(InternalServerError)
     }
 
-
+  def registerWithoutID(registration: RegisterWithoutId
+                                )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SafeId]] =
+    http.POST[RegisterWithoutId, HttpResponse](s"$registrationUrl/noId", registration) map {
+      case response if is2xx(response.status) =>
+        response.json.asOpt[RegisterWithoutIDResponse].map(_.safeId)
+      case errorResponse =>
+        logger.warn(s"RegisterWithoutID call failed with Status ${errorResponse.status}")
+        None
+    }
 
 }
