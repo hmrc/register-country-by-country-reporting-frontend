@@ -21,17 +21,26 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryHaveTelephonePage: Arbitrary[HaveTelephonePage.type] =
+    Arbitrary(HaveTelephonePage)
+
   implicit lazy val arbitrarySecondContactNamePage: Arbitrary[SecondContactNamePage.type] =
     Arbitrary(SecondContactNamePage)
 
   implicit lazy val arbitraryContactNamePage: Arbitrary[ContactNamePage.type] =
     Arbitrary(ContactNamePage)
 
+  implicit lazy val arbitraryContactPhonePage: Arbitrary[ContactPhonePage.type] =
+    Arbitrary(ContactPhonePage)
+
   implicit lazy val arbitraryBusinessWithoutIdAddressPage: Arbitrary[BusinessWithoutIdAddressPage.type] =
     Arbitrary(BusinessWithoutIdAddressPage)
 
   implicit lazy val arbitraryWhatIsTradingNamePage: Arbitrary[WhatIsTradingNamePage.type] =
     Arbitrary(WhatIsTradingNamePage)
+
+  implicit lazy val arbitraryUTRPage: Arbitrary[UTRPage.type] =
+    Arbitrary(UTRPage)
 
   implicit lazy val arbitraryBusinessHaveDifferentNamePage: Arbitrary[BusinessHaveDifferentNamePage.type] =
     Arbitrary(BusinessHaveDifferentNamePage)

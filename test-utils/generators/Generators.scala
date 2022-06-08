@@ -17,7 +17,6 @@
 package generators
 
 import java.time.{Instant, LocalDate, ZoneOffset}
-
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Gen, Shrink}
@@ -67,19 +66,33 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     } yield s"$pt1$pt2$pt3 $pt4$pt5a$pt5b"
   }
 
+  def validPhoneNumber(ln: Int): Gen[String] = for {
+    length <- Gen.chooseNum(1, ln - 1)
+    chars  <- listOfN(length, Gen.chooseNum(0, 9))
+  } yield "+" + chars.mkString
+
+  def phoneMaxLength(ln: Int): Gen[String] = for {
+    length <- Gen.chooseNum(ln, 24)
+    chars  <- listOfN(length, Gen.chooseNum(0, 9))
+  } yield "+" + chars.mkString
+
   def intsInRangeWithCommas(min: Int, max: Int): Gen[String] = {
     val numberGen = choose[Int](min, max).map(_.toString)
     genIntersperseString(numberGen, ",")
   }
 
   def intsLargerThanMaxValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat(x => x > Int.MaxValue)
+    arbitrary[BigInt] suchThat (x => x > Int.MaxValue)
 
   def intsSmallerThanMinValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat(x => x < Int.MinValue)
+    arbitrary[BigInt] suchThat (x => x < Int.MinValue)
 
   def nonNumerics: Gen[String] =
-    alphaStr suchThat(_.size > 0)
+    alphaStr suchThat (_.size > 0)
+
+  def validUtr: Gen[String] = for {
+    chars <- listOfN(10, Gen.oneOf(List(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)))
+  } yield chars.mkString
 
   def decimals: Gen[String] =
     arbitrary[BigDecimal]
@@ -88,19 +101,19 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
       .map(_.formatted("%f"))
 
   def intsBelowValue(value: Int): Gen[Int] =
-    arbitrary[Int] suchThat(_ < value)
+    arbitrary[Int] suchThat (_ < value)
 
   def intsAboveValue(value: Int): Gen[Int] =
-    arbitrary[Int] suchThat(_ > value)
+    arbitrary[Int] suchThat (_ > value)
 
   def intsOutsideRange(min: Int, max: Int): Gen[Int] =
-    arbitrary[Int] suchThat(x => x < min || x > max)
+    arbitrary[Int] suchThat (x => x < min || x > max)
 
   def nonBooleans: Gen[String] =
     arbitrary[String]
-      .suchThat (_.nonEmpty)
-      .suchThat (_ != "true")
-      .suchThat (_ != "false")
+      .suchThat(_.nonEmpty)
+      .suchThat(_ != "true")
+      .suchThat(_ != "false")
 
   def nonEmptyString: Gen[String] =
     arbitrary[String] suchThat (_.nonEmpty)
@@ -113,14 +126,14 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
 
   def stringsLongerThan(minLength: Int): Gen[String] = for {
     maxLength <- (minLength * 2).max(100)
-    length    <- Gen.chooseNum(minLength + 1, maxLength)
-    chars     <- listOfN(length, arbitrary[Char])
+    length <- Gen.chooseNum(minLength + 1, maxLength)
+    chars <- listOfN(length, arbitrary[Char])
   } yield chars.mkString
 
   def stringsLongerThanAlpha(minLength: Int): Gen[String] = for {
     maxLength <- (minLength * 2).max(100)
-    length    <- Gen.chooseNum(minLength + 1, maxLength)
-    chars     <- listOfN(length, Gen.alphaChar)
+    length <- Gen.chooseNum(minLength + 1, maxLength)
+    chars <- listOfN(length, Gen.alphaChar)
   } yield chars.mkString
 
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
@@ -144,4 +157,10 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
         Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC).toLocalDate
     }
   }
+
+  def stringsNotOfFixedLengthNumeric(givenLength: Int): Gen[String] = for {
+    maxLength <- givenLength + 50
+    length <- Gen.chooseNum(1, maxLength).suchThat(_ != givenLength)
+    chars <- listOfN(length, Gen.numChar)
+  } yield chars.mkString
 }
