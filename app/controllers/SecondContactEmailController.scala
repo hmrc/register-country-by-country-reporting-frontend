@@ -17,55 +17,56 @@
 package controllers
 
 import controllers.actions._
-import forms.ContactEmailFormProvider
+import forms.SecondContactEmailFormProvider
 
 import javax.inject.Inject
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.{ContactEmailPage, ContactNamePage}
+import pages.{SecondContactEmailPage, SecondContactNamePage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.ContactEmailView
+import views.html.SecondContactEmailView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ContactEmailController @Inject()(
+class SecondContactEmailController @Inject()(
                                         override val messagesApi: MessagesApi,
                                         sessionRepository: SessionRepository,
                                         navigator: Navigator,
                                         standardActionSets: StandardActionSets,
-                                        formProvider: ContactEmailFormProvider,
+                                        formProvider: SecondContactEmailFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
-                                        view: ContactEmailView
+                                        view: SecondContactEmailView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithInitializedData() {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(ContactEmailPage).fold(form)(form.fill)
+      val preparedForm = request.userAnswers.get(SecondContactEmailPage).fold(form)(form.fill)
 
-      Ok(view(preparedForm, mode, getContactName(request.userAnswers)))
+      Ok(view(preparedForm, mode, getSecondContactName(request.userAnswers)))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithInitializedData().async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, getContactName(request.userAnswers)))),
+          Future.successful(BadRequest(view(formWithErrors, mode, getSecondContactName(request.userAnswers)))),
+
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ContactEmailPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(SecondContactEmailPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ContactEmailPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(SecondContactEmailPage, mode, updatedAnswers))
       )
   }
 
-  private def getContactName(ua: UserAnswers)(implicit messages: Messages): String = {
-    ua.get(ContactNamePage).getOrElse(messages("default.firstContact.name"))
+  private def getSecondContactName(ua: UserAnswers)(implicit messages: Messages): String = {
+    ua.get(SecondContactNamePage).getOrElse(messages("default.secondContact.name"))
   }
 }

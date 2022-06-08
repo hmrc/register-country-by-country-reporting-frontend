@@ -242,3 +242,13 @@ secondContactName.checkYourAnswersLabel.hiddenText = second contact name
 secondContactName.error.required = Enter the name of the individual or team we should contact
 secondContactName.error.invalid = Name of the individual or team must only include letters a to z, numbers 0 to 9, apostrophes, grave accents, ampersands, hyphens, backslashes, carets and spaces
 secondContactName.error.length = Individual or team must be 35 characters or less
+
+secondContactEmail.title = What is the email address for {0}?
+secondContactEmail.heading = What is the email address for {0}?
+secondContactEmail.hint = We will use this to send confirmation of your reports and if we have any questions about them.
+secondContactEmail.checkYourAnswersLabel = Email address
+secondContactEmail.error.required = Enter an email address
+secondContactEmail.error.length = Email address must be 132 characters or less
+secondContactEmail.error.invalid = Enter an email address in the correct format, like name@example.com
+
+
