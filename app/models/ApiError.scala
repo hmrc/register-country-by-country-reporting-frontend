@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package connectors
+package models
 
-import play.api.libs.json.{Json, OFormat}
+sealed trait ApiError
 
-case class SafeId(value: String)
+case object NotFoundError extends ApiError
+case object InternalServerError extends ApiError
+case class MandatoryInformationMissingError(value: String = "") extends ApiError
 
-object SafeId {
-  implicit val format: OFormat[SafeId] = Json.format[SafeId]
-}
