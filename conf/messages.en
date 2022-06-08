@@ -206,3 +206,13 @@ secondContactHavePhone.hint = We will use this to keep in touch and if we have a
 secondContactHavePhone.checkYourAnswersLabel = Can we contact them by telephone?
 secondContactHavePhone.error.required = Select yes if they can be contacted by telephone
 secondContactHavePhone.change.hidden = can we contact them by telephone?
+
+registrationConfirmation.title = Registration successful
+registrationConfirmation.heading = Registration successful
+registrationConfirmation.text = Your CBC ID
+registrationConfirmation.p1 = You will need to provide your CBC ID in every file you send to HMRC.
+registrationConfirmation.subheading = What happens next
+registrationConfirmation.p2 = We will send you an email to confirm you have registered.
+registrationConfirmation.p3 = You can now {0}.
+registrationConfirmation.p3.link = send a CBC report
+registrationConfirmation.p4.link = What did you think of this service? (opens in new tab)

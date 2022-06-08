@@ -84,3 +84,5 @@ GET        /register/second-contact-have-phone              controllers.SecondCo
 POST       /register/second-contact-have-phone              controllers.SecondContactHavePhoneController.onSubmit(mode: Mode = NormalMode)
 GET        /register/change-second-contact-have-phone       controllers.SecondContactHavePhoneController.onPageLoad(mode: Mode = CheckMode)
 POST       /register/change-second-contact-have-phone       controllers.SecondContactHavePhoneController.onSubmit(mode: Mode = CheckMode)
+
+GET        /register/confirm-registration                   controllers.RegistrationConfirmationController.onPageLoad()
