@@ -163,4 +163,10 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     length <- Gen.chooseNum(1, maxLength).suchThat(_ != givenLength)
     chars <- listOfN(length, Gen.numChar)
   } yield chars.mkString
+
+  def validPhoneNumberTooLong(minLength: Int): Gen[String] = for {
+    maxLength <- (minLength * 2).max(100)
+    length    <- Gen.chooseNum(minLength + 1, maxLength)
+    chars     <- listOfN(length, arbitrary[Byte])
+  } yield chars.map(math.abs(_)).mkString
 }
