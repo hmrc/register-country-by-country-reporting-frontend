@@ -47,6 +47,12 @@ class CBCRNavigator @Inject()() extends Navigator {
     )
     case ContactPhonePage   => _ => routes.ContactPhoneController.onPageLoad(NormalMode) //TODO change when next pages are implemented
     case SecondContactNamePage   => _ => routes.SecondContactNameController.onPageLoad(NormalMode) //TODO change when next pages are implemented
+    case SecondContactHavePhonePage   => ua => yesNoPage(
+      ua,
+      SecondContactHavePhonePage,
+      routes.SecondContactHavePhoneController.onPageLoad(NormalMode), //TODO change when next pages are implemented
+      routes.SecondContactHavePhoneController.onPageLoad(NormalMode) //TODO change when next pages are implemented
+    )
     case BusinessHaveDifferentNamePage   => ua => yesNoPage(
       ua,
       BusinessHaveDifferentNamePage,
