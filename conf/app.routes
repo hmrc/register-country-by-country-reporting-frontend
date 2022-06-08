@@ -60,10 +60,10 @@ POST       /register/contact-name                           controllers.ContactN
 GET        /register/change-contact-name                    controllers.ContactNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /register/change-contact-name                    controllers.ContactNameController.onSubmit(mode: Mode = CheckMode)
 
-GET        /register/utr                        controllers.UTRController.onPageLoad(mode: Mode = NormalMode)
-POST       /register/utr                        controllers.UTRController.onSubmit(mode: Mode = NormalMode)
-GET        /register/change-utr                  controllers.UTRController.onPageLoad(mode: Mode = CheckMode)
-POST       /register/change-utr                  controllers.UTRController.onSubmit(mode: Mode = CheckMode)
+GET        /register/utr                                    controllers.UTRController.onPageLoad(mode: Mode = NormalMode)
+POST       /register/utr                                    controllers.UTRController.onSubmit(mode: Mode = NormalMode)
+GET        /register/change-utr                             controllers.UTRController.onPageLoad(mode: Mode = CheckMode)
+POST       /register/change-utr                             controllers.UTRController.onSubmit(mode: Mode = CheckMode)
 
 GET        /register/have-phone                             controllers.HaveTelephoneController.onPageLoad(mode: Mode = NormalMode)
 POST       /register/have-phone                             controllers.HaveTelephoneController.onSubmit(mode: Mode = NormalMode)
@@ -79,3 +79,8 @@ GET        /register/second-contact-name                    controllers.SecondCo
 POST       /register/second-contact-name                    controllers.SecondContactNameController.onSubmit(mode: Mode = NormalMode)
 GET        /register/change-second-contact-name             controllers.SecondContactNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /register/change-second-contact-name             controllers.SecondContactNameController.onSubmit(mode: Mode = CheckMode)
+
+GET        /register/second-contact-have-phone              controllers.SecondContactHavePhoneController.onPageLoad(mode: Mode = NormalMode)
+POST       /register/second-contact-have-phone              controllers.SecondContactHavePhoneController.onSubmit(mode: Mode = NormalMode)
+GET        /register/change-second-contact-have-phone       controllers.SecondContactHavePhoneController.onPageLoad(mode: Mode = CheckMode)
+POST       /register/change-second-contact-have-phone       controllers.SecondContactHavePhoneController.onSubmit(mode: Mode = CheckMode)
