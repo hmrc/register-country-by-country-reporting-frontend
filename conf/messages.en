@@ -165,7 +165,7 @@ contactName.error.length = Name must be 35 characters or less
 
 utr.title = What is your {0} Unique Taxpayer Reference?
 utr.heading = What is your {0} Unique Taxpayer Reference?
-utr.hint = This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about {0}. It may be called ‘reference’, ‘UTR’ or ‘official use’. You can
+utr.hint = This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about {0}. It may be called ‘reference’, ‘UTR’ or ‘official use’. You can {1}.
 utr.hint.link = find a lost UTR number (opens in new tab)
 utr.checkYourAnswersLabel = What is your Unique Taxpayer Reference?
 utr.error.required = Enter your {0} Unique Taxpayer Reference

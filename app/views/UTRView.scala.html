@@ -46,7 +46,7 @@
             .withHint(
                 HintViewModel(
                     HtmlContent(
-                        s"${messages("utr.hint", taxType)} <span> ${link(appConfig.lostUTRUrl, "utr.hint.link", openInNewWindow = true)} </span>"
+                     Html(messages("utr.hint", taxType,link("appConfig.lostUTRUrl", "utr.hint.link",openInNewWindow = true)))
                     )
                 )
             )
