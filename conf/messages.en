@@ -225,6 +225,13 @@ secondContactPhone.error.invalid = Enter a telephone number in the correct forma
 secondContactPhone.error.length = Telephone number must be 24 characters or less
 secondContactPhone.change.hidden = what is their telephone number?
 
+doYouHaveSecondContact.title = Is there someone else we can contact?
+doYouHaveSecondContact.heading = Is there someone else we can contact if {0} is not available?
+doYouHaveSecondContact.hint = This can be a team mailbox or another contact.
+doYouHaveSecondContact.checkYourAnswersLabel = Do you have a second contact?
+doYouHaveSecondContact.error.required = Select yes if there is someone else we can contact
+doYouHaveSecondContact.change.hidden = if you have a second contact
+
 secondContactEmail.title = What is the email address for {0}?
 secondContactEmail.heading = What is the email address for {0}?
 secondContactEmail.hint = We will use this to send confirmation of your reports and if we have any questions about them.

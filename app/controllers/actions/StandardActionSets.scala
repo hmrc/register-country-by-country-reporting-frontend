@@ -17,7 +17,9 @@
 package controllers.actions
 
 import models.requests.{DataRequest, IdentifierRequest}
+import play.api.libs.json.Reads
 import play.api.mvc.{ActionBuilder, AnyContent}
+import queries.Gettable
 
 import javax.inject.Inject
 
@@ -25,8 +27,9 @@ class StandardActionSets @Inject()(identify: IdentifierAction,
                                    getData: DataRetrievalAction,
                                    requireData: DataRequiredAction,
                                    initializeData: DataInitializeAction,
-                                   checkEnrolment: CheckEnrolledToServiceActionProvider
-) {
+                                   checkEnrolment: CheckEnrolledToServiceActionProvider,
+                                   dependantAnswer: DependantAnswerProvider
+                                  ) {
 
   def identifiedUserWithEnrolmentCheck(): ActionBuilder[IdentifierRequest, AnyContent] =
     identify andThen checkEnrolment()
@@ -40,4 +43,6 @@ class StandardActionSets @Inject()(identify: IdentifierAction,
   def identifiedUserWithData(): ActionBuilder[DataRequest, AnyContent] =
     identifiedUserWithEnrolmentCheck() andThen getData andThen requireData
 
+  def identifiedUserWithDependantAnswer[T](answer: Gettable[T])(implicit reads: Reads[T]): ActionBuilder[DataRequest, AnyContent] =
+    identifiedUserWithData() andThen dependantAnswer(answer)
 }
