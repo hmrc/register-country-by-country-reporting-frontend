@@ -18,10 +18,8 @@ package controllers
 
 import controllers.actions._
 import forms.SecondContactEmailFormProvider
-
-import javax.inject.Inject
 import models.{Mode, UserAnswers}
-import navigation.Navigator
+import navigation.CBCRNavigator
 import pages.{SecondContactEmailPage, SecondContactNamePage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,16 +27,17 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.SecondContactEmailView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SecondContactEmailController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                        formProvider: SecondContactEmailFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: SecondContactEmailView
+                                              override val messagesApi: MessagesApi,
+                                              sessionRepository: SessionRepository,
+                                              navigator: CBCRNavigator,
+                                              standardActionSets: StandardActionSets,
+                                              formProvider: SecondContactEmailFormProvider,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              view: SecondContactEmailView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()

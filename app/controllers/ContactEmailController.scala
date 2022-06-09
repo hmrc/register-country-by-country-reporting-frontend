@@ -18,10 +18,8 @@ package controllers
 
 import controllers.actions._
 import forms.ContactEmailFormProvider
-
-import javax.inject.Inject
 import models.{Mode, UserAnswers}
-import navigation.Navigator
+import navigation.CBCRNavigator
 import pages.{ContactEmailPage, ContactNamePage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,12 +27,13 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ContactEmailView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ContactEmailController @Inject()(
                                         override val messagesApi: MessagesApi,
                                         sessionRepository: SessionRepository,
-                                        navigator: Navigator,
+                                        navigator: CBCRNavigator,
                                         standardActionSets: StandardActionSets,
                                         formProvider: ContactEmailFormProvider,
                                         val controllerComponents: MessagesControllerComponents,

@@ -182,7 +182,7 @@ contactEmail.checkYourAnswersLabel = Email address
 contactEmail.error.required = Enter an email address
 contactEmail.error.length = Email address must be 132 characters or less
 contactEmail.error.invalid = Enter an email address in the correct format, like name@example.com
-contactEmail.change.hidden = ContactEmail
+contactEmail.change.hidden = Email address
 
 contactPhone.title = What is their telephone number?
 contactPhone.heading = What is the telephone number for {0}?
@@ -216,15 +216,6 @@ secondContactHavePhone.checkYourAnswersLabel = Can we contact them by telephone?
 secondContactHavePhone.error.required = Select yes if they can be contacted by telephone
 secondContactHavePhone.change.hidden = can we contact them by telephone?
 
-contactEmail.title = What is the email address for {0}?
-contactEmail.heading = What is the email address for {0}?
-contactEmail.hint = We will use this to send confirmation of your reports or if we have any questions about them.
-contactEmail.checkYourAnswersLabel = Email address
-contactEmail.error.required = Enter an email address
-contactEmail.error.length = Email address must be 132 characters or less
-contactEmail.error.invalid = Enter an email address in the correct format, like name@example.com
-contactEmail.change.hidden = Email address
-
 secondContactPhone.title = What is their telephone number?
 secondContactPhone.heading = What is the telephone number for {0}?
 secondContactPhone.hint = Enter a telephone number, like&nbsp;01632&nbsp;960&nbsp;001, 07700&nbsp;900&nbsp;982 or +44&nbsp;808&nbsp;157&nbsp;0192.
@@ -233,15 +224,6 @@ secondContactPhone.error.required = Enter a telephone number
 secondContactPhone.error.invalid = Enter a telephone number in the correct format
 secondContactPhone.error.length = Telephone number must be 24 characters or less
 secondContactPhone.change.hidden = what is their telephone number?
-
-secondContactName.title = What is the name of the individual or team we should contact?
-secondContactName.heading = What is the name of the individual or team we should contact?
-secondContactName.hint = For example, '’Tax team’' or '’Ashley Smith’'.
-secondContactName.checkYourAnswersLabel = Second contact name
-secondContactName.checkYourAnswersLabel.hiddenText = second contact name
-secondContactName.error.required = Enter the name of the individual or team we should contact
-secondContactName.error.invalid = Name of the individual or team must only include letters a to z, numbers 0 to 9, apostrophes, grave accents, ampersands, hyphens, backslashes, carets and spaces
-secondContactName.error.length = Individual or team must be 35 characters or less
 
 secondContactEmail.title = What is the email address for {0}?
 secondContactEmail.heading = What is the email address for {0}?
@@ -252,3 +234,12 @@ secondContactEmail.error.length = Email address must be 132 characters or less
 secondContactEmail.error.invalid = Enter an email address in the correct format, like name@example.com
 secondContactEmail.change.hidden = Email Address
 
+registrationConfirmation.title = Registration successful
+registrationConfirmation.heading = Registration successful
+registrationConfirmation.text = Your CBC ID
+registrationConfirmation.p1 = You will need to provide your CBC ID in every file you send to HMRC.
+registrationConfirmation.subheading = What happens next
+registrationConfirmation.p2 = We will send you an email to confirm you have registered.
+registrationConfirmation.p3 = You can now {0}.
+registrationConfirmation.p3.link = send a CBC report
+registrationConfirmation.p4.link = What did you think of this service? (opens in new tab)
