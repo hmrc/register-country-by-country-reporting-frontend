@@ -160,17 +160,6 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     }
   }
 
-  def validUtr: Gen[String] = for {
-    chars <- listOfN(10, Gen.oneOf(List(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)))
-  } yield chars.mkString
-
-
-  def validNino: Gen[String] = for {
-    first   <- Gen.oneOf("ACEHJLMOPRSWXY".toCharArray)
-    second  <- Gen.oneOf("ABCEGHJKLMNPRSTWXYZ".toCharArray)
-    numbers <- listOfN(6, Gen.oneOf(List(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)))
-    last    <- Gen.oneOf("ABCD".toCharArray)
-  } yield s"$first$second${numbers.mkString}$last"
 
   val subscriptionIDRegex              = "^[X][A-Z][0-9]{13}"
   def validSubscriptionID: Gen[String] = RegexpGen.from(subscriptionIDRegex)
