@@ -36,7 +36,13 @@ class CBCRNavigator @Inject()() extends Navigator {
     )
     case BusinessTypePage   => _ => routes.UTRController.onPageLoad(NormalMode)
     case UTRPage   => _ => routes.BusinessNameController.onPageLoad(NormalMode)
-    case BusinessNamePage   => _ => routes.BusinessNameController.onPageLoad(NormalMode) //TODO change when next pages are implemented
+    case BusinessNamePage   => _ => routes.IsThisYourBusinessController.onPageLoad(NormalMode)
+    case IsThisYourBusinessPage   => ua => yesNoPage(
+      ua,
+      IsThisYourBusinessPage,
+      routes.ContactNameController.onPageLoad(NormalMode),
+      routes.IsThisYourBusinessController.onPageLoad(NormalMode) //TODO change when next pages are implemented
+    )
     case BusinessWithoutIDNamePage   => _ => routes.BusinessHaveDifferentNameController.onPageLoad(NormalMode)
     case BusinessHaveDifferentNamePage   => ua => yesNoPage(
       ua,

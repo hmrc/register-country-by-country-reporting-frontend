@@ -113,3 +113,8 @@ POST       /register/change-second-contact-email                  controllers.Se
 GET        /register/confirm-registration                   controllers.RegistrationConfirmationController.onPageLoad()
 
 GET        /register/problem/individual-sign-in-problem                       controllers.UnauthorisedIndividualController.onPageLoad()
+
+GET        /isThisYourBusiness                        controllers.IsThisYourBusinessController.onPageLoad(mode: Mode = NormalMode)
+POST       /isThisYourBusiness                        controllers.IsThisYourBusinessController.onSubmit(mode: Mode = NormalMode)
+GET        /changeIsThisYourBusiness                  controllers.IsThisYourBusinessController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeIsThisYourBusiness                  controllers.IsThisYourBusinessController.onSubmit(mode: Mode = CheckMode)
