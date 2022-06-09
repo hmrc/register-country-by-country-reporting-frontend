@@ -243,3 +243,9 @@ registrationConfirmation.p2 = We will send you an email to confirm you have regi
 registrationConfirmation.p3 = You can now {0}.
 registrationConfirmation.p3.link = send a CBC report
 registrationConfirmation.p4.link = What did you think of this service? (opens in new tab)
+
+unauthorisedIndividual.title = Sorry, you’re unable to use this service
+unauthorisedIndividual.heading = Sorry, you’re unable to use this service
+unauthorisedIndividual.paragraph1 = You’ve signed in as an individual. Only organisations can send reports.
+unauthorisedIndividual.paragraph2 = If you need to send reports for an organisation,
+unauthorisedIndividual.link =  sign in with your organisation’s Government Gateway details
