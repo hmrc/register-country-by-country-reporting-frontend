@@ -21,7 +21,7 @@ import forms.ContactEmailFormProvider
 import models.{Mode, UserAnswers}
 import navigation.CBCRNavigator
 import pages.{ContactEmailPage, ContactNamePage}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -64,7 +64,7 @@ class ContactEmailController @Inject()(
       )
   }
 
-  private def getContactName(ua: UserAnswers): String = {
-    ua.get(ContactNamePage).getOrElse("your contact")
+  private def getContactName(ua: UserAnswers)(implicit messages: Messages): String = {
+    ua.get(ContactNamePage).getOrElse(messages("default.firstContact.name"))
   }
 }
