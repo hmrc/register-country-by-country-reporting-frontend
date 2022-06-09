@@ -94,4 +94,5 @@ trait StringFieldBehaviours extends FieldBehaviours with RegexConstants {
           result.errors mustEqual Seq(lengthError)
       }
     }
+
 }
