@@ -55,7 +55,7 @@
     </p>
 
     @govukButton(
-        ButtonViewModel(messages("businessNotIdentified.button")).withAttribute("id", "submit")
+        ButtonViewModel(messages("businessNotIdentified.button")).withAttribute("id", "submit").asLink(appConfig.loginContinueUrl)
     )
 
 }
