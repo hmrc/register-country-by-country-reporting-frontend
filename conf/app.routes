@@ -107,4 +107,4 @@ POST       /register/change-second-contact-email                  controllers.Se
 
 GET        /register/confirm-registration                   controllers.RegistrationConfirmationController.onPageLoad()
 
-GET        /problem/individual-sign-in-problem                       controllers.UnauthorisedIndividualController.onPageLoad()
+GET        /register/problem/individual-sign-in-problem                       controllers.UnauthorisedIndividualController.onPageLoad()
