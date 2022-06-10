@@ -21,7 +21,6 @@ import forms.UTRFormProvider
 import models.BusinessType.{LimitedCompany, Partnership}
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.scalatestplus.mockito.MockitoSugar
 import pages.{BusinessTypePage, UTRPage}
 import play.api.data.Form
 import play.api.test.FakeRequest
@@ -30,9 +29,9 @@ import views.html.UTRView
 
 import scala.concurrent.Future
 
-class UTRControllerSpec extends SpecBase with MockitoSugar {
+class UTRControllerSpec extends SpecBase {
 
-  lazy val uTRRoute = routes.UTRController.onPageLoad(NormalMode).url
+  lazy val utrRoute = routes.UTRController.onPageLoad(NormalMode).url
   val formProvider = new UTRFormProvider()
   val form: Form[String] = formProvider("")
   val caTaxType = "Corporation Tax"
@@ -50,7 +49,7 @@ class UTRControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, uTRRoute)
+        val request = FakeRequest(GET, utrRoute)
 
         val result = route(application, request).value
 
@@ -72,7 +71,7 @@ class UTRControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, uTRRoute)
+        val request = FakeRequest(GET, utrRoute)
 
         val result = route(application, request).value
 
@@ -96,7 +95,7 @@ class UTRControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, uTRRoute)
+        val request = FakeRequest(GET, utrRoute)
 
         val view = application.injector.instanceOf[UTRView]
 
@@ -115,7 +114,7 @@ class UTRControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, uTRRoute)
+          FakeRequest(POST, utrRoute)
             .withFormUrlEncodedBody(("value", "1234567890"))
 
         val result = route(application, request).value
@@ -136,7 +135,7 @@ class UTRControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, uTRRoute)
+          FakeRequest(POST, utrRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val form: Form[String] = formProvider(caTaxType)

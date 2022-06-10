@@ -20,14 +20,13 @@ import base.SpecBase
 import forms.DoYouHaveUTRFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.DoYouHaveUTRView
 
 import scala.concurrent.Future
 
-class DoYouHaveUTRControllerSpec extends SpecBase with MockitoSugar {
+class DoYouHaveUTRControllerSpec extends SpecBase {
 
   val formProvider = new DoYouHaveUTRFormProvider()
   val form         = formProvider()

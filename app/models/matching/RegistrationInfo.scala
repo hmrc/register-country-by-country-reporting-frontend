@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-package pages
+package models.matching
 
-import play.api.libs.json.JsPath
+import models.SafeId
+import models.register.response.RegisterWithIDResponse
+import models.register.response.details.AddressResponse
+import play.api.libs.json._
 
-case object UTRPage extends QuestionPage[String] {
+case class RegistrationInfo(safeId: SafeId, name: String, address: AddressResponse)
 
-  override def path: JsPath = JsPath \ toString
+object RegistrationInfo {
 
-  override def toString: String = "utr"
+  implicit val format: OFormat[RegistrationInfo] = Json.format[RegistrationInfo]
+
+  def apply(response: RegisterWithIDResponse): RegistrationInfo = {
+    RegistrationInfo(response.safeId ,response.organisation.organisationName, response.address)
+  }
 }
+

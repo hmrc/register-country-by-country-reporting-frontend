@@ -16,11 +16,16 @@
 
 package pages
 
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object UTRPage extends QuestionPage[String] {
+class IsThisYourBusinessPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "IsThisYourBusinessPage" - {
 
-  override def toString: String = "utr"
+    beRetrievable[Boolean](IsThisYourBusinessPage)
+
+    beSettable[Boolean](IsThisYourBusinessPage)
+
+    beRemovable[Boolean](IsThisYourBusinessPage)
+  }
 }

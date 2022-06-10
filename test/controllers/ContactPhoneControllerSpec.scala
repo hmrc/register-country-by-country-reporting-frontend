@@ -20,7 +20,6 @@ import base.SpecBase
 import forms.ContactPhoneFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
-import org.scalatestplus.mockito.MockitoSugar
 import pages.{ContactNamePage, ContactPhonePage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -28,7 +27,7 @@ import views.html.ContactPhoneView
 
 import scala.concurrent.Future
 
-class ContactPhoneControllerSpec extends SpecBase with MockitoSugar {
+class ContactPhoneControllerSpec extends SpecBase {
 
   val firstContactName = "First Contact"
   val formProvider = new ContactPhoneFormProvider()

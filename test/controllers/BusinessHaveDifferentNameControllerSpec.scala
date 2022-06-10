@@ -20,7 +20,6 @@ import base.SpecBase
 import forms.BusinessHaveDifferentNameFormProvider
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.scalatestplus.mockito.MockitoSugar
 import pages.BusinessHaveDifferentNamePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -28,7 +27,7 @@ import views.html.BusinessHaveDifferentNameView
 
 import scala.concurrent.Future
 
-class BusinessHaveDifferentNameControllerSpec extends SpecBase with MockitoSugar {
+class BusinessHaveDifferentNameControllerSpec extends SpecBase {
 
   val formProvider = new BusinessHaveDifferentNameFormProvider()
   val form = formProvider()
