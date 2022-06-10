@@ -71,7 +71,6 @@ class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockServerHandler wit
             val enrolmentInfo = SubscriptionInfo(safeID = safeID, saUtr = Some(utr), mdrId = subID)
             stubResponseForPutRequest("/tax-enrolments/service/HMRC-CBC-ORG/enrolment", INTERNAL_SERVER_ERROR)
 
-            val result = connector.createEnrolment(enrolmentInfo)
             intercept[IllegalStateException](await(connector.createEnrolment(enrolmentInfo)))
 
         }

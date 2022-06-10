@@ -20,7 +20,6 @@ import base.SpecBase
 import forms.ContactEmailFormProvider
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.scalatestplus.mockito.MockitoSugar
 import pages.{ContactEmailPage, ContactNamePage}
 import play.api.data.Form
 import play.api.test.FakeRequest
@@ -29,7 +28,7 @@ import views.html.ContactEmailView
 
 import scala.concurrent.Future
 
-class ContactEmailControllerSpec extends SpecBase with MockitoSugar {
+class ContactEmailControllerSpec extends SpecBase {
 
   val formProvider = new ContactEmailFormProvider()
   val form: Form[String] = formProvider()

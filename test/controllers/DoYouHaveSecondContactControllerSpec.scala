@@ -19,19 +19,16 @@ package controllers
 import base.SpecBase
 import forms.DoYouHaveSecondContactFormProvider
 import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
-import org.scalatestplus.mockito.MockitoSugar
 import pages.{ContactNamePage, DoYouHaveSecondContactPage}
 import play.api.data.Form
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.DoYouHaveSecondContactView
 
 import scala.concurrent.Future
 
-class DoYouHaveSecondContactControllerSpec extends SpecBase with MockitoSugar {
+class DoYouHaveSecondContactControllerSpec extends SpecBase {
 
   val formProvider = new DoYouHaveSecondContactFormProvider()
   val form: Form[Boolean] = formProvider()
@@ -81,12 +78,7 @@ class DoYouHaveSecondContactControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
-          )
-          .build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request =

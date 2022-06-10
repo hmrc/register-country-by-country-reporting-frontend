@@ -20,7 +20,6 @@ import base.SpecBase
 import forms.SecondContactNameFormProvider
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.scalatestplus.mockito.MockitoSugar
 import pages.SecondContactNamePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -28,7 +27,7 @@ import views.html.SecondContactNameView
 
 import scala.concurrent.Future
 
-class SecondContactNameControllerSpec extends SpecBase with MockitoSugar {
+class SecondContactNameControllerSpec extends SpecBase {
 
   val formProvider = new SecondContactNameFormProvider()
   val form = formProvider()

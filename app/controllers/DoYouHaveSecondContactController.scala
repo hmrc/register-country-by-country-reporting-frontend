@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.DoYouHaveSecondContactFormProvider
 import models.Mode
-import navigation.Navigator
+import navigation.CBCRNavigator
 import pages.{ContactNamePage, DoYouHaveSecondContactPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,13 +31,13 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DoYouHaveSecondContactController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         navigator: Navigator,
-                                         standardActionSets: StandardActionSets,
-                                         formProvider: DoYouHaveSecondContactFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: DoYouHaveSecondContactView
+                                                  override val messagesApi: MessagesApi,
+                                                  sessionRepository: SessionRepository,
+                                                  navigator: CBCRNavigator,
+                                                  standardActionSets: StandardActionSets,
+                                                  formProvider: DoYouHaveSecondContactFormProvider,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: DoYouHaveSecondContactView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()

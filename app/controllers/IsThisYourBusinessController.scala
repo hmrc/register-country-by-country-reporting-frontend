@@ -51,7 +51,7 @@ class IsThisYourBusinessController @Inject()(
     implicit request =>
       buildRegistrationRequest() match {
         case Some(registerWithID) =>
-          registrationConnector.registerWithID(registerWithID).flatMap {
+          registrationConnector.registerWithID(registerWithID).map {
             case Right(response) =>
               request.userAnswers.set(RegistrationInfoPage, RegistrationInfo(response)).map(sessionRepository.set)
               val preparedForm = request.userAnswers.get(IsThisYourBusinessPage) match {
@@ -59,11 +59,11 @@ class IsThisYourBusinessController @Inject()(
                 case Some(value) => form.fill(value)
               }
 
-              Future.successful(Ok(view(preparedForm, RegistrationInfo(response), mode)))
+              Ok(view(preparedForm, RegistrationInfo(response), mode))
             case Left(NotFoundError) =>
-              Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad())) //TODO: Change to BusinessNotIdentifiedController when implemented
+              Redirect(routes.JourneyRecoveryController.onPageLoad()) //TODO: Change to BusinessNotIdentifiedController when implemented
             case _ =>
-              Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad())) //TODO: Change to ThereIsAProblemController when implemented
+              Redirect(routes.JourneyRecoveryController.onPageLoad()) //TODO: Change to ThereIsAProblemController when implemented
           }
         case _ =>
           Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad())) //TODO: Change to ThereIsAProblemController when implemented
@@ -83,24 +83,18 @@ class IsThisYourBusinessController @Inject()(
           utr,
           requiresNameMatch = true,
           isAnAgent = false,
-          WithIDOrganisation(
-            businessName,
-            businessType.toString
-          )
+          WithIDOrganisation(businessName, businessType.toString)
         )
       )
     )
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
     implicit request =>
-
       form.bindFromRequest().fold(
         formWithErrors =>
           request.userAnswers.get(RegistrationInfoPage).fold{
             Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
-          } { response =>
-          Future.successful(BadRequest(view(formWithErrors, response, mode)))
-          },
+          } { registrationInfo => Future.successful(BadRequest(view(formWithErrors, registrationInfo, mode)))},
 
         value =>
           for {

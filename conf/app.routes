@@ -40,6 +40,16 @@ POST       /register/business-name                          controllers.Business
 GET        /register/change-business-name                   controllers.BusinessNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /register/change-business-name                   controllers.BusinessNameController.onSubmit(mode: Mode = CheckMode)
 
+GET        /register/utr                                    controllers.UTRController.onPageLoad(mode: Mode = NormalMode)
+POST       /register/utr                                    controllers.UTRController.onSubmit(mode: Mode = NormalMode)
+GET        /register/change-utr                             controllers.UTRController.onPageLoad(mode: Mode = CheckMode)
+POST       /register/change-utr                             controllers.UTRController.onSubmit(mode: Mode = CheckMode)
+
+GET        /register/is-this-your-business                  controllers.IsThisYourBusinessController.onPageLoad(mode: Mode = NormalMode)
+POST       /register/is-this-your-business                  controllers.IsThisYourBusinessController.onSubmit(mode: Mode = NormalMode)
+GET        /register/change-is-this-your-business           controllers.IsThisYourBusinessController.onPageLoad(mode: Mode = CheckMode)
+POST       /register/change-is-this-your-business           controllers.IsThisYourBusinessController.onSubmit(mode: Mode = CheckMode)
+
 GET        /register/without-id/business-name               controllers.BusinessWithoutIDNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /register/without-id/business-name               controllers.BusinessWithoutIDNameController.onSubmit(mode: Mode = NormalMode)
 GET        /register/change-without-id/business-name        controllers.BusinessWithoutIDNameController.onPageLoad(mode: Mode = CheckMode)
@@ -60,15 +70,10 @@ POST       /register/contact-name                           controllers.ContactN
 GET        /register/change-contact-name                    controllers.ContactNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /register/change-contact-name                    controllers.ContactNameController.onSubmit(mode: Mode = CheckMode)
 
-GET        /register/utr                                    controllers.UTRController.onPageLoad(mode: Mode = NormalMode)
-POST       /register/utr                                    controllers.UTRController.onSubmit(mode: Mode = NormalMode)
-GET        /register/change-utr                             controllers.UTRController.onPageLoad(mode: Mode = CheckMode)
-POST       /register/change-utr                             controllers.UTRController.onSubmit(mode: Mode = CheckMode)
-
-GET        /register/email                        controllers.ContactEmailController.onPageLoad(mode: Mode = NormalMode)
-POST       /register/email                        controllers.ContactEmailController.onSubmit(mode: Mode = NormalMode)
-GET        /register/change-email                  controllers.ContactEmailController.onPageLoad(mode: Mode = CheckMode)
-POST       /register/change-email                  controllers.ContactEmailController.onSubmit(mode: Mode = CheckMode)
+GET        /register/email                                  controllers.ContactEmailController.onPageLoad(mode: Mode = NormalMode)
+POST       /register/email                                  controllers.ContactEmailController.onSubmit(mode: Mode = NormalMode)
+GET        /register/change-email                           controllers.ContactEmailController.onPageLoad(mode: Mode = CheckMode)
+POST       /register/change-email                           controllers.ContactEmailController.onSubmit(mode: Mode = CheckMode)
 
 GET        /register/have-phone                             controllers.HaveTelephoneController.onPageLoad(mode: Mode = NormalMode)
 POST       /register/have-phone                             controllers.HaveTelephoneController.onSubmit(mode: Mode = NormalMode)
@@ -95,26 +100,17 @@ POST       /register/second-contact-phone                   controllers.SecondCo
 GET        /register/change-second-contact-phone            controllers.SecondContactPhoneController.onPageLoad(mode: Mode = CheckMode)
 POST       /register/change-second-contact-phone            controllers.SecondContactPhoneController.onSubmit(mode: Mode = CheckMode)
 
-GET        /register/have-second-contact                        controllers.DoYouHaveSecondContactController.onPageLoad(mode: Mode = NormalMode)
-POST       /register/have-second-contact                        controllers.DoYouHaveSecondContactController.onSubmit(mode: Mode = NormalMode)
-GET        /register/change-have-second-contact                  controllers.DoYouHaveSecondContactController.onPageLoad(mode: Mode = CheckMode)
-POST       /register/change-have-second-contact                  controllers.DoYouHaveSecondContactController.onSubmit(mode: Mode = CheckMode)
+GET        /register/have-second-contact                    controllers.DoYouHaveSecondContactController.onPageLoad(mode: Mode = NormalMode)
+POST       /register/have-second-contact                    controllers.DoYouHaveSecondContactController.onSubmit(mode: Mode = NormalMode)
+GET        /register/change-have-second-contact             controllers.DoYouHaveSecondContactController.onPageLoad(mode: Mode = CheckMode)
+POST       /register/change-have-second-contact             controllers.DoYouHaveSecondContactController.onSubmit(mode: Mode = CheckMode)
 
-GET        /register/second-contact-name                    controllers.SecondContactNameController.onPageLoad(mode: Mode = NormalMode)
-POST       /register/second-contact-name                    controllers.SecondContactNameController.onSubmit(mode: Mode = NormalMode)
-GET        /register/change-second-contact-name             controllers.SecondContactNameController.onPageLoad(mode: Mode = CheckMode)
-POST       /register/change-second-contact-name             controllers.SecondContactNameController.onSubmit(mode: Mode = CheckMode)
-
-GET        /register/second-contact-email                        controllers.SecondContactEmailController.onPageLoad(mode: Mode = NormalMode)
-POST       /register/second-contact-email                        controllers.SecondContactEmailController.onSubmit(mode: Mode = NormalMode)
-GET        /register/change-second-contact-email                  controllers.SecondContactEmailController.onPageLoad(mode: Mode = CheckMode)
-POST       /register/change-second-contact-email                  controllers.SecondContactEmailController.onSubmit(mode: Mode = CheckMode)
+GET        /register/second-contact-email                   controllers.SecondContactEmailController.onPageLoad(mode: Mode = NormalMode)
+POST       /register/second-contact-email                   controllers.SecondContactEmailController.onSubmit(mode: Mode = NormalMode)
+GET        /register/change-second-contact-email            controllers.SecondContactEmailController.onPageLoad(mode: Mode = CheckMode)
+POST       /register/change-second-contact-email            controllers.SecondContactEmailController.onSubmit(mode: Mode = CheckMode)
 
 GET        /register/confirm-registration                   controllers.RegistrationConfirmationController.onPageLoad()
 
-GET        /register/problem/individual-sign-in-problem                       controllers.UnauthorisedIndividualController.onPageLoad()
+GET        /register/problem/individual-sign-in-problem     controllers.UnauthorisedIndividualController.onPageLoad()
 
-GET        /isThisYourBusiness                        controllers.IsThisYourBusinessController.onPageLoad(mode: Mode = NormalMode)
-POST       /isThisYourBusiness                        controllers.IsThisYourBusinessController.onSubmit(mode: Mode = NormalMode)
-GET        /changeIsThisYourBusiness                  controllers.IsThisYourBusinessController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeIsThisYourBusiness                  controllers.IsThisYourBusinessController.onSubmit(mode: Mode = CheckMode)

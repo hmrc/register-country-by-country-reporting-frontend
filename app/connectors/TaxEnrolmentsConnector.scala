@@ -19,9 +19,8 @@ package connectors
 import config.FrontendAppConfig
 import models.{EnrolmentRequest, SubscriptionInfo}
 import play.api.Logging
-import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.HttpReads.{is2xx, is4xx}
+import uk.gov.hmrc.http.HttpReads.is2xx
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import javax.inject.Inject

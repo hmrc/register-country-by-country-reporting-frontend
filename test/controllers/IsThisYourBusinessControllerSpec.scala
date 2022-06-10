@@ -1,36 +1,73 @@
+/*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers
 
 import base.SpecBase
+import connectors.RegistrationConnector
 import forms.IsThisYourBusinessFormProvider
-import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import models.BusinessType.LimitedCompany
+import models.matching.RegistrationInfo
+import models.register.response.RegisterWithIDResponse
+import models.register.response.details.{AddressResponse, OrganisationResponse}
+import models.{NormalMode, SafeId}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
-import pages.IsThisYourBusinessPage
+import pages.{BusinessNamePage, BusinessTypePage, IsThisYourBusinessPage, RegistrationInfoPage, UTRPage}
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import views.html.IsThisYourBusinessView
 
 import scala.concurrent.Future
 
-class IsThisYourBusinessControllerSpec extends SpecBase with MockitoSugar {
-
-  def onwardRoute = Call("GET", "/foo")
+class IsThisYourBusinessControllerSpec extends SpecBase {
 
   val formProvider = new IsThisYourBusinessFormProvider()
   val form = formProvider()
 
   lazy val isThisYourBusinessRoute = routes.IsThisYourBusinessController.onPageLoad(NormalMode).url
 
+  val baseUserAnswers = emptyUserAnswers
+    .set(UTRPage, "1234567890").success.value
+    .set(BusinessNamePage, "Business Name").success.value
+    .set(BusinessTypePage, LimitedCompany).success.value
+
+  val registrationInfo = RegistrationInfo(
+    SafeId("safe"),
+    "Business Name",
+    AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
+  )
+
+  val mockRegistrationConnector = mock[RegistrationConnector]
+
   "IsThisYourBusiness Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
+        .overrides(
+          bind[RegistrationConnector].toInstance(mockRegistrationConnector)
+        ).build()
+
+      when(mockRegistrationConnector.registerWithID(any())(any(), any()))
+        .thenReturn(Future.successful(Right(RegisterWithIDResponse(
+          SafeId("safe"),
+          OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
+          AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
+        ))))
 
       running(application) {
         val request = FakeRequest(GET, isThisYourBusinessRoute)
@@ -40,15 +77,25 @@ class IsThisYourBusinessControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[IsThisYourBusinessView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, registrationInfo, NormalMode)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(IsThisYourBusinessPage, true).success.value
+      val userAnswers = baseUserAnswers.set(IsThisYourBusinessPage, true).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(
+          bind[RegistrationConnector].toInstance(mockRegistrationConnector)
+        ).build()
+
+      when(mockRegistrationConnector.registerWithID(any())(any(), any()))
+        .thenReturn(Future.successful(Right(RegisterWithIDResponse(
+          SafeId("safe"),
+          OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
+          AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
+        ))))
 
       running(application) {
         val request = FakeRequest(GET, isThisYourBusinessRoute)
@@ -58,23 +105,15 @@ class IsThisYourBusinessControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), registrationInfo, NormalMode)(request, messages(application)).toString
       }
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
         val request =
@@ -90,7 +129,9 @@ class IsThisYourBusinessControllerSpec extends SpecBase with MockitoSugar {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = baseUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request =
@@ -104,7 +145,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, registrationInfo, NormalMode)(request, messages(application)).toString
       }
     }
 

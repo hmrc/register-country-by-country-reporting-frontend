@@ -21,7 +21,6 @@ import forms.BusinessNameFormProvider
 import models.BusinessType.LimitedCompany
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.scalatestplus.mockito.MockitoSugar
 import pages.{BusinessNamePage, BusinessTypePage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -29,7 +28,7 @@ import views.html.BusinessNameView
 
 import scala.concurrent.Future
 
-class BusinessNameControllerSpec extends SpecBase with MockitoSugar {
+class BusinessNameControllerSpec extends SpecBase {
 
   val formProvider = new BusinessNameFormProvider()
   val form = formProvider(LimitedCompany)
