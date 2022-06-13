@@ -61,10 +61,14 @@ class BusinessTypeController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessTypePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessTypePage, mode, updatedAnswers))
+          if (request.userAnswers.hasNewValue(BusinessTypePage, value)) {
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessTypePage, value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(BusinessTypePage, mode, updatedAnswers))
+          } else {
+            Future.successful(Redirect(navigator.nextPage(BusinessTypePage, mode, request.userAnswers)))
+          }
       )
   }
 }

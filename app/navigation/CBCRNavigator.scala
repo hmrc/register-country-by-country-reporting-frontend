@@ -41,7 +41,7 @@ class CBCRNavigator @Inject()() extends Navigator {
       ua,
       IsThisYourBusinessPage,
       routes.ContactNameController.onPageLoad(NormalMode),
-      routes.IsThisYourBusinessController.onPageLoad(NormalMode) //TODO change when next pages are implemented
+      routes.BusinessNotIdentifiedController.onPageLoad()
     )
     case BusinessWithoutIDNamePage   => _ => routes.BusinessHaveDifferentNameController.onPageLoad(NormalMode)
     case BusinessHaveDifferentNamePage   => ua => yesNoPage(
@@ -110,7 +110,7 @@ class CBCRNavigator @Inject()() extends Navigator {
       ua,
       IsThisYourBusinessPage,
       checkNextPageForValueThenRoute(CheckMode, ua, ContactNamePage, routes.ContactNameController.onPageLoad(CheckMode)),
-      routes.IsThisYourBusinessController.onPageLoad(CheckMode) //TODO change when next pages are implemented
+      routes.BusinessNotIdentifiedController.onPageLoad()
     )
     case ContactNamePage => ua => checkNextPageForValueThenRoute(CheckMode, ua, ContactEmailPage, routes.ContactEmailController.onPageLoad(CheckMode))
     case ContactEmailPage => ua => checkNextPageForValueThenRoute(CheckMode, ua, HaveTelephonePage, routes.HaveTelephoneController.onPageLoad(CheckMode))
