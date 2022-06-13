@@ -19,8 +19,10 @@ package connectors
 import base.{SpecBase, WireMockServerHandler}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, urlEqualTo}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import generators.Generators
+import models.subscription.request.CreateSubscriptionForCBCRequest
 import models.{SafeId, SubscriptionID}
-import org.scalacheck.Gen
+import org.scalacheck.{Arbitrary, Gen}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.Application
 import play.api.http.Status.OK
@@ -29,13 +31,14 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with ScalaCheckPropertyChecks {
+class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with ScalaCheckPropertyChecks with Generators {
 
   lazy override val app: Application = new GuiceApplicationBuilder()
     .configure(
       conf = "microservice.services.register-country-by-country.port" -> server.port()
     )
     .build()
+
   lazy val connector: SubscriptionConnector = app.injector.instanceOf[SubscriptionConnector]
   private val subscriptionUrl               = "/register-country-by-country-reporting/subscription"
   private val errorCodes: Gen[Int]          = Gen.oneOf(Seq(400, 404, 403, 500, 501, 502, 503, 504))
@@ -43,7 +46,7 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with
 
   "SubscriptionConnector" - {
     "readSubscription" - {
-      "must return SubscriptionID for valid input request for MDR" in {
+      "must return SubscriptionID for valid input request" in {
         val expectedResponse  = SubscriptionID("subscriptionID")
 
         val subscriptionResponse: String =
@@ -102,6 +105,71 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with
         stubPostResponse(s"/read-subscription/${safeId.value}", errorCode, subscriptionErrorResponse)
 
         val result = connector.readSubscription(safeId)
+        result.futureValue mustBe None
+      }
+    }
+
+    "createSubscription" - {
+      val createSubscriptionRequest = Arbitrary.arbitrary[CreateSubscriptionForCBCRequest].sample.value
+
+      "must return SubscriptionID for valid input request" in {
+        val expectedResponse  = SubscriptionID("XACBC0000123456")
+
+        val subscriptionResponse: String =
+          s"""
+             |{
+             | "createSubscriptionForCBCResponse": {
+             |"responseCommon": {
+             |"status": "OK",
+             |"processingDate": "1000-01-01T00:00:00Z"
+             |  },
+             |  "responseDetail": {
+             |   "subscriptionID": "XACBC0000123456"
+             |  }
+             |} }""".stripMargin
+
+        stubPostResponse(s"/create-subscription", OK, subscriptionResponse)
+
+        val result: Future[Option[SubscriptionID]] = connector.createSubscription(createSubscriptionRequest)
+        result.futureValue.value mustBe expectedResponse
+      }
+
+      "must return None for invalid json response" in {
+        val subscriptionResponse: String =
+          s"""
+             |{
+             | "createSubscriptionForCBCResponse": {
+             |"responseCommon": {
+             |"status": "OK",
+             |"processingDate": "1000-01-01T00:00:00Z"
+             |  },
+             |  "responseDetail": {
+             |  }
+             |} }""".stripMargin
+
+        stubPostResponse(s"/create-subscription", OK, subscriptionResponse)
+
+        val result = connector.createSubscription(createSubscriptionRequest)
+        result.futureValue mustBe None
+      }
+
+      "must return None when create subscription fails" in {
+        val errorCode: Int = errorCodes.sample.value
+
+        val subscriptionErrorResponse: String =
+          s"""
+             | "errorDetail": {
+             |    "timestamp": "2016-08-16T18:15:41Z",
+             |    "correlationId": "f058ebd6-02f7-4d3f-942e-904344e8cde5",
+             |    "errorCode": "$errorCode",
+             |    "errorMessage": "Internal error",
+             |    "source": "Internal error"
+             |  }
+             |""".stripMargin
+
+        stubPostResponse(s"/create-subscription", errorCode, subscriptionErrorResponse)
+
+        val result = connector.createSubscription(createSubscriptionRequest)
         result.futureValue mustBe None
       }
     }

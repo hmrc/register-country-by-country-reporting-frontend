@@ -22,10 +22,10 @@ case class SubscriptionInfo(safeID: String,
                             saUtr: Option[String] = None,
                             ctUtr: Option[String] = None,
                             nonUkPostcode: Option[String] = None,
-                            mdrId: String
+                            cbcId: String
                            ){
   def convertToEnrolmentRequest: EnrolmentRequest =
-    EnrolmentRequest(identifiers = Seq(Identifier("MDRID", mdrId)), verifiers = buildVerifiers)
+    EnrolmentRequest(identifiers = Seq(Identifier("cbcId", cbcId)), verifiers = buildVerifiers)
 
   def buildVerifiers: Seq[Verifier] = {
 
