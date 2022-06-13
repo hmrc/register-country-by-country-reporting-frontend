@@ -16,11 +16,26 @@
 
 package pages
 
+import models.UserAnswers
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object DoYouHaveSecondContactPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "doYouHaveSecondContact"
+
+
+  val removePage: (Try[UserAnswers], QuestionPage[_]) => Try[UserAnswers] =
+    (ua: Try[UserAnswers], page: QuestionPage[_]) => ua.flatMap(_.remove(page))
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) =>
+        List(SecondContactNamePage, SecondContactEmailPage, SecondContactHavePhonePage, SecondContactPhonePage).foldLeft(Try(userAnswers))(removePage)
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
 }

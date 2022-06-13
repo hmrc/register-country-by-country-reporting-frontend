@@ -23,11 +23,30 @@ import scala.util.Try
 
 case object DoYouHaveUTRPage extends QuestionPage[Boolean] {
 
+  private val withOutIdPages = List(
+    BusinessTypePage,
+    UTRPage,
+    BusinessNamePage,
+    IsThisYourBusinessPage,
+    RegistrationInfoPage
+  )
+
+  private val withIDPages = List(
+    BusinessWithoutIDNamePage,
+    BusinessHaveDifferentNamePage,
+    WhatIsTradingNamePage,
+    BusinessWithoutIdAddressPage
+  )
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "doYouHaveUTR"
 
+  val removePage: (Try[UserAnswers], QuestionPage[_]) => Try[UserAnswers] =
+    (ua: Try[UserAnswers], page: QuestionPage[_]) => ua.flatMap(_.remove(page))
+
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case Some(true)  => withIDPages.foldLeft(Try(userAnswers))(removePage)
+    case Some(false) => withOutIdPages.foldLeft(Try(userAnswers))(removePage)
     case _           => super.cleanup(value, userAnswers)
   }
 }

@@ -18,26 +18,27 @@ package viewmodels.checkAnswers
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.ContactPhonePage
+import pages.DoYouHaveUTRPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ContactPhoneSummary {
+object DoYouHaveUTRSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
-    val value = answers.get(ContactPhonePage).getOrElse("None")
+  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(DoYouHaveUTRPage).map {
+      answer =>
 
-    Some(SummaryListRowViewModel(
-      key = "contactPhone.checkYourAnswersLabel",
-      value = ValueViewModel(HtmlFormat.escape(value).toString),
-      actions = Seq(
-        ActionItemViewModel("site.change", routes.HaveTelephoneController.onPageLoad(CheckMode).url)
-          .withVisuallyHiddenText(messages("contactPhone.change.hidden"))
-      )))
+        val value = if (answer) "site.yes" else "site.no"
 
-  }
-
+        SummaryListRowViewModel(
+          key     = "doYouHaveUTR.checkYourAnswersLabel",
+          value   = ValueViewModel(value),
+          actions = Seq(
+            ActionItemViewModel("site.change", routes.DoYouHaveUTRController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("doYouHaveUTR.checkYourAnswersLabel.hiddenText"))
+          )
+        )
+    }
 }

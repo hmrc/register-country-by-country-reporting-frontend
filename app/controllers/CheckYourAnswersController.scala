@@ -21,23 +21,37 @@ import controllers.actions.StandardActionSets
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.{CheckYourAnswersHelper, CountryListFactory}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
+
+import scala.concurrent.Future
 
 class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             standardActionSets: StandardActionSets,
                                             val controllerComponents: MessagesControllerComponents,
-                                            view: CheckYourAnswersView
+                                            view: CheckYourAnswersView,
+                                            countryListFactory: CountryListFactory
                                           ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
 
-      val list = SummaryListViewModel(
-        rows = Seq.empty
-      )
+      val checkYourAnswersHelper =  new CheckYourAnswersHelper(userAnswers = request.userAnswers, countryListFactory = countryListFactory)
 
-      Ok(view(list))
+      val businessList = SummaryListViewModel(checkYourAnswersHelper.businessSection)
+      val firstContactList = SummaryListViewModel(checkYourAnswersHelper.firstContactSection)
+      val secondContactList = SummaryListViewModel(checkYourAnswersHelper.secondContactSection)
+
+
+
+      Ok(view(businessList, firstContactList, secondContactList))
+  }
+
+
+  def onSubmit(): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
+    implicit request =>
+      Future.successful(Ok("Ok")) //ToDo submit registration
   }
 }
