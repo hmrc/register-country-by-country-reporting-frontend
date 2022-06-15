@@ -61,7 +61,8 @@ class IsThisYourBusinessController @Inject()(
 
               Ok(view(preparedForm, RegistrationInfo(response), mode))
             case Left(NotFoundError) =>
-              Redirect(routes.JourneyRecoveryController.onPageLoad()) //TODO: Change to BusinessNotIdentifiedController when implemented
+              Redirect(routes.BusinessNotIdentifiedController.onPageLoad())
+
             case _ =>
               Redirect(routes.JourneyRecoveryController.onPageLoad()) //TODO: Change to ThereIsAProblemController when implemented
           }

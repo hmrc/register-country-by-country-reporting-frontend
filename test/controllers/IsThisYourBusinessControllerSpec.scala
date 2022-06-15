@@ -23,7 +23,7 @@ import models.BusinessType.LimitedCompany
 import models.matching.RegistrationInfo
 import models.register.response.RegisterWithIDResponse
 import models.register.response.details.{AddressResponse, OrganisationResponse}
-import models.{NormalMode, SafeId}
+import models.{NormalMode, NotFoundError, SafeId}
 import org.mockito.ArgumentMatchers.any
 import pages.{BusinessNamePage, BusinessTypePage, IsThisYourBusinessPage, RegistrationInfoPage, UTRPage}
 import play.api.inject.bind
@@ -80,6 +80,32 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
         contentAsString(result) mustEqual view(form, registrationInfo, NormalMode)(request, messages(application)).toString
       }
     }
+
+    "redirect to we are yet to identify your business when it's a non-match" in {
+
+      val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
+        .overrides(
+          bind[RegistrationConnector].toInstance(mockRegistrationConnector)
+        ).build()
+
+      when(mockRegistrationConnector.registerWithID(any())(any(), any()))
+        .thenReturn(Future.successful(Left(NotFoundError)))
+
+      running(application) {
+        val request = FakeRequest(GET, isThisYourBusinessRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[IsThisYourBusinessView]
+
+        status(result) mustEqual SEE_OTHER
+
+       redirectLocation(result) mustBe Some(routes.BusinessNotIdentifiedController.onPageLoad().url)
+      }
+    }
+
+
+
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 

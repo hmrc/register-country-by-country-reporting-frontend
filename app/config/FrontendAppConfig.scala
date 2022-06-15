@@ -38,6 +38,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String       = configuration.get[String]("urls.signOut")
   lazy val lostUTRUrl: String  = configuration.get[String]("urls.lostUTR")
+  lazy val corporationTaxEnquiriesLink: String         = configuration.get[String]("urls.corporationTaxEnquiries")
+  lazy val selfAssessmentEnquiriesLink: String         = configuration.get[String]("urls.selfAssessmentEnquiries")
+  lazy val emailEnquiries: String                      = configuration.get[String]("urls.emailEnquiries")
 
   lazy val registerCountryByCountryUrl: String =
     s"${configuration.get[Service]("microservice.services.register-country-by-country").baseUrl}${configuration.get[String]("microservice.services.register-country-by-country.startUrl")}"
