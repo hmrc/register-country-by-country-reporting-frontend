@@ -22,5 +22,5 @@ case object UTRPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "uTR"
+  override def toString: String = "utr"
 }

@@ -20,7 +20,6 @@ import base.SpecBase
 import forms.BusinessWithoutIDNameFormProvider
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.scalatestplus.mockito.MockitoSugar
 import pages.BusinessWithoutIDNamePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -28,7 +27,7 @@ import views.html.BusinessWithoutIDNameView
 
 import scala.concurrent.Future
 
-class BusinessWithoutIDNameControllerSpec extends SpecBase with MockitoSugar {
+class BusinessWithoutIDNameControllerSpec extends SpecBase {
 
   val formProvider = new BusinessWithoutIDNameFormProvider()
   val form = formProvider()

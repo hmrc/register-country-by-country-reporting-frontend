@@ -45,7 +45,6 @@ trait SpecBase
     with IntegrationPatience {
 
   val userAnswersId: String = "id"
-
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   def onwardRoute: Call                                  = Call("GET", "/foo")

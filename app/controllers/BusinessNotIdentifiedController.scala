@@ -19,6 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import models.BusinessType.{LimitedCompany, UnincorporatedAssociation}
+import models.NormalMode
 import pages.BusinessTypePage
 
 import javax.inject.Inject
@@ -37,10 +38,12 @@ class BusinessNotIdentifiedController @Inject()(
 
   def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
+      val startUrl = routes.DoYouHaveUTRController.onPageLoad(NormalMode).url
+
       val contactUrl: String = request.userAnswers.get(BusinessTypePage) match {
         case Some(LimitedCompany) | Some(UnincorporatedAssociation) => appConfig.corporationTaxEnquiriesLink
         case _                                                      => appConfig.selfAssessmentEnquiriesLink
       }
-      Ok(view(contactUrl))
+      Ok(view(contactUrl,startUrl))
   }
 }

@@ -160,12 +160,21 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     }
   }
 
+
+  val subscriptionIDRegex              = "^[X][A-Z][0-9]{13}"
+  def validSubscriptionID: Gen[String] = RegexpGen.from(subscriptionIDRegex)
+
+  val safeIDRegex              = "^[0-9A-Za-z]{1,15}"
+  def validSafeID: Gen[String] = RegexpGen.from(safeIDRegex)
+
+
+
   def stringsNotOfFixedLengthNumeric(givenLength: Int): Gen[String] = for {
     maxLength <- givenLength + 50
     length <- Gen.chooseNum(1, maxLength).suchThat(_ != givenLength)
     chars <- listOfN(length, Gen.numChar)
   } yield chars.mkString
-  
+
   def validPhoneNumberTooLong(minLength: Int): Gen[String] = for {
     maxLength <- (minLength * 2).max(100)
     length    <- Gen.chooseNum(minLength + 1, maxLength)

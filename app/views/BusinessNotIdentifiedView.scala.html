@@ -23,7 +23,7 @@
         govukButton: GovukButton
 )
 
-@(contactUrl: String)(implicit request: Request[_], messages: Messages)
+@(contactUrl: String, startUrl: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("businessNotIdentified.title"))) {
 
@@ -55,7 +55,7 @@
     </p>
 
     @govukButton(
-        ButtonViewModel(messages("businessNotIdentified.button")).withAttribute("id", "submit").asLink(appConfig.loginContinueUrl)
+        ButtonViewModel(messages("businessNotIdentified.button")).withAttribute("id", "submit").asLink(startUrl)
     )
 
 }

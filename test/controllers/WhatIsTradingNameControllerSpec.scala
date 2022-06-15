@@ -20,7 +20,6 @@ import base.SpecBase
 import forms.WhatIsTradingNameFormProvider
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.scalatestplus.mockito.MockitoSugar
 import pages.WhatIsTradingNamePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -28,7 +27,7 @@ import views.html.WhatIsTradingNameView
 
 import scala.concurrent.Future
 
-class WhatIsTradingNameControllerSpec extends SpecBase with MockitoSugar {
+class WhatIsTradingNameControllerSpec extends SpecBase {
 
   val formProvider = new WhatIsTradingNameFormProvider()
   val form = formProvider()

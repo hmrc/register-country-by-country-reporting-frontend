@@ -36,7 +36,13 @@ class CBCRNavigator @Inject()() extends Navigator {
     )
     case BusinessTypePage   => _ => routes.UTRController.onPageLoad(NormalMode)
     case UTRPage   => _ => routes.BusinessNameController.onPageLoad(NormalMode)
-    case BusinessNamePage   => _ => routes.BusinessNameController.onPageLoad(NormalMode) //TODO change when next pages are implemented
+    case BusinessNamePage   => _ => routes.IsThisYourBusinessController.onPageLoad(NormalMode)
+    case IsThisYourBusinessPage   => ua => yesNoPage(
+      ua,
+      IsThisYourBusinessPage,
+      routes.ContactNameController.onPageLoad(NormalMode),
+      routes.IsThisYourBusinessController.onPageLoad(NormalMode) //TODO change when next pages are implemented
+    )
     case BusinessWithoutIDNamePage   => _ => routes.BusinessHaveDifferentNameController.onPageLoad(NormalMode)
     case BusinessHaveDifferentNamePage   => ua => yesNoPage(
       ua,
@@ -52,9 +58,15 @@ class CBCRNavigator @Inject()() extends Navigator {
       ua,
       HaveTelephonePage,
       routes.ContactPhoneController.onPageLoad(NormalMode),
-      routes.HaveTelephoneController.onPageLoad(NormalMode) //TODO change when next pages are implemented
+      routes.DoYouHaveSecondContactController.onPageLoad(NormalMode)
     )
-    case ContactPhonePage   => _ => routes.ContactPhoneController.onPageLoad(NormalMode) //TODO change when next pages are implemented
+    case ContactPhonePage   => _ => routes.DoYouHaveSecondContactController.onPageLoad(NormalMode)
+    case DoYouHaveSecondContactPage   => ua => yesNoPage(
+      ua,
+      DoYouHaveSecondContactPage,
+      routes.SecondContactNameController.onPageLoad(NormalMode),
+      routes.CheckYourAnswersController.onPageLoad
+    )
     case SecondContactNamePage   => _ => routes.SecondContactEmailController.onPageLoad(NormalMode)
     case SecondContactEmailPage   => _ => routes.SecondContactHavePhoneController.onPageLoad(NormalMode)
     case SecondContactHavePhonePage   => ua => yesNoPage(

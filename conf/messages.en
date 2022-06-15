@@ -165,7 +165,7 @@ contactName.error.length = Name must be 35 characters or less
 
 utr.title = What is your {0} Unique Taxpayer Reference?
 utr.heading = What is your {0} Unique Taxpayer Reference?
-utr.hint = This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about {0}. It may be called ‘reference’, ‘UTR’ or ‘official use’. You can
+utr.hint = This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about {0}. It may be called ‘reference’, ‘UTR’ or ‘official use’. You can {1}.
 utr.hint.link = find a lost UTR number (opens in new tab)
 utr.checkYourAnswersLabel = What is your Unique Taxpayer Reference?
 utr.error.required = Enter your {0} Unique Taxpayer Reference
@@ -225,6 +225,13 @@ secondContactPhone.error.invalid = Enter a telephone number in the correct forma
 secondContactPhone.error.length = Telephone number must be 24 characters or less
 secondContactPhone.change.hidden = what is their telephone number?
 
+doYouHaveSecondContact.title = Is there someone else we can contact?
+doYouHaveSecondContact.heading = Is there someone else we can contact if {0} is not available?
+doYouHaveSecondContact.hint = This can be a team mailbox or another contact.
+doYouHaveSecondContact.checkYourAnswersLabel = Do you have a second contact?
+doYouHaveSecondContact.error.required = Select yes if there is someone else we can contact
+doYouHaveSecondContact.change.hidden = if you have a second contact
+
 secondContactEmail.title = What is the email address for {0}?
 secondContactEmail.heading = What is the email address for {0}?
 secondContactEmail.hint = We will use this to send confirmation of your reports and if we have any questions about them.
@@ -243,6 +250,18 @@ registrationConfirmation.p2 = We will send you an email to confirm you have regi
 registrationConfirmation.p3 = You can now {0}.
 registrationConfirmation.p3.link = send a CBC report
 registrationConfirmation.p4.link = What did you think of this service? (opens in new tab)
+
+unauthorisedIndividual.title = Sorry, you’re unable to use this service
+unauthorisedIndividual.heading = Sorry, you’re unable to use this service
+unauthorisedIndividual.paragraph1 = You’ve signed in as an individual. Only organisations can send reports.
+unauthorisedIndividual.paragraph2 = If you need to send reports for an organisation,
+unauthorisedIndividual.link =  sign in with your organisation’s Government Gateway details
+
+isThisYourBusiness.title = Is this your business?
+isThisYourBusiness.heading = Is this your business?
+isThisYourBusiness.checkYourAnswersLabel = Is this your business?
+isThisYourBusiness.error.required = Select yes if this is your business
+isThisYourBusiness.change.hidden = is this your business?
 
 businessNotIdentified.title = The details you entered did not match our records
 businessNotIdentified.heading = The details you entered did not match our records
