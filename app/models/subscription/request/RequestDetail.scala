@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-package models
+package models.subscription.request
 
-import play.api.libs.json.{Reads, __}
+import play.api.libs.json.{Json, OFormat}
 
-case class DisplaySubscriptionResponse(subscriptionID: SubscriptionID)
+case class RequestDetail(
+    IDType: String,
+    IDNumber: String,
+    tradingName: Option[String],
+    isGBUser: Boolean,
+    primaryContact: ContactInformation,
+    secondaryContact: Option[ContactInformation]
+)
 
-object DisplaySubscriptionResponse {
-
-  implicit val reads: Reads[DisplaySubscriptionResponse] = {
-    import play.api.libs.functional.syntax._
-    (__ \ "displaySubscriptionForCBCResponse" \ "responseDetail" \ "subscriptionID").read[String] fmap (id => DisplaySubscriptionResponse(SubscriptionID(id)))
-  }
+object RequestDetail {
+  implicit def format: OFormat[RequestDetail] = Json.format[RequestDetail]
 }
+
+

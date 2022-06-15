@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package models
+package models.subscription.response
 
-import play.api.libs.json.{JsString, Reads, Writes, __}
+import base.SpecBase
+import models.SubscriptionID
+import models.subscription.response
+import play.api.libs.json.Json
 
+class DisplaySubscriptionResponseSpec extends SpecBase {
 
-case class SubscriptionID(value: String)
-
-object SubscriptionID {
-  implicit val reads: Reads[SubscriptionID] = __.read[String].map(SubscriptionID.apply)
-
-  implicit val writes: Writes[SubscriptionID] = Writes(
-    subscriptionID => JsString(subscriptionID.value)
-  )
+    "DisplaySubscriptionResponse" - {
+      "must read DisplaySubscriptionForCBCResponse" in {
+        val json = Json.parse("""{"displaySubscriptionForCBCResponse": {"responseDetail":{"subscriptionID": "id"}}}""".stripMargin)
+        json.as[DisplaySubscriptionResponse] mustBe response.DisplaySubscriptionResponse(SubscriptionID("id"))
+      }
+    }
 }

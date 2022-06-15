@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package models
+package models.subscription.response
 
-import play.api.libs.json.{JsString, Reads, Writes, __}
+import models.SubscriptionID
+import play.api.libs.json.{Reads, __}
 
+case class CreateSubscriptionResponse(subscriptionID: SubscriptionID)
 
-case class SubscriptionID(value: String)
+object CreateSubscriptionResponse {
 
-object SubscriptionID {
-  implicit val reads: Reads[SubscriptionID] = __.read[String].map(SubscriptionID.apply)
-
-  implicit val writes: Writes[SubscriptionID] = Writes(
-    subscriptionID => JsString(subscriptionID.value)
-  )
+  implicit val reads: Reads[CreateSubscriptionResponse] = {
+    import play.api.libs.functional.syntax._
+    (__ \ "createSubscriptionForCBCResponse" \ "responseDetail" \ "subscriptionID").read[SubscriptionID] fmap (id => CreateSubscriptionResponse(id))
+  }
 }
+
+

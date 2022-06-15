@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package models
+package models.subscription.response
 
-import base.SpecBase
-import play.api.libs.json.Json
+import models.SubscriptionID
+import play.api.libs.json.{Reads, __}
 
-class DisplaySubscriptionResponseSpec extends SpecBase {
+case class DisplaySubscriptionResponse(subscriptionID: SubscriptionID)
 
-    "DisplaySubscriptionResponse" - {
-      "must read DisplaySubscriptionForCBCResponse" in {
-        val json = Json.parse("""{"displaySubscriptionForCBCResponse": {"responseDetail":{"subscriptionID": "id"}}}""".stripMargin)
-        json.as[DisplaySubscriptionResponse] mustBe DisplaySubscriptionResponse(SubscriptionID("id"))
-      }
-    }
+object DisplaySubscriptionResponse {
+
+  implicit val reads: Reads[DisplaySubscriptionResponse] = {
+    import play.api.libs.functional.syntax._
+    (__ \ "displaySubscriptionForCBCResponse" \ "responseDetail" \ "subscriptionID").read[SubscriptionID] fmap (id => DisplaySubscriptionResponse(id))
+  }
 }

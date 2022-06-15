@@ -39,8 +39,8 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase with WireMockServerHandl
 
   lazy val connector: EnrolmentStoreProxyConnector = app.injector.instanceOf[EnrolmentStoreProxyConnector]
   val enrolmentStoreProxyUrl                       = "/enrolment-store-proxy/enrolment-store/enrolments"
-  val enrolmentStoreProxyMDR200Url                 = "/enrolment-store-proxy/enrolment-store/enrolments/HMRC-CBC-ORG~CBCID~xxx200/groups"
-  val enrolmentStoreProxyMDR204Url                 = "/enrolment-store-proxy/enrolment-store/enrolments/HMRC-CBC-ORG~CBCID~xxx204/groups"
+  val enrolmentStoreProxy200Url                 = "/enrolment-store-proxy/enrolment-store/enrolments/HMRC-CBC-ORG~CBCID~xxx200/groups"
+  val enrolmentStoreProxy204Url                 = "/enrolment-store-proxy/enrolment-store/enrolments/HMRC-CBC-ORG~CBCID~xxx204/groups"
 
   val enrolmentStoreProxyResponseJson: String =
     """{
@@ -64,14 +64,14 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase with WireMockServerHandl
 
       "return 200 and a enrolmentStatus response when already enrolment exists" in {
         val subscriptionID = SubscriptionID("xxx200")
-        stubResponse(enrolmentStoreProxyMDR200Url, OK, enrolmentStoreProxyResponseJson)
+        stubResponse(enrolmentStoreProxy200Url, OK, enrolmentStoreProxyResponseJson)
         val result = connector.enrolmentExists(subscriptionID)
         result.futureValue mustBe true
       }
 
       "return 204 and a enrolmentStatus response when no enrolment exists" in {
         val subscriptionID = SubscriptionID("xxx204")
-        stubResponse(enrolmentStoreProxyMDR204Url, NO_CONTENT, "")
+        stubResponse(enrolmentStoreProxy204Url, NO_CONTENT, "")
 
         val result = connector.enrolmentExists(subscriptionID)
         result.futureValue mustBe false
@@ -79,14 +79,14 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase with WireMockServerHandl
 
       "return 204 enrolmentStatus response when principalGroupId is empty seq" in {
         val subscriptionID = SubscriptionID("xxx204")
-        stubResponse(enrolmentStoreProxyMDR204Url, OK, enrolmentStoreProxyResponseNoPrincipalIdJson)
+        stubResponse(enrolmentStoreProxy204Url, OK, enrolmentStoreProxyResponseNoPrincipalIdJson)
         val result = connector.enrolmentExists(subscriptionID)
         result.futureValue mustBe false
       }
 
       "return 404 and a enrolmentStatus response when invalid or malfromed URL" in {
         val subscriptionID = SubscriptionID("xxx404")
-        stubResponse(enrolmentStoreProxyMDR204Url, NOT_FOUND, "")
+        stubResponse(enrolmentStoreProxy204Url, NOT_FOUND, "")
         intercept[IllegalStateException](await(connector.enrolmentExists(subscriptionID)))
 
       }

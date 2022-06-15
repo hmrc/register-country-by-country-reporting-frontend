@@ -47,7 +47,7 @@ class RegistrationConnectorSpec extends SpecBase
   private val errorCodes: Gen[Int] = Gen.oneOf(Seq(400, 403, 500, 501, 502, 503, 504))
 
   private val requestCommon: RequestCommon =
-    RequestCommon("2016-08-16T15:55:30Z", "MDR", "ec031b045855445e96f98a569ds56cd2", Some(Seq(RequestParameter("REGIME", "MDR"))))
+    RequestCommon("2016-08-16T15:55:30Z", "CBC", "ec031b045855445e96f98a569ds56cd2", Some(Seq(RequestParameter("REGIME", "CBC"))))
 
   private val registrationWithOrganisationIDPayload: RegisterWithID = RegisterWithID(
     RegisterWithIDRequest(
