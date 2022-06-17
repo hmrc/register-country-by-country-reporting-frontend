@@ -17,7 +17,7 @@
 package utils
 
 import models.UserAnswers
-import pages.{DoYouHaveSecondContactPage, DoYouHaveUTRPage}
+import pages.{DoYouHaveSecondContactPage, DoYouHaveUTRPage, HaveTelephonePage, SecondContactHavePhonePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers._
@@ -42,12 +42,22 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers,
   def businessWithIDSection: Seq[SummaryListRow] =
     Seq(YourBusinessSummary.row(userAnswers, countryListFactory)).flatten
 
+  def contactPhoneSummary: Option[SummaryListRow] = userAnswers.get(HaveTelephonePage) match {
+    case Some(true) => ContactPhoneSummary.row(userAnswers)
+    case _ => None
+  }
+
   def firstContactSection: Seq[SummaryListRow] = Seq(ContactNameSummary.row(userAnswers),
-    ContactEmailSummary.row(userAnswers), ContactPhoneSummary.row(userAnswers)).flatten
+    ContactEmailSummary.row(userAnswers), contactPhoneSummary).flatten
+
+  def secondContactPhoneSummary: Option[SummaryListRow] = userAnswers.get(SecondContactHavePhonePage) match {
+    case Some(true) => SecondContactPhoneSummary.row(userAnswers)
+    case _ => None
+  }
 
   def secondContactSection: Seq[SummaryListRow] = userAnswers.get(DoYouHaveSecondContactPage) match {
     case Some(true) => Seq(DoYouHaveSecondContactSummary.row(userAnswers),
-      SecondContactNameSummary.row(userAnswers), SecondContactEmailSummary.row(userAnswers), SecondContactPhoneSummary.row(userAnswers)).flatten
+      SecondContactNameSummary.row(userAnswers), SecondContactEmailSummary.row(userAnswers), secondContactPhoneSummary).flatten
     case _ => Seq(DoYouHaveSecondContactSummary.row(userAnswers)).flatten
   }
 }

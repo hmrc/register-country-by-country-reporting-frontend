@@ -20,7 +20,6 @@ import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.govuk.SummaryListFluency
-import views.html.CheckYourAnswersView
 
 class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
@@ -35,13 +34,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[CheckYourAnswersView]
-        val businessList = SummaryListViewModel(Seq.empty)
-        val firstContactList = SummaryListViewModel(Seq.empty)
-        val secondContactList = SummaryListViewModel(Seq.empty)
-
         status(result) mustEqual OK
-//        contentAsString(result) mustEqual view(businessList, firstContactList, secondContactList)(request, messages(application)).toString
       }
     }
 
