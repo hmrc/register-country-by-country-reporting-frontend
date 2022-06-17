@@ -42,18 +42,13 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers,
   def businessWithIDSection: Seq[SummaryListRow] =
     Seq(YourBusinessSummary.row(userAnswers, countryListFactory)).flatten
 
-  def contactPhoneSummary: Option[SummaryListRow] = userAnswers.get(HaveTelephonePage) match {
-    case Some(true) => ContactPhoneSummary.row(userAnswers)
-    case _ => None
-  }
+  def contactPhoneSummary: Option[SummaryListRow] = userAnswers.get(HaveTelephonePage) flatMap (_ => ContactPhoneSummary.row(userAnswers))
+
 
   def firstContactSection: Seq[SummaryListRow] = Seq(ContactNameSummary.row(userAnswers),
     ContactEmailSummary.row(userAnswers), contactPhoneSummary).flatten
 
-  def secondContactPhoneSummary: Option[SummaryListRow] = userAnswers.get(SecondContactHavePhonePage) match {
-    case Some(true) => SecondContactPhoneSummary.row(userAnswers)
-    case _ => None
-  }
+  def secondContactPhoneSummary: Option[SummaryListRow] = userAnswers.get(HaveTelephonePage) flatMap (_ => SecondContactPhoneSummary.row(userAnswers))
 
   def secondContactSection: Seq[SummaryListRow] = userAnswers.get(DoYouHaveSecondContactPage) match {
     case Some(true) => Seq(DoYouHaveSecondContactSummary.row(userAnswers),
