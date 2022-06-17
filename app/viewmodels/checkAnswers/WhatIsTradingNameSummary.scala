@@ -28,16 +28,17 @@ import viewmodels.implicits._
 object WhatIsTradingNameSummary  {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(WhatIsTradingNamePage).map {
-      answer =>
+{
 
-        SummaryListRowViewModel(
+        val value = answers.get(WhatIsTradingNamePage).getOrElse("None")
+
+        Some(SummaryListRowViewModel(
           key     = "whatIsTradingName.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          value   = ValueViewModel(HtmlFormat.escape(value).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.WhatIsTradingNameController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", routes.BusinessHaveDifferentNameController.onPageLoad(CheckMode).url)
               .withVisuallyHiddenText(messages("whatIsTradingName.change.hidden"))
           )
-        )
+        ))
     }
 }

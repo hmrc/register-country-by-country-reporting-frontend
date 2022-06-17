@@ -37,7 +37,7 @@ object DoYouHaveUTRSummary  {
           value   = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel("site.change", routes.DoYouHaveUTRController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("doYouHaveUTR.checkYourAnswersLabel.hiddenText"))
+              .withVisuallyHiddenText(messages("doYouHaveUTR.change.hidden"))
           )
         )
     }

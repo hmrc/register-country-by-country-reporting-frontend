@@ -67,7 +67,7 @@ unauthorised.heading = You can’t access this service with this account
 
 doYouHaveUTR.title = Do you have a UK Unique Taxpayer Reference (UTR)?
 doYouHaveUTR.checkYourAnswersLabel =  Do you have a UK Unique Taxpayer Reference?
-doYouHaveUTR.checkYourAnswersLabel.hiddenText =  if you have a Unique Taxpayer Reference
+doYouHaveUTR.change.hidden =  if you have a Unique Taxpayer Reference
 doYouHaveUTR.heading = Do you have a UK Unique Taxpayer Reference (UTR)?
 doYouHaveUTR.hint = This is a 10 digit number issued by HMRC and is used to identify individual taxpayers. It will be on tax returns and other letters about Self Assessment or Corporation Tax. You can {0}.
 doYouHaveUTR.hint.link = find a lost UTR number (opens in a new tab)
@@ -212,7 +212,7 @@ secondContactName.title = What is the name of the individual or team we should c
 secondContactName.heading = What is the name of the individual or team we should contact?
 secondContactName.hint = For example, '’Tax team’' or '’Ashley Smith’'.
 secondContactName.checkYourAnswersLabel = Second contact name
-secondContactName.checkYourAnswersLabel.hiddenText = second contact name
+secondContactName.change.hidden = second contact name
 secondContactName.error.required = Enter the name of the individual or team we should contact
 secondContactName.error.invalid = Name of the individual or team must only include letters a to z, numbers 0 to 9, apostrophes, grave accents, ampersands, hyphens, backslashes, carets and spaces
 secondContactName.error.length = Individual or team must be 35 characters or less
@@ -314,4 +314,4 @@ unauthorisedStandardUser.paragraph4 = Your administrator can add, delete or chan
 unauthorisedStandardUser.link =  business tax account (opens in new tab)
 
 businessWithIDName.checkYourAnswersLabel = Your business
-businessWithIDName.checkYourAnswersLabel.hiddenText = your business
+businessWithIDName.change.hidden = your business
