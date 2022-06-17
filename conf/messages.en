@@ -262,3 +262,11 @@ isThisYourBusiness.heading = Is this your business?
 isThisYourBusiness.checkYourAnswersLabel = Is this your business?
 isThisYourBusiness.error.required = Select yes if this is your business
 isThisYourBusiness.change.hidden = is this your business?
+
+preRegistered.title = Your organisation is already registered
+preRegistered.heading = Your organisation is already registered
+preRegistered.withOutID.information = You can access the service using the Government Gateway account you used to register.
+preRegistered.withOutID.GGLink = Sign in to your Government Gateway account (opens in new tab)
+preRegistered.help = You can email {0} if you're having problems accessing the service.
+preRegistered.help.link = enquiries.aeoi@hmrc.gov.uk
+preRegistered.help.linkLocation = mailto:enquiries.aeoi@hmrc.gov.uk

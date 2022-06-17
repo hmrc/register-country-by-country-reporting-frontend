@@ -114,3 +114,4 @@ GET        /register/confirm-registration                   controllers.Registra
 
 GET        /register/problem/individual-sign-in-problem     controllers.UnauthorisedIndividualController.onPageLoad()
 
+GET        /register/problem/organisation-without-utr-pre-registered        controllers.PreRegisteredController.onPageLoad()
