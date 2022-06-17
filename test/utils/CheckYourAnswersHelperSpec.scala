@@ -122,6 +122,130 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
         businessRows.size mustBe 1
     }
+    "must create first contact rows" in {
+      val userAnswers = emptyUserAnswers
+        .set(DoYouHaveUTRPage, false)
+        .success
+        .value
+        .set(BusinessWithoutIDNamePage, "Company")
+        .success
+        .value
+        .set(WhatIsTradingNamePage, "Company two")
+        .success
+        .value
+        .set(BusinessWithoutIdAddressPage, businessAddress)
+        .success
+        .value
+        .set(ContactEmailPage, "test@test.com")
+        .success
+        .value
+        .set(ContactNamePage, "Name Name")
+        .success
+        .value
+        .set(HaveTelephonePage, false)
+        .success
+        .value
+        .set(DoYouHaveSecondContactPage, true)
+        .success
+        .value
+        .set(SecondContactNamePage, "secondContactName")
+        .success
+        .value
+        .set(SecondContactEmailPage, "secondContactEmail")
+        .success
+        .value
+        .set(SecondContactHavePhonePage, true)
+        .success
+        .value
+        .set(SecondContactPhonePage, "secondContactPhone")
+        .success
+        .value
+
+      val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers, maxVisibleChars, countryListFactory)
+
+      val firstContactRows = checkYourAnswersHelper.firstContactSection
+
+      firstContactRows.size mustBe 3
+    }
+    "must create second contact rows" in {
+      val userAnswers = emptyUserAnswers
+        .set(DoYouHaveUTRPage, false)
+        .success
+        .value
+        .set(BusinessWithoutIDNamePage, "Company")
+        .success
+        .value
+        .set(WhatIsTradingNamePage, "Company two")
+        .success
+        .value
+        .set(BusinessWithoutIdAddressPage, businessAddress)
+        .success
+        .value
+        .set(ContactEmailPage, "test@test.com")
+        .success
+        .value
+        .set(ContactNamePage, "Name Name")
+        .success
+        .value
+        .set(HaveTelephonePage, false)
+        .success
+        .value
+        .set(DoYouHaveSecondContactPage, true)
+        .success
+        .value
+        .set(SecondContactNamePage, "secondContactName")
+        .success
+        .value
+        .set(SecondContactEmailPage, "secondContactEmail")
+        .success
+        .value
+        .set(SecondContactHavePhonePage, true)
+        .success
+        .value
+        .set(SecondContactPhonePage, "secondContactPhone")
+        .success
+        .value
+
+      val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers, maxVisibleChars, countryListFactory)
+
+      val secondContactRows = checkYourAnswersHelper.secondContactSection
+
+      secondContactRows.size mustBe 4
+    }
+    "must create no second contact row" in {
+      val userAnswers = emptyUserAnswers
+        .set(DoYouHaveUTRPage, false)
+        .success
+        .value
+        .set(BusinessWithoutIDNamePage, "Company")
+        .success
+        .value
+        .set(WhatIsTradingNamePage, "Company two")
+        .success
+        .value
+        .set(BusinessWithoutIdAddressPage, businessAddress)
+        .success
+        .value
+        .set(ContactEmailPage, "test@test.com")
+        .success
+        .value
+        .set(ContactNamePage, "Name Name")
+        .success
+        .value
+        .set(HaveTelephonePage, false)
+        .success
+        .value
+        .set(DoYouHaveSecondContactPage, false)
+        .success
+        .value
+
+
+      val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers, maxVisibleChars, countryListFactory)
+
+      val secondContactRows = checkYourAnswersHelper.secondContactSection
+
+      secondContactRows.size mustBe 1
+    }
   }
 
 
