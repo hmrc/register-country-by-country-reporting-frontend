@@ -263,6 +263,25 @@ isThisYourBusiness.checkYourAnswersLabel = Is this your business?
 isThisYourBusiness.error.required = Select yes if this is your business
 isThisYourBusiness.change.hidden = is this your business?
 
+businessNotIdentified.title = The details you entered did not match our records
+businessNotIdentified.heading = The details you entered did not match our records
+businessNotIdentified.p1 = To help us find your business, check if you have entered the correct business name and Unique Taxpayer Reference (UTR).
+businessNotIdentified.subheading1 = Try entering your UTR again
+businessNotIdentified.p2 = If entering your UTR again does not work, you can
+businessNotIdentified.p2.link = find a lost UTR number (opens in new tab)
+businessNotIdentified.subheading2 = Try entering your business name again
+businessNotIdentified.p3 = Check if your business name uses:
+businessNotIdentified.bullet1 = capital letters
+businessNotIdentified.bullet2 = spaces
+businessNotIdentified.bullet3 = limited or LTD
+businessNotIdentified.p4 = If we still cannot identify your business, or you do not know your exact business name, you can
+businessNotIdentified.p4.link = contact HMRC (opens in new tab)
+businessNotIdentified.subheading3 = Email HMRC if you still need help
+businessNotIdentified.p5 = You can email
+businessNotIdentified.p5.link = enquiries.aeoi@hmrc.gov.uk
+businessNotIdentified.p5b = if we still cannot find your business.
+businessNotIdentified.button = Try again
+
 preRegistered.title = Your organisation is already registered
 preRegistered.heading = Your organisation is already registered
 preRegistered.withOutID.information = You can access the service using the Government Gateway account you used to register.

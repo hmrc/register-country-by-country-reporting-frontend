@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package models
+package models.subscription.request
 
-import play.api.libs.json.{JsString, Reads, Writes, __}
+import play.api.libs.json.{Json, OFormat}
 
+case class SubscriptionRequest(
+                                requestCommon: RequestCommonForSubscription,
+                                requestDetail: RequestDetail
+                              )
 
-case class SubscriptionID(value: String)
-
-object SubscriptionID {
-  implicit val reads: Reads[SubscriptionID] = __.read[String].map(SubscriptionID.apply)
-
-  implicit val writes: Writes[SubscriptionID] = Writes(
-    subscriptionID => JsString(subscriptionID.value)
-  )
+object SubscriptionRequest {
+  implicit val format: OFormat[SubscriptionRequest] = Json.format[SubscriptionRequest]
 }

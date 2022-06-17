@@ -17,11 +17,13 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.{DisplaySubscriptionResponse, SafeId, SubscriptionID}
+import models.subscription.request.CreateSubscriptionForCBCRequest
+import models.subscription.response.{CreateSubscriptionResponse, DisplaySubscriptionResponse}
+import models.{SafeId, SubscriptionID}
 import play.api.Logging
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.HttpReads.is2xx
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,7 +47,31 @@ class SubscriptionConnector @Inject()(val config: FrontendAppConfig, val http: H
       }
       .recover {
         case e: Exception =>
-          logger.warn(s"S${e.getMessage} has been thrown when display subscription was called")
+          logger.warn(s"Error message ${e.getMessage} has been thrown when display subscription was called")
+          None
+      }
+  }
+
+
+  def createSubscription(createSubscriptionForCBCRequest: CreateSubscriptionForCBCRequest
+                        )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SubscriptionID]] = {
+
+    val submissionUrl = s"${config.registerCountryByCountryUrl}/subscription/create-subscription"
+    http
+      .POST[CreateSubscriptionForCBCRequest, HttpResponse](
+        submissionUrl,
+        createSubscriptionForCBCRequest
+      )
+      .map {
+        case response if is2xx(response.status) =>
+          response.json.asOpt[CreateSubscriptionResponse].map(_.subscriptionID)
+        case response =>
+          logger.warn(s"Unable to create a subscription to ETMP. ${response.status} response status")
+          None
+      }
+      .recover {
+        case e: Exception =>
+          logger.warn(s"Error message ${e.getMessage} has been thrown when create subscription was called")
           None
       }
   }
