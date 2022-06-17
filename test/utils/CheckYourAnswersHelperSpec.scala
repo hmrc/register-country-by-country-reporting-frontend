@@ -25,11 +25,11 @@ import play.api.i18n.Messages
 
 class CheckYourAnswersHelperSpec extends SpecBase {
 
-  val businessAddress = Address("", None, "", None, None, Country("valid", "GB", "United Kingdom"))
-  val matchedAddress = AddressResponse("", None, None, None, None, "GB")
+  val businessAddress: Address = Address("", None, "", None, None, Country("valid", "GB", "United Kingdom"))
+  val matchedAddress: AddressResponse = AddressResponse("", None, None, None, None, "GB")
   implicit val messages: Messages = messages(app)
-  val countryListFactory = app.injector.instanceOf[CountryListFactory]
-  val maxVisibleChars = 100
+  val countryListFactory: CountryListFactory = app.injector.instanceOf[CountryListFactory]
+  val maxVisibleChars: Int = 100
 
   "RowBuilder" - {
     "must Create Business section for a Business without an ID" in {
