@@ -17,7 +17,7 @@
 package utils
 
 import models.UserAnswers
-import pages.{DoYouHaveSecondContactPage, DoYouHaveUTRPage, HaveTelephonePage, SecondContactHavePhonePage}
+import pages.{BusinessHaveDifferentNamePage, DoYouHaveSecondContactPage, DoYouHaveUTRPage, HaveTelephonePage, SecondContactHavePhonePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers._
@@ -32,10 +32,12 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers,
     case _ => Seq.empty[SummaryListRow]
   }
 
+  def tradingNameSummary: Option[SummaryListRow] = userAnswers.get(BusinessHaveDifferentNamePage) flatMap (_ => WhatIsTradingNameSummary.row(userAnswers))
+
   def businessWithoutIDSection: Seq[SummaryListRow] = Seq(
     DoYouHaveUTRSummary.row(userAnswers),
     BusinessWithoutIDNameSummary.row(userAnswers),
-    WhatIsTradingNameSummary.row(userAnswers),
+    tradingNameSummary,
     BusinessWithoutIdAddressSummary.row(userAnswers)
   ).flatten
 
