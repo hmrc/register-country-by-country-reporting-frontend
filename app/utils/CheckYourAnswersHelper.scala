@@ -46,7 +46,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers,
 
   def contactPhoneSummary: Option[SummaryListRow] = userAnswers.get(HaveTelephonePage) flatMap (_ => ContactPhoneSummary.row(userAnswers))
 
-
   def firstContactSection: Seq[SummaryListRow] = Seq(ContactNameSummary.row(userAnswers),
     ContactEmailSummary.row(userAnswers), contactPhoneSummary).flatten
 

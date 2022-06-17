@@ -40,6 +40,9 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         .set(BusinessWithoutIDNamePage, "Company")
         .success
         .value
+        .set(BusinessHaveDifferentNamePage, true)
+        .success
+        .value
         .set(WhatIsTradingNamePage, "Company two")
         .success
         .value
