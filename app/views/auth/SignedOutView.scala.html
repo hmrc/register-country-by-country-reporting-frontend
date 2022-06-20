@@ -19,7 +19,7 @@
     govukButton: GovukButton
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(loginUrl: String)(implicit request: Request[_], messages: Messages)
 
 @layout(
     pageTitle    = titleNoForm(messages("signedOut.title")),
@@ -31,6 +31,8 @@
     <h1 class="govuk-heading-l">@messages("signedOut.heading")</h1>
 
     <p class="govuk-body">@messages("signedOut.guidance")</p>
+
+    <a href=@loginUrl class="govuk-link">@messages("signedOut.backToCBCLink")</a>
 
     <p class="govuk-body">
         @govukButton(
