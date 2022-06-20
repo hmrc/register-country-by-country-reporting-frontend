@@ -28,14 +28,32 @@ case object DoYouHaveUTRPage extends QuestionPage[Boolean] {
     UTRPage,
     BusinessNamePage,
     IsThisYourBusinessPage,
-    RegistrationInfoPage
+    RegistrationInfoPage,
+    ContactNamePage,
+    ContactEmailPage,
+    HaveTelephonePage,
+    ContactPhonePage,
+    DoYouHaveSecondContactPage,
+    SecondContactNamePage,
+    SecondContactEmailPage,
+    SecondContactHavePhonePage,
+    SecondContactPhonePage
   )
 
   private val withIDPages = List(
     BusinessWithoutIDNamePage,
     BusinessHaveDifferentNamePage,
     WhatIsTradingNamePage,
-    BusinessWithoutIdAddressPage
+    BusinessWithoutIdAddressPage,
+    ContactNamePage,
+    ContactEmailPage,
+    HaveTelephonePage,
+    ContactPhonePage,
+    DoYouHaveSecondContactPage,
+    SecondContactNamePage,
+    SecondContactEmailPage,
+    SecondContactHavePhonePage,
+    SecondContactPhonePage
   )
   override def path: JsPath = JsPath \ toString
 

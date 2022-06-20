@@ -30,15 +30,19 @@
     <h2 class="govuk-heading-m">@messages("checkYourAnswers.businessDetails")</h2>
     @govukSummaryList(businessList)
 
-    <h2 class="govuk-heading-m">@messages("checkYourAnswers.firstContact")</h2>
-    @govukSummaryList(firstContact)
+    <div class="govuk-!-padding-top-9">
+        <h2 class="govuk-heading-m">@messages("checkYourAnswers.firstContact")</h2>
+        @govukSummaryList(firstContact)
 
-    <h2 class="govuk-heading-m">@messages("checkYourAnswers.secondContact")</h2>
-    @govukSummaryList(secondContact)
+        <h2 class="govuk-heading-m govuk-!-padding-top-9">@messages("checkYourAnswers.secondContact")</h2>
+        @govukSummaryList(secondContact)
+    </div>
 
-    <h2 class="govuk-heading-m">@messages("checkYourAnswers.information.h2")</h2>
+    <div class="govuk-!-padding-top-9">
+        <h2 class="govuk-heading-m">@messages("checkYourAnswers.information.h2")</h2>
 
-    <p class="govuk-body">@messages("checkYourAnswers.information.p")</p>
+        <p class="govuk-body">@messages("checkYourAnswers.information.p")</p>
+    </div>
 
     @formHelper(action = routes.CheckYourAnswersController.onSubmit, 'autoComplete -> "off") {
         @govukButton(

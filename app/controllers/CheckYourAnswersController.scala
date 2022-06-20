@@ -40,9 +40,9 @@ class CheckYourAnswersController @Inject()(
 
       val checkYourAnswersHelper =  new CheckYourAnswersHelper(userAnswers = request.userAnswers, countryListFactory = countryListFactory)
 
-      val businessList = SummaryListViewModel(checkYourAnswersHelper.businessSection)
-      val firstContactList = SummaryListViewModel(checkYourAnswersHelper.firstContactSection)
-      val secondContactList = SummaryListViewModel(checkYourAnswersHelper.secondContactSection)
+      val businessList = SummaryListViewModel(checkYourAnswersHelper.businessSection).withCssClass("govuk-!-margin-bottom-0")
+      val firstContactList = SummaryListViewModel(checkYourAnswersHelper.firstContactSection).withCssClass("govuk-!-margin-bottom-0")
+      val secondContactList = SummaryListViewModel(checkYourAnswersHelper.secondContactSection).withCssClass("govuk-!-margin-bottom-0")
 
 
 
