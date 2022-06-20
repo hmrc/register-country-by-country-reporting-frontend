@@ -22,7 +22,6 @@ import generators.Generators
 import models.SubscriptionID
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ContactEmailPage
 import play.api.http.Status.{ACCEPTED, BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND}

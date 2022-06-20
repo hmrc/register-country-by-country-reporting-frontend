@@ -17,11 +17,13 @@
 package controllers
 
 import controllers.actions._
+import models.SubscriptionID
 
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.EmailService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.RegistrationConfirmationView
 
@@ -31,15 +33,19 @@ class RegistrationConfirmationController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        standardActionSets: StandardActionSets,
                                        sessionRepository: SessionRepository,
+                                       emailService: EmailService,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: RegistrationConfirmationView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = standardActionSets.identifiedWithoutEnrolmentCheck().async {
     implicit request =>
-      val subscriptionId = "XTCBC0100000001" //Todo: get the subscription ID correctly
-      sessionRepository.clear(request.userId) map { _ =>
-        Ok(view(subscriptionId))
+      val subscriptionId = SubscriptionID("XTCBC0100000001") //Todo: get the subscription ID correctly
+      emailService.sendEmail(request.userAnswers, subscriptionId) flatMap {
+        _ =>
+          sessionRepository.clear(request.userId) map { _ =>
+            Ok(view(subscriptionId.value))
+          }
       }
   }
 }
