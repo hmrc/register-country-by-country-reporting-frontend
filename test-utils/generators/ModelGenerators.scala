@@ -16,6 +16,7 @@
 
 package generators
 
+import models.email.EmailRequest
 import models.subscription.request._
 import models.{Address, BusinessType, Country}
 import org.scalacheck.Arbitrary.arbitrary
@@ -110,4 +111,13 @@ trait ModelGenerators {
         SubscriptionRequest(requestCommon, requestDetail)
       )
     }
+
+  implicit val arbitraryEmailRequest: Arbitrary[EmailRequest] = Arbitrary {
+    for {
+      to          <- arbitrary[List[String]]
+      id          <- arbitrary[String]
+      contactName <- arbitrary[Map[String, String]]
+
+    } yield EmailRequest(to, id, contactName)
+  }
 }

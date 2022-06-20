@@ -72,4 +72,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val enrolmentKey: String                             = configuration.get[String](s"keys.enrolmentKey.cbcr")
   lazy val countryByCountryReportingFrontendUrl: String = configuration.get[String]("urls.country-by-country-reporting-frontend")
+
+  lazy val sendEmailUrl: String              = configuration.get[Service]("microservice.services.email").baseUrl
+  lazy val emailOrganisationTemplate: String = configuration.get[String]("emailtemplates.organisation")
 }
