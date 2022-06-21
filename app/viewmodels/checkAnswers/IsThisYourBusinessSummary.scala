@@ -37,7 +37,7 @@ object IsThisYourBusinessSummary  {
           value   = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel("site.change", routes.IsThisYourBusinessController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("isThisYourBusiness.change.hidden"))
+              .withVisuallyHiddenText(messages("isThisYourBusiness.change.hidden")).withAttribute(("id","is-this-your-business"))
           )
         )
     }

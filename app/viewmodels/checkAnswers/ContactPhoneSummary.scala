@@ -35,7 +35,7 @@ object ContactPhoneSummary {
       value = ValueViewModel(HtmlFormat.escape(value).toString),
       actions = Seq(
         ActionItemViewModel("site.change", routes.HaveTelephoneController.onPageLoad(CheckMode).url)
-          .withVisuallyHiddenText(messages("contactPhone.change.hidden"))
+          .withVisuallyHiddenText(messages("contactPhone.change.hidden")).withAttribute(("id","contact-name"))
       )))
 
   }

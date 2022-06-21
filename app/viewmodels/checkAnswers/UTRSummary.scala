@@ -36,7 +36,7 @@ object UTRSummary  {
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", routes.UTRController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("utr.change.hidden"))
+              .withVisuallyHiddenText(messages("utr.change.hidden")).withAttribute(("id","utr"))
           )
         )
     }

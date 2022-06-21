@@ -37,7 +37,7 @@ object HaveTelephoneSummary  {
           value   = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel("site.change", routes.HaveTelephoneController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("haveTelephone.change.hidden"))
+              .withVisuallyHiddenText(messages("haveTelephone.change.hidden")).withAttribute(("id","have-telephone"))
           )
         )
     }

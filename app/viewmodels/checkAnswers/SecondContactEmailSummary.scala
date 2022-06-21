@@ -36,7 +36,7 @@ object SecondContactEmailSummary  {
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", routes.SecondContactEmailController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("secondContactEmail.change.hidden"))
+              .withVisuallyHiddenText(messages("secondContactEmail.change.hidden")).withAttribute(("id","second-contact-email"))
           )
         )
     }

@@ -37,7 +37,7 @@ object WhatIsTradingNameSummary  {
           value   = ValueViewModel(HtmlFormat.escape(value).toString),
           actions = Seq(
             ActionItemViewModel("site.change", routes.BusinessHaveDifferentNameController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("whatIsTradingName.change.hidden"))
+              .withVisuallyHiddenText(messages("whatIsTradingName.change.hidden")).withAttribute(("id","what-is-you-trading-name"))
           )
         ))
     }

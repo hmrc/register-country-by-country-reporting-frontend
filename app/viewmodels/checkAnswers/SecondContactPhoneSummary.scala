@@ -36,7 +36,7 @@ object SecondContactPhoneSummary {
       value = ValueViewModel(HtmlFormat.escape(value).toString),
       actions = Seq(
         ActionItemViewModel("site.change", routes.SecondContactHavePhoneController.onPageLoad(CheckMode).url)
-          .withVisuallyHiddenText(messages("secondContactPhone.change.hidden"))
+          .withVisuallyHiddenText(messages("secondContactPhone.change.hidden")).withAttribute(("id","second-contact-phone"))
       )
     ))
   }

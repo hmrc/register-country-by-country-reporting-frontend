@@ -37,7 +37,7 @@ object DoYouHaveSecondContactSummary  {
           value   = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel("site.change", routes.DoYouHaveSecondContactController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("doYouHaveSecondContact.change.hidden"))
+              .withVisuallyHiddenText(messages("doYouHaveSecondContact.change.hidden")).withAttribute(("id","do-you-have-second-contact"))
           )
         )
     }

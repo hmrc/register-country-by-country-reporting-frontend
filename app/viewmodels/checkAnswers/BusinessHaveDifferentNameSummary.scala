@@ -37,7 +37,7 @@ object BusinessHaveDifferentNameSummary  {
           value   = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel("site.change", routes.BusinessHaveDifferentNameController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("businessHaveDifferentName.change.hidden"))
+              .withVisuallyHiddenText(messages("businessHaveDifferentName.change.hidden")).withAttribute(("id","business-have-different-name"))
           )
         )
     }

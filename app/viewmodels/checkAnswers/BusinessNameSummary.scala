@@ -36,7 +36,7 @@ object BusinessNameSummary  {
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", routes.BusinessNameController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("businessName.change.hidden"))
+              .withVisuallyHiddenText(messages("businessName.change.hidden")).withAttribute(("id","business-name"))
           )
         )
     }

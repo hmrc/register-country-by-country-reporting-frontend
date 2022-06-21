@@ -54,7 +54,7 @@ object BusinessWithoutIdAddressSummary {
           value = ValueViewModel(HtmlContent(value)),
           actions = Seq(
             ActionItemViewModel("site.change", routes.BusinessWithoutIdAddressController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("businessWithoutIdAddress.change.hidden"))
+              .withVisuallyHiddenText(messages("businessWithoutIdAddress.change.hidden")).withAttribute(("id","business-without-id-address"))
           )
         )
     }
