@@ -315,3 +315,7 @@ unauthorisedStandardUser.link =  business tax account (opens in new tab)
 
 businessWithIDName.checkYourAnswersLabel = Your business
 businessWithIDName.change.hidden = your business
+
+missingInformation.title = Some information is missing
+missingInformation.heading = Some information is missing
+missingInformation.p1 = You must provide this information to register.
