@@ -66,7 +66,11 @@ final case class UserAnswers(
   }
 
   def hasNewValue[A](page: QuestionPage[A], value: A)(implicit rds: Reads[A]): Boolean =
-    get(page).exists(_ != value)
+    get(page) match {
+      case Some(pageValue) if value == pageValue => false
+      case _ => true
+    }
+
 
 }
 
