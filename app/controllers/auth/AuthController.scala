@@ -27,11 +27,11 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AuthController @Inject() (
-                                 val controllerComponents: MessagesControllerComponents,
-                                 config: FrontendAppConfig,
-                                 sessionRepository: SessionRepository,
-                                 identify: IdentifierAction
-                               )(implicit ec: ExecutionContext)
+  val controllerComponents: MessagesControllerComponents,
+  config: FrontendAppConfig,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction
+  )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
 
