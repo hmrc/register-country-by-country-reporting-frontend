@@ -43,10 +43,8 @@ class EmailService @Inject()(emailConnector: EmailConnector,
 
     emailConnector.sendEmail(emailRequest) map { resp =>
       resp.status match {
-        case NOT_FOUND => logger.warn("The template cannot be found within the email service")
-        case BAD_REQUEST => logger.warn("Missing email or name parameter")
         case ACCEPTED => logger.info("Email queued")
-        case _ => logger.warn(s"Unhandled status received from email service ${resp.status}")
+        case _ => logger.warn(s"email service failed to send an email")
       }
       resp.status
     }

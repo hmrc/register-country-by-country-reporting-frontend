@@ -61,28 +61,6 @@ class EmailServiceSpec extends SpecBase with BeforeAndAfterEach with Generators 
       result.futureValue mustBe ACCEPTED
     }
 
-    "return status 'NOT_FOUND' on failing to Send email" in {
-
-      when(mockEmailConnector.sendEmail(any())(any())).thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
-
-      val userAnswers = emptyUserAnswers.set(ContactEmailPage, "test@gmail.com").success.value
-
-      val result: Future[Int] = emailService.sendEmail(userAnswers, SubscriptionID("Id"))
-
-      result.futureValue mustBe NOT_FOUND
-    }
-
-    "return status 'BAD_REQUEST' on failing to Send email" in {
-
-      when(mockEmailConnector.sendEmail(any())(any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
-
-      val userAnswers = emptyUserAnswers.set(ContactEmailPage, "test@gmail.com").success.value
-
-      val result: Future[Int] = emailService.sendEmail(userAnswers, SubscriptionID("Id"))
-
-      result.futureValue mustBe BAD_REQUEST
-    }
-
     "return status 'INTERNAL_SERVER_ERROR' on failing to Send email" in {
 
       when(mockEmailConnector.sendEmail(any())(any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
