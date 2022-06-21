@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ContactEmailPage
-import play.api.http.Status.{ACCEPTED, BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND}
+import play.api.http.Status.{ACCEPTED, INTERNAL_SERVER_ERROR}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.{Application, inject}
 import uk.gov.hmrc.http.HttpResponse
