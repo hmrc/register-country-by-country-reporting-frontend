@@ -35,6 +35,9 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
         val result = route(application, request).value
 
         status(result) mustEqual OK
+        contentAsString(result).contains(messages(app)("checkYourAnswers.businessDetails"))
+        contentAsString(result).contains(messages(app)("checkYourAnswers.firstContact"))
+        contentAsString(result).contains(messages(app)("checkYourAnswers.secondContact"))
       }
     }
 

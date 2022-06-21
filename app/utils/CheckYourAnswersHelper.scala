@@ -17,13 +17,13 @@
 package utils
 
 import models.UserAnswers
-import pages.{BusinessHaveDifferentNamePage, DoYouHaveSecondContactPage, DoYouHaveUTRPage, HaveTelephonePage, SecondContactHavePhonePage}
+import pages.{BusinessHaveDifferentNamePage, DoYouHaveSecondContactPage, DoYouHaveUTRPage, HaveTelephonePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers,
-                             maxVisibleChars: Int = DisplayConstants.maxVisibleChars,
+                             maxVisibleChars: Int = 100,
                              countryListFactory: CountryListFactory)(implicit val messages: Messages) {
 
   def businessSection: Seq[SummaryListRow] = userAnswers.get(DoYouHaveUTRPage) match {

@@ -16,7 +16,10 @@
 
 package pages
 
+import models.UserAnswers
+
 import scala.language.implicitConversions
+import scala.util.Try
 
 trait Page
 
@@ -24,4 +27,7 @@ object Page {
 
   implicit def toString(page: Page): String =
     page.toString
+
+  def removePage: (Try[UserAnswers], QuestionPage[_]) => Try[UserAnswers] =
+    (ua: Try[UserAnswers], page: QuestionPage[_]) => ua.flatMap(_.remove(page))
 }

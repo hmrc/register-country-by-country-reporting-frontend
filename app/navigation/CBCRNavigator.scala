@@ -114,6 +114,7 @@ class CBCRNavigator @Inject()() extends Navigator {
     )
     case ContactNamePage => ua => checkNextPageForValueThenRoute(CheckMode, ua, ContactEmailPage, routes.ContactEmailController.onPageLoad(CheckMode))
     case ContactEmailPage => ua => checkNextPageForValueThenRoute(CheckMode, ua, HaveTelephonePage, routes.HaveTelephoneController.onPageLoad(CheckMode))
+    case ContactPhonePage => ua => checkNextPageForValueThenRoute(CheckMode, ua, DoYouHaveSecondContactPage, routes.DoYouHaveSecondContactController.onPageLoad(CheckMode))
     case HaveTelephonePage   => ua => yesNoPage(
       ua,
       HaveTelephonePage,
