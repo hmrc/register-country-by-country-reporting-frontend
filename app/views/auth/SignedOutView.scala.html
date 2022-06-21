@@ -32,12 +32,7 @@
 
     <p class="govuk-body">@messages("signedOut.guidance")</p>
 
-    <a href=@loginUrl class="govuk-link">@messages("signedOut.backToCBCLink")</a>
+    <p class="govuk-body"><a href=@loginUrl class="govuk-link" id="back-to-report-cbc">@messages("signedOut.backToCBCLink")</a></p>
 
-    <p class="govuk-body">
-        @govukButton(
-            ButtonViewModel(messages("site.signIn"))
-                .asLink(routes.IndexController.onPageLoad.url)
-        )
     </p>
 }
