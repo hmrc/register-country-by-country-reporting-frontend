@@ -44,7 +44,7 @@ class EmailService @Inject()(emailConnector: EmailConnector,
     emailConnector.sendEmail(emailRequest) map { resp =>
       resp.status match {
         case ACCEPTED => logger.info("Email queued")
-        case _ => logger.warn(s"email service failed to send an email")
+        case _ => logger.warn(s"Email service failed to send an email")
       }
       resp.status
     }
