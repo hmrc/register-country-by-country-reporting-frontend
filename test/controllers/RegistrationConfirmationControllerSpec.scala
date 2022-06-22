@@ -18,21 +18,39 @@ package controllers
 
 import base.SpecBase
 import org.mockito.ArgumentMatchers.any
+import org.scalatest.BeforeAndAfterEach
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.{Application, inject}
+import services.EmailService
 import views.html.RegistrationConfirmationView
 
 import scala.concurrent.Future
 
-class RegistrationConfirmationControllerSpec extends SpecBase {
+class RegistrationConfirmationControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   val subscriptionId = "XTCBC0100000001"
+
+  private val mockEmailService: EmailService = mock[EmailService]
+
+  lazy override val app: Application = new GuiceApplicationBuilder()
+    .overrides(
+      inject.bind[EmailService].toInstance(mockEmailService)
+    ).build()
+
+  override def beforeEach: Unit =
+    reset(
+      mockEmailService
+    )
 
   "RegistrationConfirmation Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))
+
+      when(mockEmailService.sendEmail(any(), any())(any())).thenReturn(Future.successful(ACCEPTED))
       
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
