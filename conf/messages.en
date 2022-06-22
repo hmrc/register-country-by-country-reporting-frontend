@@ -289,3 +289,11 @@ preRegistered.withOutID.GGLink = Sign in to your Government Gateway account (ope
 preRegistered.help = You can email {0} if you’re having problems accessing the service.
 preRegistered.help.link = enquiries.aeoi@hmrc.gov.uk
 preRegistered.help.linkLocation = mailto:enquiries.aeoi@hmrc.gov.uk
+
+unauthorisedStandardUser.title = Sorry, you’re unable to use this service
+unauthorisedStandardUser.heading = Sorry, you’re unable to use this service
+unauthorisedStandardUser.paragraph1 = You’ve signed in as a standard user. Only people in your organisation with an administrator role can register for the service.
+unauthorisedStandardUser.paragraph2 = You need to find someone with an administrator’s credentials who can then sign in with their Government Gateway details.
+unauthorisedStandardUser.paragraph3 = Once registered, they can give you permission to use the service to submit country-by-country reports using your own Government Gateway credentials.
+unauthorisedStandardUser.paragraph4 = Your administrator can add, delete or change team members’ access in the manage account section within your organisation’s
+unauthorisedStandardUser.link =  business tax account (opens in new tab)
