@@ -119,3 +119,5 @@ GET        /register/problem/individual-sign-in-problem     controllers.Unauthor
 GET        /register/problem/organisation-without-utr-pre-registered        controllers.PreRegisteredController.onPageLoad()
 
 GET        /register/problem/there-is-a-problem             controllers.ThereIsAProblemController.onPageLoad()
+
+GET        /register/problem/sign-in-problem                 controllers.UnauthorisedStandardUserController.onPageLoad()

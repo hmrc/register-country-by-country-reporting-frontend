@@ -38,6 +38,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
   lazy val lostUTRUrl: String  = configuration.get[String]("urls.lostUTR")
   lazy val corporationTaxEnquiriesLink: String         = configuration.get[String]("urls.corporationTaxEnquiries")
   lazy val selfAssessmentEnquiriesLink: String         = configuration.get[String]("urls.selfAssessmentEnquiries")
+  lazy val businessTaxAccountLink: String         = configuration.get[String]("urls.btaLogin")
   lazy val emailEnquiries: String                      = configuration.get[String]("urls.emailEnquiries")
 
   lazy val registerCountryByCountryUrl: String =
