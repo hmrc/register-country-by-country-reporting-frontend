@@ -26,23 +26,23 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TaxEnrolmentsConnector @Inject()(
+class TaxEnrolmentsConnector @Inject() (
   val config: FrontendAppConfig,
   val http: HttpClient
 ) extends Logging {
 
   def createEnrolment(
-    enrolmentInfo: SubscriptionInfo,
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
+    enrolmentInfo: SubscriptionInfo
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Int]] = {
 
     val url: String = s"${config.taxEnrolmentsUrl1}HMRC-CBC-ORG${config.taxEnrolmentsUrl2}"
 
-      http.PUT[EnrolmentRequest, HttpResponse](url,enrolmentInfo.convertToEnrolmentRequest) map {
-        case responseMessage if is2xx(responseMessage.status) =>
-         responseMessage.status
-        case responseMessage =>
-          logger.error(s"Error with tax-enrolments call  ${responseMessage.status} : ${responseMessage.body}")
-          throw new IllegalStateException(responseMessage.body)
-      }
+    http.PUT[EnrolmentRequest, HttpResponse](url, enrolmentInfo.convertToEnrolmentRequest) map {
+      case responseMessage if is2xx(responseMessage.status) =>
+        Some(responseMessage.status)
+      case responseMessage =>
+        logger.error(s"Error with tax-enrolments call  ${responseMessage.status} : ${responseMessage.body}")
+        None
+    }
   }
 }

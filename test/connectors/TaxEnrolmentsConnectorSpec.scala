@@ -51,7 +51,7 @@ class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockServerHandler wit
             stubResponseForPutRequest("/tax-enrolments/service/HMRC-CBC-ORG/enrolment", NO_CONTENT)
 
             val result = connector.createEnrolment(enrolmentInfo)
-            result.futureValue mustBe NO_CONTENT
+            result.futureValue mustBe Some(NO_CONTENT)
         }
       }
 
@@ -60,8 +60,8 @@ class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockServerHandler wit
           (safeID, subID, utr) =>
             val enrolmentInfo = SubscriptionInfo(safeID = safeID, saUtr = Some(utr), cbcId = subID)
             stubResponseForPutRequest("/tax-enrolments/service/HMRC-CBC-ORG/enrolment", BAD_REQUEST)
-            intercept[IllegalStateException](await(connector.createEnrolment(enrolmentInfo)))
-
+            val result = connector.createEnrolment(enrolmentInfo)
+            result.futureValue mustBe None
         }
       }
 
@@ -70,9 +70,8 @@ class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockServerHandler wit
           (safeID, subID, utr) =>
             val enrolmentInfo = SubscriptionInfo(safeID = safeID, saUtr = Some(utr), cbcId = subID)
             stubResponseForPutRequest("/tax-enrolments/service/HMRC-CBC-ORG/enrolment", INTERNAL_SERVER_ERROR)
-
-            intercept[IllegalStateException](await(connector.createEnrolment(enrolmentInfo)))
-
+            val result = connector.createEnrolment(enrolmentInfo)
+            result.futureValue mustBe None
         }
       }
     }

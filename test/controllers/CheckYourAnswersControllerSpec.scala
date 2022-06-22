@@ -17,11 +17,38 @@
 package controllers
 
 import base.SpecBase
+import connectors.RegistrationConnector
+import models.{EnrolmentCreationError, SafeId, SubscriptionID, UserAnswers}
+import models.matching.RegistrationInfo
+import models.register.response.details.AddressResponse
+import org.mockito.ArgumentMatchers.any
+import pages.{BusinessWithoutIDNamePage, RegistrationInfoPage}
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.{SubscriptionService, TaxEnrolmentService}
 import viewmodels.govuk.SummaryListFluency
 
+import scala.concurrent.Future
+
 class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+
+  val mockSubscriptionService: SubscriptionService  = mock[SubscriptionService]
+  val mockTaxEnrolmentsService: TaxEnrolmentService = mock[TaxEnrolmentService]
+
+//  override def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
+//    super
+//      .applicationBuilder()
+//      .overrides(
+//        bind[SubscriptionService].toInstance(mockSubscriptionService),
+//        bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+//      )
+//
+//  override def beforeEach: Unit = {
+//    reset(mockSubscriptionService, mockTaxEnrolmentsService)
+//    super.beforeEach
+//  }
 
   "Check Your Answers Controller" - {
 
@@ -55,4 +82,82 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       }
     }
   }
+
+  "must return 501 NotImplemented and the correct view onSubmit" in {
+
+    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      .overrides(
+        bind[SubscriptionService].toInstance(mockSubscriptionService),
+        bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+      )
+      .build()
+
+    running(application) {
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
+      val result  = route(application, request).value
+
+      status(result) mustEqual NOT_IMPLEMENTED
+    }
+  }
+
+  "must return OK  and the confirmation view onSubmit" in {
+    val registrationInfo = RegistrationInfo(
+      SafeId("safe"),
+      "Business Name",
+      AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
+    )
+    val userAnswers = UserAnswers(userAnswersId).set(RegistrationInfoPage, registrationInfo).success.value
+
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
+    when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())) thenReturn Future.successful(Right(NO_CONTENT))
+    when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+    val application = applicationBuilder(userAnswers = Some(userAnswers))
+      .overrides(
+        bind[SubscriptionService].toInstance(mockSubscriptionService),
+        bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+      )
+      .build()
+
+    running(application) {
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.RegistrationConfirmationController.onPageLoad().url
+
+    }
+  }
+
+  "must return OK  and the business already registered view onSubmit" in {
+    val registrationInfo = RegistrationInfo(
+      SafeId("safe"),
+      "Business Name",
+      AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
+    )
+    val userAnswers = UserAnswers(userAnswersId).set(RegistrationInfoPage, registrationInfo).success.value
+
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
+    when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())) thenReturn Future.successful(Left(EnrolmentCreationError))
+    when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+    val application = applicationBuilder(userAnswers = Some(userAnswers))
+      .overrides(
+        bind[SubscriptionService].toInstance(mockSubscriptionService),
+        bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+      )
+      .build()
+
+    running(application) {
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.PreRegisteredController.onPageLoad().url
+
+    }
+  }
+
 }
