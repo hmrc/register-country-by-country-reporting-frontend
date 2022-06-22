@@ -17,12 +17,14 @@
 package controllers
 
 import base.SpecBase
+import models.{SubscriptionID, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
+import pages.SubscriptionIDPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.{Application, inject}
+import play.api.{inject, Application}
 import services.EmailService
 import views.html.RegistrationConfirmationView
 
@@ -34,10 +36,11 @@ class RegistrationConfirmationControllerSpec extends SpecBase with BeforeAndAfte
 
   private val mockEmailService: EmailService = mock[EmailService]
 
-  lazy override val app: Application = new GuiceApplicationBuilder()
+  override lazy val app: Application = new GuiceApplicationBuilder()
     .overrides(
       inject.bind[EmailService].toInstance(mockEmailService)
-    ).build()
+    )
+    .build()
 
   override def beforeEach: Unit =
     reset(
@@ -50,9 +53,13 @@ class RegistrationConfirmationControllerSpec extends SpecBase with BeforeAndAfte
 
       when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))
 
-      when(mockEmailService.sendEmail(any(), any())(any())).thenReturn(Future.successful(Some(ACCEPTED)))
-      
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      when(mockEmailService.sendEmail(any(), any())(any())).thenReturn(Future.successful(ACCEPTED))
+
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(SubscriptionIDPage, SubscriptionID(subscriptionId))
+        .success
+        .value
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, routes.RegistrationConfirmationController.onPageLoad().url)
@@ -63,6 +70,23 @@ class RegistrationConfirmationControllerSpec extends SpecBase with BeforeAndAfte
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(subscriptionId)(request, messages(application)).toString
+      }
+    }
+
+    "must return Technical difficulties and the correct view for a GET" in {
+
+      when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))
+      val userAnswers = UserAnswers(userAnswersId)
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.RegistrationConfirmationController.onPageLoad().url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[RegistrationConfirmationView]
+
+        status(result) mustEqual NOT_IMPLEMENTED
       }
     }
   }

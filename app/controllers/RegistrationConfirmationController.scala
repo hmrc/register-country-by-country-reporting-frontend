@@ -29,15 +29,18 @@ import views.html.{RegistrationConfirmationView, ThereIsAProblemView}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RegistrationConfirmationController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       standardActionSets: StandardActionSets,
-                                       sessionRepository: SessionRepository,
-                                       emailService: EmailService,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: RegistrationConfirmationView,
-                                       errorView: ThereIsAProblemView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class RegistrationConfirmationController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  sessionRepository: SessionRepository,
+  emailService: EmailService,
+  val controllerComponents: MessagesControllerComponents,
+  view: RegistrationConfirmationView,
+  errorView: ThereIsAProblemView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with Logging {
 
   def onPageLoad: Action[AnyContent] = standardActionSets.identifiedWithoutEnrolmentCheck().async {
     implicit request =>
@@ -47,8 +50,9 @@ class RegistrationConfirmationController @Inject()(
         case Some(id) =>
           emailService.sendEmail(request.userAnswers, id) flatMap {
             _ =>
-              sessionRepository.clear(request.userId) map { _ =>
-                Ok(view(id.value))
+              sessionRepository.clear(request.userId) map {
+                _ =>
+                  Ok(view(id.value))
               }
           }
         case None =>
