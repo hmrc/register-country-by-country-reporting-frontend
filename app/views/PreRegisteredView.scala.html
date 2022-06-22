@@ -23,15 +23,16 @@
         appConfig: FrontendAppConfig
 )
 
-@(emailLink: String)(implicit request: Request[_], messages: Messages)
+@(emailLink: String, withId: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("preRegistered.title")), showBackLink = false) {
 
     <h1 class="govuk-heading-l">@messages("preRegistered.heading")</h1>
-
-    <p class="govuk-body">@messages("preRegistered.withOutID.information")</p>
-
-    <p class="govuk-body">@link(appConfig.loginUrl, "preRegistered.withOutID.GGLink", openInNewWindow = true)</p>
-
+    @if(withId) {
+        <p class="govuk-body">@messages("preRegistered.withID.information")</p>
+    } else {
+        <p class="govuk-body">@messages("preRegistered.withOutID.information")</p>
+        <p class="govuk-body">@link(appConfig.loginUrl, "preRegistered.withOutID.GGLink", openInNewWindow = true)</p>
+    }
     <p class="govuk-body">@Html(messages("preRegistered.help" , link(s"mailto:$emailLink", "preRegistered.help.link", openInNewWindow = true)))</p>
 }

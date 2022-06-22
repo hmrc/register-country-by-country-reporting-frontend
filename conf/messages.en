@@ -289,6 +289,7 @@ preRegistered.withOutID.GGLink = Sign in to your Government Gateway account (ope
 preRegistered.help = You can email {0} if you’re having problems accessing the service.
 preRegistered.help.link = enquiries.aeoi@hmrc.gov.uk
 preRegistered.help.linkLocation = mailto:enquiries.aeoi@hmrc.gov.uk
+preRegistered.withID.information = You will need to contact your administrator to give you access via the ‘Manage account’ settings within their Business Tax Account.
 
 thereIsAProblem.title = Sorry, there is a problem with the service
 thereIsAProblem.heading = Sorry, there is a problem with the service
