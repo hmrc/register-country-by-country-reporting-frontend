@@ -25,7 +25,7 @@
 
 @(emailLink: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("preRegistered.title"))) {
+@layout(pageTitle = titleNoForm(messages("preRegistered.title")), showBackLink = false) {
 
     <h1 class="govuk-heading-l">@messages("preRegistered.heading")</h1>
 
@@ -33,5 +33,5 @@
 
     <p class="govuk-body">@link(appConfig.loginUrl, "preRegistered.withOutID.GGLink", openInNewWindow = true)</p>
 
-    <p class="govuk-body">@Html(messages("preRegistered.help" , link("mailto:{{emailAddress}}", "preRegistered.help.link", openInNewWindow = true)))</p>
+    <p class="govuk-body">@Html(messages("preRegistered.help" , link(s"mailto:${emailLink}", "preRegistered.help.link", openInNewWindow = true)))</p>
 }
