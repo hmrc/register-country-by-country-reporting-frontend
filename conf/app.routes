@@ -116,6 +116,7 @@ GET        /register/business-not-identified                controllers.Business
 
 GET        /register/problem/individual-sign-in-problem     controllers.UnauthorisedIndividualController.onPageLoad()
 
-GET        /register/problem/organisation-without-utr-pre-registered        controllers.PreRegisteredController.onPageLoad()
+GET        /register/problem/organisation-without-utr-pre-registered        controllers.PreRegisteredController.onPageLoad(withId: Boolean = false)
+GET        /register/problem/organisation-with-utr-pre-registered           controllers.PreRegisteredController.onPageLoad(withId: Boolean = true)
 
 GET        /register/problem/sign-in-problem                 controllers.UnauthorisedStandardUserController.onPageLoad()

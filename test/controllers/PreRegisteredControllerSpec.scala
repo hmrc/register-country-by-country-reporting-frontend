@@ -30,14 +30,30 @@ class PreRegisteredControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.PreRegisteredController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.PreRegisteredController.onPageLoad(false).url)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[PreRegisteredView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view("enquiries.aeoi@hmrc.gov.uk")(request, messages(application)).toString
+        contentAsString(result) mustEqual view("enquiries.aeoi@hmrc.gov.uk", false)(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and the correct view for a GET for with Utr business" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.PreRegisteredController.onPageLoad(true).url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[PreRegisteredView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view("enquiries.aeoi@hmrc.gov.uk", true)(request, messages(application)).toString
       }
     }
   }
