@@ -290,6 +290,12 @@ preRegistered.help = You can email {0} if you’re having problems accessing the
 preRegistered.help.link = enquiries.aeoi@hmrc.gov.uk
 preRegistered.help.linkLocation = mailto:enquiries.aeoi@hmrc.gov.uk
 
+thereIsAProblem.title = Sorry, there is a problem with the service
+thereIsAProblem.heading = Sorry, there is a problem with the service
+thereIsAProblem.p1 = Try again later.
+thereIsAProblem.help = You can email {0} if you need to contact someone about your CBC reporting.
+thereIsAProblem.help.link = enquiries.aeoi@hmrc.gov.uk
+
 unauthorisedStandardUser.title = Sorry, you’re unable to use this service
 unauthorisedStandardUser.heading = Sorry, you’re unable to use this service
 unauthorisedStandardUser.paragraph1 = You’ve signed in as a standard user. Only people in your organisation with an administrator role can register for the service.
