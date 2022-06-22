@@ -37,19 +37,6 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
   val mockSubscriptionService: SubscriptionService  = mock[SubscriptionService]
   val mockTaxEnrolmentsService: TaxEnrolmentService = mock[TaxEnrolmentService]
 
-//  override def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
-//    super
-//      .applicationBuilder()
-//      .overrides(
-//        bind[SubscriptionService].toInstance(mockSubscriptionService),
-//        bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
-//      )
-//
-//  override def beforeEach: Unit = {
-//    reset(mockSubscriptionService, mockTaxEnrolmentsService)
-//    super.beforeEach
-//  }
-
   "Check Your Answers Controller" - {
 
     "must return OK and the correct view for a GET" in {
