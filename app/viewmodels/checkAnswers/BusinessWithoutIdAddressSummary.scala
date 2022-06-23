@@ -26,33 +26,35 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object BusinessWithoutIdAddressSummary  {
+object BusinessWithoutIdAddressSummary {
+
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(BusinessWithoutIdAddressPage).map {
       answer =>
 
-      val value = HtmlFormat.escape(s"""
-        ${answer.addressLine1}<br>
-        ${answer.addressLine2.fold("")(
-        address => s"$address<br>"
-      )}
-        ${answer.addressLine3}<br>
-        ${answer.addressLine4.fold("")(
-        address => s"$address<br>"
-      )}
-        ${answer.postCode.fold("")(
-        postcode => s"$postcode<br>"
-      )}
-        ${answer.country.description}
-     """)
+        def formatLine(line: String) = s"""<div class="govuk-margin-bottom-0">${HtmlFormat.escape(line)}</div>"""
+
+        val value =
+          s"""<div class=govuk-margin-bottom-0>${HtmlFormat.escape(answer.addressLine1)}</div>""" concat {
+              answer.addressLine2.fold("")(formatLine)
+          } concat {
+            formatLine(answer.addressLine3)
+          } concat {
+            answer.addressLine4.fold("")(formatLine)
+          } concat {
+            answer.postCode.fold("")(formatLine)
+          } concat {
+            s"""<div class=govuk-margin-bottom-0>${HtmlFormat.escape(answer.country.description)}</div>"""
+            }
+
 
         SummaryListRowViewModel(
-          key     = "businessWithoutIdAddress.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
+          key = "businessWithoutIdAddress.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(value)),
           actions = Seq(
             ActionItemViewModel("site.change", routes.BusinessWithoutIdAddressController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("businessWithoutIdAddress.change.hidden"))
+              .withVisuallyHiddenText(messages("businessWithoutIdAddress.change.hidden")).withAttribute(("id","business-without-id-address"))
           )
         )
     }

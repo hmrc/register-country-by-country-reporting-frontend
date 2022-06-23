@@ -16,6 +16,10 @@
 
 package pages
 
+import models.BusinessType.LimitedCompany
+import models.matching.RegistrationInfo
+import models.register.response.details.AddressResponse
+import models.{Address, Country, SafeId, UserAnswers}
 import pages.behaviours.PageBehaviours
 
 class DoYouHaveUTRPageSpec extends PageBehaviours {
@@ -27,5 +31,141 @@ class DoYouHaveUTRPageSpec extends PageBehaviours {
     beSettable[Boolean](DoYouHaveUTRPage)
 
     beRemovable[Boolean](DoYouHaveUTRPage)
+  }
+
+  "cleanup" - {
+
+    val businessAddress = Address("", None, "", None, None, Country("valid", "GB", "United Kingdom"))
+
+    "must remove 'Without Id' pages when user selects yes to do you have a utr?" in {
+      val userAnswersId: String = "id"
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(BusinessWithoutIDNamePage, "Company")
+        .success
+        .value
+        .set(BusinessHaveDifferentNamePage, true)
+        .success
+        .value
+        .set(WhatIsTradingNamePage, "Company 2")
+        .success
+        .value
+        .set(BusinessWithoutIdAddressPage, businessAddress)
+        .success
+        .value
+        .set(ContactEmailPage, "test@test.com")
+        .success
+        .value
+        .set(ContactNamePage, "Name Name")
+        .success
+        .value
+        .set(HaveTelephonePage, false)
+        .success
+        .value
+        .set(ContactPhonePage, "9")
+        .success
+        .value
+        .set(DoYouHaveSecondContactPage, true)
+        .success
+        .value
+        .set(SecondContactNamePage, "secondContactName")
+        .success
+        .value
+        .set(SecondContactEmailPage, "secondContactEmail")
+        .success
+        .value
+        .set(SecondContactHavePhonePage, true)
+        .success
+        .value
+        .set(SecondContactPhonePage, "secondContactPhone")
+        .success
+        .value
+        .set(DoYouHaveUTRPage, true)
+        .success
+        .value
+
+      userAnswers.get(BusinessWithoutIDNamePage) must not be defined
+      userAnswers.get(BusinessHaveDifferentNamePage) must not be defined
+      userAnswers.get(WhatIsTradingNamePage) must not be defined
+      userAnswers.get(BusinessWithoutIdAddressPage) must not be defined
+      userAnswers.get(ContactEmailPage) must not be defined
+      userAnswers.get(ContactNamePage) must not be defined
+      userAnswers.get(HaveTelephonePage) must not be defined
+      userAnswers.get(ContactPhonePage) must not be defined
+      userAnswers.get(DoYouHaveSecondContactPage) must not be defined
+      userAnswers.get(SecondContactNamePage) must not be defined
+      userAnswers.get(SecondContactEmailPage) must not be defined
+      userAnswers.get(SecondContactHavePhonePage) must not be defined
+      userAnswers.get(SecondContactPhonePage) must not be defined
+      userAnswers.get(DoYouHaveUTRPage) mustBe Some(true)
+
+
+    }
+    "must remove 'With Id' pages when user selects no to do you have a utr?" in {
+      val userAnswersId: String = "id"
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(BusinessTypePage, LimitedCompany)
+        .success
+        .value
+        .set(UTRPage, "1234567890")
+        .success
+        .value
+        .set(BusinessNamePage, "Company 2")
+        .success
+        .value
+        .set(IsThisYourBusinessPage, true)
+        .success
+        .value
+        .set(RegistrationInfoPage, RegistrationInfo(SafeId("x"), "Company", AddressResponse("", None, None, None, None, "GB")))
+        .success
+        .value
+        .set(ContactEmailPage, "test@test.com")
+        .success
+        .value
+        .set(ContactNamePage, "Name Name")
+        .success
+        .value
+        .set(HaveTelephonePage, false)
+        .success
+        .value
+        .set(ContactPhonePage, "9")
+        .success
+        .value
+        .set(DoYouHaveSecondContactPage, true)
+        .success
+        .value
+        .set(SecondContactNamePage, "secondContactName")
+        .success
+        .value
+        .set(SecondContactEmailPage, "secondContactEmail")
+        .success
+        .value
+        .set(SecondContactHavePhonePage, true)
+        .success
+        .value
+        .set(SecondContactPhonePage, "secondContactPhone")
+        .success
+        .value
+        .set(DoYouHaveUTRPage, false)
+        .success
+        .value
+
+      userAnswers.get(BusinessTypePage) must not be defined
+      userAnswers.get(UTRPage) must not be defined
+      userAnswers.get(BusinessNamePage) must not be defined
+      userAnswers.get(IsThisYourBusinessPage) must not be defined
+      userAnswers.get(RegistrationInfoPage) must not be defined
+      userAnswers.get(ContactEmailPage) must not be defined
+      userAnswers.get(ContactNamePage) must not be defined
+      userAnswers.get(HaveTelephonePage) must not be defined
+      userAnswers.get(ContactPhonePage) must not be defined
+      userAnswers.get(DoYouHaveSecondContactPage) must not be defined
+      userAnswers.get(SecondContactNamePage) must not be defined
+      userAnswers.get(SecondContactEmailPage) must not be defined
+      userAnswers.get(SecondContactHavePhonePage) must not be defined
+      userAnswers.get(SecondContactPhonePage) must not be defined
+      userAnswers.get(DoYouHaveUTRPage) mustBe Some(false)
+
+
+    }
   }
 }

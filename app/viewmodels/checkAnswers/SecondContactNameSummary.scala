@@ -36,7 +36,7 @@ object SecondContactNameSummary  {
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", routes.SecondContactNameController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("secondContactName.change.hidden"))
+              .withVisuallyHiddenText(messages("secondContactName.change.hidden")).withAttribute(("id","second-contact-name"))
           )
         )
     }

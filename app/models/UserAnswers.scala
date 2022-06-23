@@ -16,6 +16,7 @@
 
 package models
 
+import pages.QuestionPage
 import play.api.libs.json._
 import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -63,6 +64,14 @@ final case class UserAnswers(
         page.cleanup(None, updatedAnswers)
     }
   }
+
+  def hasNewValue[A](page: QuestionPage[A], value: A)(implicit rds: Reads[A]): Boolean =
+    get(page) match {
+      case Some(pageValue) if value == pageValue => false
+      case _ => true
+    }
+
+
 }
 
 object UserAnswers {

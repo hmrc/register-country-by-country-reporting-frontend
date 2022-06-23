@@ -16,6 +16,7 @@
 
 package pages
 
+import models.UserAnswers
 import pages.behaviours.PageBehaviours
 
 class BusinessHaveDifferentNamePageSpec extends PageBehaviours {
@@ -27,5 +28,34 @@ class BusinessHaveDifferentNamePageSpec extends PageBehaviours {
     beSettable[Boolean](BusinessHaveDifferentNamePage)
 
     beRemovable[Boolean](BusinessHaveDifferentNamePage)
+  }
+
+  "clean up" - {
+    "remove Business trading name if user answers not to have a different trading name" in {
+      val userAnswersId: String = "id"
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(WhatIsTradingNamePage, "Company")
+        .success
+        .value
+        .set(BusinessHaveDifferentNamePage, false)
+        .success
+        .value
+
+      userAnswers.get(WhatIsTradingNamePage) must not be defined
+      userAnswers.get(BusinessHaveDifferentNamePage) mustBe Some(false)
+    }
+    "leave ContactTelephone if user answers yes to have telephone" in {
+      val userAnswersId: String = "id"
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(WhatIsTradingNamePage, "Company")
+        .success
+        .value
+        .set(BusinessHaveDifferentNamePage, true)
+        .success
+        .value
+
+      userAnswers.get(WhatIsTradingNamePage) mustBe Some("Company")
+      userAnswers.get(BusinessHaveDifferentNamePage) mustBe Some(true)
+    }
   }
 }

@@ -21,6 +21,7 @@ import models.{CheckMode, UserAnswers}
 import pages.BusinessHaveDifferentNamePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.SummaryHelper
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
@@ -30,14 +31,14 @@ object BusinessHaveDifferentNameSummary  {
     answers.get(BusinessHaveDifferentNamePage).map {
       answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
+        val value = SummaryHelper.convertBooleanToYesNoMessage(answer)
 
         SummaryListRowViewModel(
           key     = "businessHaveDifferentName.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel("site.change", routes.BusinessHaveDifferentNameController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("businessHaveDifferentName.change.hidden"))
+              .withVisuallyHiddenText(messages("businessHaveDifferentName.change.hidden")).withAttribute(("id","business-have-different-name"))
           )
         )
     }

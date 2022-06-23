@@ -14,22 +14,9 @@
  * limitations under the License.
  */
 
-package pages
+package utils
 
-import models.UserAnswers
-import play.api.libs.json.JsPath
+object SummaryHelper {
 
-import scala.util.Try
-
-case object BusinessHaveDifferentNamePage extends QuestionPage[Boolean] {
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "businessHaveDifferentName"
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(false) => userAnswers.remove(WhatIsTradingNamePage)
-      case _           => super.cleanup(value, userAnswers)
-    }
+  def convertBooleanToYesNoMessage(value: Boolean) = if (value) "site.yes" else "site.no"
 }

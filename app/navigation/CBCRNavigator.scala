@@ -41,7 +41,7 @@ class CBCRNavigator @Inject()() extends Navigator {
       ua,
       IsThisYourBusinessPage,
       routes.ContactNameController.onPageLoad(NormalMode),
-      routes.IsThisYourBusinessController.onPageLoad(NormalMode) //TODO change when next pages are implemented
+      routes.BusinessNotIdentifiedController.onPageLoad()
     )
     case BusinessWithoutIDNamePage   => _ => routes.BusinessHaveDifferentNameController.onPageLoad(NormalMode)
     case BusinessHaveDifferentNamePage   => ua => yesNoPage(
@@ -79,6 +79,65 @@ class CBCRNavigator @Inject()() extends Navigator {
   }
 
   override val checkRouteMap: Page => UserAnswers => Call = {
+    case DoYouHaveUTRPage   => ua => yesNoPage(
+      ua,
+      DoYouHaveUTRPage,
+      routes.BusinessTypeController.onPageLoad(CheckMode),
+      routes.BusinessWithoutIDNameController.onPageLoad(CheckMode)
+    )
+    case BusinessWithoutIDNamePage  => ua =>
+      checkNextPageForValueThenRoute(
+        CheckMode, ua, BusinessHaveDifferentNamePage, routes.BusinessHaveDifferentNameController.onPageLoad(CheckMode)
+      )
+    case BusinessHaveDifferentNamePage   => ua => yesNoPage(
+      ua,
+      BusinessHaveDifferentNamePage,
+      routes.WhatIsTradingNameController.onPageLoad(CheckMode),
+      checkNextPageForValueThenRoute(CheckMode, ua, BusinessWithoutIdAddressPage, routes.BusinessWithoutIdAddressController.onPageLoad(CheckMode))
+    )
+    case WhatIsTradingNamePage  => ua =>
+      checkNextPageForValueThenRoute(
+        CheckMode, ua, BusinessWithoutIdAddressPage, routes.BusinessWithoutIdAddressController.onPageLoad(CheckMode)
+      )
+    case BusinessWithoutIdAddressPage  => ua =>
+      checkNextPageForValueThenRoute(
+        CheckMode, ua, ContactNamePage, routes.ContactNameController.onPageLoad(CheckMode)
+      )
+    case BusinessTypePage   => _ => routes.UTRController.onPageLoad(CheckMode)
+    case UTRPage   => _ => routes.BusinessNameController.onPageLoad(CheckMode)
+    case BusinessNamePage => _ => routes.IsThisYourBusinessController.onPageLoad(CheckMode)
+    case IsThisYourBusinessPage   => ua => yesNoPage(
+      ua,
+      IsThisYourBusinessPage,
+      checkNextPageForValueThenRoute(CheckMode, ua, ContactNamePage, routes.ContactNameController.onPageLoad(CheckMode)),
+      routes.BusinessNotIdentifiedController.onPageLoad()
+    )
+    case ContactNamePage => ua => checkNextPageForValueThenRoute(CheckMode, ua, ContactEmailPage, routes.ContactEmailController.onPageLoad(CheckMode))
+    case ContactEmailPage => ua => checkNextPageForValueThenRoute(CheckMode, ua, HaveTelephonePage, routes.HaveTelephoneController.onPageLoad(CheckMode))
+    case ContactPhonePage => ua => checkNextPageForValueThenRoute(CheckMode, ua, DoYouHaveSecondContactPage, routes.DoYouHaveSecondContactController.onPageLoad(CheckMode))
+    case HaveTelephonePage   => ua => yesNoPage(
+      ua,
+      HaveTelephonePage,
+      routes.ContactPhoneController.onPageLoad(CheckMode),
+      checkNextPageForValueThenRoute(CheckMode, ua, DoYouHaveSecondContactPage, routes.DoYouHaveSecondContactController.onPageLoad(CheckMode))
+    )
+    case DoYouHaveSecondContactPage   => ua => yesNoPage(
+      ua,
+      DoYouHaveSecondContactPage,
+      checkNextPageForValueThenRoute(CheckMode, ua, SecondContactNamePage, routes.SecondContactNameController.onPageLoad(CheckMode)),
+      routes.CheckYourAnswersController.onPageLoad
+    )
+    case SecondContactNamePage   => ua =>
+      checkNextPageForValueThenRoute(CheckMode, ua, SecondContactEmailPage, routes.SecondContactEmailController.onPageLoad(CheckMode))
+    case SecondContactEmailPage   => ua =>
+      checkNextPageForValueThenRoute(CheckMode, ua, SecondContactHavePhonePage, routes.SecondContactHavePhoneController.onPageLoad(CheckMode))
+    case SecondContactHavePhonePage   => ua => yesNoPage(
+      ua,
+      SecondContactHavePhonePage,
+      routes.SecondContactPhoneController.onPageLoad(CheckMode),
+      routes.CheckYourAnswersController.onPageLoad
+    )
+    case SecondContactPhonePage => _ => routes.CheckYourAnswersController.onPageLoad
     case _  => _ => controllers.routes.CheckYourAnswersController.onPageLoad
   }
 

@@ -43,7 +43,7 @@ object BusinessTypeSummary  {
           value   = value,
           actions = Seq(
             ActionItemViewModel("site.change", routes.BusinessTypeController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("businessType.change.hidden"))
+              .withVisuallyHiddenText(messages("businessType.change.hidden")).withAttribute(("id","what-type-of-business"))
           )
         )
     }

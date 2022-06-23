@@ -16,14 +16,37 @@
 
 @this(
     layout: templates.Layout,
-    govukSummaryList: GovukSummaryList
+    formHelper: FormWithCSRF,
+    govukSummaryList: GovukSummaryList,
+    govukButton: GovukButton
 )
 
-@(list: SummaryList)(implicit request: Request[_], messages: Messages)
+@(businessList: SummaryList, firstContact: SummaryList, secondContact: SummaryList)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title"))) {
 
     <h1 class="govuk-heading-l">@messages("checkYourAnswers.heading")</h1>
 
-    @govukSummaryList(list)
+    <h2 class="govuk-heading-m">@messages("checkYourAnswers.businessDetails")</h2>
+    @govukSummaryList(businessList.withCssClass("govuk-!-margin-bottom-0"))
+
+    <div class="govuk-!-padding-top-9">
+        <h2 class="govuk-heading-m">@messages("checkYourAnswers.firstContact")</h2>
+        @govukSummaryList(firstContact.withCssClass("govuk-!-margin-bottom-0"))
+
+        <h2 class="govuk-heading-m govuk-!-padding-top-9">@messages("checkYourAnswers.secondContact")</h2>
+        @govukSummaryList(secondContact.withCssClass("govuk-!-margin-bottom-0"))
+    </div>
+
+    <div class="govuk-!-padding-top-9">
+        <h2 class="govuk-heading-m">@messages("checkYourAnswers.information.h2")</h2>
+
+        <p class="govuk-body">@messages("checkYourAnswers.information.p")</p>
+    </div>
+
+    @formHelper(action = routes.CheckYourAnswersController.onSubmit, 'autoComplete -> "off") {
+        @govukButton(
+            ButtonViewModel(messages("checkYourAnswers.button")).withAttribute("id", "submit")
+        )
+    }
 }

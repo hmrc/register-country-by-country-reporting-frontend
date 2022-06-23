@@ -17,11 +17,11 @@
 package navigation
 
 import javax.inject.{Inject, Singleton}
-
 import play.api.mvc.Call
 import controllers.routes
 import pages._
 import models._
+import play.api.libs.json.Reads
 
 @Singleton
 class Navigator @Inject()() {
@@ -40,4 +40,18 @@ class Navigator @Inject()() {
     case CheckMode =>
       checkRouteMap(page)(userAnswers)
   }
+
+  def checkNextPageForValueThenRoute[A](mode: Mode, ua: UserAnswers, page: QuestionPage[A], call: Call)(implicit rds: Reads[A]): Call =
+    if (
+      mode.equals(CheckMode) && ua
+        .get(page)
+        .fold(false)(
+          _ => true
+        )
+    ) {
+      routes.CheckYourAnswersController.onPageLoad
+    } else {
+      call
+    }
+
 }

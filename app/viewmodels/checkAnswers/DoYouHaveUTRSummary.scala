@@ -18,25 +18,27 @@ package viewmodels.checkAnswers
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.ContactNamePage
+import pages.DoYouHaveUTRPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.SummaryHelper
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ContactNameSummary  {
+object DoYouHaveUTRSummary  {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ContactNamePage).map {
+    answers.get(DoYouHaveUTRPage).map {
       answer =>
 
+        val value = SummaryHelper.convertBooleanToYesNoMessage(answer)
+
         SummaryListRowViewModel(
-          key     = "contactName.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key     = "doYouHaveUTR.checkYourAnswersLabel",
+          value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.ContactNameController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("contactName.change.hidden")).withAttribute(("id","contact-name"))
+            ActionItemViewModel("site.change", routes.DoYouHaveUTRController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("doYouHaveUTR.change.hidden")).withAttribute(("id","do-you-have-UTR"))
           )
         )
     }

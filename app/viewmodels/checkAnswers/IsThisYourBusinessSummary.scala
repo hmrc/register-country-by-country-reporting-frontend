@@ -21,6 +21,7 @@ import models.{CheckMode, UserAnswers}
 import pages.IsThisYourBusinessPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.SummaryHelper
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
@@ -30,14 +31,14 @@ object IsThisYourBusinessSummary  {
     answers.get(IsThisYourBusinessPage).map {
       answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
+        val value = SummaryHelper.convertBooleanToYesNoMessage(answer)
 
         SummaryListRowViewModel(
           key     = "isThisYourBusiness.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel("site.change", routes.IsThisYourBusinessController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("isThisYourBusiness.change.hidden"))
+              .withVisuallyHiddenText(messages("isThisYourBusiness.change.hidden")).withAttribute(("id","is-this-your-business"))
           )
         )
     }

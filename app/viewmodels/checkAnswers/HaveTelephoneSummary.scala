@@ -21,6 +21,7 @@ import models.{CheckMode, UserAnswers}
 import pages.HaveTelephonePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.SummaryHelper
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
@@ -30,14 +31,14 @@ object HaveTelephoneSummary  {
     answers.get(HaveTelephonePage).map {
       answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
+        val value = SummaryHelper.convertBooleanToYesNoMessage(answer)
 
         SummaryListRowViewModel(
           key     = "haveTelephone.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel("site.change", routes.HaveTelephoneController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("haveTelephone.change.hidden"))
+              .withVisuallyHiddenText(messages("haveTelephone.change.hidden")).withAttribute(("id","have-telephone"))
           )
         )
     }

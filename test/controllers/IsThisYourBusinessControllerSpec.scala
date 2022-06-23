@@ -41,9 +41,9 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
   lazy val isThisYourBusinessRoute = routes.IsThisYourBusinessController.onPageLoad(NormalMode).url
 
   val baseUserAnswers = emptyUserAnswers
+    .set(BusinessTypePage, LimitedCompany).success.value
     .set(UTRPage, "1234567890").success.value
     .set(BusinessNamePage, "Business Name").success.value
-    .set(BusinessTypePage, LimitedCompany).success.value
 
   val registrationInfo = RegistrationInfo(
     SafeId("safe"),

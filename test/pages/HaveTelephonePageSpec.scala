@@ -16,6 +16,7 @@
 
 package pages
 
+import models.UserAnswers
 import pages.behaviours.PageBehaviours
 
 class HaveTelephonePageSpec extends PageBehaviours {
@@ -27,5 +28,34 @@ class HaveTelephonePageSpec extends PageBehaviours {
     beSettable[Boolean](HaveTelephonePage)
 
     beRemovable[Boolean](HaveTelephonePage)
+  }
+
+  "clean up" - {
+    "remove ContactTelephone if user answers not to have telephone" in {
+      val userAnswersId: String = "id"
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(ContactPhonePage, "1234567890")
+        .success
+        .value
+        .set(HaveTelephonePage, false)
+        .success
+        .value
+
+      userAnswers.get(ContactPhonePage) must not be defined
+      userAnswers.get(HaveTelephonePage) mustBe Some(false)
+    }
+    "leave ContactTelephone if user answers yes to have telephone" in {
+      val userAnswersId: String = "id"
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(ContactPhonePage, "1234567890")
+        .success
+        .value
+        .set(HaveTelephonePage, true)
+        .success
+        .value
+
+      userAnswers.get(ContactPhonePage) mustBe Some("1234567890")
+      userAnswers.get(HaveTelephonePage) mustBe Some(true)
+    }
   }
 }

@@ -16,6 +16,7 @@
 
 package pages
 
+import models.UserAnswers
 import pages.behaviours.PageBehaviours
 
 class DoYouHaveSecondContactPageSpec extends PageBehaviours {
@@ -27,5 +28,33 @@ class DoYouHaveSecondContactPageSpec extends PageBehaviours {
     beSettable[Boolean](DoYouHaveSecondContactPage)
 
     beRemovable[Boolean](DoYouHaveSecondContactPage)
+  }
+
+  "cleanup"- {
+    "must clean up Second contact pages when user chooses No to have second contact" in {
+      val userAnswersId: String = "id"
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(SecondContactNamePage, "Company")
+        .success
+        .value
+        .set(SecondContactEmailPage, "test@test.com")
+        .success
+        .value
+        .set(SecondContactHavePhonePage, true)
+        .success
+        .value
+        .set(SecondContactPhonePage, "1234567890")
+        .success
+        .value
+        .set(DoYouHaveSecondContactPage, false)
+        .success
+        .value
+
+        userAnswers.get(SecondContactNamePage) must not be defined
+        userAnswers.get(SecondContactEmailPage) must not be defined
+        userAnswers.get(SecondContactHavePhonePage) must not be defined
+        userAnswers.get(SecondContactPhonePage) must not be defined
+        userAnswers.get(DoYouHaveSecondContactPage) mustBe Some(false)
+    }
   }
 }

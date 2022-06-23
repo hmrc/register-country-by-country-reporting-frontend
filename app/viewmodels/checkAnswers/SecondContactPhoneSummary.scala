@@ -25,19 +25,19 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object SecondContactPhoneSummary  {
+object SecondContactPhoneSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SecondContactPhonePage).map {
-      answer =>
+  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
+    val value = answers.get(SecondContactPhonePage).getOrElse("None")
 
-        SummaryListRowViewModel(
-          key     = "secondContactPhone.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.SecondContactPhoneController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("secondContactPhone.change.hidden"))
-          )
-        )
-    }
+
+    Some(SummaryListRowViewModel(
+      key = "secondContactPhone.checkYourAnswersLabel",
+      value = ValueViewModel(HtmlFormat.escape(value).toString),
+      actions = Seq(
+        ActionItemViewModel("site.change", routes.SecondContactHavePhoneController.onPageLoad(CheckMode).url)
+          .withVisuallyHiddenText(messages("secondContactPhone.change.hidden")).withAttribute(("id","second-contact-phone"))
+      )
+    ))
+  }
 }
