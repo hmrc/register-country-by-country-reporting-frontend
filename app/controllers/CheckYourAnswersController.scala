@@ -30,18 +30,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{CheckYourAnswersHelper, CountryListFactory}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
-
 import scala.concurrent.Future
-
-class CheckYourAnswersController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            standardActionSets: StandardActionSets,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: CheckYourAnswersView,
-                                            countryListFactory: CountryListFactory
-                                          ) extends FrontendBaseController with I18nSupport {
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class CheckYourAnswersController @Inject() (
   override val messagesApi: MessagesApi,
@@ -50,23 +40,21 @@ class CheckYourAnswersController @Inject() (
   sessionRepository: SessionRepository,
   subscriptionService: SubscriptionService,
   taxEnrolmentService: TaxEnrolmentService,
-  view: CheckYourAnswersView
+  view: CheckYourAnswersView,
+  countryListFactory: CountryListFactory
 ) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
+      val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers = request.userAnswers, countryListFactory = countryListFactory)
 
-      val checkYourAnswersHelper =  new CheckYourAnswersHelper(userAnswers = request.userAnswers, countryListFactory = countryListFactory)
-
-      val businessList = SummaryListViewModel(checkYourAnswersHelper.businessSection)
-      val firstContactList = SummaryListViewModel(checkYourAnswersHelper.firstContactSection)
+      val businessList      = SummaryListViewModel(checkYourAnswersHelper.businessSection)
+      val firstContactList  = SummaryListViewModel(checkYourAnswersHelper.firstContactSection)
       val secondContactList = SummaryListViewModel(checkYourAnswersHelper.secondContactSection)
 
       Ok(view(businessList, firstContactList, secondContactList))
   }
-
-
 
   def onSubmit(): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
     implicit request =>

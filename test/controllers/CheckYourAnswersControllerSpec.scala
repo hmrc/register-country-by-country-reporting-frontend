@@ -78,7 +78,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       .build()
 
     running(application) {
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
       val result  = route(application, request).value
 
       status(result) mustEqual NOT_IMPLEMENTED
@@ -105,7 +105,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       .build()
 
     running(application) {
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
 
       val result = route(application, request).value
 
@@ -135,7 +135,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       .build()
 
     running(application) {
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
 
       val result = route(application, request).value
 
