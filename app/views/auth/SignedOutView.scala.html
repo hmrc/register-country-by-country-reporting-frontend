@@ -15,8 +15,7 @@
  *@
 
 @this(
-    layout: templates.Layout,
-    govukButton: GovukButton
+    layout: templates.Layout
 )
 
 @(loginUrl: String)(implicit request: Request[_], messages: Messages)
@@ -34,5 +33,4 @@
 
     <p class="govuk-body"><a href=@loginUrl class="govuk-link" id="back-to-report-cbc">@messages("signedOut.backToCBCLink")</a></p>
 
-    </p>
 }
