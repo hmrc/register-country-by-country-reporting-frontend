@@ -55,7 +55,6 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
       when(mockSubscriptionConnector.readSubscription(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockSubscriptionConnector.createSubscription(any())(any(), any())).thenReturn(responseCreateSubscription)
 
-      val address = Address("", None, "", None, None, Country("valid", "GB", "United Kingdom"))
       val userAnswers = UserAnswers("")
         .set(DoYouHaveUTRPage, false)
         .success

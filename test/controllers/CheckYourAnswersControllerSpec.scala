@@ -17,14 +17,12 @@
 package controllers
 
 import base.SpecBase
-import connectors.RegistrationConnector
-import models.{EnrolmentCreationError, SafeId, SubscriptionID, UserAnswers}
 import models.matching.RegistrationInfo
 import models.register.response.details.AddressResponse
+import models.{EnrolmentCreationError, SafeId, SubscriptionID, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import pages.{BusinessWithoutIDNamePage, RegistrationInfoPage}
+import pages.RegistrationInfoPage
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{SubscriptionService, TaxEnrolmentService}
@@ -142,7 +140,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.PreRegisteredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.PreRegisteredController.onPageLoad(true).url
 
     }
   }

@@ -94,9 +94,9 @@ class CheckYourAnswersController @Inject() (
         case Right(_) => Future.successful(Redirect(routes.RegistrationConfirmationController.onPageLoad()))
         case Left(_) =>
           if (request.userAnswers.get(RegistrationInfoPage).isDefined) {
-            Future.successful(Redirect(routes.PreRegisteredController.onPageLoad()))
+            Future.successful(Redirect(routes.PreRegisteredController.onPageLoad(true)))
           } else {
-            Future.successful(Redirect(routes.PreRegisteredController.onPageLoad()))
+            Future.successful(Redirect(routes.PreRegisteredController.onPageLoad(false)))
           }
       }
   }
