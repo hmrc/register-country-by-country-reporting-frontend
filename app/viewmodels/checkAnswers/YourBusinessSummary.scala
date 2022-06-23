@@ -63,7 +63,7 @@ object YourBusinessSummary {
               value   = ValueViewModel(HtmlContent(value)),
               actions = Seq(
                 ActionItemViewModel("site.change", routes.DoYouHaveUTRController.onPageLoad(CheckMode).url)
-                  .withVisuallyHiddenText(messages("businessWithIDName.change.hidden"))
+                  .withVisuallyHiddenText(messages("businessWithIDName.change.hidden")).withAttribute(("id","your-business-details"))
               )
             ))
           case _ => None
