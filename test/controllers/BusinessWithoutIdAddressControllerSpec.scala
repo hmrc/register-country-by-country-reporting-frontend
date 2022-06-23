@@ -33,10 +33,10 @@ import scala.concurrent.Future
 
 class BusinessWithoutIdAddressControllerSpec extends SpecBase {
 
-  val testCountryList = Seq(Country("valid", "GB", "United Kingdom"))
+  val testCountryList = Seq(Country("valid", "GG", "Guernsey"))
   val formProvider = new BusinessWithoutIdAddressFormProvider()
   val form: Form[Address] = formProvider(testCountryList)
-  val address: Address    = Address("value 1", Some("value 2"), "value 3", Some("value 4"), Some("XX9 9XX"), Country("valid", "GB", "United Kingdom"))
+  val address: Address    = Address("value 1", Some("value 2"), "value 3", Some("value 4"), Some("XX9 9XX"), Country("valid", "GG", "Guernsey"))
 
   val mockAppConfig   = mock[FrontendAppConfig]
 
@@ -104,7 +104,7 @@ class BusinessWithoutIdAddressControllerSpec extends SpecBase {
               ("addressLine3", "value 2"),
               ("addressLine4", "value 2"),
               ("postCode", "NE98 1ZZ"),
-              ("country", "GB"))
+              ("country", "GG"))
 
         val result = route(application, request).value
 
