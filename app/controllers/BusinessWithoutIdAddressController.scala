@@ -43,7 +43,7 @@ class BusinessWithoutIdAddressController @Inject()(
                                                     view: BusinessWithoutIdAddressView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  val countriesList: Option[Seq[Country]] = countryListFactory.countryList
+  val countriesList: Option[Seq[Country]] = countryListFactory.countryListWithoutGB
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
