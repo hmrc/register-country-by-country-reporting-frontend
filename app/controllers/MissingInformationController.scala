@@ -27,15 +27,13 @@ import views.html.MissingInformationView
 
 class MissingInformationController @Inject()(
                                        override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
+                                       standardActionSets: StandardActionSets,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: MissingInformationView
                                      ) extends FrontendBaseController with I18nSupport {
 
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
 
     val continueUrl = routes.DoYouHaveUTRController.onPageLoad(NormalMode).url
