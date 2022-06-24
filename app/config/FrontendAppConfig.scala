@@ -58,8 +58,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
     configuration.get[Boolean]("features.welsh-translation")
 
   def languageMap: Map[String, Lang] = Map(
-    "en" -> Lang("en"),
-    "cy" -> Lang("cy")
+    "en" -> Lang("en")
   )
 
   lazy val countryCodeJson: String                     = configuration.get[String]("json.countries")
