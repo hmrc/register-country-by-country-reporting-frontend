@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import models.matching.RegistrationInfo
 import models.register.response.details.AddressResponse
-import models.{EnrolmentCreationError, SafeId, SubscriptionID, UserAnswers}
+import models.{EnrolmentCreationError, SafeId, SubscriptionCreateInformationMissingError, SubscriptionID, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import pages.RegistrationInfoPage
 import play.api.inject.bind
@@ -34,6 +34,18 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
   val mockSubscriptionService: SubscriptionService  = mock[SubscriptionService]
   val mockTaxEnrolmentsService: TaxEnrolmentService = mock[TaxEnrolmentService]
+
+  val registrationInfo = RegistrationInfo(
+    SafeId("safe"),
+    "Business Name",
+    AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
+  )
+
+  override def beforeEach: Unit =
+    reset(
+      mockSubscriptionService,
+      mockTaxEnrolmentsService
+    )
 
   "Check Your Answers Controller" - {
 
@@ -68,7 +80,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
     }
   }
 
-  "must return 501 NotImplemented and the correct view onSubmit" in {
+  "must return MissingInformation  page  when RegistrationInfoPage is missing  on onSubmit" in {
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
       .overrides(
@@ -76,21 +88,60 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
         bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
       )
       .build()
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Left(EnrolmentCreationError))
 
     running(application) {
       val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
       val result  = route(application, request).value
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.MissingInformationController.onPageLoad().url
 
-      status(result) mustEqual routes.ThereIsAProblemController.onPageLoad()
+    }
+  }
+
+  "must return There is problem page on Enrolment Error on onSubmit" in {
+    val userAnswers = UserAnswers(userAnswersId).set(RegistrationInfoPage, registrationInfo).success.value
+
+    val application = applicationBuilder(userAnswers = Some(userAnswers))
+      .overrides(
+        bind[SubscriptionService].toInstance(mockSubscriptionService),
+        bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+      )
+      .build()
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Left(EnrolmentCreationError))
+
+    running(application) {
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
+      val result  = route(application, request).value
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.ThereIsAProblemController.onPageLoad().url
+
+    }
+  }
+
+  "must return MissingError Page on Mandatory Information Missing for Subscription Creation onSubmit" in {
+    val userAnswers = UserAnswers(userAnswersId).set(RegistrationInfoPage, registrationInfo).success.value
+
+    val application = applicationBuilder(userAnswers = Some(userAnswers))
+      .overrides(
+        bind[SubscriptionService].toInstance(mockSubscriptionService),
+        bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+      )
+      .build()
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn
+      Future.successful(Left(SubscriptionCreateInformationMissingError("Contact Information Missing")))
+
+    running(application) {
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
+      val result  = route(application, request).value
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.MissingInformationController.onPageLoad().url
+
     }
   }
 
   "must return OK  and the confirmation view onSubmit" in {
-    val registrationInfo = RegistrationInfo(
-      SafeId("safe"),
-      "Business Name",
-      AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
-    )
+
     val userAnswers = UserAnswers(userAnswersId).set(RegistrationInfoPage, registrationInfo).success.value
 
     when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Right(SubscriptionID("111111")))

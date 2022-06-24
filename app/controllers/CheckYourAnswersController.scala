@@ -68,12 +68,12 @@ class CheckYourAnswersController @Inject() (
             case Left(error) =>
               logger.warn(s"Error $error")
               error match {
-                case EnrolmentCreationError | EnrolmentExistsError    => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
-                case SubscriptionCreateInformationMissingError(value) => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
-                case _                                                => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+                case EnrolmentCreationError | EnrolmentExistsError => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+                case SubscriptionCreateInformationMissingError(_)  => Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
+                case _                                             => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
               }
           }
-        case _ => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+        case _ => Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
       }
   }
 
