@@ -23,6 +23,7 @@ import models.requests.IdentifierRequest
 import play.api.Logging
 import play.api.mvc.Results._
 import play.api.mvc._
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, credentialRole}
@@ -54,7 +55,9 @@ class AuthenticatedIdentifierAction @Inject() (
         case _ ~ enrolments ~ _ ~ Some(Assistant) if enrolments.enrolments.exists(_.key == enrolmentKey) =>
           Future.successful(Redirect(config.countryByCountryReportingFrontendUrl))
         case _ ~ _ ~ _ ~ Some(Assistant) =>
-          Future.successful(Redirect(routes.UnauthorisedController.onPageLoad)) //TODO Change to UnauthorizedAssistantController when implemented
+          Future.successful(Redirect(routes.UnauthorisedStandardUserController.onPageLoad()))
+        case _ ~ _ ~ Some(Individual) ~ _ =>
+          Future.successful(Redirect(routes.UnauthorisedIndividualController.onPageLoad()))
         case Some(internalID) ~ enrolments ~ _ ~ _ => block(IdentifierRequest(request, internalID, enrolments.enrolments))
         case _                                                       => throw new UnauthorizedException("Unable to retrieve internal Id")
       }
@@ -62,7 +65,7 @@ class AuthenticatedIdentifierAction @Inject() (
         case _: NoActiveSession =>
           Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
         case _: AuthorisationException =>
-          Redirect(controllers.routes.UnauthorisedController.onPageLoad) //TODO Change to ThereIsAProblemController when implemented
+          Redirect(controllers.routes.ThereIsAProblemController.onPageLoad())
       }
   }
 }
