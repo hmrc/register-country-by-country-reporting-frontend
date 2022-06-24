@@ -19,8 +19,9 @@ package controllers
 import com.google.inject.Inject
 import controllers.actions.StandardActionSets
 import models.requests.DataRequest
-import models.{SafeId, SubscriptionID}
+import models.{EnrolmentCreationError, EnrolmentExistsError, SafeId, SubscriptionCreateInformationMissingError, SubscriptionID}
 import pages.{RegistrationInfoPage, SubscriptionIDPage}
+import play.api.{Logger, Logging}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -30,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{CheckYourAnswersHelper, CountryListFactory}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
+
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -43,7 +45,8 @@ class CheckYourAnswersController @Inject() (
   view: CheckYourAnswersView,
   countryListFactory: CountryListFactory
 ) extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
@@ -62,9 +65,15 @@ class CheckYourAnswersController @Inject() (
         case Some(safeId) =>
           subscriptionService.checkAndCreateSubscription(safeId, request.userAnswers) flatMap {
             case Right(subscriptionId) => updateSubscriptionIdAndCreateEnrolment(safeId, subscriptionId)
-            case Left(error)           => Future.successful(NotImplemented)
+            case Left(error) =>
+              logger.warn(s"Error $error")
+              error match {
+                case EnrolmentCreationError | EnrolmentExistsError    => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+                case SubscriptionCreateInformationMissingError(value) => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+                case _                                                => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+              }
           }
-        case _ => Future.successful(NotImplemented)
+        case _ => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
       }
   }
 

@@ -81,7 +81,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
       val result  = route(application, request).value
 
-      status(result) mustEqual NOT_IMPLEMENTED
+      status(result) mustEqual routes.ThereIsAProblemController.onPageLoad()
     }
   }
 
