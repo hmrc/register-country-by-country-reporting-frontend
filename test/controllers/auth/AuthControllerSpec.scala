@@ -59,7 +59,7 @@ class AuthControllerSpec extends SpecBase with BeforeAndAfterEach{
 
   "signOutNoSurvey" - {
 
-    "must clear users answers and redirect to sign out, specifying SignedOut as the continue URL" in {
+    "must clear users answers and redirect to SignedOut URL" in {
 
       when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
 
@@ -73,8 +73,7 @@ class AuthControllerSpec extends SpecBase with BeforeAndAfterEach{
 
         val result = route(application, request).value
 
-        val encodedContinueUrl  = URLEncoder.encode(routes.SignedOutController.onPageLoad.url, "UTF-8")
-        val expectedRedirectUrl = s"${appConfig.signOutUrl}?continue=$encodedContinueUrl"
+        val expectedRedirectUrl = controllers.auth.routes.SignedOutController.onPageLoad.url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl
