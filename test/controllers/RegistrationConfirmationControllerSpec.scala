@@ -81,12 +81,11 @@ class RegistrationConfirmationControllerSpec extends SpecBase with BeforeAndAfte
 
       running(application) {
         val request = FakeRequest(GET, routes.RegistrationConfirmationController.onPageLoad().url)
+        val result  = route(application, request).value
+        application.injector.instanceOf[RegistrationConfirmationView]
 
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[RegistrationConfirmationView]
-
-        status(result) mustEqual NOT_IMPLEMENTED
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.MissingInformationController.onPageLoad().url
       }
     }
   }
