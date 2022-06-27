@@ -62,10 +62,14 @@ class DoYouHaveUTRController @Inject()(
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
           value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DoYouHaveUTRPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DoYouHaveUTRPage, mode, updatedAnswers))
+            if (request.userAnswers.hasNewValue(DoYouHaveUTRPage, value)) {
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(DoYouHaveUTRPage, value))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(DoYouHaveUTRPage, mode, updatedAnswers))
+            } else {
+              Future.successful(Redirect(navigator.nextPage(DoYouHaveUTRPage, mode, request.userAnswers)))
+            }
         )
   }
 }
