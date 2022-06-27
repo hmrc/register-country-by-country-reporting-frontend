@@ -22,7 +22,7 @@ import models.email.EmailRequest
 import models.{SubscriptionID, UserAnswers}
 import pages._
 import play.api.Logging
-import play.api.http.Status.{ACCEPTED, BAD_REQUEST, NOT_FOUND}
+import play.api.http.Status.ACCEPTED
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
