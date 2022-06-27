@@ -16,10 +16,10 @@
 
 @this(
     layout: templates.Layout,
-    govukButton: GovukButton
+    link: components.Link
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(loginUrl: String)(implicit request: Request[_], messages: Messages)
 
 @layout(
     pageTitle    = titleNoForm(messages("signedOut.title")),
@@ -32,10 +32,6 @@
 
     <p class="govuk-body">@messages("signedOut.guidance")</p>
 
-    <p class="govuk-body">
-        @govukButton(
-            ButtonViewModel(messages("site.signIn"))
-                .asLink(routes.IndexController.onPageLoad.url)
-        )
-    </p>
+    <p class="govuk-body">@link(loginUrl, "signedOut.backToCBCLink")</p>
+
 }
