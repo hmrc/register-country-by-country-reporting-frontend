@@ -120,4 +120,6 @@ GET        /register/problem/organisation-without-utr-pre-registered        cont
 
 GET        /register/problem/there-is-a-problem             controllers.ThereIsAProblemController.onPageLoad()
 
-GET        /register/problem/sign-in-problem                 controllers.UnauthorisedStandardUserController.onPageLoad()
+GET        /register/problem/sign-in-problem                controllers.UnauthorisedStandardUserController.onPageLoad()
+
+GET        /register/problem/there-is-a-problem             controllers.SorryThereIsAProblemController.onPageLoad()
