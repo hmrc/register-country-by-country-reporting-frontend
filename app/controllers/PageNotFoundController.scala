@@ -33,7 +33,7 @@ class PageNotFoundController @Inject()(
                                        view: PageNotFoundView
                                      ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() {
+  def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithEnrolmentCheck() {
     implicit request =>
       Ok(view(frontendAppConfig.emailEnquiries))
   }
