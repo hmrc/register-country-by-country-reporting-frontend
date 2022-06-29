@@ -23,27 +23,30 @@ import models.SubscriptionID
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.ContactEmailPage
+import pages.{ContactEmailPage, SecondContactEmailPage}
+import play.api.Application
 import play.api.http.Status.{ACCEPTED, INTERNAL_SERVER_ERROR}
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.{Application, inject}
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
 class EmailServiceSpec extends SpecBase with BeforeAndAfterEach with Generators with ScalaCheckPropertyChecks {
 
-  private val mockEmailConnector: EmailConnector = mock[EmailConnector]
-
-  lazy override val app: Application = new GuiceApplicationBuilder()
-    .overrides(
-      inject.bind[EmailConnector].toInstance(mockEmailConnector)
-    ).build()
-
   override def beforeEach: Unit =
     reset(
       mockEmailConnector
     )
+
+
+  private val mockEmailConnector: EmailConnector = mock[EmailConnector]
+
+  lazy override val app: Application = new GuiceApplicationBuilder()
+    .overrides(
+     bind[EmailConnector].toInstance(mockEmailConnector)
+    ).build()
+
 
   val emailService: EmailService = app.injector.instanceOf[EmailService]
 
@@ -54,11 +57,15 @@ class EmailServiceSpec extends SpecBase with BeforeAndAfterEach with Generators 
 
       when(mockEmailConnector.sendEmail(any())(any())).thenReturn(Future.successful(HttpResponse(ACCEPTED, "")))
 
-      val userAnswers = emptyUserAnswers.set(ContactEmailPage, "test@gmail.com").success.value
+      val userAnswers = emptyUserAnswers
+        .set(ContactEmailPage, "test@gmail.com").success.value
+        .set(SecondContactEmailPage, "test@gmail.com").success.value
 
-      val result: Future[Int] = emailService.sendEmail(userAnswers, SubscriptionID("Id"))
+      val result = emailService.sendEmail(userAnswers, SubscriptionID("Id"))
 
-      result.futureValue mustBe ACCEPTED
+      result.futureValue.value mustBe ACCEPTED
+
+      verify(mockEmailConnector, times(2)).sendEmail(any())(any())
     }
 
     "return status 'INTERNAL_SERVER_ERROR' on failing to Send email" in {
@@ -67,9 +74,10 @@ class EmailServiceSpec extends SpecBase with BeforeAndAfterEach with Generators 
 
       val userAnswers = emptyUserAnswers.set(ContactEmailPage, "test@gmail.com").success.value
 
-      val result: Future[Int] = emailService.sendEmail(userAnswers, SubscriptionID("Id"))
+      val result = emailService.sendEmail(userAnswers, SubscriptionID("Id"))
 
-      result.futureValue mustBe INTERNAL_SERVER_ERROR
+      result.futureValue.value mustBe INTERNAL_SERVER_ERROR
+      verify(mockEmailConnector, times(1)).sendEmail(any())(any())
     }
   }
 

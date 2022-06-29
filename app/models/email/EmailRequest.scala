@@ -23,12 +23,15 @@ case class EmailRequest(to: List[String], templateId: String, parameters: Map[St
 object EmailRequest {
   implicit val format: OFormat[EmailRequest] = Json.format[EmailRequest]
 
-  def apply(emailIds: List[String], emailTemplate: String, cbcID: String): EmailRequest = {
+  def apply(emailId: String, emailTemplate: String, cbcID: String, name: Option[String]): EmailRequest = {
+    val contactName = name.fold("Registrant")(
+      name => name
+    )
 
     EmailRequest(
-      emailIds,
+      List(emailId),
       emailTemplate,
-      Map("cbcID" -> cbcID)
+      Map("cbcID" -> cbcID, "name" -> contactName)
     )
   }
 }
