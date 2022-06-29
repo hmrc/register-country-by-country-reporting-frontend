@@ -21,19 +21,20 @@ import models.matching.RegistrationInfo
 import models.register.response.details.AddressResponse
 import models.{EnrolmentCreationError, SafeId, SubscriptionCreateInformationMissingError, SubscriptionID, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import pages.RegistrationInfoPage
+import pages.{ContactEmailPage, ContactNamePage, ContactPhonePage, DoYouHaveUTRPage, RegistrationInfoPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{SubscriptionService, TaxEnrolmentService}
+import services.{RegisterWithoutIdService, SubscriptionService, TaxEnrolmentService}
 import viewmodels.govuk.SummaryListFluency
 
 import scala.concurrent.Future
 
 class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
-  val mockSubscriptionService: SubscriptionService  = mock[SubscriptionService]
-  val mockTaxEnrolmentsService: TaxEnrolmentService = mock[TaxEnrolmentService]
+  val mockSubscriptionService: SubscriptionService           = mock[SubscriptionService]
+  val mockTaxEnrolmentsService: TaxEnrolmentService          = mock[TaxEnrolmentService]
+  val mockRegisterWithoutIdService: RegisterWithoutIdService = mock[RegisterWithoutIdService]
 
   val registrationInfo = RegistrationInfo(
     SafeId("safe"),
@@ -44,7 +45,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
   override def beforeEach: Unit =
     reset(
       mockSubscriptionService,
-      mockTaxEnrolmentsService
+      mockTaxEnrolmentsService,
+      mockRegisterWithoutIdService
     )
 
   "Check Your Answers Controller" - {
@@ -120,7 +122,19 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
   }
 
   "must return MissingError Page on Mandatory Information Missing for Subscription Creation onSubmit" in {
-    val userAnswers = UserAnswers(userAnswersId).set(RegistrationInfoPage, registrationInfo).success.value
+    val userAnswers = UserAnswers("")
+      .set(DoYouHaveUTRPage, false)
+      .success
+      .value
+      .set(ContactNamePage, "TestName")
+      .success
+      .value
+      .set(ContactEmailPage, "test@gmail.com")
+      .success
+      .value
+      .set(ContactPhonePage, "000000000")
+      .success
+      .value
 
     val application = applicationBuilder(userAnswers = Some(userAnswers))
       .overrides(
@@ -147,6 +161,32 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
     when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
     when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())) thenReturn Future.successful(Right(NO_CONTENT))
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+    val application = applicationBuilder(userAnswers = Some(userAnswers))
+      .overrides(
+        bind[SubscriptionService].toInstance(mockSubscriptionService),
+        bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+      )
+      .build()
+
+    running(application) {
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.RegistrationConfirmationController.onPageLoad().url
+
+    }
+  }
+  "must return OK  and the confirmation view onSubmit for register without id" in {
+
+    val userAnswers = emptyUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
+
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
+    when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())) thenReturn Future.successful(Right(NO_CONTENT))
+    when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+    when(mockRegisterWithoutIdService.registerWithoutId()(any(), any())) thenReturn Future.successful(Right(SafeId("111111")))
 
     val application = applicationBuilder(userAnswers = Some(userAnswers))
       .overrides(

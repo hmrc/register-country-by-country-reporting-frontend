@@ -21,19 +21,19 @@ import controllers.actions.StandardActionSets
 import models.requests.DataRequest
 import models.{EnrolmentCreationError, EnrolmentExistsError, SafeId, SubscriptionCreateInformationMissingError, SubscriptionID}
 import pages.{RegistrationInfoPage, SubscriptionIDPage}
-import play.api.{Logger, Logging}
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.{SubscriptionService, TaxEnrolmentService}
+import services.{RegisterWithoutIdService, SubscriptionService, TaxEnrolmentService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{CheckYourAnswersHelper, CountryListFactory}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class CheckYourAnswersController @Inject() (
   override val messagesApi: MessagesApi,
@@ -42,6 +42,7 @@ class CheckYourAnswersController @Inject() (
   sessionRepository: SessionRepository,
   subscriptionService: SubscriptionService,
   taxEnrolmentService: TaxEnrolmentService,
+  registerWithoutIdService: RegisterWithoutIdService,
   view: CheckYourAnswersView,
   countryListFactory: CountryListFactory
 ) extends FrontendBaseController
@@ -63,19 +64,28 @@ class CheckYourAnswersController @Inject() (
     implicit request =>
       request.userAnswers.get(RegistrationInfoPage).map(_.safeId) match {
         case Some(safeId) =>
-          subscriptionService.checkAndCreateSubscription(safeId, request.userAnswers) flatMap {
-            case Right(subscriptionId) => updateSubscriptionIdAndCreateEnrolment(safeId, subscriptionId)
-            case Left(error) =>
-              logger.warn(s"Error $error")
-              error match {
-                case EnrolmentCreationError | EnrolmentExistsError => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
-                case SubscriptionCreateInformationMissingError(_)  => Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
-                case _                                             => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
-              }
+          createSubscription(safeId)
+        case _ =>
+          registerWithoutIdService.registerWithoutId().flatMap {
+            case Right(safeId) => createSubscription(safeId)
+            case Left(value) =>
+              logger.warn(s"Error $value")
+              Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
           }
-        case _ => Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
       }
   }
+
+  private def createSubscription(safeId: SafeId)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Result] =
+    subscriptionService.checkAndCreateSubscription(safeId, request.userAnswers) flatMap {
+      case Right(subscriptionId) => updateSubscriptionIdAndCreateEnrolment(safeId, subscriptionId)
+      case Left(error) =>
+        logger.warn(s"Error $error")
+        error match {
+          case EnrolmentCreationError | EnrolmentExistsError => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+          case SubscriptionCreateInformationMissingError(_)  => Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
+          case _                                             => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+        }
+    }
 
   def updateSubscriptionIdAndCreateEnrolment(safeId: SafeId, subscriptionId: SubscriptionID)(implicit
     hc: HeaderCarrier,

@@ -21,7 +21,7 @@ import play.api.libs.json._
 import java.time.{ZoneId, ZonedDateTime}
 import java.time.format.DateTimeFormatter
 import java.util.UUID
-
+import models.Address
 case class NoIdOrganisation(organisationName: String)
 
 object NoIdOrganisation {
@@ -31,23 +31,26 @@ object NoIdOrganisation {
 }
 
 case class Address(
-    addressLine1: String,
-    addressLine2: Option[String],
-    addressLine3: String,
-    addressLine4: Option[String],
-    postalCode: Option[String],
-    countryCode: String
+  addressLine1: String,
+  addressLine2: Option[String],
+  addressLine3: String,
+  addressLine4: Option[String],
+  postalCode: Option[String],
+  countryCode: String
 )
 
 object Address {
   implicit val addressFormat: OFormat[Address] = Json.format[Address]
+
+  def fromAddress(address: models.Address): Address =
+    Address(address.addressLine1, address.addressLine2, address.addressLine3, address.addressLine4, address.postCode, address.country.code)
 }
 
 case class ContactDetails(
-    phoneNumber: Option[String],
-    mobileNumber: Option[String],
-    faxNumber: Option[String],
-    emailAddress: Option[String]
+  phoneNumber: Option[String],
+  mobileNumber: Option[String],
+  faxNumber: Option[String],
+  emailAddress: Option[String]
 )
 
 object ContactDetails {
@@ -55,9 +58,9 @@ object ContactDetails {
 }
 
 case class Identification(
-    idNumber: String,
-    issuingInstitution: String,
-    issuingCountryCode: String
+  idNumber: String,
+  issuingInstitution: String,
+  issuingCountryCode: String
 )
 
 object Identification {
@@ -71,10 +74,10 @@ object RequestParameter {
 }
 
 case class RequestCommon(
-    receiptDate: String,
-    regime: String,
-    acknowledgementReference: String,
-    requestParameters: Option[Seq[RequestParameter]]
+  receiptDate: String,
+  regime: String,
+  acknowledgementReference: String,
+  requestParameters: Option[Seq[RequestParameter]]
 )
 
 object RequestCommon {
@@ -92,10 +95,10 @@ object RequestCommon {
 }
 
 case class RequestDetails(
-    organisation: NoIdOrganisation,
-    address: Address,
-    contactDetails: ContactDetails,
-    identification: Option[Identification]
+  organisation: NoIdOrganisation,
+  address: Address,
+  contactDetails: ContactDetails,
+  identification: Option[Identification]
 )
 
 object RequestDetails {
@@ -109,15 +112,15 @@ object RequestDetails {
         (__ \ "address").read[Address] and
         (__ \ "contactDetails").read[ContactDetails] and
         (__ \ "identification").readNullable[Identification]
-    )((organisation, address, contactDetails, identification) =>
-      RequestDetails(organisation, address, contactDetails, identification)
+    )(
+      (organisation, address, contactDetails, identification) => RequestDetails(organisation, address, contactDetails, identification)
     )
   }
 }
 
 case class RegisterWithoutIDRequest(
-    requestCommon: RequestCommon,
-    requestDetail: RequestDetails
+  requestCommon: RequestCommon,
+  requestDetail: RequestDetails
 )
 
 object RegisterWithoutIDRequest {
@@ -125,9 +128,17 @@ object RegisterWithoutIDRequest {
 }
 
 case class RegisterWithoutId(
-    registerWithoutIDRequest: RegisterWithoutIDRequest
+  registerWithoutIDRequest: RegisterWithoutIDRequest
 )
 
 object RegisterWithoutId {
   implicit val format: OFormat[RegisterWithoutId] = Json.format[RegisterWithoutId]
+
+  def apply(organisationName: String, address: Address, contactDetails: ContactDetails): RegisterWithoutId =
+    RegisterWithoutId(
+      RegisterWithoutIDRequest(
+        RequestCommon("CBC"),
+        RequestDetails(NoIdOrganisation(organisationName), address, contactDetails, None)
+      )
+    )
 }
