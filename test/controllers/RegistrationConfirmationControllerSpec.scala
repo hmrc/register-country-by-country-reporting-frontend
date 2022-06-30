@@ -84,9 +84,11 @@ class RegistrationConfirmationControllerSpec extends SpecBase with BeforeAndAfte
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[RegistrationConfirmationView]
+        application.injector.instanceOf[RegistrationConfirmationView]
 
-        status(result) mustEqual NOT_IMPLEMENTED
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.MissingInformationController.onPageLoad().url
+
       }
     }
   }
