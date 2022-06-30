@@ -19,7 +19,7 @@ package services
 import base.SpecBase
 import connectors.RegistrationConnector
 import models.requests.DataRequest
-import models.{Address, ApiError, Country, MandatoryInformationMissingError, SafeId, UserAnswers}
+import models.{Address, ApiError, Country, MandatoryInformationMissingError, RegistrationWithoutIdInformationMissingError, SafeId, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{Mockito, MockitoSugar}
 import pages._
@@ -113,7 +113,7 @@ class RegisterWithoutIdServiceSpec extends SpecBase with MockitoSugar {
 
         val result: Future[Either[ApiError, SafeId]] = service.registerWithoutId()(mockDatarequest, hc)
 
-        result.futureValue mustBe Left(MandatoryInformationMissingError("SafeId missing"))
+        result.futureValue mustBe Left(RegistrationWithoutIdInformationMissingError("SafeId missing"))
       }
     }
   }

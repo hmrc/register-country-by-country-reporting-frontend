@@ -19,7 +19,15 @@ package controllers
 import base.SpecBase
 import models.matching.RegistrationInfo
 import models.register.response.details.AddressResponse
-import models.{EnrolmentCreationError, SafeId, SubscriptionCreateInformationMissingError, SubscriptionID, UserAnswers}
+import models.{
+  EnrolmentCreationError,
+  MandatoryInformationMissingError,
+  RegistrationWithoutIdInformationMissingError,
+  SafeId,
+  SubscriptionCreateInformationMissingError,
+  SubscriptionID,
+  UserAnswers
+}
 import org.mockito.ArgumentMatchers.any
 import pages.{ContactEmailPage, ContactNamePage, ContactPhonePage, DoYouHaveUTRPage, RegistrationInfoPage}
 import play.api.inject.bind
@@ -165,7 +173,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
     val application = applicationBuilder(userAnswers = Some(userAnswers))
       .overrides(
         bind[SubscriptionService].toInstance(mockSubscriptionService),
-        bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+        bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService),
+        bind[RegisterWithoutIdService].toInstance(mockRegisterWithoutIdService)
       )
       .build()
 
@@ -181,12 +190,67 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
   }
   "must return OK  and the confirmation view onSubmit for register without id" in {
 
-    val userAnswers = emptyUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
+    //val userAnswers = emptyUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
+    val userAnswers = UserAnswers("")
+      .set(DoYouHaveUTRPage, false)
+      .success
+      .value
+      .set(ContactNamePage, "TestName")
+      .success
+      .value
+      .set(ContactEmailPage, "test@gmail.com")
+      .success
+      .value
+      .set(ContactPhonePage, "000000000")
+      .success
+      .value
 
     when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
     when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())) thenReturn Future.successful(Right(NO_CONTENT))
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
     when(mockRegisterWithoutIdService.registerWithoutId()(any(), any())) thenReturn Future.successful(Right(SafeId("111111")))
+
+    val application = applicationBuilder(userAnswers = Some(userAnswers))
+      .overrides(
+        bind[SubscriptionService].toInstance(mockSubscriptionService),
+        bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService),
+        bind[RegisterWithoutIdService].toInstance(mockRegisterWithoutIdService)
+      )
+      .build()
+
+    running(application) {
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.RegistrationConfirmationController.onPageLoad().url
+
+    }
+  }
+
+  "must return Registration WithoutId Information MissingError Page  onSubmit for register without id" in {
+
+    val userAnswers = UserAnswers("")
+      .set(DoYouHaveUTRPage, false)
+      .success
+      .value
+      .set(ContactNamePage, "TestName")
+      .success
+      .value
+      .set(ContactEmailPage, "test@gmail.com")
+      .success
+      .value
+      .set(ContactPhonePage, "000000000")
+      .success
+      .value
+
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
+    when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())) thenReturn Future.successful(Right(NO_CONTENT))
+    when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+    when(mockRegisterWithoutIdService.registerWithoutId()(any(), any())) thenReturn Future.successful(
+      Left(RegistrationWithoutIdInformationMissingError("SafeId missing"))
+    )
 
     val application = applicationBuilder(userAnswers = Some(userAnswers))
       .overrides(
@@ -201,7 +265,47 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.RegistrationConfirmationController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.MissingInformationController.onPageLoad().url
+
+    }
+  }
+
+  "must return Mandatory Information MissingError Page  onSubmit for register without id" in {
+
+    val userAnswers = UserAnswers("")
+      .set(DoYouHaveUTRPage, false)
+      .success
+      .value
+      .set(ContactNamePage, "TestName")
+      .success
+      .value
+      .set(ContactEmailPage, "test@gmail.com")
+      .success
+      .value
+      .set(ContactPhonePage, "000000000")
+      .success
+      .value
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
+    when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())) thenReturn Future.successful(Right(NO_CONTENT))
+    when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+    when(mockRegisterWithoutIdService.registerWithoutId()(any(), any())) thenReturn Future.successful(
+      Left(MandatoryInformationMissingError("Registration Information Missing"))
+    )
+
+    val application = applicationBuilder(userAnswers = Some(userAnswers))
+      .overrides(
+        bind[SubscriptionService].toInstance(mockSubscriptionService),
+        bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+      )
+      .build()
+
+    running(application) {
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.MissingInformationController.onPageLoad().url
 
     }
   }

@@ -19,15 +19,17 @@ package services
 import connectors.RegistrationConnector
 import models.register.request.{ContactDetails, RegisterWithoutId}
 import models.requests.DataRequest
-import models.{ApiError, MandatoryInformationMissingError, SafeId}
+import models.{ApiError, MandatoryInformationMissingError, RegistrationWithoutIdInformationMissingError, SafeId}
 import pages._
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.http.HeaderCarrier
 import models.register.request.Address
+import play.api.Logging
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RegisterWithoutIdService @Inject() (registrationConnector: RegistrationConnector)(implicit ec: ExecutionContext) {
+class RegisterWithoutIdService @Inject() (registrationConnector: RegistrationConnector)(implicit ec: ExecutionContext) extends Logging {
 
   def registerWithoutId()(implicit request: DataRequest[AnyContent], hc: HeaderCarrier): Future[Either[ApiError, SafeId]] =
     (for {
@@ -36,7 +38,10 @@ class RegisterWithoutIdService @Inject() (registrationConnector: RegistrationCon
       emailAddress = request.userAnswers.get(ContactEmailPage)
       address <- request.userAnswers.get(BusinessWithoutIdAddressPage)
     } yield sendBusinessRegistration(organisationName, Address.fromAddress(address), ContactDetails(phoneNumber, None, None, emailAddress)))
-      .getOrElse(registrationError)
+      .getOrElse {
+        logger.warn("Missing Registration Information")
+        registrationError
+      }
 
   private val registrationError = Future.successful(Left(MandatoryInformationMissingError("Registration Information Missing")))
 
@@ -47,7 +52,9 @@ class RegisterWithoutIdService @Inject() (registrationConnector: RegistrationCon
     registrationConnector
       .registerWithoutID(RegisterWithoutId(businessName, address, contactDetails)) map {
       case Some(safeId) => Right(safeId)
-      case _            => Left(MandatoryInformationMissingError("SafeId missing"))
+      case _ =>
+        logger.warn("Registration WithoutId Information MissingError SafeId missing")
+        Left(RegistrationWithoutIdInformationMissingError("SafeId missing"))
     }
 
 }
