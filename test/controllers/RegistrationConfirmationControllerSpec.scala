@@ -53,7 +53,7 @@ class RegistrationConfirmationControllerSpec extends SpecBase with BeforeAndAfte
 
       when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))
 
-      when(mockEmailService.sendEmail(any(), any())(any())).thenReturn(Future.successful(ACCEPTED))
+      when(mockEmailService.sendEmail(any(), any())(any())).thenReturn(Future.successful(Some(ACCEPTED)))
 
       val userAnswers = UserAnswers(userAnswersId)
         .set(SubscriptionIDPage, SubscriptionID(subscriptionId))
@@ -81,11 +81,12 @@ class RegistrationConfirmationControllerSpec extends SpecBase with BeforeAndAfte
 
       running(application) {
         val request = FakeRequest(GET, routes.RegistrationConfirmationController.onPageLoad().url)
-        val result  = route(application, request).value
-        application.injector.instanceOf[RegistrationConfirmationView]
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.MissingInformationController.onPageLoad().url
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[RegistrationConfirmationView]
+
+        status(result) mustEqual NOT_IMPLEMENTED
       }
     }
   }
