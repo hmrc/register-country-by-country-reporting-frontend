@@ -58,7 +58,7 @@ class BusinessWithoutIdAddressController @Inject()(
       Ok(view(preparedForm, countryListFactory.countrySelectList(form.data, countries), mode))
         case None =>
           logger.error("Could not retrieve countries list from JSON file.")
-          Redirect(routes.JourneyRecoveryController.onPageLoad()) //TODO: Change to ThereIsAProblemController when implemented
+          Redirect(routes.ThereIsAProblemController.onPageLoad())
       }
   }
 
@@ -79,7 +79,7 @@ class BusinessWithoutIdAddressController @Inject()(
       )
         case None =>
           logger.error("Could not retrieve countries list from JSON file.")
-          Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad())) //TODO: Change to ThereIsAProblemController when implemented
+          Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
       }
   }
 }

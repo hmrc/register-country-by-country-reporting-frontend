@@ -18,16 +18,16 @@ package controllers
 
 import controllers.actions._
 import models.SubscriptionID
-
-import javax.inject.Inject
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.EmailService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.RegistrationConfirmationView
+import views.html.{RegistrationConfirmationView, ThereIsAProblemView}
 
-import scala.concurrent.ExecutionContext
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class RegistrationConfirmationController @Inject()(
                                        override val messagesApi: MessagesApi,
@@ -35,17 +35,25 @@ class RegistrationConfirmationController @Inject()(
                                        sessionRepository: SessionRepository,
                                        emailService: EmailService,
                                        val controllerComponents: MessagesControllerComponents,
-                                       view: RegistrationConfirmationView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                       view: RegistrationConfirmationView,
+                                       errorView: ThereIsAProblemView
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad: Action[AnyContent] = standardActionSets.identifiedWithoutEnrolmentCheck().async {
     implicit request =>
-      val subscriptionId = SubscriptionID("XTCBC0100000001") //Todo: get the subscription ID correctly
-      emailService.sendEmail(request.userAnswers, subscriptionId) flatMap {
-        _ =>
-          sessionRepository.clear(request.userId) map { _ =>
-            Ok(view(subscriptionId.value))
+      val subscriptionId = Option(SubscriptionID("XTCBC0100000001"))
+      subscriptionId match { //Todo: get the subscription ID correctly as per the line below
+//      request.userAnswers.get(SubscriptionIDPage) match {
+        case Some(id) =>
+          emailService.sendEmail(request.userAnswers, id) flatMap {
+            _ =>
+              sessionRepository.clear(request.userId) map { _ =>
+                Ok(view(id.value))
+              }
           }
+        case None =>
+          logger.warn("SubscriptionIDPage: Subscription Id is missing")
+          Future.successful(InternalServerError(errorView()))
       }
   }
 }

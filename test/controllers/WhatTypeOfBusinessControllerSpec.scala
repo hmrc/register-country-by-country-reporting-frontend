@@ -109,7 +109,7 @@ class BusinessTypeControllerSpec extends SpecBase {
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
+    "must redirect to sign out page for a GET if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -119,11 +119,11 @@ class BusinessTypeControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.auth.routes.AuthController.signOutNoSurvey.url
       }
     }
 
-    "redirect to Journey Recovery for a POST if no existing data is found" in {
+    "redirect to sign out page for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -136,7 +136,7 @@ class BusinessTypeControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.auth.routes.AuthController.signOutNoSurvey.url
       }
     }
   }
