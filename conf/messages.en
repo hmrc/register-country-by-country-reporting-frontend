@@ -1,4 +1,4 @@
-service.name = register-country-by-country-reporting-frontend
+service.name = Send a country-by-country report
 
 site.back = Back
 site.remove = Remove
@@ -320,3 +320,10 @@ businessWithIDName.change.hidden = your business
 missingInformation.title = Some information is missing
 missingInformation.heading = Some information is missing
 missingInformation.p1 = You must provide this information to register.
+
+pageNotFound.title = Page not found
+pageNotFound.heading = Page not found
+pageNotFound.p1 = If you typed the web address, check it is correct.
+pageNotFound.p2 = If you pasted the web address, check you copied the entire address.
+pageNotFound.link = You can email {0} if you have any questions about this service.
+pageNotFound.link.help = enquiries.aeoi@hmrc.gov.uk
