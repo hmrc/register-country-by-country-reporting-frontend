@@ -34,9 +34,7 @@ class AuthControllerSpec extends SpecBase with BeforeAndAfterEach{
 
   "signOut" - {
 
-    "must clear user answers and redirect to sign out, specifying the exit survey as the continue URL" in {
-
-      when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
+    "must redirect to sign out, specifying the exit survey as the continue URL" in {
 
       val application =
         applicationBuilder(None).build()
@@ -52,23 +50,19 @@ class AuthControllerSpec extends SpecBase with BeforeAndAfterEach{
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl
-        verify(mockSessionRepository, times(1)).clear(eqTo(userAnswersId))
       }
     }
   }
 
   "signOutNoSurvey" - {
 
-    "must clear users answers and redirect to SignedOut URL" in {
-
-      when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
+    "must redirect to SignedOut URL" in {
 
       val application =
         applicationBuilder(None).build()
 
       running(application) {
 
-        val appConfig = application.injector.instanceOf[FrontendAppConfig]
         val request   = FakeRequest(GET, routes.AuthController.signOutNoSurvey.url)
 
         val result = route(application, request).value
@@ -77,7 +71,6 @@ class AuthControllerSpec extends SpecBase with BeforeAndAfterEach{
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl
-        verify(mockSessionRepository, times(1)).clear(eqTo(userAnswersId))
       }
     }
   }
