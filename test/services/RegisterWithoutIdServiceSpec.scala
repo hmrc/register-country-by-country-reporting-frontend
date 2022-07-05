@@ -75,13 +75,16 @@ class RegisterWithoutIdServiceSpec extends SpecBase with MockitoSugar {
           .set(BusinessWithoutIdAddressPage, address)
           .success
           .value
-        val mockDatarequest = mock[DataRequest[AnyContent]]
-        when(mockDatarequest.userAnswers).thenReturn(userAnswers)
+          .set(DoYouHaveSecondContactPage, false)
+          .success
+          .value
+        val mockDataRequest = mock[DataRequest[AnyContent]]
+        when(mockDataRequest.userAnswers).thenReturn(userAnswers)
         val response: Future[Option[SafeId]] = Future.successful(Some(SafeId("XE0000123456789")))
 
         when(mockRegistrationConnector.registerWithoutID(any())(any(), any())).thenReturn(response)
 
-        val result: Future[Either[ApiError, SafeId]] = service.registerWithoutId()(mockDatarequest, hc)
+        val result: Future[Either[ApiError, SafeId]] = service.registerWithoutId()(mockDataRequest, hc)
 
         result.futureValue mustBe Right(SafeId("XE0000123456789"))
       }
@@ -104,6 +107,9 @@ class RegisterWithoutIdServiceSpec extends SpecBase with MockitoSugar {
           .set(BusinessWithoutIdAddressPage, address)
           .success
           .value
+          .set(DoYouHaveSecondContactPage, true)
+          .success
+          .value
         val mockDatarequest = mock[DataRequest[AnyContent]]
         when(mockDatarequest.userAnswers).thenReturn(userAnswers)
 
@@ -115,6 +121,7 @@ class RegisterWithoutIdServiceSpec extends SpecBase with MockitoSugar {
 
         result.futureValue mustBe Left(RegistrationWithoutIdInformationMissingError("SafeId missing"))
       }
+
     }
   }
 }

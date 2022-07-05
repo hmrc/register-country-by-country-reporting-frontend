@@ -37,6 +37,7 @@ class RegisterWithoutIdService @Inject() (registrationConnector: RegistrationCon
       phoneNumber  = request.userAnswers.get(ContactPhonePage)
       emailAddress = request.userAnswers.get(ContactEmailPage)
       address <- request.userAnswers.get(BusinessWithoutIdAddressPage)
+      _       <- request.userAnswers.get(DoYouHaveSecondContactPage)
     } yield sendBusinessRegistration(organisationName, Address.fromAddress(address), ContactDetails(phoneNumber, None, None, emailAddress)))
       .getOrElse {
         logger.warn("Missing Registration Information")

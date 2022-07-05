@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.SubscriptionConnector
-import models.{Address, Country, SafeId, SubscriptionCreateError, SubscriptionCreateInformationMissingError, SubscriptionID, UserAnswers}
+import models.{SafeId, SubscriptionCreateError, SubscriptionCreateInformationMissingError, SubscriptionID, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -68,6 +68,9 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
         .set(ContactPhonePage, "000000000")
         .success
         .value
+        .set(DoYouHaveSecondContactPage, false)
+        .success
+        .value
 
       val result = service.checkAndCreateSubscription(safeId, userAnswers)
       result.futureValue mustBe Right(SubscriptionID("id"))
@@ -98,6 +101,61 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
       result.futureValue mustBe Left(SubscriptionCreateInformationMissingError("Primary ContactInformation"))
     }
 
+    "must return SubscriptionCreateInformationMissingError when it fails to create subscription" in {
+      val safeId = SafeId("CBC12345678")
+      val userAnswers = UserAnswers("id")
+        .set(DoYouHaveUTRPage, false)
+        .success
+        .value
+        .set(ContactNamePage, "TestName")
+        .success
+        .value
+        .set(ContactEmailPage, "test@gmail.com")
+        .success
+        .value
+        .set(ContactPhonePage, "000000000")
+        .success
+        .value
+      val responseCreateSubscription: Future[Option[SubscriptionID]] = Future.successful(None)
+
+      when(mockSubscriptionConnector.readSubscription(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionConnector.createSubscription(any())(any(), any())).thenReturn(responseCreateSubscription)
+
+      val result = service.checkAndCreateSubscription(safeId, userAnswers)
+
+      result.futureValue mustBe Left(SubscriptionCreateInformationMissingError("DoYouHaveSecondContact Page not answered"))
+
+    }
+
+    "must return SubscriptionCreateInformationMissingError haveSecondContactPhone page not found when it fails to create subscription" in {
+      val safeId = SafeId("CBC12345678")
+      val userAnswers = UserAnswers("id")
+        .set(DoYouHaveUTRPage, false)
+        .success
+        .value
+        .set(ContactNamePage, "TestName")
+        .success
+        .value
+        .set(ContactEmailPage, "test@gmail.com")
+        .success
+        .value
+        .set(ContactPhonePage, "000000000")
+        .success
+        .value
+        .set(DoYouHaveSecondContactPage, true)
+        .success
+        .value
+      val responseCreateSubscription: Future[Option[SubscriptionID]] = Future.successful(None)
+
+      when(mockSubscriptionConnector.readSubscription(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionConnector.createSubscription(any())(any(), any())).thenReturn(responseCreateSubscription)
+
+      val result = service.checkAndCreateSubscription(safeId, userAnswers)
+
+      result.futureValue mustBe Left(SubscriptionCreateInformationMissingError("DoYouHaveSecondContactPhone Page not answered"))
+
+    }
+
     "must return error when it fails to create subscription" in {
       val safeId = SafeId("CBC12345678")
       val userAnswers = UserAnswers("id")
@@ -111,6 +169,9 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
         .success
         .value
         .set(ContactPhonePage, "000000000")
+        .success
+        .value
+        .set(DoYouHaveSecondContactPage, false)
         .success
         .value
       val responseCreateSubscription: Future[Option[SubscriptionID]] = Future.successful(None)
