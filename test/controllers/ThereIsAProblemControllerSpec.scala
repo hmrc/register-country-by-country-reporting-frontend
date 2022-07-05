@@ -37,7 +37,7 @@ class ThereIsAProblemControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[ThereIsAProblemView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view("enquiries.aeoi@hmrc.gov.uk")(request, messages(application)).toString
+        contentAsString(result) mustEqual view()(request, messages(application)).toString
       }
     }
   }

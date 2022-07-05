@@ -144,5 +144,5 @@ class CBCRNavigator @Inject()() extends Navigator {
   def yesNoPage(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call =
     ua.get(fromPage)
       .map(if (_) yesCall else noCall)
-      .getOrElse(routes.JourneyRecoveryController.onPageLoad()) //TODO: Change to routes.ThereIsAProblemController.onPageLoad() when implemented
+      .getOrElse(routes.ThereIsAProblemController.onPageLoad())
 }

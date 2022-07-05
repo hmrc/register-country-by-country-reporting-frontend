@@ -32,7 +32,7 @@ class DependantAnswerAction[T] @Inject() (answer: Gettable[T])(implicit val exec
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] =
     request.userAnswers.get(answer) match {
       case None =>
-        Future.successful(Some(Redirect(routes.JourneyRecoveryController.onPageLoad()))) // TODO - change to Some Info Missing page when built
+        Future.successful(Some(Redirect(routes.MissingInformationController.onPageLoad())))
       case Some(_) =>
         Future.successful(None)
     }

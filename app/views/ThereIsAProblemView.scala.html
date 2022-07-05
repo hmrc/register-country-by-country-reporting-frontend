@@ -23,7 +23,7 @@
         appConfig: FrontendAppConfig
 )
 
-@(emailLink: String)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("thereIsAProblem.title")), showBackLink = false) {
 
@@ -31,5 +31,5 @@
 
     <p class="govuk-body">@messages("thereIsAProblem.p1")</p>
 
-    <p class="govuk-body">@Html(messages("thereIsAProblem.help" , link(s"mailto:$emailLink", "thereIsAProblem.help.link", openInNewWindow = true)))</p>
+    <p class="govuk-body">@Html(messages("thereIsAProblem.help" , link(s"mailto:${appConfig.emailEnquiries}", "thereIsAProblem.help.link", openInNewWindow = true)))</p>
 }

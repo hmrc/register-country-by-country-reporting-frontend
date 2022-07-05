@@ -50,7 +50,7 @@ class BusinessNameController @Inject()(
         }
 
         Ok(view(preparedForm, businessType, mode))
-      }.getOrElse(Redirect(routes.JourneyRecoveryController.onPageLoad())) //TODO: Change to ThereIsAProblemController
+      }.getOrElse(Redirect(routes.ThereIsAProblemController.onPageLoad()))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
@@ -66,6 +66,6 @@ class BusinessNameController @Inject()(
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(BusinessNamePage, mode, updatedAnswers))
         )
-      }.getOrElse(Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))) //TODO: Change to ThereIsAProblemController
+      }.getOrElse(Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad())))
   }
 }

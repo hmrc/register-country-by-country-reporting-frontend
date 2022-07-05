@@ -64,10 +64,10 @@ class IsThisYourBusinessController @Inject()(
               Redirect(routes.BusinessNotIdentifiedController.onPageLoad())
 
             case _ =>
-              Redirect(routes.JourneyRecoveryController.onPageLoad()) //TODO: Change to ThereIsAProblemController when implemented
+              Redirect(routes.ThereIsAProblemController.onPageLoad())
           }
         case _ =>
-          Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad())) //TODO: Change to ThereIsAProblemController when implemented
+          Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
       }
   }
 
