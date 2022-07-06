@@ -21,29 +21,37 @@ import controllers.actions._
 import forms.IsThisYourBusinessFormProvider
 import models.matching.RegistrationInfo
 import models.register.request._
+import models.register.response.RegisterWithIDResponse
 import models.requests.DataRequest
 import models.{Mode, NotFoundError}
 import navigation.CBCRNavigator
 import pages._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
+import services.{SubscriptionService, TaxEnrolmentService}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.IsThisYourBusinessView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IsThisYourBusinessController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              sessionRepository: SessionRepository,
-                                              navigator: CBCRNavigator,
-                                              standardActionSets: StandardActionSets,
-                                              registrationConnector: RegistrationConnector,
-                                              formProvider: IsThisYourBusinessFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              view: IsThisYourBusinessView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class IsThisYourBusinessController @Inject() (
+  override val messagesApi: MessagesApi,
+  override val sessionRepository: SessionRepository,
+  override val subscriptionService: SubscriptionService,
+  override val taxEnrolmentService: TaxEnrolmentService,
+  navigator: CBCRNavigator,
+  standardActionSets: StandardActionSets,
+  registrationConnector: RegistrationConnector,
+  formProvider: IsThisYourBusinessFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: IsThisYourBusinessView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with CreateSubscriptionAndUpdateEnrolment {
 
   val form = formProvider()
 
@@ -51,25 +59,36 @@ class IsThisYourBusinessController @Inject()(
     implicit request =>
       buildRegistrationRequest() match {
         case Some(registerWithID) =>
-          registrationConnector.registerWithID(registerWithID).map {
+          registrationConnector.registerWithID(registerWithID).flatMap {
             case Right(response) =>
-              request.userAnswers.set(RegistrationInfoPage, RegistrationInfo(response)).map(sessionRepository.set)
-              val preparedForm = request.userAnswers.get(IsThisYourBusinessPage) match {
-                case None => form
-                case Some(value) => form.fill(value)
-              }
-
-              Ok(view(preparedForm, RegistrationInfo(response), mode))
+              checkExistingSubscription(mode, response)
             case Left(NotFoundError) =>
-              Redirect(routes.BusinessNotIdentifiedController.onPageLoad())
-
+              Future.successful(Redirect(routes.BusinessNotIdentifiedController.onPageLoad()))
             case _ =>
-              Redirect(routes.ThereIsAProblemController.onPageLoad())
+              Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
           }
         case _ =>
           Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
       }
   }
+
+  private def checkExistingSubscription(mode: Mode,
+                                        response: RegisterWithIDResponse
+  )(implicit request: DataRequest[AnyContent], hc: HeaderCarrier, ec: ExecutionContext): Future[Result] = {
+    for {
+      ua                  <- Future.fromTry(request.userAnswers.set(RegistrationInfoPage, RegistrationInfo(response)))
+      _                   <- sessionRepository.set(ua)
+      mayBeSubscriptionId <- subscriptionService.getDisplaySubscriptionId(response.safeId)
+    } yield mayBeSubscriptionId match {
+      case Some(subscriptionID) => updateSubscriptionIdAndCreateEnrolment(response.safeId, subscriptionID)
+      case _ =>
+        val preparedForm = request.userAnswers.get(IsThisYourBusinessPage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
+        Future.successful(Ok(view(preparedForm, RegistrationInfo(response), mode)))
+    }
+  }.flatten
 
   private def buildRegistrationRequest()(implicit request: DataRequest[AnyContent]): Option[RegisterWithID] =
     for {
@@ -91,17 +110,22 @@ class IsThisYourBusinessController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          request.userAnswers.get(RegistrationInfoPage).fold{
-            Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
-          } { registrationInfo => Future.successful(BadRequest(view(formWithErrors, registrationInfo, mode)))},
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(IsThisYourBusinessPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IsThisYourBusinessPage, mode, updatedAnswers))
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors =>
+            request.userAnswers
+              .get(RegistrationInfoPage)
+              .fold {
+                Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+              } {
+                registrationInfo => Future.successful(BadRequest(view(formWithErrors, registrationInfo, mode)))
+              },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(IsThisYourBusinessPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(IsThisYourBusinessPage, mode, updatedAnswers))
+        )
   }
 }

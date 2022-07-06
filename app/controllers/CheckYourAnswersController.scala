@@ -39,15 +39,15 @@ class CheckYourAnswersController @Inject() (
   override val messagesApi: MessagesApi,
   standardActionSets: StandardActionSets,
   val controllerComponents: MessagesControllerComponents,
-  sessionRepository: SessionRepository,
-  subscriptionService: SubscriptionService,
-  taxEnrolmentService: TaxEnrolmentService,
+  override val sessionRepository: SessionRepository,
+  override val subscriptionService: SubscriptionService,
+  override val taxEnrolmentService: TaxEnrolmentService,
   registerWithoutIdService: RegisterWithoutIdService,
   view: CheckYourAnswersView,
   countryListFactory: CountryListFactory
 ) extends FrontendBaseController
     with I18nSupport
-    with Logging {
+    with CreateSubscriptionAndUpdateEnrolment {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
@@ -75,36 +75,4 @@ class CheckYourAnswersController @Inject() (
       }
   }
 
-  private def createSubscription(safeId: SafeId)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Result] =
-    subscriptionService.checkAndCreateSubscription(safeId, request.userAnswers) flatMap {
-      case Right(subscriptionId) => updateSubscriptionIdAndCreateEnrolment(safeId, subscriptionId)
-      case Left(error) =>
-        logger.warn(s"Error $error")
-        error match {
-          case EnrolmentCreationError | EnrolmentExistsError => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
-          case SubscriptionCreateInformationMissingError(_)  => Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
-          case _                                             => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
-        }
-    }
-
-  def updateSubscriptionIdAndCreateEnrolment(safeId: SafeId, subscriptionId: SubscriptionID)(implicit
-    hc: HeaderCarrier,
-    request: DataRequest[AnyContent]
-  ): Future[Result] = {
-    for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(SubscriptionIDPage, subscriptionId))
-      _              <- sessionRepository.set(updatedAnswers)
-    } yield updatedAnswers
-  }.flatMap {
-    updatedAnswers =>
-      taxEnrolmentService.checkAndCreateEnrolment(safeId, updatedAnswers, subscriptionId) flatMap {
-        case Right(_) => Future.successful(Redirect(routes.RegistrationConfirmationController.onPageLoad()))
-        case Left(_) =>
-          if (request.userAnswers.get(RegistrationInfoPage).isDefined) {
-            Future.successful(Redirect(routes.PreRegisteredController.onPageLoad(true)))
-          } else {
-            Future.successful(Redirect(routes.PreRegisteredController.onPageLoad(false)))
-          }
-      }
-  }
 }
