@@ -36,14 +36,20 @@ import scala.concurrent.Future
 class IsThisYourBusinessControllerSpec extends SpecBase {
 
   val formProvider = new IsThisYourBusinessFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   lazy val isThisYourBusinessRoute = routes.IsThisYourBusinessController.onPageLoad(NormalMode).url
 
   val baseUserAnswers = emptyUserAnswers
-    .set(BusinessTypePage, LimitedCompany).success.value
-    .set(UTRPage, "1234567890").success.value
-    .set(BusinessNamePage, "Business Name").success.value
+    .set(BusinessTypePage, LimitedCompany)
+    .success
+    .value
+    .set(UTRPage, "1234567890")
+    .success
+    .value
+    .set(BusinessNamePage, "Business Name")
+    .success
+    .value
 
   val registrationInfo = RegistrationInfo(
     SafeId("safe"),
@@ -60,14 +66,21 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
         .overrides(
           bind[RegistrationConnector].toInstance(mockRegistrationConnector)
-        ).build()
+        )
+        .build()
 
       when(mockRegistrationConnector.registerWithID(any())(any(), any()))
-        .thenReturn(Future.successful(Right(RegisterWithIDResponse(
-          SafeId("safe"),
-          OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
-          AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
-        ))))
+        .thenReturn(
+          Future.successful(
+            Right(
+              RegisterWithIDResponse(
+                SafeId("safe"),
+                OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
+                AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
+              )
+            )
+          )
+        )
 
       running(application) {
         val request = FakeRequest(GET, isThisYourBusinessRoute)
@@ -86,7 +99,8 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
         .overrides(
           bind[RegistrationConnector].toInstance(mockRegistrationConnector)
-        ).build()
+        )
+        .build()
 
       when(mockRegistrationConnector.registerWithID(any())(any(), any()))
         .thenReturn(Future.successful(Left(NotFoundError)))
@@ -98,12 +112,9 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-       redirectLocation(result) mustBe Some(routes.BusinessNotIdentifiedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(routes.BusinessNotIdentifiedController.onPageLoad().url)
       }
     }
-
-
-
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
@@ -112,14 +123,21 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(
           bind[RegistrationConnector].toInstance(mockRegistrationConnector)
-        ).build()
+        )
+        .build()
 
       when(mockRegistrationConnector.registerWithID(any())(any(), any()))
-        .thenReturn(Future.successful(Right(RegisterWithIDResponse(
-          SafeId("safe"),
-          OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
-          AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
-        ))))
+        .thenReturn(
+          Future.successful(
+            Right(
+              RegisterWithIDResponse(
+                SafeId("safe"),
+                OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
+                AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
+              )
+            )
+          )
+        )
 
       running(application) {
         val request = FakeRequest(GET, isThisYourBusinessRoute)

@@ -23,7 +23,7 @@ import org.mockito.MockitoSugar
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.{OptionValues, TryValues}
+import org.scalatest.{BeforeAndAfterEach, OptionValues, TryValues}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
@@ -35,16 +35,17 @@ import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
 trait SpecBase
-  extends AnyFreeSpec
+    extends AnyFreeSpec
     with GuiceOneAppPerSuite
     with Matchers
     with MockitoSugar
     with TryValues
     with OptionValues
     with ScalaFutures
+    with BeforeAndAfterEach
     with IntegrationPatience {
 
-  val userAnswersId: String = "id"
+  val userAnswersId: String      = "id"
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   def onwardRoute: Call                                  = Call("GET", "/foo")

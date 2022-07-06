@@ -18,38 +18,93 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.StandardActionSets
+import models.requests.DataRequest
+import models.{EnrolmentCreationError, EnrolmentExistsError, SafeId, SubscriptionCreateInformationMissingError, SubscriptionID}
+import pages.{RegistrationInfoPage, SubscriptionIDPage}
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import repositories.SessionRepository
+import services.{RegisterWithoutIdService, SubscriptionService, TaxEnrolmentService}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{CheckYourAnswersHelper, CountryListFactory}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CheckYourAnswersController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            standardActionSets: StandardActionSets,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: CheckYourAnswersView,
-                                            countryListFactory: CountryListFactory
-                                          ) extends FrontendBaseController with I18nSupport {
+class CheckYourAnswersController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  sessionRepository: SessionRepository,
+  subscriptionService: SubscriptionService,
+  taxEnrolmentService: TaxEnrolmentService,
+  registerWithoutIdService: RegisterWithoutIdService,
+  view: CheckYourAnswersView,
+  countryListFactory: CountryListFactory
+) extends FrontendBaseController
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
+      val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers = request.userAnswers, countryListFactory = countryListFactory)
 
-      val checkYourAnswersHelper =  new CheckYourAnswersHelper(userAnswers = request.userAnswers, countryListFactory = countryListFactory)
-
-      val businessList = SummaryListViewModel(checkYourAnswersHelper.businessSection)
-      val firstContactList = SummaryListViewModel(checkYourAnswersHelper.firstContactSection)
+      val businessList      = SummaryListViewModel(checkYourAnswersHelper.businessSection)
+      val firstContactList  = SummaryListViewModel(checkYourAnswersHelper.firstContactSection)
       val secondContactList = SummaryListViewModel(checkYourAnswersHelper.secondContactSection)
 
       Ok(view(businessList, firstContactList, secondContactList))
   }
 
-
   def onSubmit(): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
     implicit request =>
-      Future.successful(Ok("Ok")) //ToDo submit registration
+      request.userAnswers.get(RegistrationInfoPage).map(_.safeId) match {
+        case Some(safeId) =>
+          createSubscription(safeId)
+        case _ =>
+          registerWithoutIdService.registerWithoutId().flatMap {
+            case Right(safeId) => createSubscription(safeId)
+            case Left(value) =>
+              logger.warn(s"Error $value")
+              Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
+          }
+      }
+  }
+
+  private def createSubscription(safeId: SafeId)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Result] =
+    subscriptionService.checkAndCreateSubscription(safeId, request.userAnswers) flatMap {
+      case Right(subscriptionId) => updateSubscriptionIdAndCreateEnrolment(safeId, subscriptionId)
+      case Left(error) =>
+        logger.warn(s"Error $error")
+        error match {
+          case EnrolmentCreationError | EnrolmentExistsError => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+          case SubscriptionCreateInformationMissingError(_)  => Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
+          case _                                             => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+        }
+    }
+
+  def updateSubscriptionIdAndCreateEnrolment(safeId: SafeId, subscriptionId: SubscriptionID)(implicit
+    hc: HeaderCarrier,
+    request: DataRequest[AnyContent]
+  ): Future[Result] = {
+    for {
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(SubscriptionIDPage, subscriptionId))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield updatedAnswers
+  }.flatMap {
+    updatedAnswers =>
+      taxEnrolmentService.checkAndCreateEnrolment(safeId, updatedAnswers, subscriptionId) flatMap {
+        case Right(_) => Future.successful(Redirect(routes.RegistrationConfirmationController.onPageLoad()))
+        case Left(_) =>
+          if (request.userAnswers.get(RegistrationInfoPage).isDefined) {
+            Future.successful(Redirect(routes.PreRegisteredController.onPageLoad(true)))
+          } else {
+            Future.successful(Redirect(routes.PreRegisteredController.onPageLoad(false)))
+          }
+      }
   }
 }
