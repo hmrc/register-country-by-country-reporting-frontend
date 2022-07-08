@@ -17,7 +17,7 @@
 package controllers
 
 import models.requests.DataRequest
-import models.{EnrolmentCreationError, EnrolmentExistsError, SafeId, SubscriptionCreateInformationMissingError, SubscriptionID}
+import models.{EnrolmentCreationError, EnrolmentExistsError, SafeId, SubscriptionCreateError, SubscriptionCreateInformationMissingError, SubscriptionID}
 import pages.{RegistrationInfoPage, SubscriptionIDPage}
 import play.api.Logging
 import play.api.mvc.Results.Redirect
@@ -38,11 +38,10 @@ trait CreateSubscriptionAndUpdateEnrolment extends Logging {
     subscriptionService.checkAndCreateSubscription(safeId, request.userAnswers) flatMap {
       case Right(subscriptionId) => updateSubscriptionIdAndCreateEnrolment(safeId, subscriptionId)
       case Left(error) =>
-        logger.warn(s"Error $error")
+        logger.warn(s"Error: $error")
         error match {
-          case EnrolmentCreationError | EnrolmentExistsError => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
-          case SubscriptionCreateInformationMissingError(_)  => Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
-          case _                                             => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+          case SubscriptionCreateInformationMissingError(_) => Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
+          case error                                        => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
         }
     }
 
@@ -59,7 +58,11 @@ trait CreateSubscriptionAndUpdateEnrolment extends Logging {
     updatedAnswers =>
       taxEnrolmentService.checkAndCreateEnrolment(safeId, updatedAnswers, subscriptionId) flatMap {
         case Right(_) => Future.successful(Redirect(routes.RegistrationConfirmationController.onPageLoad()))
-        case Left(_) =>
+        case Left(EnrolmentCreationError) =>
+          logger.warn(s"Error: EnrolmentCreationError")
+          Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+        case Left(EnrolmentExistsError) =>
+          logger.warn(s"Error: EnrolmentExistsError")
           if (request.userAnswers.get(RegistrationInfoPage).isDefined) {
             Future.successful(Redirect(routes.PreRegisteredController.onPageLoad(true)))
           } else {

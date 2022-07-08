@@ -23,7 +23,7 @@ import models.BusinessType.LimitedCompany
 import models.matching.RegistrationInfo
 import models.register.response.RegisterWithIDResponse
 import models.register.response.details.{AddressResponse, OrganisationResponse}
-import models.{NormalMode, NotFoundError, SafeId, SubscriptionID, UserAnswers}
+import models.{EnrolmentExistsError, NormalMode, NotFoundError, SafeId, SubscriptionID, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import pages.{BusinessNamePage, BusinessTypePage, IsThisYourBusinessPage, RegistrationInfoPage, UTRPage}
 import play.api.inject.bind
@@ -141,6 +141,43 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result) mustBe Some(routes.RegistrationConfirmationController.onPageLoad().url)
+      }
+    }
+
+    "redirect to Registration Confirmation Page for business when they are already subscribed and have enrolment with other goverment gateway account" in {
+
+      val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
+        .overrides(
+          bind[RegistrationConnector].toInstance(mockRegistrationConnector),
+          bind[SubscriptionService].toInstance(mockSubscriptionService),
+          bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+        )
+        .build()
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockRegistrationConnector.registerWithID(any())(any(), any()))
+        .thenReturn(
+          Future.successful(
+            Right(
+              RegisterWithIDResponse(
+                SafeId("safe"),
+                OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
+                AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
+              )
+            )
+          )
+        )
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
+      when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())).thenReturn(Future.successful(Left(EnrolmentExistsError)))
+
+      running(application) {
+        val request = FakeRequest(GET, isThisYourBusinessRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result) mustBe Some(routes.PreRegisteredController.onPageLoad(false).url)
       }
     }
 
