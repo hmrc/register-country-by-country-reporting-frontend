@@ -21,6 +21,7 @@ import models.matching.RegistrationInfo
 import models.register.response.details.AddressResponse
 import models.{
   EnrolmentCreationError,
+  EnrolmentExistsError,
   MandatoryInformationMissingError,
   RegistrationWithoutIdInformationMissingError,
   SafeId,
@@ -310,7 +311,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
     }
   }
 
-  "must return OK  and the business already registered view onSubmit" in {
+  "must return Technical error  when EnrolmentCreation fails after view onSubmit" in {
     val registrationInfo = RegistrationInfo(
       SafeId("safe"),
       "Business Name",
@@ -320,6 +321,36 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
     when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
     when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())) thenReturn Future.successful(Left(EnrolmentCreationError))
+    when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+    val application = applicationBuilder(userAnswers = Some(userAnswers))
+      .overrides(
+        bind[SubscriptionService].toInstance(mockSubscriptionService),
+        bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+      )
+      .build()
+
+    running(application) {
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.ThereIsAProblemController.onPageLoad().url
+
+    }
+  }
+
+  "must return OK  and the business already registered view onSubmit" in {
+    val registrationInfo = RegistrationInfo(
+      SafeId("safe"),
+      "Business Name",
+      AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
+    )
+    val userAnswers = UserAnswers(userAnswersId).set(RegistrationInfoPage, registrationInfo).success.value
+
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
+    when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())) thenReturn Future.successful(Left(EnrolmentExistsError))
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
     val application = applicationBuilder(userAnswers = Some(userAnswers))

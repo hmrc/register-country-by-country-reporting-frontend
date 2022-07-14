@@ -23,12 +23,13 @@ import models.BusinessType.LimitedCompany
 import models.matching.RegistrationInfo
 import models.register.response.RegisterWithIDResponse
 import models.register.response.details.{AddressResponse, OrganisationResponse}
-import models.{NormalMode, NotFoundError, SafeId}
+import models.{EnrolmentExistsError, NormalMode, NotFoundError, SafeId, SubscriptionID, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import pages.{BusinessNamePage, BusinessTypePage, IsThisYourBusinessPage, RegistrationInfoPage, UTRPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.{SubscriptionService, TaxEnrolmentService}
 import views.html.IsThisYourBusinessView
 
 import scala.concurrent.Future
@@ -40,7 +41,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
 
   lazy val isThisYourBusinessRoute = routes.IsThisYourBusinessController.onPageLoad(NormalMode).url
 
-  val baseUserAnswers = emptyUserAnswers
+  val baseUserAnswers: UserAnswers = emptyUserAnswers
     .set(BusinessTypePage, LimitedCompany)
     .success
     .value
@@ -51,13 +52,22 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
     .success
     .value
 
-  val registrationInfo = RegistrationInfo(
+  val registrationInfo: RegistrationInfo = RegistrationInfo(
     SafeId("safe"),
     "Business Name",
     AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
   )
 
-  val mockRegistrationConnector = mock[RegistrationConnector]
+  val mockRegistrationConnector: RegistrationConnector = mock[RegistrationConnector]
+  val mockSubscriptionService: SubscriptionService     = mock[SubscriptionService]
+  val mockTaxEnrolmentsService: TaxEnrolmentService    = mock[TaxEnrolmentService]
+
+  override def beforeEach: Unit =
+    reset(
+      mockSubscriptionService,
+      mockTaxEnrolmentsService,
+      mockRegistrationConnector
+    )
 
   "IsThisYourBusiness Controller" - {
 
@@ -65,10 +75,13 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
         .overrides(
-          bind[RegistrationConnector].toInstance(mockRegistrationConnector)
+          bind[RegistrationConnector].toInstance(mockRegistrationConnector),
+          bind[SubscriptionService].toInstance(mockSubscriptionService),
+          bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
         )
         .build()
-
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockRegistrationConnector.registerWithID(any())(any(), any()))
         .thenReturn(
           Future.successful(
@@ -94,6 +107,80 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
       }
     }
 
+    "redirect to Registration Confirmation Page for business when they are already subscribed but no enrolment created" in {
+
+      val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
+        .overrides(
+          bind[RegistrationConnector].toInstance(mockRegistrationConnector),
+          bind[SubscriptionService].toInstance(mockSubscriptionService),
+          bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+        )
+        .build()
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockRegistrationConnector.registerWithID(any())(any(), any()))
+        .thenReturn(
+          Future.successful(
+            Right(
+              RegisterWithIDResponse(
+                SafeId("safe"),
+                OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
+                AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
+              )
+            )
+          )
+        )
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
+      when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())).thenReturn(Future.successful(Right(NO_CONTENT)))
+
+      running(application) {
+        val request = FakeRequest(GET, isThisYourBusinessRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result) mustBe Some(routes.RegistrationConfirmationController.onPageLoad().url)
+      }
+    }
+
+    "redirect to Registration Confirmation Page for business when they are already subscribed and have enrolment with other goverment gateway account" in {
+
+      val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
+        .overrides(
+          bind[RegistrationConnector].toInstance(mockRegistrationConnector),
+          bind[SubscriptionService].toInstance(mockSubscriptionService),
+          bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+        )
+        .build()
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockRegistrationConnector.registerWithID(any())(any(), any()))
+        .thenReturn(
+          Future.successful(
+            Right(
+              RegisterWithIDResponse(
+                SafeId("safe"),
+                OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
+                AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
+              )
+            )
+          )
+        )
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
+      when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())).thenReturn(Future.successful(Left(EnrolmentExistsError)))
+
+      running(application) {
+        val request = FakeRequest(GET, isThisYourBusinessRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result) mustBe Some(routes.PreRegisteredController.onPageLoad(false).url)
+      }
+    }
+
     "redirect to we are yet to identify your business when it's a non-match" in {
 
       val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
@@ -104,6 +191,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
 
       when(mockRegistrationConnector.registerWithID(any())(any(), any()))
         .thenReturn(Future.successful(Left(NotFoundError)))
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       running(application) {
         val request = FakeRequest(GET, isThisYourBusinessRoute)
@@ -125,6 +213,8 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
           bind[RegistrationConnector].toInstance(mockRegistrationConnector)
         )
         .build()
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
 
       when(mockRegistrationConnector.registerWithID(any())(any(), any()))
         .thenReturn(
