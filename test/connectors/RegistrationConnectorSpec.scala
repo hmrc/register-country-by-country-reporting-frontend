@@ -31,20 +31,17 @@ import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class RegistrationConnectorSpec extends SpecBase
-  with WireMockServerHandler
-  with ScalaCheckPropertyChecks
-  with JsonFixture {
+class RegistrationConnectorSpec extends SpecBase with WireMockServerHandler with ScalaCheckPropertyChecks with JsonFixture {
 
-  lazy override val app: Application = new GuiceApplicationBuilder()
+  override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       conf = "microservice.services.register-country-by-country.port" -> server.port()
     )
     .build()
 
   lazy val connector: RegistrationConnector = app.injector.instanceOf[RegistrationConnector]
-  private val registrationUrl = "/register-country-by-country-reporting/registration"
-  private val errorCodes: Gen[Int] = Gen.oneOf(Seq(400, 403, 500, 501, 502, 503, 504))
+  private val registrationUrl               = "/register-country-by-country-reporting/registration"
+  private val errorCodes: Gen[Int]          = Gen.oneOf(Seq(400, 403, 500, 501, 502, 503, 504))
 
   private val requestCommon: RequestCommon =
     RequestCommon("2016-08-16T15:55:30Z", "CBC", "ec031b045855445e96f98a569ds56cd2", Some(Seq(RequestParameter("REGIME", "CBC"))))
@@ -56,7 +53,7 @@ class RegistrationConnectorSpec extends SpecBase
     )
   )
 
-  private val addressRequest: Address = Address("100 Parliament Street", None, "", Some("London"), Some("SW1A 2BQ"), "GB")
+  private val addressRequest: Address        = Address("100 Parliament Street", None, "", Some("London"), Some("SW1A 2BQ"), "GB")
   private val contactDetails: ContactDetails = ContactDetails(Some("1111111"), Some("2222222"), Some("1111111"), Some("test@test.org"))
 
   private val registrationWithoutIDPayload: RegisterWithoutId = RegisterWithoutId(
@@ -70,9 +67,11 @@ class RegistrationConnectorSpec extends SpecBase
     "registerWithId" - {
       "must return 'RegisterWithIDResponse' for the valid input request" in {
 
-        val expectedResponse = RegisterWithIDResponse(SafeId("XE0000123456789"),
+        val expectedResponse = RegisterWithIDResponse(
+          SafeId("XE0000123456789"),
           OrganisationResponse("Org Name", true, Some("LLP"), Some("0002")),
-          AddressResponse("addressLine1", Some("addressLine2"), Some("addressLine3"), Some("addressLine4"), Some("AA1 1AA"), "GB"))
+          AddressResponse("addressLine1", Some("addressLine2"), Some("addressLine3"), Some("addressLine4"), Some("AA1 1AA"), "GB")
+        )
 
         stubResponse(s"$registrationUrl/utr", OK, businessWithIdJsonResponse)
 
@@ -110,14 +109,14 @@ class RegistrationConnectorSpec extends SpecBase
         stubResponse(s"$registrationUrl/noId", OK, businessWithoutIdJsonResponse)
 
         val result = connector.registerWithoutID(registrationWithoutIDPayload)
-        result.futureValue mustBe Some(SafeId("XE0000123456789"))
+        result.futureValue mustBe Right(Some(SafeId("XE0000123456789")))
       }
 
       "must return 'None' when safeId is missing in the businessWithIdResponse" in {
         stubResponse(s"$registrationUrl/noId", OK, businessWithoutIdMissingSafeIdJson)
 
         val result = connector.registerWithoutID(registrationWithoutIDPayload)
-        result.futureValue mustBe None
+        result.futureValue mustBe Right(None)
       }
 
       "must return 'None' when EIS returns Error status" in {
@@ -125,7 +124,7 @@ class RegistrationConnectorSpec extends SpecBase
         stubResponse(s"$registrationUrl/noId", errorStatus, businessWithoutIdJsonResponse)
 
         val result = connector.registerWithoutID(registrationWithoutIDPayload)
-        result.futureValue mustBe None
+        result.futureValue mustBe Left(InternalServerError)
       }
 
     }
@@ -144,6 +143,7 @@ class RegistrationConnectorSpec extends SpecBase
 }
 
 trait JsonFixture {
+
   val businessWithIdJsonResponse: String =
     """
       |{

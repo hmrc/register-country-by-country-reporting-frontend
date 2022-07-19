@@ -80,7 +80,7 @@ class RegisterWithoutIdServiceSpec extends SpecBase with MockitoSugar {
           .value
         val mockDataRequest = mock[DataRequest[AnyContent]]
         when(mockDataRequest.userAnswers).thenReturn(userAnswers)
-        val response: Future[Option[SafeId]] = Future.successful(Some(SafeId("XE0000123456789")))
+        val response = Future.successful(Right(Some(SafeId("XE0000123456789"))))
 
         when(mockRegistrationConnector.registerWithoutID(any())(any(), any())).thenReturn(response)
 
@@ -113,7 +113,7 @@ class RegisterWithoutIdServiceSpec extends SpecBase with MockitoSugar {
         val mockDatarequest = mock[DataRequest[AnyContent]]
         when(mockDatarequest.userAnswers).thenReturn(userAnswers)
 
-        val response: Future[Option[SafeId]] = Future.successful(None)
+        val response = Future.successful(Right(None))
 
         when(mockRegistrationConnector.registerWithoutID(any())(any(), any())).thenReturn(response)
 

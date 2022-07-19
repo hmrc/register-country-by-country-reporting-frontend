@@ -29,11 +29,10 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RegistrationConnector @Inject()(val config: FrontendAppConfig, val http: HttpClient) extends Logging {
+class RegistrationConnector @Inject() (val config: FrontendAppConfig, val http: HttpClient) extends Logging {
   val registrationUrl = s"${config.registerCountryByCountryUrl}/registration"
 
-  def registerWithID(registration: RegisterWithID
-                                   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[ApiError, RegisterWithIDResponse]] =
+  def registerWithID(registration: RegisterWithID)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[ApiError, RegisterWithIDResponse]] =
     http.POST[RegisterWithID, HttpResponse](s"$registrationUrl/utr", registration) map {
       case response if is2xx(response.status) =>
         response.json.asOpt[RegisterWithIDResponse] match {
@@ -48,14 +47,13 @@ class RegistrationConnector @Inject()(val config: FrontendAppConfig, val http: H
         Left(InternalServerError)
     }
 
-  def registerWithoutID(registration: RegisterWithoutId
-                                )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SafeId]] =
+  def registerWithoutID(registration: RegisterWithoutId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[ApiError, Option[SafeId]]] =
     http.POST[RegisterWithoutId, HttpResponse](s"$registrationUrl/noId", registration) map {
       case response if is2xx(response.status) =>
-        response.json.asOpt[RegisterWithoutIDResponse].map(_.safeId)
+        Right(response.json.asOpt[RegisterWithoutIDResponse].map(_.safeId))
       case errorResponse =>
         logger.warn(s"RegisterWithoutID call failed with Status ${errorResponse.status}")
-        None
+        Left(InternalServerError)
     }
 
 }

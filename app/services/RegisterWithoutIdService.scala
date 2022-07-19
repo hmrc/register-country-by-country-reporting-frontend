@@ -52,10 +52,13 @@ class RegisterWithoutIdService @Inject() (registrationConnector: RegistrationCon
   ): Future[Either[ApiError, SafeId]] =
     registrationConnector
       .registerWithoutID(RegisterWithoutId(businessName, address, contactDetails)) map {
-      case Some(safeId) => Right(safeId)
-      case _ =>
+      case Right(Some(safeId)) => Right(safeId)
+      case Right(None) =>
         logger.warn("Registration WithoutId Information MissingError SafeId missing")
         Left(RegistrationWithoutIdInformationMissingError("SafeId missing"))
+      case Left(error) =>
+        logger.warn(s"Registration WithoutId Information $error")
+        Left(error)
     }
 
 }
