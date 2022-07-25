@@ -32,14 +32,15 @@ import scala.concurrent.{ExecutionContext, Future}
 class RegisterWithoutIdService @Inject() (registrationConnector: RegistrationConnector)(implicit ec: ExecutionContext) extends Logging {
 
   def registerWithoutId()(implicit request: DataRequest[AnyContent], hc: HeaderCarrier): Future[Either[ApiError, SafeId]] =
-    (for {
+    {for {
       organisationName <- request.userAnswers.get(BusinessWithoutIDNamePage)
       phoneNumber  = request.userAnswers.get(ContactPhonePage)
       emailAddress = request.userAnswers.get(ContactEmailPage)
       address <- request.userAnswers.get(BusinessWithoutIdAddressPage)
       _       <- request.userAnswers.get(DoYouHaveSecondContactPage)
-    } yield sendBusinessRegistration(organisationName, Address.fromAddress(address), ContactDetails(phoneNumber, None, None, emailAddress)))
-      .getOrElse {
+    } yield
+      sendBusinessRegistration(organisationName, Address.fromAddress(address), ContactDetails(phoneNumber, None, None, emailAddress))
+    }.getOrElse {
         logger.warn("Missing Registration Information")
         registrationError
       }
