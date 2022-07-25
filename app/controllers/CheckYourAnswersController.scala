@@ -19,7 +19,7 @@ package controllers
 import com.google.inject.Inject
 import controllers.actions.StandardActionSets
 import models.requests.DataRequest
-import models.{EnrolmentCreationError, EnrolmentExistsError, SafeId, SubscriptionCreateInformationMissingError, SubscriptionID}
+import models.{EnrolmentCreationError, EnrolmentExistsError, MandatoryInformationMissingError, SafeId, SubscriptionCreateInformationMissingError, SubscriptionID}
 import pages.{RegistrationInfoPage, SubscriptionIDPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -70,7 +70,10 @@ class CheckYourAnswersController @Inject() (
             case Right(safeId) => createSubscription(safeId)
             case Left(value) =>
               logger.warn(s"Error $value")
-              Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
+              value match {
+                case MandatoryInformationMissingError(_) =>  Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
+                case _ =>  Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+              }
           }
       }
   }

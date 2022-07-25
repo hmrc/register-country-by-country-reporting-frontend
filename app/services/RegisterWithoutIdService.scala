@@ -32,14 +32,15 @@ import scala.concurrent.{ExecutionContext, Future}
 class RegisterWithoutIdService @Inject() (registrationConnector: RegistrationConnector)(implicit ec: ExecutionContext) extends Logging {
 
   def registerWithoutId()(implicit request: DataRequest[AnyContent], hc: HeaderCarrier): Future[Either[ApiError, SafeId]] =
-    (for {
+    {for {
       organisationName <- request.userAnswers.get(BusinessWithoutIDNamePage)
       phoneNumber  = request.userAnswers.get(ContactPhonePage)
       emailAddress = request.userAnswers.get(ContactEmailPage)
       address <- request.userAnswers.get(BusinessWithoutIdAddressPage)
       _       <- request.userAnswers.get(DoYouHaveSecondContactPage)
-    } yield sendBusinessRegistration(organisationName, Address.fromAddress(address), ContactDetails(phoneNumber, None, None, emailAddress)))
-      .getOrElse {
+    } yield
+      sendBusinessRegistration(organisationName, Address.fromAddress(address), ContactDetails(phoneNumber, None, None, emailAddress))
+    }.getOrElse {
         logger.warn("Missing Registration Information")
         registrationError
       }
@@ -52,10 +53,13 @@ class RegisterWithoutIdService @Inject() (registrationConnector: RegistrationCon
   ): Future[Either[ApiError, SafeId]] =
     registrationConnector
       .registerWithoutID(RegisterWithoutId(businessName, address, contactDetails)) map {
-      case Some(safeId) => Right(safeId)
-      case _ =>
+      case Right(Some(safeId)) => Right(safeId)
+      case Right(None) =>
         logger.warn("Registration WithoutId Information MissingError SafeId missing")
         Left(RegistrationWithoutIdInformationMissingError("SafeId missing"))
+      case Left(error) =>
+        logger.warn(s"Registration WithoutId Information $error")
+        Left(error)
     }
 
 }
