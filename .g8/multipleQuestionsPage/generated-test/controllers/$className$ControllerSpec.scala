@@ -20,8 +20,6 @@ import scala.concurrent.Future
 
 class $className$ControllerSpec extends SpecBase {
 
-  def onwardRoute = Call("GET", "/foo")
-
   val formProvider = new $className$FormProvider()
   val form = formProvider()
 
@@ -73,15 +71,12 @@ class $className$ControllerSpec extends SpecBase {
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
           )
           .build()
 
@@ -117,7 +112,7 @@ class $className$ControllerSpec extends SpecBase {
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
+    "must redirect to sign out page for a GET if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -127,11 +122,11 @@ class $className$ControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.ThereIsAProblemController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.auth.routes.AuthController.signOutNoSurvey.url
       }
     }
 
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
+    "must redirect to sign out page for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -143,7 +138,7 @@ class $className$ControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.ThereIsAProblemController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.auth.routes.AuthController.signOutNoSurvey.url
       }
     }
   }
