@@ -117,7 +117,7 @@ class IsThisYourBusinessController @Inject() (
             request.userAnswers
               .get(RegistrationInfoPage)
               .fold {
-                Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+                Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
               } {
                 registrationInfo => Future.successful(BadRequest(view(formWithErrors, registrationInfo, mode)))
               },
