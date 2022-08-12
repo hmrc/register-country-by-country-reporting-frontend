@@ -37,9 +37,10 @@ class YourContactDetailsControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[YourContactDetailsView]
 
+        val continueUrl = routes.ContactNameController.onPageLoad(NormalMode).url
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view("#")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(continueUrl)(request, messages(application)).toString
       }
     }
   }
