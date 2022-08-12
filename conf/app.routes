@@ -66,6 +66,9 @@ POST       /register/without-id/address                     controllers.Business
 GET        /register/without-id/change-address              controllers.BusinessWithoutIdAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /register/without-id/change-address              controllers.BusinessWithoutIdAddressController.onSubmit(mode: Mode = CheckMode)
 
+GET        /register/your-contact-details                controllers.YourContactDetailsController.onPageLoad(mode: models.Mode = models.NormalMode)
+GET        /register/change-your-contact-details         controllers.YourContactDetailsController.onPageLoad(mode: models.Mode = models.CheckMode)
+
 GET        /register/contact-name                           controllers.ContactNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /register/contact-name                           controllers.ContactNameController.onSubmit(mode: Mode = NormalMode)
 GET        /register/change-contact-name                    controllers.ContactNameController.onPageLoad(mode: Mode = CheckMode)
@@ -127,3 +130,4 @@ GET        /register/problem/sign-in-problem                controllers.Unauthor
 GET        /register/some-information-is-missing            controllers.MissingInformationController.onPageLoad()
 
 GET        /register/problem/page-not-found                 controllers.PageNotFoundController.onPageLoad()
+
