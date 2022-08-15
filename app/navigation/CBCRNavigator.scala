@@ -40,7 +40,7 @@ class CBCRNavigator @Inject()() extends Navigator {
     case IsThisYourBusinessPage   => ua => yesNoPage(
       ua,
       IsThisYourBusinessPage,
-      routes.ContactNameController.onPageLoad(NormalMode),
+      routes.YourContactDetailsController.onPageLoad(NormalMode),
       routes.BusinessNotIdentifiedController.onPageLoad()
     )
     case BusinessWithoutIDNamePage   => _ => routes.BusinessHaveDifferentNameController.onPageLoad(NormalMode)
@@ -51,7 +51,7 @@ class CBCRNavigator @Inject()() extends Navigator {
       routes.BusinessWithoutIdAddressController.onPageLoad(NormalMode)
     )
     case WhatIsTradingNamePage   => _ => routes.BusinessWithoutIdAddressController.onPageLoad(NormalMode)
-    case BusinessWithoutIdAddressPage   => _ => routes.ContactNameController.onPageLoad(NormalMode)
+    case BusinessWithoutIdAddressPage   => _ => routes.YourContactDetailsController.onPageLoad(NormalMode)
     case ContactNamePage   => _ => routes.ContactEmailController.onPageLoad(NormalMode)
     case ContactEmailPage   => _ => routes.HaveTelephoneController.onPageLoad(NormalMode)
     case HaveTelephonePage   => ua => yesNoPage(
@@ -101,7 +101,7 @@ class CBCRNavigator @Inject()() extends Navigator {
       )
     case BusinessWithoutIdAddressPage  => ua =>
       checkNextPageForValueThenRoute(
-        CheckMode, ua, ContactNamePage, routes.ContactNameController.onPageLoad(CheckMode)
+        CheckMode, ua, ContactNamePage, routes.YourContactDetailsController.onPageLoad(CheckMode)
       )
     case BusinessTypePage   => _ => routes.UTRController.onPageLoad(CheckMode)
     case UTRPage   => _ => routes.BusinessNameController.onPageLoad(CheckMode)
@@ -109,7 +109,7 @@ class CBCRNavigator @Inject()() extends Navigator {
     case IsThisYourBusinessPage   => ua => yesNoPage(
       ua,
       IsThisYourBusinessPage,
-      checkNextPageForValueThenRoute(CheckMode, ua, ContactNamePage, routes.ContactNameController.onPageLoad(CheckMode)),
+      checkNextPageForValueThenRoute(CheckMode, ua, ContactNamePage, routes.YourContactDetailsController.onPageLoad(CheckMode)),
       routes.BusinessNotIdentifiedController.onPageLoad()
     )
     case ContactNamePage => ua => checkNextPageForValueThenRoute(CheckMode, ua, ContactEmailPage, routes.ContactEmailController.onPageLoad(CheckMode))
