@@ -103,7 +103,7 @@ class IsThisYourBusinessController @Inject() (
           utr,
           requiresNameMatch = true,
           isAnAgent = false,
-          WithIDOrganisation(businessName, businessType.toString)
+          WithIDOrganisation(businessName, businessType.code)
         )
       )
     )
