@@ -21,8 +21,7 @@ import pages.{BusinessTypePage, BusinessWithoutIdAddressPage, UTRPage}
 import play.api.libs.json.{Json, OFormat}
 
 case class SubscriptionInfo(safeID: String,
-                            saUtr: Option[String] = None,
-                            ctUtr: Option[String] = None,
+                            utr: Option[String] = None,
                             nonUkPostcode: Option[String] = None,
                             cbcId: String
                            ){
@@ -34,8 +33,7 @@ case class SubscriptionInfo(safeID: String,
     val mandatoryVerifiers = Seq(Verifier("SAFEID", safeID))
 
     mandatoryVerifiers ++
-      buildOptionalVerifier(saUtr, "SAUTR") ++
-      buildOptionalVerifier(ctUtr, "CTUTR") ++
+      buildOptionalVerifier(utr, "UTR") ++
       buildOptionalVerifier(nonUkPostcode, "NonUKPostalCode")
   }
 
@@ -51,18 +49,6 @@ case class SubscriptionInfo(safeID: String,
 object SubscriptionInfo {
   implicit val format: OFormat[SubscriptionInfo] = Json.format[SubscriptionInfo]
 
-  private def getSaUtrIfProvided(userAnswers: UserAnswers): Option[String] =
-    userAnswers.get(BusinessTypePage) match {
-      case Some(Partnership) | Some(LimitedPartnership) => userAnswers.get(UTRPage)
-      case _                                                         => None
-    }
-
-  private def getCtUtrIfProvided(userAnswers: UserAnswers): Option[String] =
-    userAnswers.get(BusinessTypePage) match {
-      case Some(LimitedCompany) | Some(UnincorporatedAssociation) => userAnswers.get(UTRPage)
-      case _                                                      => None
-    }
-
   private def getNonUkPostCodeIfProvided(userAnswers: UserAnswers): Option[String] =
     userAnswers.get(BusinessWithoutIdAddressPage) match {
       case Some(address) => address.postCode
@@ -71,8 +57,7 @@ object SubscriptionInfo {
 
   def apply(userAnswers: UserAnswers,safeId: SafeId, subscriptionId: SubscriptionID): SubscriptionInfo =
     SubscriptionInfo(safeID = safeId.value,
-      saUtr = getSaUtrIfProvided(userAnswers),
-      ctUtr = getCtUtrIfProvided(userAnswers),
+      utr = userAnswers.get(UTRPage),
       nonUkPostcode = getNonUkPostCodeIfProvided(userAnswers),
       cbcId = subscriptionId.value)
 }
