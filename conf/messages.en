@@ -177,7 +177,7 @@ utr.change.hidden = UTR
 utr.selfAssessment = Self Assessment
 utr.corporationTax = Corporation Tax
 
-contactEmail.title = What is the email address for {0}?
+contactEmail.title = What is their email address?
 contactEmail.heading = What is the email address for {0}?
 contactEmail.hint = We will use this to send confirmation of your reports or if we have any questions about them.
 contactEmail.checkYourAnswersLabel = Email address
@@ -234,7 +234,7 @@ doYouHaveSecondContact.checkYourAnswersLabel = Do you have a second contact?
 doYouHaveSecondContact.error.required = Select yes if there is someone else we can contact
 doYouHaveSecondContact.change.hidden = if you have a second contact
 
-secondContactEmail.title = What is the email address for {0}?
+secondContactEmail.title = What is their email address?
 secondContactEmail.heading = What is the email address for {0}?
 secondContactEmail.hint = We will use this to send confirmation of your reports and if we have any questions about them.
 secondContactEmail.checkYourAnswersLabel = Second contact email address
