@@ -23,8 +23,7 @@
 @this(
     appConfig: FrontendAppConfig,
     hmrcLayout: HmrcLayout,
-    hmrcHead: HmrcHead,
-    hmrcTimeoutDialog: HmrcTimeoutDialog,
+    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     alphaBanner: StandardAlphaBanner,
     autocompleteCss: HmrcAccessibleAutocompleteCss,
@@ -33,22 +32,17 @@
 
 @(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-@head = {
-    @hmrcHead(
-        nonce     = CSPNonce.get,
-        headBlock = if(timeout) { Some(
-            hmrcTimeoutDialog(TimeoutDialog(
-                timeout             = Some(appConfig.timeout),
-                countdown           = Some(appConfig.countdown),
-                keepAliveUrl        = Some(routes.KeepAliveController.keepAlive.url),
-                keepAliveButtonText = Some(messages("timeout.keepAlive")),
-                signOutUrl          = Some(controllers.auth.routes.AuthController.signOut.url),
-                signOutButtonText   = Some(messages("timeout.signOut")),
-                timeoutUrl          = Some(controllers.auth.routes.AuthController.signOutNoSurvey.url),
-                title               = Some(messages("timeout.title")),
-                message             = Some(messages("timeout.message"))
-            )))
-        } else None
+@timeOutDialog = {
+    @hmrcTimeoutDialogHelper(
+        timeout             = Some(appConfig.timeout),
+        countdown           = Some(appConfig.countdown),
+        keepAliveUrl        = Some(routes.KeepAliveController.keepAlive.url),
+        keepAliveButtonText = Some(messages("timeout.keepAlive")),
+        signOutUrl          = controllers.auth.routes.AuthController.signOut.url,
+        signOutButtonText   = Some(messages("timeout.signOut")),
+        timeoutUrl          = Some(controllers.auth.routes.AuthController.signOutNoSurvey.url),
+        title               = Some(messages("timeout.title")),
+        message             = Some(messages("timeout.message"))
     )
 }
 
@@ -69,7 +63,7 @@
 
 @hmrcLayout(
     pageTitle = Some(pageTitle),
-    additionalHeadBlock = Some(head),
+    additionalHeadBlock = if(timeout) Some(timeOutDialog) else None,
     serviceUrl = Some(routes.IndexController.onPageLoad.url),
     signOutUrl = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut.url) else None,
     phaseBanner = Some(alphaBanner(appConfig.feedbackUrl)),
