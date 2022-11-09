@@ -22,7 +22,7 @@ case class RequestDetail(
   IDType: String,
   IDNumber: String,
   tradingName: Option[String],
-  /** This will be populated as Organisation Name, while creating the subscription, The name which was matched in RegisterwithID response */
+  /** tradingName will be populated as Organisation Name, while creating the subscription, The name which was matched in RegisterwithID response */
   isGBUser: Boolean,
   primaryContact: ContactInformation,
   secondaryContact: Option[ContactInformation]
