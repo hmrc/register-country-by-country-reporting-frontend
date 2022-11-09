@@ -18,8 +18,6 @@ package services
 
 import base.SpecBase
 import connectors.SubscriptionConnector
-import models.matching.RegistrationInfo
-import models.register.response.details.AddressResponse
 import models.{SafeId, SubscriptionCreateError, SubscriptionCreateInformationMissingError, SubscriptionID, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
@@ -71,9 +69,6 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
         .success
         .value
         .set(DoYouHaveSecondContactPage, false)
-        .success
-        .value
-        .set(RegistrationInfoPage, RegistrationInfo(SafeId("x"), "Company", AddressResponse("", None, None, None, None, "GB")))
         .success
         .value
 
@@ -177,9 +172,6 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
         .success
         .value
         .set(DoYouHaveSecondContactPage, false)
-        .success
-        .value
-        .set(RegistrationInfoPage, RegistrationInfo(SafeId("x"), "Company", AddressResponse("", None, None, None, None, "GB")))
         .success
         .value
       val responseCreateSubscription: Future[Option[SubscriptionID]] = Future.successful(None)

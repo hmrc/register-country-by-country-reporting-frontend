@@ -19,16 +19,16 @@ package models.subscription.request
 import play.api.libs.json.{Json, OFormat}
 
 case class RequestDetail(
-  IDType: String,
-  IDNumber: String,
-  tradingName: Option[String],
-  isGBUser: Boolean,
-  primaryContact: ContactInformation,
-  secondaryContact: Option[ContactInformation]
-) {
-  require(tradingName.map(_.nonEmpty) == Option(true), "TradingName is null or empty")
-}
+    IDType: String,
+    IDNumber: String,
+    tradingName: Option[String],
+    isGBUser: Boolean,
+    primaryContact: ContactInformation,
+    secondaryContact: Option[ContactInformation]
+)
 
 object RequestDetail {
   implicit def format: OFormat[RequestDetail] = Json.format[RequestDetail]
 }
+
+
