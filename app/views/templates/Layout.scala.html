@@ -22,15 +22,10 @@
 
 @this(
     appConfig: FrontendAppConfig,
-    govukLayout: GovukLayout,
-    govukBackLink: GovukBackLink,
+    hmrcLayout: HmrcLayout,
     hmrcHead: HmrcHead,
-    hmrcStandardHeader: HmrcStandardHeader,
-    hmrcStandardFooter: HmrcStandardFooter,
-    hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
     hmrcTimeoutDialog: HmrcTimeoutDialog,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-    hmrcScripts: HmrcScripts,
     alphaBanner: StandardAlphaBanner,
     autocompleteCss: HmrcAccessibleAutocompleteCss,
     autocompleteJavascript: HmrcAccessibleAutocompleteJavascript
@@ -64,13 +59,6 @@
     <script src='@controllers.routes.Assets.versioned("javascripts/application.min.js")'></script>
 }
 
-@beforeContent = {
-
-    @if(showBackLink) {
-        @govukBackLink(BackLinkViewModel(href = "#").withCssClass("js-enabled"))
-    }
-}
-
 @content = {
     @contentBlock
 
@@ -79,18 +67,13 @@
     </div>
 }
 
-@govukLayout(
-    pageTitle   = Some(pageTitle),
-    headBlock   = Some(head),
-    headerBlock = Some(hmrcStandardHeader(
-        serviceUrl  = Some(routes.IndexController.onPageLoad.url),
-        signOutUrl  = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut.url) else None,
-        phaseBanner = Some(alphaBanner(appConfig.feedbackUrl))
-    )),
-    beforeContentBlock = Some(beforeContent),
-    footerBlock        = Some(hmrcStandardFooter()),
-    scriptsBlock       = Some(hmrcScripts(
-        nonce        = CSPNonce.get,
-        scriptsBlock = Some(additionalScripts)
-    ))
+@hmrcLayout(
+    pageTitle = Some(pageTitle),
+    additionalHeadBlock = Some(head),
+    serviceUrl = Some(routes.IndexController.onPageLoad.url),
+    signOutUrl = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut.url) else None,
+    phaseBanner = Some(alphaBanner(appConfig.feedbackUrl)),
+    nonce = CSPNonce.get,
+    additionalScriptsBlock = Some(additionalScripts),
+    backLink = if(showBackLink) Some(BackLinkViewModel(href = "#").withCssClass("js-enabled")) else None
 )(content)
