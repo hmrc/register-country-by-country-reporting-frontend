@@ -41,12 +41,15 @@
             InputViewModel(
                 field = form("value"),
                 label = LabelViewModel(messages("utr.heading", taxType)).asPageHeading()
+                HtmlContent(
+                        Html(messages("utr.p1", link("appConfig.lostUTRUrl", "utr.p1.link",openInNewWindow = false)))
+                )
             )
             .withWidth(Fixed10)
             .withHint(
                 HintViewModel(
                     HtmlContent(
-                     Html(messages("utr.hint", taxType,link("appConfig.lostUTRUrl", "utr.hint.link",openInNewWindow = false)))
+                     Html(messages("utr.hint", taxType))
                     )
                 )
             )
