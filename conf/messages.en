@@ -167,7 +167,7 @@ contactName.change.hidden = contact name
 
 utr.title = What is your {0} Unique Taxpayer Reference?
 utr.heading = What is your {0} Unique Taxpayer Reference?
-utr.p1 = You can {1}.
+utr.p1 = You can
 utr.p1.link = find a lost UTR number
 utr.hint = This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about {0}. It may be called ‘reference’, ‘UTR’ or ‘official use’.
 utr.checkYourAnswersLabel = What is your Unique Taxpayer Reference?

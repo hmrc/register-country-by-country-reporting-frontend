@@ -37,13 +37,12 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+
+
         @govukInput(
             InputViewModel(
                 field = form("value"),
                 label = LabelViewModel(messages("utr.heading", taxType)).asPageHeading()
-                HtmlContent(
-                        Html(messages("utr.p1", link("appConfig.lostUTRUrl", "utr.p1.link",openInNewWindow = false)))
-                )
             )
             .withWidth(Fixed10)
             .withHint(
