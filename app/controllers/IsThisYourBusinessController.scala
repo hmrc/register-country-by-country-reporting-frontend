@@ -97,7 +97,7 @@ class IsThisYourBusinessController @Inject() (
       businessType <- request.userAnswers.get(BusinessTypePage)
     } yield RegisterWithID(
       RegisterWithIDRequest(
-        RequestCommon("CBCR"),
+        RequestCommon("CBC"),
         RequestWithIDDetails(
           "UTR",
           utr,
