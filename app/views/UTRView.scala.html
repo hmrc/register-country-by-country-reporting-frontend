@@ -38,11 +38,11 @@
         }
 
 
-
+        <p class="govuk-heading-l">@messages("utr.heading", taxType)</p>
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("utr.heading", taxType)).asPageHeading()
+                label = LabelViewModel(messages("utr.p1"))
             )
             .withWidth(Fixed10)
             .withHint(
