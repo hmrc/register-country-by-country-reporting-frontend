@@ -44,7 +44,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("utr.heading")).withCssClass("govuk-visually-hidden")
+                label = LabelViewModel(messages("utr.heading", taxType)).withCssClass("govuk-visually-hidden")
             )
             .withWidth(Fixed10)
             .withHint(
