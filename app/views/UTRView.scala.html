@@ -38,13 +38,13 @@
         }
 
 
-        <p class="govuk-heading-l">@messages("utr.heading", taxType)</p>
+        <h1 class="govuk-heading-l">@messages("utr.heading", taxType)</h1>
         <p class="govuk-body">@messages("utr.p1")
             <span> <a class='govuk-link text-overflow' href="@appConfig.lostUTRUrl" rel='noreferrer noopener'> @messages("utr.p1.link")</a></span></p>
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages(""))
+                label = LabelViewModel(messages("utr.heading")).withCssClass("govuk-visually-hidden")
             )
             .withWidth(Fixed10)
             .withHint(
