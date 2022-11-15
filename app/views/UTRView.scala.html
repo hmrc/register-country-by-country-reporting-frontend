@@ -40,7 +40,7 @@
 
         <p class="govuk-heading-l">@messages("utr.heading", taxType)</p>
         <p class="govuk-body">@messages("utr.p1")
-            <span> <a class='govuk-link text-overflow' href='{{lostUTRUrl}}' rel='noreferrer noopener'> @messages("utr.p1.link")</a></span></p>
+            <span> <a class='govuk-link text-overflow' href="@appConfig.lostUTRUrl" rel='noreferrer noopener'> @messages("utr.p1.link")</a></span></p>
         @govukInput(
             InputViewModel(
                 field = form("value"),
