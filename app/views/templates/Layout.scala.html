@@ -17,53 +17,40 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardAlphaBanner
 @import views.html.helper.CSPNonce
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteCss
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteJavascript
 
 @this(
     appConfig: FrontendAppConfig,
-    govukLayout: GovukLayout,
-    govukBackLink: GovukBackLink,
-    hmrcHead: HmrcHead,
-    hmrcStandardHeader: HmrcStandardHeader,
-    hmrcStandardFooter: HmrcStandardFooter,
-    hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
-    hmrcTimeoutDialog: HmrcTimeoutDialog,
+    hmrcLayout: HmrcLayout,
+    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-    hmrcScripts: HmrcScripts,
-    alphaBanner: StandardAlphaBanner
+    alphaBanner: StandardAlphaBanner,
+    autocompleteCss: HmrcAccessibleAutocompleteCss,
+    autocompleteJavascript: HmrcAccessibleAutocompleteJavascript
 )
 
 @(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-@head = {
-
-    @hmrcHead(
-        nonce     = CSPNonce.get,
-        headBlock = if(timeout) { Some(
-            hmrcTimeoutDialog(TimeoutDialog(
-                timeout             = Some(appConfig.timeout),
-                countdown           = Some(appConfig.countdown),
-                keepAliveUrl        = Some(routes.KeepAliveController.keepAlive.url),
-                keepAliveButtonText = Some(messages("timeout.keepAlive")),
-                signOutUrl          = Some(controllers.auth.routes.AuthController.signOut.url),
-                signOutButtonText   = Some(messages("timeout.signOut")),
-                timeoutUrl          = Some(controllers.auth.routes.AuthController.signOutNoSurvey.url),
-                title               = Some(messages("timeout.title")),
-                message             = Some(messages("timeout.message"))
-            )))
-        } else None
+@timeOutDialog = {
+    @hmrcTimeoutDialogHelper(
+        timeout             = Some(appConfig.timeout),
+        countdown           = Some(appConfig.countdown),
+        keepAliveUrl        = Some(routes.KeepAliveController.keepAlive.url),
+        keepAliveButtonText = Some(messages("timeout.keepAlive")),
+        signOutUrl          = controllers.auth.routes.AuthController.signOut.url,
+        signOutButtonText   = Some(messages("timeout.signOut")),
+        timeoutUrl          = Some(controllers.auth.routes.AuthController.signOutNoSurvey.url),
+        title               = Some(messages("timeout.title")),
+        message             = Some(messages("timeout.message"))
     )
 }
 
 @additionalScripts = {
+    @autocompleteJavascript(CSPNonce.get)
+    @autocompleteCss(CSPNonce.get)
     <link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css" />
     <script src='@controllers.routes.Assets.versioned("javascripts/application.min.js")'></script>
-}
-
-@beforeContent = {
-
-    @if(showBackLink) {
-        @govukBackLink(BackLinkViewModel(href = "#").withCssClass("js-enabled govuk-!-display-none-print"))
-    }
 }
 
 @content = {
@@ -74,18 +61,13 @@
     </div>
 }
 
-@govukLayout(
-    pageTitle   = Some(pageTitle),
-    headBlock   = Some(head),
-    headerBlock = Some(hmrcStandardHeader(
-        serviceUrl  = Some(routes.IndexController.onPageLoad.url),
-        signOutUrl  = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut.url) else None,
-        phaseBanner = Some(alphaBanner(appConfig.feedbackUrl))
-    )),
-    beforeContentBlock = Some(beforeContent),
-    footerBlock        = Some(hmrcStandardFooter()),
-    scriptsBlock       = Some(hmrcScripts(
-        nonce        = CSPNonce.get,
-        scriptsBlock = Some(additionalScripts)
-    ))
+@hmrcLayout(
+    pageTitle = Some(pageTitle),
+    additionalHeadBlock = if(timeout) Some(timeOutDialog) else None,
+    serviceUrl = Some(routes.IndexController.onPageLoad.url),
+    signOutUrl = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut.url) else None,
+    phaseBanner = Some(alphaBanner(appConfig.feedbackUrl)),
+    nonce = CSPNonce.get,
+    additionalScriptsBlock = Some(additionalScripts),
+    backLink = if(showBackLink) Some(BackLinkViewModel(href = "#").withCssClass("js-enabled govuk-!-display-none-print")) else None
 )(content)
