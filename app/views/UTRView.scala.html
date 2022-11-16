@@ -37,16 +37,20 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+
+        <h1 class="govuk-heading-l">@messages("utr.heading", taxType)</h1>
+        <p class="govuk-body">@Html(messages("utr.p1" , link(appConfig.loginUrl, "utr.p1.link")))</p>
+
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("utr.heading", taxType)).asPageHeading()
+                label = LabelViewModel(messages("utr.heading", taxType)).withCssClass("govuk-visually-hidden")
             )
             .withWidth(Fixed10)
             .withHint(
                 HintViewModel(
                     HtmlContent(
-                     Html(messages("utr.hint", taxType,link("appConfig.lostUTRUrl", "utr.hint.link",openInNewWindow = true)))
+                     Html(messages("utr.hint", taxType))
                     )
                 )
             )
