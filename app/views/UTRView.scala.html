@@ -39,8 +39,8 @@
 
 
         <h1 class="govuk-heading-l">@messages("utr.heading", taxType)</h1>
-        <p class="govuk-body">@messages("utr.p1")
-            <span> <a class='govuk-link text-overflow' href="@appConfig.lostUTRUrl" rel='noreferrer noopener'> @messages("utr.p1.link")</a></span></p>
+        <p class="govuk-body">@Html(messages("utr.p1" , link(appConfig.loginUrl, "utr.p1.link")))</p>
+
         @govukInput(
             InputViewModel(
                 field = form("value"),
