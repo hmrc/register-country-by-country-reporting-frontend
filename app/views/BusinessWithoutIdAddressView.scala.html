@@ -16,6 +16,8 @@
 
 @import viewmodels.InputWidth._
 @import models.Country
+@import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.accessibleautocomplete.AccessibleAutocomplete
 
 @this(
     layout: templates.Layout,
@@ -44,6 +46,7 @@
                 field = form("addressLine1"),
                 label = LabelViewModel(messages("businessWithoutIdAddress.addressLine1"))
             )
+            .withAutocomplete("address-line1")
             .withWidth(TwoThirds)
         )
 
@@ -52,6 +55,7 @@
                 field = form("addressLine2"),
                 label = LabelViewModel(messages("businessWithoutIdAddress.addressLine2"))
             )
+            .withAutocomplete("address-line2")
             .withWidth(TwoThirds)
         )
 
@@ -60,6 +64,7 @@
                 field = form("addressLine3"),
                 label = LabelViewModel(messages("businessWithoutIdAddress.addressLine3"))
             )
+                    .withAutocomplete("address-level2")
                     .withWidth(TwoThirds)
         )
 
@@ -68,6 +73,7 @@
                 field = form("addressLine4"),
                 label = LabelViewModel(messages("businessWithoutIdAddress.addressLine4"))
             )
+                    .withAutocomplete("address-level1")
                     .withWidth(TwoThirds)
         )
 
@@ -76,6 +82,7 @@
                 field = form("postCode"),
                 label = LabelViewModel(messages("businessWithoutIdAddress.postcode"))
             )
+                    .withAutocomplete("postal-code")
                     .withWidth(Fixed10)
         )
 
@@ -85,7 +92,14 @@
                 label = LabelViewModel(messages("businessWithoutIdAddress.country")),
                 items = countries
             )
+                    .withFormGroupClasses("govuk-input--width-20")
                     .withAttribute("autocomplete" -> "country-name")
+                    .asAccessibleAutocomplete(Some(
+                AccessibleAutocomplete(
+                    defaultValue = Some(""),
+                    showAllValues = true,
+                    autoSelect = true)
+            ))
         )
 
         @govukButton(

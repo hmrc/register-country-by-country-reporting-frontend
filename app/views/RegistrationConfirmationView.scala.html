@@ -38,14 +38,15 @@
         )
     ))
 
-    <p class="govuk-body">@messages("registrationConfirmation.p1")</p>
-
     <h2 class="govuk-heading-m">@messages("registrationConfirmation.subheading")</h2>
 
     <p class="govuk-body">@messages("registrationConfirmation.p2")</p>
 
+    <p class="govuk-body">@messages("registrationConfirmation.p1")</p>
+
+
     <p class="govuk-body">@Html(messages("registrationConfirmation.p3", link(appConfig.countryByCountryReportingFrontendUrl, "registrationConfirmation.p3.link")))</p>
 
-    <p class="govuk-body">@link("#", "registrationConfirmation.p4.link", openInNewWindow = true)</p>
+    <p class="govuk-body govuk-!-display-none-print">@link("#", "registrationConfirmation.p4.link", openInNewWindow = true)</p>
 
 }
