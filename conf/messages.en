@@ -178,7 +178,7 @@ utr.change.hidden = UTR
 utr.selfAssessment = Self Assessment
 utr.corporationTax = Corporation Tax
 
-contactEmail.title = What is the email address for {0}?
+contactEmail.title = What is their email address?
 contactEmail.heading = What is the email address for {0}?
 contactEmail.hint = We will use this to send confirmation of your reports or if we have any questions about them.
 contactEmail.checkYourAnswersLabel = Email address
@@ -235,7 +235,7 @@ doYouHaveSecondContact.checkYourAnswersLabel = Do you have a second contact?
 doYouHaveSecondContact.error.required = Select yes if there is someone else we can contact
 doYouHaveSecondContact.change.hidden = if you have a second contact
 
-secondContactEmail.title = What is the email address for {0}?
+secondContactEmail.title = What is their email address?
 secondContactEmail.heading = What is the email address for {0}?
 secondContactEmail.hint = We will use this to send confirmation of your reports and if we have any questions about them.
 secondContactEmail.checkYourAnswersLabel = Second contact email address
@@ -247,11 +247,11 @@ secondContactEmail.change.hidden = second contact email address
 registrationConfirmation.title = Registration successful
 registrationConfirmation.heading = Registration successful
 registrationConfirmation.text = Your CBC ID
-registrationConfirmation.p1 = You will need to provide your CBC ID in every file you send to HMRC.
+registrationConfirmation.p1 = You will need to provide your country-by-country (CBC) ID in every file you send to HMRC. You may make a note of your CBC ID, however, it will be in the confirmation email we will send you.
 registrationConfirmation.subheading = What happens next
 registrationConfirmation.p2 = We will send you an email to confirm you have registered.
 registrationConfirmation.p3 = You can now {0}.
-registrationConfirmation.p3.link = send a CBC report
+registrationConfirmation.p3.link = send CBC reports
 registrationConfirmation.p4.link = What did you think of this service? (opens in new tab)
 
 unauthorisedIndividual.title = Sorry, you’re unable to use this service
