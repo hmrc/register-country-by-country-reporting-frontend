@@ -39,7 +39,7 @@
 
 
         <h1 class="govuk-heading-l">@messages("utr.heading", taxType)</h1>
-        <p class="govuk-body">@Html(messages("utr.p1" , link(appConfig.loginUrl, "utr.p1.link")))</p>
+        <p class="govuk-body">@Html(messages("utr.p1" , link(appConfig.lostUTRUrl, "utr.p1.link")))</p>
 
         @govukInput(
             InputViewModel(
