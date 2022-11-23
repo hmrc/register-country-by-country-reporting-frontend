@@ -46,7 +46,7 @@
 
     @formHelper(action = routes.CheckYourAnswersController.onSubmit, 'autoComplete -> "off") {
         @govukButton(
-            ButtonViewModel(messages("checkYourAnswers.button")).withAttribute("id", "submit")
+            ButtonViewModel(messages("checkYourAnswers.button")).withAttribute("id" -> "submit")
         )
     }
 }

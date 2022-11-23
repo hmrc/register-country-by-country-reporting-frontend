@@ -18,15 +18,12 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.StandardActionSets
-import models.requests.DataRequest
-import models.{EnrolmentCreationError, EnrolmentExistsError, MandatoryInformationMissingError, SafeId, SubscriptionCreateInformationMissingError, SubscriptionID}
-import pages.{RegistrationInfoPage, SubscriptionIDPage}
-import play.api.Logging
+import models.MandatoryInformationMissingError
+import pages.RegistrationInfoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{RegisterWithoutIdService, SubscriptionService, TaxEnrolmentService}
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{CheckYourAnswersHelper, CountryListFactory}
 import viewmodels.govuk.summarylist._
