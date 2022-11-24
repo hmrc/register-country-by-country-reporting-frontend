@@ -26,7 +26,7 @@
 
 @(subscriptionID: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("registrationConfirmation.title"))) {
+@layout(pageTitle = titleNoForm(messages("registrationConfirmation.title")), showBackLink = false) {
 
     @govukPanel(Panel(
         title = Text(messages("registrationConfirmation.heading")),
