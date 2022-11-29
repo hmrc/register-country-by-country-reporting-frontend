@@ -43,7 +43,7 @@
             RadiosViewModel.yesNo(
                 field = form("value"),
                 legend = LegendViewModel(messages("doYouHaveUTR.heading")).withCssClass("govuk-visually-hidden")
-            ).withHint(HintViewModel(HtmlContent(Html(messages("doYouHaveUTR.hint", link(appConfig.lostUTRUrl, "doYouHaveUTR.hint.link", openInNewWindow = true))))))
+            ).withHint(HintViewModel(Text(messages("doYouHaveUTR.hint"))))
         )
 
         @govukButton(
