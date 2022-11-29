@@ -17,7 +17,7 @@
 package controllers
 
 import models.requests.DataRequest
-import models.{EnrolmentCreationError, EnrolmentExistsError, SafeId, SubscriptionCreateError, SubscriptionCreateInformationMissingError, SubscriptionID}
+import models.{EnrolmentCreationError, EnrolmentExistsError, SafeId, SubscriptionCreateInformationMissingError, SubscriptionID}
 import pages.{RegistrationInfoPage, SubscriptionIDPage}
 import play.api.Logging
 import play.api.mvc.Results.Redirect

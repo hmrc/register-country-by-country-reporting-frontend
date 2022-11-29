@@ -18,10 +18,9 @@ package models.register.request
 
 import play.api.libs.json._
 
-import java.time.{ZoneId, ZonedDateTime}
 import java.time.format.DateTimeFormatter
+import java.time.{ZoneId, ZonedDateTime}
 import java.util.UUID
-import models.Address
 case class NoIdOrganisation(organisationName: String)
 
 object NoIdOrganisation {
