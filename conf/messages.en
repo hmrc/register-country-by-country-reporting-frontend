@@ -63,8 +63,9 @@ doYouHaveUTR.title = Do you have a UK Unique Taxpayer Reference (UTR)?
 doYouHaveUTR.checkYourAnswersLabel =  Do you have a UK Unique Taxpayer Reference?
 doYouHaveUTR.change.hidden =  if you have a Unique Taxpayer Reference
 doYouHaveUTR.heading = Do you have a UK Unique Taxpayer Reference (UTR)?
-doYouHaveUTR.hint = This is a 10 digit number issued by HMRC and is used to identify individual taxpayers. It will be on tax returns and other letters about Self Assessment or Corporation Tax. You can {0}.
-doYouHaveUTR.hint.link = find a lost UTR number (opens in a new tab)
+doYouHaveUTR.p1 = You can {0}.
+doYouHaveUTR.p1.link = find a lost UTR
+doYouHaveUTR.hint =  This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Corporation Tax and Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
 doYouHaveUTR.error.required = Select yes if you have a UTR
 
 businessType.title = What type of business do you have?

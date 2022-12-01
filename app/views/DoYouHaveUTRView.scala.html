@@ -36,11 +36,14 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        <h1 class="govuk-heading-l">@messages("doYouHaveUTR.heading")</h1>
+        <p class="govuk-body">@Html(messages("doYouHaveUTR.p1" , link(appConfig.lostUTRUrl, "doYouHaveUTR.p1.link")))</p>
+
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("doYouHaveUTR.heading")).asPageHeading()
-            ).withHint(HintViewModel(HtmlContent(Html(messages("doYouHaveUTR.hint", link(appConfig.lostUTRUrl, "doYouHaveUTR.hint.link", openInNewWindow = true))))))
+                legend = LegendViewModel(messages("doYouHaveUTR.heading")).withCssClass("govuk-visually-hidden")
+            ).withHint(HintViewModel(Text(messages("doYouHaveUTR.hint"))))
         )
 
         @govukButton(
