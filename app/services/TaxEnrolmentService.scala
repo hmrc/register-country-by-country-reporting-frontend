@@ -30,14 +30,16 @@ class TaxEnrolmentService @Inject() (taxEnrolmentsConnector: TaxEnrolmentsConnec
   def checkAndCreateEnrolment(safeId: SafeId, userAnswers: UserAnswers, subscriptionId: SubscriptionID)(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext
-  ): Future[Either[ApiError, Int]] =
-    enrolmentStoreProxyConnector.enrolmentExists(subscriptionId) flatMap {
+  ): Future[Either[ApiError, Int]] = {
+    val subscriptionInfo = SubscriptionInfo(userAnswers, safeId, subscriptionId)
+    enrolmentStoreProxyConnector.enrolmentExists(subscriptionInfo) flatMap {
       case false =>
-        taxEnrolmentsConnector.createEnrolment(SubscriptionInfo(userAnswers, safeId, subscriptionId)) map {
+        taxEnrolmentsConnector.createEnrolment(subscriptionInfo) map {
           case Some(value) => Right(value)
           case _           => Left(EnrolmentCreationError)
         }
       case true => Future.successful(Left(EnrolmentExistsError))
     }
+  }
 
 }

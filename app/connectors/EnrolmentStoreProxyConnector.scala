@@ -17,7 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.{GroupIds, SubscriptionID}
+import models.{GroupIds, SubscriptionID, SubscriptionInfo}
 import play.api.Logging
 import play.api.http.Status.NO_CONTENT
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
@@ -27,33 +27,43 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EnrolmentStoreProxyConnector @Inject()(val config: FrontendAppConfig, val http: HttpClient) extends Logging {
+class EnrolmentStoreProxyConnector @Inject() (val config: FrontendAppConfig, val http: HttpClient) extends Logging {
 
-  def enrolmentExists(subscriptionID: SubscriptionID)(implicit
-                                                      hc: HeaderCarrier,
-                                                      ec: ExecutionContext
+  def enrolmentExists(subscriptionInfo: SubscriptionInfo)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
   ): Future[Boolean] = {
-    val serviceEnrolmentPattern = s"HMRC-CBC-ORG~CBCID~${subscriptionID.value}"
-    val submissionUrl           = s"${config.enrolmentStoreProxyUrl}/enrolment-store/enrolments/$serviceEnrolmentPattern/groups"
 
-      http
-        .GET[HttpResponse](
-          submissionUrl
-        )(rds = readRaw, hc = hc, ec = ec)
-        .map {
-          case response if response.status == NO_CONTENT => false
-          case response if is2xx(response.status) =>
-            response.json
-              .asOpt[GroupIds].exists(groupIds =>
-              if (groupIds.principalGroupIds.nonEmpty) {
-                true
-              } else {
-                false
-              })
-          case response =>
-            logger.warn(s"Enrolment response not formed. ${response.status} response status")
-            throw new IllegalStateException()
-        }
+    val serviceEnrolmentPattern = subscriptionInfo.utr
+      .map {
+        utr =>
+          s"HMRC-CBC-ORG~cbcId~${subscriptionInfo.cbcId}~UTR~$utr"
+      }
+      .getOrElse(s"HMRC-CBC-NONUK-ORG~cbcId~${subscriptionInfo.cbcId}")
+
+    val submissionUrl = s"${config.enrolmentStoreProxyUrl}/enrolment-store/enrolments/$serviceEnrolmentPattern/groups"
+
+    http
+      .GET[HttpResponse](
+        submissionUrl
+      )(rds = readRaw, hc = hc, ec = ec)
+      .map {
+        case response if response.status == NO_CONTENT => false
+        case response if is2xx(response.status) =>
+          response.json
+            .asOpt[GroupIds]
+            .exists(
+              groupIds =>
+                if (groupIds.principalGroupIds.nonEmpty) {
+                  true
+                } else {
+                  false
+                }
+            )
+        case response =>
+          logger.warn(s"Enrolment response not formed. ${response.status} response status")
+          throw new IllegalStateException()
+      }
 
   }
 }
