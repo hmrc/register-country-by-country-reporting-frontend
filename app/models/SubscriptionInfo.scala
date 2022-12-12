@@ -20,24 +20,23 @@ import models.BusinessType.{LimitedCompany, LimitedPartnership, Partnership, Uni
 import pages.{BusinessTypePage, BusinessWithoutIdAddressPage, UTRPage}
 import play.api.libs.json.{Json, OFormat}
 
-case class SubscriptionInfo(safeID: String,
-                            saUtr: Option[String] = None,
-                            ctUtr: Option[String] = None,
-                            nonUkPostcode: Option[String] = None,
-                            cbcId: String
-                           ){
-  def convertToEnrolmentRequest: EnrolmentRequest =
-    EnrolmentRequest(identifiers = Seq(Identifier("cbcId", cbcId)), verifiers = buildVerifiers)
+case class SubscriptionInfo(safeID: String, utr: Option[String] = None, nonUkPostcode: Option[String] = None, cbcId: String) {
 
-  def buildVerifiers: Seq[Verifier] = {
-
-    val mandatoryVerifiers = Seq(Verifier("SAFEID", safeID))
-
-    mandatoryVerifiers ++
-      buildOptionalVerifier(saUtr, "SAUTR") ++
-      buildOptionalVerifier(ctUtr, "CTUTR") ++
-      buildOptionalVerifier(nonUkPostcode, "NonUKPostalCode")
+  def convertToEnrolmentRequest: EnrolmentRequest = {
+    val enrolmentRequest = this.utr
+      .map {
+        utr =>
+          EnrolmentRequest(identifiers = Seq(Identifier("cbcId", cbcId), Identifier("UTR", utr)), verifiers = buildVerifiers)
+      }
+      .getOrElse(
+        EnrolmentRequest(identifiers = Seq(Identifier("cbcId", cbcId)), verifiers = buildVerifiers)
+      )
+    enrolmentRequest
   }
+
+  def buildVerifiers: Seq[Verifier] =
+    Seq() ++
+      buildOptionalVerifier(nonUkPostcode, "NonUKPostalCode")
 
   def buildOptionalVerifier(optionalInfo: Option[String], key: String): Seq[Verifier] =
     optionalInfo
@@ -51,16 +50,10 @@ case class SubscriptionInfo(safeID: String,
 object SubscriptionInfo {
   implicit val format: OFormat[SubscriptionInfo] = Json.format[SubscriptionInfo]
 
-  private def getSaUtrIfProvided(userAnswers: UserAnswers): Option[String] =
+  private def getUTR(userAnswers: UserAnswers): Option[String] =
     userAnswers.get(BusinessTypePage) match {
-      case Some(Partnership) | Some(LimitedPartnership) => userAnswers.get(UTRPage)
-      case _                                                         => None
-    }
-
-  private def getCtUtrIfProvided(userAnswers: UserAnswers): Option[String] =
-    userAnswers.get(BusinessTypePage) match {
-      case Some(LimitedCompany) | Some(UnincorporatedAssociation) => userAnswers.get(UTRPage)
-      case _                                                      => None
+      case Some(Partnership) | Some(LimitedPartnership) | Some(LimitedCompany) | Some(UnincorporatedAssociation) => userAnswers.get(UTRPage)
+      case _                                                                                                     => None
     }
 
   private def getNonUkPostCodeIfProvided(userAnswers: UserAnswers): Option[String] =
@@ -69,12 +62,11 @@ object SubscriptionInfo {
       case _             => None
     }
 
-  def apply(userAnswers: UserAnswers,safeId: SafeId, subscriptionId: SubscriptionID): SubscriptionInfo =
-    SubscriptionInfo(safeID = safeId.value,
-      saUtr = getSaUtrIfProvided(userAnswers),
-      ctUtr = getCtUtrIfProvided(userAnswers),
+  def apply(userAnswers: UserAnswers, safeId: SafeId, subscriptionId: SubscriptionID): SubscriptionInfo =
+    SubscriptionInfo(
+      safeID = safeId.value,
+      utr = getUTR(userAnswers),
       nonUkPostcode = getNonUkPostCodeIfProvided(userAnswers),
-      cbcId = subscriptionId.value)
+      cbcId = subscriptionId.value
+    )
 }
-
-

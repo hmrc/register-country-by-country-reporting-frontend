@@ -35,7 +35,14 @@ class TaxEnrolmentsConnector @Inject() (
     enrolmentInfo: SubscriptionInfo
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Int]] = {
 
-    val url: String = s"${config.taxEnrolmentsUrl1}HMRC-CBC-ORG${config.taxEnrolmentsUrl2}"
+    val url: String = enrolmentInfo.utr
+      .map {
+        utr =>
+          s"${config.taxEnrolmentsUrl1}HMRC-CBC-ORG${config.taxEnrolmentsUrl2}"
+      }
+      .getOrElse(
+        s"${config.taxEnrolmentsUrl1}HMRC-CBC-NONUK-ORG${config.taxEnrolmentsUrl2}"
+      )
 
     http.PUT[EnrolmentRequest, HttpResponse](url, enrolmentInfo.convertToEnrolmentRequest) map {
       case responseMessage if is2xx(responseMessage.status) =>

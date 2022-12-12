@@ -45,7 +45,7 @@ class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockServerHandler wit
       "must return status as 204 for successful Tax Enrolment call" in {
         forAll(validSafeID, validSubscriptionID, validUtr) {
           (safeID, subID, utr) =>
-            val enrolmentInfo = SubscriptionInfo(safeID = safeID, saUtr = Some(utr), cbcId = subID)
+            val enrolmentInfo = SubscriptionInfo(safeID = safeID, utr = Some(utr), cbcId = subID)
 
             stubResponseForPutRequest("/tax-enrolments/service/HMRC-CBC-ORG/enrolment", NO_CONTENT)
 
@@ -57,7 +57,7 @@ class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockServerHandler wit
       "must return status as 400 and BadRequest error" in {
         forAll(validSafeID, validSubscriptionID, validUtr) {
           (safeID, subID, utr) =>
-            val enrolmentInfo = SubscriptionInfo(safeID = safeID, saUtr = Some(utr), cbcId = subID)
+            val enrolmentInfo = SubscriptionInfo(safeID = safeID, utr = Some(utr), cbcId = subID)
             stubResponseForPutRequest("/tax-enrolments/service/HMRC-CBC-ORG/enrolment", BAD_REQUEST)
             val result = connector.createEnrolment(enrolmentInfo)
             result.futureValue mustBe None
@@ -67,7 +67,7 @@ class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockServerHandler wit
       "must return status ServiceUnavailable Error" in {
         forAll(validSafeID, validSubscriptionID, validUtr) {
           (safeID, subID, utr) =>
-            val enrolmentInfo = SubscriptionInfo(safeID = safeID, saUtr = Some(utr), cbcId = subID)
+            val enrolmentInfo = SubscriptionInfo(safeID = safeID, utr = Some(utr), cbcId = subID)
             stubResponseForPutRequest("/tax-enrolments/service/HMRC-CBC-ORG/enrolment", INTERNAL_SERVER_ERROR)
             val result = connector.createEnrolment(enrolmentInfo)
             result.futureValue mustBe None
@@ -81,9 +81,9 @@ class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockServerHandler wit
 
         forAll(validSafeID, validSubscriptionID, validUtr) {
           (safeID, subID, utr) =>
-            val enrolmentInfo = SubscriptionInfo(safeID = safeID, saUtr = Some(utr), cbcId = subID)
+            val enrolmentInfo = SubscriptionInfo(safeID = safeID, utr = Some(utr), cbcId = subID)
 
-            val expectedVerifiers = Seq(Verifier("SAFEID", enrolmentInfo.safeID), Verifier("SAUTR", enrolmentInfo.saUtr.get))
+            val expectedVerifiers = Seq()
 
             enrolmentInfo.convertToEnrolmentRequest.verifiers mustBe expectedVerifiers
         }
@@ -93,9 +93,9 @@ class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockServerHandler wit
 
         forAll(validSafeID, validSubscriptionID, validUtr) {
           (safeID, subID, utr) =>
-            val enrolmentInfo = SubscriptionInfo(safeID = safeID, ctUtr = Some(utr), cbcId = subID)
+            val enrolmentInfo = SubscriptionInfo(safeID = safeID, utr = Some(utr), cbcId = subID)
 
-            val expectedVerifiers = Seq(Verifier("SAFEID", enrolmentInfo.safeID), Verifier("CTUTR", enrolmentInfo.ctUtr.get))
+            val expectedVerifiers = Seq()
 
             enrolmentInfo.convertToEnrolmentRequest.verifiers mustBe expectedVerifiers
         }
