@@ -61,35 +61,34 @@ trait ModelGenerators {
     Arbitrary {
       for {
         orgDetails <- arbitrary[OrganisationDetails]
-        email <- arbitrary[String]
-        phone <- Gen.option(arbitrary[String])
-        mobile <- Gen.option(arbitrary[String])
+        email      <- arbitrary[String]
+        phone      <- Gen.option(arbitrary[String])
+        mobile     <- Gen.option(arbitrary[String])
       } yield ContactInformation(orgDetails, email, phone, mobile)
     }
 
   implicit val arbitraryRequestDetail: Arbitrary[RequestDetail] = Arbitrary {
     for {
-      idType <- arbitrary[String]
-      idNumber <- arbitrary[String]
-      tradingName <- Gen.option(arbitrary[String])
-      isGBUser <- arbitrary[Boolean]
-      primaryContact <- arbitrary[ContactInformation]
+      idType           <- arbitrary[String]
+      idNumber         <- arbitrary[String]
+      tradingName      <- arbitrary[String]
+      isGBUser         <- arbitrary[Boolean]
+      primaryContact   <- arbitrary[ContactInformation]
       secondaryContact <- Gen.option(arbitrary[ContactInformation])
     } yield RequestDetail(
       IDType = idType,
       IDNumber = idNumber,
-      tradingName = tradingName,
+      tradingName = Some(tradingName),
       isGBUser = isGBUser,
       primaryContact = primaryContact,
       secondaryContact = secondaryContact
     )
   }
 
-  implicit val arbitraryRequestCommonForSubscription
-  : Arbitrary[RequestCommonForSubscription] =
+  implicit val arbitraryRequestCommonForSubscription: Arbitrary[RequestCommonForSubscription] =
     Arbitrary {
       for {
-        receiptDate <- arbitrary[String]
+        receiptDate        <- arbitrary[String]
         acknowledgementRef <- arbitrary[String]
       } yield RequestCommonForSubscription(
         regime = "CBC",
@@ -101,8 +100,7 @@ trait ModelGenerators {
       )
     }
 
-  implicit val arbitraryCreateSubscriptionForCBCRequest
-  : Arbitrary[CreateSubscriptionForCBCRequest] =
+  implicit val arbitraryCreateSubscriptionForCBCRequest: Arbitrary[CreateSubscriptionForCBCRequest] =
     Arbitrary {
       for {
         requestCommon <- arbitrary[RequestCommonForSubscription]
