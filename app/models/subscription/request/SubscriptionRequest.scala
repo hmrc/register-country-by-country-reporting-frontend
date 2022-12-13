@@ -41,7 +41,7 @@ object SubscriptionRequest {
                 RequestDetail(
                   IDType = idType,
                   IDNumber = safeId.value,
-                  tradingName = userAnswers.get(WhatIsTradingNamePage) orElse userAnswers.get(RegistrationInfoPage).map(_.name),
+                  tradingName = userAnswers.get(WhatIsTradingNamePage) orElse userAnswers.get(BusinessWithoutIDNamePage) orElse userAnswers.get(RegistrationInfoPage).map(_.name),
                   isGBUser = isGBUser(userAnswers: UserAnswers),
                   primaryContact = pc,
                   secondaryContact = sc
