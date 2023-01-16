@@ -29,8 +29,7 @@ import utils.{CheckYourAnswersHelper, CountryListFactory}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersController @Inject() (
   override val messagesApi: MessagesApi,
@@ -42,7 +41,7 @@ class CheckYourAnswersController @Inject() (
   registerWithoutIdService: RegisterWithoutIdService,
   view: CheckYourAnswersView,
   countryListFactory: CountryListFactory
-) extends FrontendBaseController
+)(implicit ec: ExecutionContext) extends FrontendBaseController
     with I18nSupport
     with CreateSubscriptionAndUpdateEnrolment {
 
