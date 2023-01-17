@@ -18,7 +18,7 @@ lazy val root = (project in file("."))
   .settings(majorVersion := 0)
   .settings(useSuperShell in ThisBuild := false)
   .settings(
-    scalaVersion := "2.13.8",
+    scalaVersion := "2.13.10",
     name         := appName,
     RoutesKeys.routesImport ++= Seq(
       "models._",
