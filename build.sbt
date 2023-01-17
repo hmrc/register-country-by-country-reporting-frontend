@@ -77,6 +77,9 @@ lazy val root = (project in file("."))
       "-Wconf:cat=unused&src=.*JavaScriptReverseRoutes\\.scala:s"
     )
   )
+  .settings(ThisBuild / libraryDependencySchemes ++= Seq(
+    "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
+  ))
 
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(
   fork := true,
