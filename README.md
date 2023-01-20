@@ -2,7 +2,7 @@
 
 ## Info
 
-This service allows a user(agent, client or organisation) to register as a CBCR administrator.
+This service allows a user(agent, client or organisation) to register to CBCR services.
 
 This service has a corresponding back-end service, namely register-country-by-country-reporting can be viewed [here](https://github.com/hmrc/register-country-by-country-reporting) which integrates with HOD, i.e. DES/ETMP.
 
