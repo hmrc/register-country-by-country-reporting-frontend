@@ -1,12 +1,10 @@
-# Register Country By Country Reporting Frontend
-
-This is a placeholder README.md for a new repository
+# register-country-by-country-reporting-frontend
 
 ## Info
 
-This service allows a user((agent, client or organisation)) to register as a CBCR administrator.
+This service allows a user(agent, client or organisation) to register as a CBCR administrator.
 
-This service has a corresponding back-end service, namely register-country-by-country-reporting.
+This service has a corresponding back-end service, namely register-country-by-country-reporting can be viewed [here](https://github.com/hmrc/register-country-by-country-reporting) which integrates with HOD, i.e. DES/ETMP.
 
 ### Dependencies
 
@@ -44,9 +42,7 @@ Link: http://localhost:10026/register-to-send-a-country-by-country-report/regist
 
 [View the prototype here](https://cbc-reporting-prototype.herokuapp.com/)
 
-| Repositories  | Link                                                                 |
-|---------------|----------------------------------------------------------------------|
-| Journey tests | https://github.com/hmrc/register-country-by-country-reporting-ui-tests |
-| Prototype     | https://cbc-reporting-prototype.herokuapp.com/                     |
+[View the journey tests here](https://github.com/hmrc/register-country-by-country-reporting-ui-tests)
+
 
 
