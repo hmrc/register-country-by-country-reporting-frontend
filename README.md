@@ -26,15 +26,15 @@ https://github.com/hmrc/register-country-by-country-reporting-frontend
 
 ### Endpoints used
 
-| Service               | HTTP Method | Route                                                                            | Purpose                                                                                                               |
-|-----------------------|-------------|----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
-| Tax Enrolments        | POST        | /tax-enrolments/service/:serviceName/enrolment                                   | Enrols a user synchronously for a given service name                                                                  
-| Registration          | POST        | /register-country-by-country-reporting/registration/noId                         | Enables user to register witout id                                                                                    
-| Registration          | POST        | /register-country-by-country-reporting/registration/utr                          | Enables user to register                                                                                              
-| Subscription`         | POST        | /register-country-by-country-reporting/subscription/create-subscription          | Enables user to create subscription                                                                                   
-| Subscription          | POST        | /register-country-by-country-reporting/subscription/read-subscription/:safeId    | Enables user to read subscription details                                                                             
-| Email                 | POST        | /hmrc/email                                                                      | Sends an email to an email address                                                                                    
-| Enrolment store proxy | POST        | /enrolment-store-proxy/enrolments/:enrolmentKey/groups                           | Get a list of group IDs which are allocated a particular enrolment key, sorted by principal and delegated enrolments. 
+| Service                | HTTP Method | Route                                                                            | Purpose                                                                                                               |
+|------------------------|-------------|----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| Tax Enrolments         | POST        | /tax-enrolments/service/:serviceName/enrolment                                   | Enrols a user synchronously for a given service name                                                                  
+| Registration backend   | POST        | /register-country-by-country-reporting/registration/noId                         | Enables user to register witout id                                                                                    
+| Registration backend   | POST        | /register-country-by-country-reporting/registration/utr                          | Enables user to register                                                                                              
+| Subscription`          | POST        | /register-country-by-country-reporting/subscription/create-subscription          | Enables user to create subscription                                                                                   
+| Subscription           | POST        | /register-country-by-country-reporting/subscription/read-subscription/:safeId    | Enables user to read subscription details                                                                             
+| Email                  | POST        | /hmrc/email                                                                      | Sends an email to an email address                                                                                    
+| Enrolment store proxy  | POST        | /enrolment-store-proxy/enrolments/:enrolmentKey/groups                           | Get a list of group IDs which are allocated a particular enrolment key, sorted by principal and delegated enrolments. 
 
 ## Running the service
 
