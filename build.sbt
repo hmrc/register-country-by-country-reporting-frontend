@@ -18,7 +18,7 @@ lazy val root = (project in file("."))
   .settings(majorVersion := 0)
   .settings(useSuperShell in ThisBuild := false)
   .settings(
-    scalaVersion := "2.13.8",
+    scalaVersion := "2.13.10",
     name         := appName,
     RoutesKeys.routesImport ++= Seq(
       "models._",
@@ -77,6 +77,9 @@ lazy val root = (project in file("."))
       "-Wconf:cat=unused&src=.*JavaScriptReverseRoutes\\.scala:s"
     )
   )
+  .settings(ThisBuild / libraryDependencySchemes ++= Seq(
+    "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
+  ))
 
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(
   fork := true,
