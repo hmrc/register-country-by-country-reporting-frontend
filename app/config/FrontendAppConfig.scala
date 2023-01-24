@@ -24,8 +24,7 @@ import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Confclass FrontendAppConfig @Inject() (configuration: Configuration, contactFrontendConfig: ContactFrontendConfig) {
-iguration, contactFrontendConfig: ContactFrontendConfig) {
+class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontendConfig: ContactFrontendConfig) {
 
   val host: String    = configuration.get[String]("host")
   val appName: String = configuration.get[String]("appName")
