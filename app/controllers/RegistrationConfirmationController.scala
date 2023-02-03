@@ -45,7 +45,7 @@ class RegistrationConfirmationController @Inject() (
         case Some(subscriptionId) =>
           emailService.sendEmail(request.userAnswers, subscriptionId) flatMap {
             _ =>
-              sessionRepository.clear(request.userId) map {
+              sessionRepository.reset(request.userId) map {
                 _ =>
                   Ok(view(subscriptionId.value))
               }

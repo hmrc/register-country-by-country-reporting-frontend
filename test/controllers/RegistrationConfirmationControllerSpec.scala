@@ -51,7 +51,7 @@ class RegistrationConfirmationControllerSpec extends SpecBase with BeforeAndAfte
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))
+      when(mockSessionRepository.reset(any())).thenReturn(Future.successful(true))
 
       when(mockEmailService.sendEmail(any(), any())(any())).thenReturn(Future.successful(Some(ACCEPTED)))
 
@@ -75,7 +75,7 @@ class RegistrationConfirmationControllerSpec extends SpecBase with BeforeAndAfte
 
     "must return Technical difficulties and the correct view for a GET" in {
 
-      when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))
+      when(mockSessionRepository.reset(any())).thenReturn(Future.successful(true))
       val userAnswers = UserAnswers(userAnswersId)
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
