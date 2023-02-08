@@ -90,4 +90,7 @@ class SessionRepository @Inject()(
       .deleteOne(byId(id))
       .toFuture
       .map(_ => true)
+
+  def reset(id: String): Future[Boolean] =
+    clear(id).flatMap(_ => set(UserAnswers(id)))
 }

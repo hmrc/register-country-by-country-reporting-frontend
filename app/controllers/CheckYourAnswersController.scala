@@ -17,7 +17,7 @@
 package controllers
 
 import com.google.inject.Inject
-import controllers.actions.StandardActionSets
+import controllers.actions.{CheckForSubmissionAction, StandardActionSets}
 import models.MandatoryInformationMissingError
 import pages.RegistrationInfoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,6 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckYourAnswersController @Inject() (
   override val messagesApi: MessagesApi,
   standardActionSets: StandardActionSets,
+  checkForSubmissionAction: CheckForSubmissionAction,
   val controllerComponents: MessagesControllerComponents,
   override val sessionRepository: SessionRepository,
   override val subscriptionService: SubscriptionService,
@@ -45,7 +46,7 @@ class CheckYourAnswersController @Inject() (
     with I18nSupport
     with CreateSubscriptionAndUpdateEnrolment {
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.identifiedUserWithData() andThen checkForSubmissionAction) {
     implicit request =>
       val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers = request.userAnswers, countryListFactory = countryListFactory)
 
