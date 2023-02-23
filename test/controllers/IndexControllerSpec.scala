@@ -25,7 +25,7 @@ class IndexControllerSpec extends SpecBase {
 
   "Index Controller" - {
 
-    "must redirect to the DoYouHaveUTRController for a GET" in {
+    "must redirect to the IsRegisteredAddressInUkController for a GET" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -35,7 +35,7 @@ class IndexControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.DoYouHaveUTRController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
       }
     }
   }
