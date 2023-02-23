@@ -332,3 +332,9 @@ informationSent.title = Information sent
 informationSent.heading = Information sent
 informationSent.p1 = We will contact you if we have any questions about the details you have provided.
 informationSent.link = Back to manage your country-by-country report
+
+isRegisteredAddressInUk.title = Is your organisation’s registered address in the UK?
+isRegisteredAddressInUk.heading = Is your organisation’s registered address in the UK?
+isRegisteredAddressInUk.checkYourAnswersLabel = Is your organisation’s registered address in the UK?
+isRegisteredAddressInUk.error.required = Select yes if your organisation’s registered address is in the UK
+isRegisteredAddressInUk.change.hidden = if your organisation’s registered address is in the UK

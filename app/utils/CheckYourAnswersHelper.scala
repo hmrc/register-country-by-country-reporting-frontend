@@ -17,7 +17,7 @@
 package utils
 
 import models.UserAnswers
-import pages.{BusinessHaveDifferentNamePage, DoYouHaveSecondContactPage, DoYouHaveUTRPage, HaveTelephonePage}
+import pages.{BusinessHaveDifferentNamePage, DoYouHaveSecondContactPage, DoYouHaveUTRPage, HaveTelephonePage, IsRegisteredAddressInUkPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers._
@@ -26,15 +26,17 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers,
                              maxVisibleChars: Int = 100,
                              countryListFactory: CountryListFactory)(implicit val messages: Messages) {
 
-  def businessSection: Seq[SummaryListRow] = userAnswers.get(DoYouHaveUTRPage) match {
-    case Some(true) => businessWithIDSection
-    case Some(false) => businessWithoutIDSection
+  def businessSection: Seq[SummaryListRow] = (userAnswers.get(IsRegisteredAddressInUkPage), userAnswers.get(DoYouHaveUTRPage)) match {
+    case (Some(true), _) => businessWithIDSection
+    case (Some(false), Some(true)) => businessWithIDSection
+    case (Some(false), _) => businessWithoutIDSection
     case _ => Seq.empty[SummaryListRow]
   }
 
   def tradingNameSummary: Option[SummaryListRow] = userAnswers.get(BusinessHaveDifferentNamePage) flatMap (_ => WhatIsTradingNameSummary.row(userAnswers))
 
   def businessWithoutIDSection: Seq[SummaryListRow] = Seq(
+    IsRegisteredAddressInUkSummary.row(userAnswers),
     DoYouHaveUTRSummary.row(userAnswers),
     BusinessWithoutIDNameSummary.row(userAnswers),
     tradingNameSummary,

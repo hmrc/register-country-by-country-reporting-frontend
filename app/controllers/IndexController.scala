@@ -30,6 +30,6 @@ class IndexController @Inject()(
                                ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = identify {
-    Redirect(routes.DoYouHaveUTRController.onPageLoad(NormalMode))
+    Redirect(routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode))
   }
 }

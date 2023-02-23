@@ -28,6 +28,13 @@ import javax.inject.{Inject, Singleton}
 class CBCRNavigator @Inject()() extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = {
+    case IsRegisteredAddressInUkPage => ua =>
+      yesNoPage(
+        ua,
+        IsRegisteredAddressInUkPage,
+        routes.BusinessTypeController.onPageLoad(NormalMode),
+        routes.DoYouHaveUTRController.onPageLoad(NormalMode)
+      )
     case DoYouHaveUTRPage   => ua => yesNoPage(
       ua,
       DoYouHaveUTRPage,
@@ -79,6 +86,13 @@ class CBCRNavigator @Inject()() extends Navigator {
   }
 
   override val checkRouteMap: Page => UserAnswers => Call = {
+    case IsRegisteredAddressInUkPage => ua =>
+      yesNoPage(
+        ua,
+        IsRegisteredAddressInUkPage,
+        routes.BusinessTypeController.onPageLoad(CheckMode),
+        routes.DoYouHaveUTRController.onPageLoad(CheckMode)
+      )
     case DoYouHaveUTRPage   => ua => yesNoPage(
       ua,
       DoYouHaveUTRPage,
