@@ -62,7 +62,7 @@ object YourBusinessSummary {
               key     = "businessWithIDName.checkYourAnswersLabel",
               value   = ValueViewModel(HtmlContent(value)),
               actions = Seq(
-                ActionItemViewModel("site.change", routes.DoYouHaveUTRController.onPageLoad(CheckMode).url)
+                ActionItemViewModel("site.change", routes.IsRegisteredAddressInUkController.onPageLoad(CheckMode).url)
                   .withVisuallyHiddenText(messages("businessWithIDName.change.hidden")).withAttribute(("id","your-business-details"))
               )
             ))
