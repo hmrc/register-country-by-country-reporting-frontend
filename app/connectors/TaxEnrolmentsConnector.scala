@@ -37,7 +37,7 @@ class TaxEnrolmentsConnector @Inject() (
 
     val url: String = enrolmentInfo.utr
       .map {
-        utr =>
+        _ =>
           s"${config.taxEnrolmentsUrl1}HMRC-CBC-ORG${config.taxEnrolmentsUrl2}"
       }
       .getOrElse(
