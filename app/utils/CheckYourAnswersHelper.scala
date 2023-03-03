@@ -23,7 +23,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers,
-                             maxVisibleChars: Int = 100,
                              countryListFactory: CountryListFactory)(implicit val messages: Messages) {
 
   def businessSection: Seq[SummaryListRow] = (userAnswers.get(IsRegisteredAddressInUkPage), userAnswers.get(DoYouHaveUTRPage)) match {

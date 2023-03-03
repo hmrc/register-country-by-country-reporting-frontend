@@ -29,7 +29,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
   val matchedAddress: AddressResponse = AddressResponse("", None, None, None, None, "GB")
   implicit val messages: Messages = messages(app)
   val countryListFactory: CountryListFactory = app.injector.instanceOf[CountryListFactory]
-  val maxVisibleChars: Int = 100
 
   "RowBuilder" - {
     "must Create Business section for a Business without an ID" in {
@@ -74,7 +73,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         .success
         .value
 
-        val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers, maxVisibleChars, countryListFactory)
+        val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers, countryListFactory)
 
         val businessRows = checkYourAnswersHelper.businessWithoutIDSection
 
@@ -119,7 +118,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         .success
         .value
 
-        val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers, maxVisibleChars, countryListFactory)
+        val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers, countryListFactory)
 
         val businessRows = checkYourAnswersHelper.businessWithIDSection
 
@@ -164,7 +163,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         .success
         .value
 
-      val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers, maxVisibleChars, countryListFactory)
+      val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers, countryListFactory)
 
       val firstContactRows = checkYourAnswersHelper.firstContactSection
 
@@ -209,7 +208,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         .success
         .value
 
-      val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers, maxVisibleChars, countryListFactory)
+      val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers, countryListFactory)
 
       val secondContactRows = checkYourAnswersHelper.secondContactSection
 
@@ -243,7 +242,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         .value
 
 
-      val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers, maxVisibleChars, countryListFactory)
+      val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers, countryListFactory)
 
       val secondContactRows = checkYourAnswersHelper.secondContactSection
 

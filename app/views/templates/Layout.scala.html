@@ -69,5 +69,6 @@
     phaseBanner = Some(alphaBanner(appConfig.feedbackUrl)),
     nonce = CSPNonce.get,
     additionalScriptsBlock = Some(additionalScripts),
-    backLink = if(showBackLink) Some(BackLinkViewModel(href = "#").withCssClass("js-enabled govuk-!-display-none-print")) else None
+    backLink = if(showBackLink) Some(BackLinkViewModel(href = "#").withCssClass("js-enabled govuk-!-display-none-print")) else None,
+    isWelshTranslationAvailable = appConfig.languageTranslationEnabled
 )(content)
