@@ -17,7 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.{GroupIds, SubscriptionID, SubscriptionInfo}
+import models.{GroupIds, SubscriptionInfo}
 import play.api.Logging
 import play.api.http.Status.NO_CONTENT
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw

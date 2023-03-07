@@ -41,7 +41,7 @@ trait CreateSubscriptionAndUpdateEnrolment extends Logging {
         logger.warn(s"Error: $error")
         error match {
           case SubscriptionCreateInformationMissingError(_) => Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
-          case error                                        => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+          case _                                        => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
         }
     }
 
@@ -68,6 +68,7 @@ trait CreateSubscriptionAndUpdateEnrolment extends Logging {
           } else {
             Future.successful(Redirect(routes.PreRegisteredController.onPageLoad(false)))
           }
+        case _ => Future.successful(Redirect(routes.PreRegisteredController.onPageLoad(false)))
       }
   }
 }

@@ -65,7 +65,7 @@ class CBCRNavigator @Inject()() extends Navigator {
       ua,
       DoYouHaveSecondContactPage,
       routes.SecondContactNameController.onPageLoad(NormalMode),
-      routes.CheckYourAnswersController.onPageLoad
+      routes.CheckYourAnswersController.onPageLoad()
     )
     case SecondContactNamePage   => _ => routes.SecondContactEmailController.onPageLoad(NormalMode)
     case SecondContactEmailPage   => _ => routes.SecondContactHavePhoneController.onPageLoad(NormalMode)
@@ -73,9 +73,9 @@ class CBCRNavigator @Inject()() extends Navigator {
       ua,
       SecondContactHavePhonePage,
       routes.SecondContactPhoneController.onPageLoad(NormalMode),
-      routes.CheckYourAnswersController.onPageLoad
+      routes.CheckYourAnswersController.onPageLoad()
     )
-    case SecondContactPhonePage => _ => routes.CheckYourAnswersController.onPageLoad
+    case SecondContactPhonePage => _ => routes.CheckYourAnswersController.onPageLoad()
   }
 
   override val checkRouteMap: Page => UserAnswers => Call = {
@@ -125,7 +125,7 @@ class CBCRNavigator @Inject()() extends Navigator {
       ua,
       DoYouHaveSecondContactPage,
       checkNextPageForValueThenRoute(CheckMode, ua, SecondContactNamePage, routes.SecondContactNameController.onPageLoad(CheckMode)),
-      routes.CheckYourAnswersController.onPageLoad
+      routes.CheckYourAnswersController.onPageLoad()
     )
     case SecondContactNamePage   => ua =>
       checkNextPageForValueThenRoute(CheckMode, ua, SecondContactEmailPage, routes.SecondContactEmailController.onPageLoad(CheckMode))
@@ -135,10 +135,10 @@ class CBCRNavigator @Inject()() extends Navigator {
       ua,
       SecondContactHavePhonePage,
       routes.SecondContactPhoneController.onPageLoad(CheckMode),
-      routes.CheckYourAnswersController.onPageLoad
+      routes.CheckYourAnswersController.onPageLoad()
     )
-    case SecondContactPhonePage => _ => routes.CheckYourAnswersController.onPageLoad
-    case _  => _ => controllers.routes.CheckYourAnswersController.onPageLoad
+    case SecondContactPhonePage => _ => routes.CheckYourAnswersController.onPageLoad()
+    case _  => _ => controllers.routes.CheckYourAnswersController.onPageLoad()
   }
 
   def yesNoPage(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call =

@@ -47,7 +47,7 @@ class TaxEnrolmentServiceSpec extends SpecBase {
 
   override def beforeEach: Unit = {
     reset(mockTaxEnrolmentsConnector, mockEnrolmentStoreProxyConnector)
-    super.beforeEach
+    super.beforeEach()
   }
 
   "TaxEnrolmentService" - {
