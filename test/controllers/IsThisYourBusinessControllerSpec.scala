@@ -62,7 +62,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
   val mockSubscriptionService: SubscriptionService     = mock[SubscriptionService]
   val mockTaxEnrolmentsService: TaxEnrolmentService    = mock[TaxEnrolmentService]
 
-  override def beforeEach: Unit =
+  override def beforeEach(): Unit =
     reset(
       mockSubscriptionService,
       mockTaxEnrolmentsService,

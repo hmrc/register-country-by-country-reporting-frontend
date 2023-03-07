@@ -44,7 +44,7 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
     )
     .build()
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(mockSubscriptionConnector)
     super.beforeEach()
   }

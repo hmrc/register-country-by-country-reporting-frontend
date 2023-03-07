@@ -51,7 +51,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
     AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
   )
 
-  override def beforeEach: Unit =
+  override def beforeEach(): Unit =
     reset(
       mockSubscriptionService,
       mockTaxEnrolmentsService,
@@ -81,12 +81,12 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad().url)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.auth.routes.AuthController.signOutNoSurvey.url
+        redirectLocation(result).value mustEqual controllers.auth.routes.AuthController.signOutNoSurvey().url
       }
     }
   }
@@ -220,7 +220,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       .build()
 
     running(application) {
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
 
       val result = route(application, request).value
 

@@ -139,6 +139,7 @@ package object models {
                 }
               }
           }
+        case (_ , _) => JsError("path cannot be empty")
       }
     }
   }
