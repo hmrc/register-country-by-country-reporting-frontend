@@ -32,7 +32,7 @@ class SignedOutControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = None).configure("urls.loginContinue" -> loginString).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.SignedOutController.onPageLoad.url)
+        val request = FakeRequest(GET, routes.SignedOutController.onPageLoad().url)
 
         val result = route(application, request).value
 

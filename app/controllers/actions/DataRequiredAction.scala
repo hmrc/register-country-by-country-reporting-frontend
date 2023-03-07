@@ -27,7 +27,7 @@ class DataRequiredActionImpl @Inject() (implicit val executionContext: Execution
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
     request.userAnswers match {
       case None =>
-        Future.successful(Left(Redirect(controllers.auth.routes.AuthController.signOutNoSurvey)))
+        Future.successful(Left(Redirect(controllers.auth.routes.AuthController.signOutNoSurvey())))
       case Some(data) =>
         Future.successful(Right(DataRequest(request.request, request.userId, data)))
     }

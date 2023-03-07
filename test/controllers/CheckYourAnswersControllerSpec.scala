@@ -65,7 +65,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad().url)
 
         val result = route(application, request).value
 
@@ -102,7 +102,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
     when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Left(EnrolmentCreationError))
 
     running(application) {
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
       val result  = route(application, request).value
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual routes.MissingInformationController.onPageLoad().url
@@ -122,7 +122,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
     when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Left(EnrolmentCreationError))
 
     running(application) {
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
       val result  = route(application, request).value
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual routes.ThereIsAProblemController.onPageLoad().url
@@ -155,7 +155,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       Future.successful(Left(SubscriptionCreateInformationMissingError("Contact Information Missing")))
 
     running(application) {
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
       val result  = route(application, request).value
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual routes.MissingInformationController.onPageLoad().url
@@ -180,7 +180,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       .build()
 
     running(application) {
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
 
       val result = route(application, request).value
 
@@ -261,7 +261,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       .build()
 
     running(application) {
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
 
       val result = route(application, request).value
 
@@ -301,7 +301,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       .build()
 
     running(application) {
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
 
       val result = route(application, request).value
 
@@ -331,7 +331,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       .build()
 
     running(application) {
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
 
       val result = route(application, request).value
 
@@ -361,7 +361,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       .build()
 
     running(application) {
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
 
       val result = route(application, request).value
 

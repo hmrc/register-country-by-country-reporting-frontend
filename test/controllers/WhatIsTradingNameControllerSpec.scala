@@ -119,7 +119,7 @@ class WhatIsTradingNameControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.auth.routes.AuthController.signOutNoSurvey.url
+        redirectLocation(result).value mustEqual controllers.auth.routes.AuthController.signOutNoSurvey().url
       }
     }
 
@@ -135,7 +135,7 @@ class WhatIsTradingNameControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.auth.routes.AuthController.signOutNoSurvey.url
+        redirectLocation(result).value mustEqual controllers.auth.routes.AuthController.signOutNoSurvey().url
       }
     }
   }

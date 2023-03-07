@@ -42,7 +42,7 @@ class AuthControllerSpec extends SpecBase with BeforeAndAfterEach{
       running(application) {
 
         val appConfig = application.injector.instanceOf[FrontendAppConfig]
-        val request   = FakeRequest(GET, routes.AuthController.signOut.url)
+        val request   = FakeRequest(GET, routes.AuthController.signOut().url)
 
         val result = route(application, request).value
 
@@ -63,11 +63,11 @@ class AuthControllerSpec extends SpecBase with BeforeAndAfterEach{
 
       running(application) {
 
-        val request   = FakeRequest(GET, routes.AuthController.signOutNoSurvey.url)
+        val request   = FakeRequest(GET, routes.AuthController.signOutNoSurvey().url)
 
         val result = route(application, request).value
 
-        val expectedRedirectUrl = controllers.auth.routes.SignedOutController.onPageLoad.url
+        val expectedRedirectUrl = controllers.auth.routes.SignedOutController.onPageLoad().url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl

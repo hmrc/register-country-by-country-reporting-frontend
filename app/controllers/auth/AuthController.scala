@@ -34,6 +34,6 @@ class AuthController @Inject() (
   }
 
   def signOutNoSurvey(): Action[AnyContent] = Action {
-      Redirect(routes.SignedOutController.onPageLoad).withNewSession
+      Redirect(routes.SignedOutController.onPageLoad()).withNewSession
   }
 }
