@@ -43,7 +43,7 @@ class RegisterWithoutIdServiceSpec extends SpecBase with MockitoSugar {
     )
     .build()
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     Mockito.reset(
       mockRegistrationConnector
     )
