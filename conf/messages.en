@@ -338,3 +338,4 @@ isRegisteredAddressInUk.heading = Is your organisation’s registered address in
 isRegisteredAddressInUk.checkYourAnswersLabel = Is your organisation’s registered address in the UK?
 isRegisteredAddressInUk.error.required = Select yes if your organisation’s registered address is in the UK
 isRegisteredAddressInUk.change.hidden = if your organisation’s registered address is in the UK
+
