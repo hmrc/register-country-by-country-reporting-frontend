@@ -42,7 +42,7 @@ class RegistrationConfirmationControllerSpec extends SpecBase with BeforeAndAfte
     )
     .build()
 
-  override def beforeEach: Unit =
+  override def beforeEach(): Unit =
     reset(
       mockEmailService
     )

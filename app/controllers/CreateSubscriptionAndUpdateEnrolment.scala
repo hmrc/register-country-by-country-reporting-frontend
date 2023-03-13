@@ -68,6 +68,7 @@ trait CreateSubscriptionAndUpdateEnrolment extends Logging {
           } else {
             Future.successful(Redirect(routes.PreRegisteredController.onPageLoad(false)))
           }
+        case _ => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
       }
   }
 }

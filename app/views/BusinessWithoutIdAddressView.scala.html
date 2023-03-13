@@ -15,7 +15,6 @@
  *@
 
 @import viewmodels.InputWidth._
-@import models.Country
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.accessibleautocomplete.AccessibleAutocomplete
 
@@ -33,7 +32,7 @@
 
 @layout(pageTitle = title(form, messages("businessWithoutIdAddress.title"))) {
 
-    @formHelper(action = routes.BusinessWithoutIdAddressController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.BusinessWithoutIdAddressController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

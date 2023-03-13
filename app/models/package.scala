@@ -139,6 +139,7 @@ package object models {
                 }
               }
           }
+        case (_ , _) => JsError("Invalid path and JSValue")
       }
     }
   }
