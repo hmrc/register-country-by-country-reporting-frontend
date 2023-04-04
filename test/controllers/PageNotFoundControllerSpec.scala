@@ -37,7 +37,7 @@ class PageNotFoundControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[PageNotFoundView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view("enquiries.aeoi@hmrc.gov.uk")(request, messages(application)).toString
+        contentAsString(result) mustEqual view("aeoi.enquiries@hmrc.gov.uk")(request, messages(application)).toString
       }
     }
   }
