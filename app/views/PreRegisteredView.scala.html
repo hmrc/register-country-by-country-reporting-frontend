@@ -34,5 +34,5 @@
         <p class="govuk-body">@messages("preRegistered.withOutID.information")</p>
         <p class="govuk-body">@link(appConfig.loginUrl, "preRegistered.withOutID.GGLink", openInNewWindow = true)</p>
     }
-    <p class="govuk-body">@Html(messages("preRegistered.help" , link(s"mailto:$emailLink", "preRegistered.help.link", openInNewWindow = true)))</p>
+    <p class="govuk-body">@Html(messages("preRegistered.help" , link(s"mailto:$emailLink", "enquiries.email", openInNewWindow = true)))</p>
 }
