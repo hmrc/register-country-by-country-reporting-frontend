@@ -37,7 +37,7 @@ class PreRegisteredControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[PreRegisteredView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view("enquiries.aeoi@hmrc.gov.uk", false)(request, messages(application)).toString
+        contentAsString(result) mustEqual view("aeoi.enquiries@hmrc.gov.uk", false)(request, messages(application)).toString
       }
     }
 
@@ -53,7 +53,7 @@ class PreRegisteredControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[PreRegisteredView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view("enquiries.aeoi@hmrc.gov.uk", true)(request, messages(application)).toString
+        contentAsString(result) mustEqual view("aeoi.enquiries@hmrc.gov.uk", true)(request, messages(application)).toString
       }
     }
   }

@@ -282,7 +282,6 @@ businessNotIdentified.p4 = If we still cannot identify your business, or you do 
 businessNotIdentified.p4.link = contact HMRC (opens in new tab)
 businessNotIdentified.subheading3 = Email HMRC if you still need help
 businessNotIdentified.p5 = You can email
-businessNotIdentified.p5.link = enquiries.aeoi@hmrc.gov.uk
 businessNotIdentified.p5b = if we still cannot find your business.
 businessNotIdentified.button = Try again
 
@@ -291,15 +290,13 @@ preRegistered.heading = Your organisation is already registered
 preRegistered.withOutID.information = You can access the service using the Government Gateway account you used to register.
 preRegistered.withOutID.GGLink = Sign in to your Government Gateway account (opens in new tab)
 preRegistered.help = You can email {0} if you’re having problems accessing the service.
-preRegistered.help.link = enquiries.aeoi@hmrc.gov.uk
-preRegistered.help.linkLocation = mailto:enquiries.aeoi@hmrc.gov.uk
+preRegistered.help.linkLocation = mailto:aeoi.enquiries@hmrc.gov.uk
 preRegistered.withID.information = You will need to contact your administrator to give you access via the ‘Manage account’ settings within their Business Tax Account.
 
 thereIsAProblem.title = Sorry, there is a problem with the service
 thereIsAProblem.heading = Sorry, there is a problem with the service
 thereIsAProblem.p1 = Try again later.
 thereIsAProblem.help = You can email {0} if you need to contact someone about your CBC reporting.
-thereIsAProblem.help.link = enquiries.aeoi@hmrc.gov.uk
 
 unauthorisedStandardUser.title = Sorry, you’re unable to use this service
 unauthorisedStandardUser.heading = Sorry, you’re unable to use this service
@@ -321,7 +318,6 @@ pageNotFound.heading = Page not found
 pageNotFound.p1 = If you typed the web address, check it is correct.
 pageNotFound.p2 = If you pasted the web address, check you copied the entire address.
 pageNotFound.link = You can email {0} if you have any questions about this service.
-pageNotFound.link.help = enquiries.aeoi@hmrc.gov.uk
 
 yourContactDetails.title = Setting up contact details for CBC
 yourContactDetails.heading = Setting up contact details for CBC
@@ -338,4 +334,6 @@ isRegisteredAddressInUk.heading = Is your organisation’s registered address in
 isRegisteredAddressInUk.checkYourAnswersLabel = Is your organisation’s registered address in the UK?
 isRegisteredAddressInUk.error.required = Select yes if your organisation’s registered address is in the UK
 isRegisteredAddressInUk.change.hidden = if your organisation’s registered address is in the UK
+
+enquiries.email = aeoi.enquiries@hmrc.gov.uk
 
