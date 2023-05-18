@@ -21,6 +21,7 @@ import models.{CheckMode, UserAnswers}
 import pages.ContactPhonePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -34,9 +35,17 @@ object ContactPhoneSummary {
       key = "contactPhone.checkYourAnswersLabel",
       value = ValueViewModel(HtmlFormat.escape(value).toString),
       actions = Seq(
-        ActionItemViewModel("site.change", routes.HaveTelephoneController.onPageLoad(CheckMode).url)
-          .withVisuallyHiddenText(messages("contactPhone.change.hidden")).withAttribute(("id","contact-phone"))
-      )))
+        ActionItemViewModel(
+          content = HtmlContent(
+            s"""
+               |<span aria-hidden="true">${messages("site.change")}</span>
+               |<span class="govuk-visually-hidden">${messages("contactPhone.change.hidden")}</span>
+               |""".stripMargin
+          ),
+          href = routes.HaveTelephoneController.onPageLoad(CheckMode).url
+        ).withAttribute(("id","contact-phone"))
+      )
+    ))
 
   }
 

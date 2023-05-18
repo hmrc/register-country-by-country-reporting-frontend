@@ -62,8 +62,15 @@ object YourBusinessSummary {
               key     = "businessWithIDName.checkYourAnswersLabel",
               value   = ValueViewModel(HtmlContent(value)),
               actions = Seq(
-                ActionItemViewModel("site.change", routes.IsRegisteredAddressInUkController.onPageLoad(CheckMode).url)
-                  .withVisuallyHiddenText(messages("businessWithIDName.change.hidden")).withAttribute(("id","your-business-details"))
+                ActionItemViewModel(
+                  content = HtmlContent(
+                    s"""
+                       |<span aria-hidden="true">${messages("site.change")}</span>
+                       |<span class="govuk-visually-hidden">${messages("businessWithIDName.change.hidden")}</span>
+                       |""".stripMargin
+                  ),
+                  href = routes.IsRegisteredAddressInUkController.onPageLoad(CheckMode).url
+                ).withAttribute(("id","your-business-details"))
               )
             ))
           case _ => None

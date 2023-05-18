@@ -20,6 +20,7 @@ import controllers.routes
 import models.{CheckMode, UserAnswers}
 import pages.DoYouHaveSecondContactPage
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.SummaryHelper
 import viewmodels.govuk.summarylist._
@@ -37,8 +38,15 @@ object DoYouHaveSecondContactSummary  {
           key     = "doYouHaveSecondContact.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.DoYouHaveSecondContactController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("doYouHaveSecondContact.change.hidden")).withAttribute(("id","do-you-have-second-contact"))
+            ActionItemViewModel(
+              content = HtmlContent(
+                s"""
+                   |<span aria-hidden="true">${messages("site.change")}</span>
+                   |<span class="govuk-visually-hidden">${messages("doYouHaveSecondContact.change.hidden")}</span>
+                   |""".stripMargin
+              ),
+              href = routes.DoYouHaveSecondContactController.onPageLoad(CheckMode).url
+            ).withAttribute(("id","do-you-have-second-contact"))
           )
         )
     }
