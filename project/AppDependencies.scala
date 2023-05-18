@@ -3,12 +3,15 @@ import sbt._
 object AppDependencies {
   import play.core.PlayVersion
 
+  val mogoVersion = "0.74.0"
+  val bootstrapVersion = "7.12.0"
+
   val compile = Seq(
     play.sbt.PlayImport.ws,
     "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "6.2.0-play-28",
     "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.12.0-play-28",
-    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"    % "7.12.0",
-    "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"            % "0.74.0"
+    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"    % bootstrapVersion,
+    "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"            % mogoVersion
   )
 
   val test = Seq(
@@ -22,7 +25,8 @@ object AppDependencies {
     "com.typesafe.play"      %% "play-test"               % PlayVersion.current,
     "org.mockito"            %% "mockito-scala"           % "1.16.42",
     "wolfendale"             %% "scalacheck-gen-regexp"   % "0.1.2",
-    "uk.gov.hmrc.mongo"      %% "hmrc-mongo-test-play-28" % "0.74.0",
+    "uk.gov.hmrc"            %% "bootstrap-test-play-28"  % bootstrapVersion,
+    "uk.gov.hmrc.mongo"      %% "hmrc-mongo-test-play-28" % mogoVersion,
     "com.github.tomakehurst"  % "wiremock-jre8"           % "2.26.0"
   ).map(_ % "test, it")
 
