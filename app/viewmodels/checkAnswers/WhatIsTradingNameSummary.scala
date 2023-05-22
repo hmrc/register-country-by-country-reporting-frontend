@@ -21,6 +21,7 @@ import models.{CheckMode, UserAnswers}
 import pages.WhatIsTradingNamePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -36,8 +37,15 @@ object WhatIsTradingNameSummary  {
           key     = "whatIsTradingName.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(value).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.BusinessHaveDifferentNameController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("whatIsTradingName.change.hidden")).withAttribute(("id","what-is-you-trading-name"))
+            ActionItemViewModel(
+              content = HtmlContent(
+                s"""
+                   |<span aria-hidden="true">${messages("site.change")}</span>
+                   |<span class="govuk-visually-hidden">${messages("whatIsTradingName.change.hidden")}</span>
+                   |""".stripMargin
+              ),
+              href = routes.BusinessHaveDifferentNameController.onPageLoad(CheckMode).url
+            ).withAttribute(("id","what-is-you-trading-name"))
           )
         ))
     }

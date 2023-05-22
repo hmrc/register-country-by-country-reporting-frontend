@@ -20,6 +20,7 @@ import controllers.routes
 import models.{CheckMode, UserAnswers}
 import pages.DoYouHaveUTRPage
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.SummaryHelper
 import viewmodels.govuk.summarylist._
@@ -37,8 +38,15 @@ object DoYouHaveUTRSummary  {
           key     = "doYouHaveUTR.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.DoYouHaveUTRController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("doYouHaveUTR.change.hidden")).withAttribute(("id","do-you-have-UTR"))
+            ActionItemViewModel(
+              content = HtmlContent(
+                s"""
+                   |<span aria-hidden="true">${messages("site.change")}</span>
+                   |<span class="govuk-visually-hidden">${messages("doYouHaveUTR.change.hidden")}</span>
+                   |""".stripMargin
+              ),
+              href = routes.DoYouHaveUTRController.onPageLoad(CheckMode).url
+            ).withAttribute(("id","do-you-have-UTR"))
           )
         )
     }

@@ -53,8 +53,15 @@ object BusinessWithoutIdAddressSummary {
           key = "businessWithoutIdAddress.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.BusinessWithoutIdAddressController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("businessWithoutIdAddress.change.hidden")).withAttribute(("id","business-without-id-address"))
+            ActionItemViewModel(
+              content = HtmlContent(
+                s"""
+                   |<span aria-hidden="true">${messages("site.change")}</span>
+                   |<span class="govuk-visually-hidden">${messages("businessWithoutIdAddress.change.hidden")}</span>
+                   |""".stripMargin
+              ),
+              href = routes.BusinessWithoutIdAddressController.onPageLoad(CheckMode).url
+            ).withAttribute(("id","business-without-id-address"))
           )
         )
     }
