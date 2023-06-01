@@ -23,7 +23,7 @@ import models.requests.IdentifierRequest
 import play.api.Logging
 import play.api.mvc.Results._
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AffinityGroup.Individual
+import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, credentialRole}
@@ -47,12 +47,16 @@ class AuthenticatedIdentifierAction @Inject() (
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 
-    val enrolmentKey: String = config.enrolmentKey
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
+    val validKeys: Set[String] = Set(config.enrolmentKey, config.nonUkEnrolmentKey)
+
     authorised()
       .retrieve(Retrievals.internalId and Retrievals.allEnrolments and affinityGroup and credentialRole) {
-        case _ ~ enrolments ~ _ ~ Some(Assistant) if enrolments.enrolments.exists(_.key == enrolmentKey) =>
+        case _ ~ enrolments ~ _ ~ Some(Assistant) if enrolments.enrolments.exists(enrolment => validKeys.contains(enrolment.key)) =>
+          Future.successful(Redirect(config.countryByCountryReportingFrontendUrl))
+        case _ ~ _ ~ Some(Agent) ~ _ =>
           Future.successful(Redirect(config.countryByCountryReportingFrontendUrl))
         case _ ~ _ ~ _ ~ Some(Assistant) =>
           Future.successful(Redirect(routes.UnauthorisedStandardUserController.onPageLoad()))
