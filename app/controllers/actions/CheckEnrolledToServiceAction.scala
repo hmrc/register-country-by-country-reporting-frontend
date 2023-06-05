@@ -30,13 +30,15 @@ class CheckEnrolledToServiceAction @Inject() (config: FrontendAppConfig)(implici
     extends ActionFilter[IdentifierRequest]
     with Logging {
 
-  override protected def filter[A](request: IdentifierRequest[A]): Future[Option[Result]] =
-    if (request.enrolments.exists(_.key == config.enrolmentKey)) {
+  override protected def filter[A](request: IdentifierRequest[A]): Future[Option[Result]] = {
+    val validKeys: Set[String] = Set(config.enrolmentKey, config.nonUkEnrolmentKey)
+    if (request.enrolments.exists(enrolment => validKeys.contains(enrolment.key))) {
       logger.info(s"User is enrolled to the CBC service")
       successful(Some(Redirect(config.countryByCountryReportingFrontendUrl)))
     } else {
       successful(None)
     }
+  }
 }
 
 class CheckEnrolledToServiceActionProvider @Inject() (config: FrontendAppConfig)(implicit ec: ExecutionContext) {
