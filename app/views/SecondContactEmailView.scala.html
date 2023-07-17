@@ -34,13 +34,14 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        <p class="govuk-body">@messages("secondContactEmail.p1")</p>
+
         @govukInput(
             InputViewModel(
                 field = form("value"),
                 label = LabelViewModel(messages("secondContactEmail.heading", contactName)).asPageHeading()
             )
             .withWidth(Full)
-            .withHint(HintViewModel(Text(messages("secondContactEmail.hint"))))
         )
 
         @govukButton(
