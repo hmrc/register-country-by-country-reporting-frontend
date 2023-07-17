@@ -220,13 +220,13 @@ secondContactHavePhone.checkYourAnswersLabel = Can we contact them by telephone?
 secondContactHavePhone.error.required = Select yes if they can be contacted by telephone
 secondContactHavePhone.change.hidden = Change can we contact them by telephone?
 
-secondContactPhone.title = What is their telephone number?
+secondContactPhone.title = What is the telephone number for the second contact?
 secondContactPhone.heading = What is the telephone number for {0}?
-secondContactPhone.hint = Enter a telephone number, like&nbsp;01632&nbsp;960&nbsp;001, 07700&nbsp;900&nbsp;982 or +44&nbsp;808&nbsp;157&nbsp;0192.
+secondContactPhone.hint = For international numbers, include the country code.
 secondContactPhone.checkYourAnswersLabel = Second contact telephone number
-secondContactPhone.error.required = Enter a telephone number
-secondContactPhone.error.invalid = Enter a telephone number in the correct format
-secondContactPhone.error.length = Telephone number must be 24 characters or less
+secondContactPhone.error.required = Enter a telephone number for the second contact
+secondContactPhone.error.invalid = The telephone number must only include numbers 0 to 9 and a plus sign, like&nbsp;01632&nbsp;960&nbsp;001, 07700&nbsp;900&nbsp;982 or +44&nbsp;808&nbsp;157&nbsp;0192
+secondContactPhone.error.length = The telephone number must be 24 characters or less
 secondContactPhone.change.hidden = Change second contact telephone number
 
 doYouHaveSecondContact.title = Is there someone else we can contact?
