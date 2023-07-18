@@ -188,13 +188,13 @@ contactEmail.error.length = Email address must be 132 characters or less
 contactEmail.error.invalid = Enter an email address in the correct format, like name@example.com
 contactEmail.change.hidden = Change email address
 
-contactPhone.title = What is their telephone number?
+contactPhone.title = What is the telephone number for the first contact?
 contactPhone.heading = What is the telephone number for {0}?
-contactPhone.hint = Enter a telephone number, like&nbsp;01632&nbsp;960&nbsp;001, 07700&nbsp;900&nbsp;982 or +44&nbsp;808&nbsp;157&nbsp;0192.
+contactPhone.hint = For international numbers, include the country code.
 contactPhone.checkYourAnswersLabel = Telephone number
-contactPhone.error.required = Enter a telephone number
-contactPhone.error.length = Telephone number must be 24 characters or less
-contactPhone.error.invalid = Enter a telephone number in the correct format
+contactPhone.error.required = Enter a telephone number for the first contact
+contactPhone.error.length = The telephone number must be 24 characters or less
+contactPhone.error.invalid = The telephone number must only include numbers 0 to 9 and a plus sign, like 01632 960 001, 07700 900 982 or +44 808 157 0192
 contactPhone.change.hidden = Change telephone number
 
 haveTelephone.title = Can we contact them by telephone?
