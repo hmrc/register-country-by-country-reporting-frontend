@@ -34,8 +34,6 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <p class="govuk-body">@messages("secondContactEmail.p1")</p>
-
         @govukInput(
             InputViewModel(
                 field = form("value"),
@@ -43,6 +41,8 @@
             )
             .withWidth(Full)
         )
+
+        <p class="govuk-body">@messages("secondContactEmail.p1")</p>
 
         @govukButton(
             ButtonViewModel(messages("site.continue")).withAttribute("id" -> "submit")
