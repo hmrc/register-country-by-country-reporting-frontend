@@ -40,8 +40,9 @@
                 label = LabelViewModel(messages("contactEmail.heading", contactName)).asPageHeading()
             )
             .withWidth(Full)
-            .withHint(HintViewModel(Text(messages("contactEmail.hint"))))
         )
+
+        <p class="govuk-body">@messages("contactEmail.p1")</p>
 
         @govukButton(
             ButtonViewModel(messages("site.continue")).withAttribute("id" -> "submit")
