@@ -33,7 +33,7 @@ object $className$Summary  {
               content = HtmlContent(
                 s"""
                    |<span aria-hidden="true">${messages("site.change")}</span>
-                   |<span class="govuk-visually-hidden">${messages("$className;format="decap"$.change.hidden")}</span>
+                   |<span class="govuk-visually-hidden">\${messages("$className;format="decap"$.change.hidden")}</span>
                    |""".stripMargin
               ),
               href = routes.$className$Controller.onPageLoad(CheckMode).url
