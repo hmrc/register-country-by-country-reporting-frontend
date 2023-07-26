@@ -163,8 +163,8 @@ contactName.hint = For example, '‘Tax team’' or '‘Ashley Smith’'.
 contactName.error.required = Enter the name of the individual or team we should contact if we have any questions about your reports
 contactName.error.invalid = Name must only include letters a to z, apostrophes, grave accents, ampersands, hyphens, backslashes, carets and spaces
 contactName.error.length = Name must be 35 characters or less
-contactName.checkYourAnswersLabel = Contact name
-contactName.change.hidden = Change contact name
+contactName.checkYourAnswersLabel = First contact name
+contactName.change.hidden = Change first contact name
 
 utr.title = What is your {0} Unique Taxpayer Reference?
 utr.heading = What is your {0} Unique Taxpayer Reference?
@@ -186,7 +186,7 @@ contactEmail.checkYourAnswersLabel = First contact email address
 contactEmail.error.required = Enter an email address for the first contact
 contactEmail.error.length = The email address must be 132 characters or less
 contactEmail.error.invalid = Enter an email address in the right format, like yourname@example.com
-contactEmail.change.hidden = Change email address
+contactEmail.change.hidden = Change first contact email address
 
 contactPhone.title = What is the telephone number for the first contact?
 contactPhone.heading = What is the telephone number for {0}?
@@ -195,7 +195,7 @@ contactPhone.checkYourAnswersLabel = First contact telephone number
 contactPhone.error.required = Enter a telephone number for the first contact
 contactPhone.error.length = The telephone number must be 24 characters or less
 contactPhone.error.invalid = The telephone number must only include numbers 0 to 9 and a plus sign, like 01632 960 001, 07700 900 982 or +44 808 157 0192
-contactPhone.change.hidden = Change telephone number
+contactPhone.change.hidden = Change first contact telephone number
 
 haveTelephone.title = Can we contact them by telephone?
 haveTelephone.heading = Can we contact {0} by telephone?
