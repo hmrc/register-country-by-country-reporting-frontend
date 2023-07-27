@@ -42,13 +42,13 @@ index.title = register-country-by-country-reporting-frontend
 index.heading = register-country-by-country-reporting-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
-checkYourAnswers.title = Check your answers before you register
-checkYourAnswers.heading = Check your answers before you register
+checkYourAnswers.title = Check your details before you register
+checkYourAnswers.heading = Check your details before you register
 checkYourAnswers.businessDetails = Business details
 checkYourAnswers.firstContact = First contact
 checkYourAnswers.secondContact = Second contact
-checkYourAnswers.information.h2 = Now send your registration
-checkYourAnswers.information.p = By sending these details, you are confirming that the information is correct and complete to the best of your knowledge.
+checkYourAnswers.information.h2 = Send your registration
+checkYourAnswers.information.p = By sending these details, you are confirming that the information provided is correct and complete to the best of your knowledge.
 checkYourAnswers.button = Confirm and send
 
 signedOut.title = For your security, we signed you out
@@ -60,7 +60,7 @@ unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
 doYouHaveUTR.title = Do you have a UK Unique Taxpayer Reference (UTR)?
-doYouHaveUTR.checkYourAnswersLabel =  Do you have a UK Unique Taxpayer Reference?
+doYouHaveUTR.checkYourAnswersLabel =  Do you have a Unique Taxpayer Reference?
 doYouHaveUTR.change.hidden = Change if you have a Unique Taxpayer Reference
 doYouHaveUTR.heading = Do you have a UK Unique Taxpayer Reference (UTR)?
 doYouHaveUTR.p1 = You can {0}.
@@ -163,8 +163,8 @@ contactName.hint = For example, '‘Tax team’' or '‘Ashley Smith’'.
 contactName.error.required = Enter the name of the individual or team we should contact if we have any questions about your reports
 contactName.error.invalid = Name must only include letters a to z, apostrophes, grave accents, ampersands, hyphens, backslashes, carets and spaces
 contactName.error.length = Name must be 35 characters or less
-contactName.checkYourAnswersLabel = Contact name
-contactName.change.hidden = Change contact name
+contactName.checkYourAnswersLabel = First contact name
+contactName.change.hidden = Change first contact name
 
 utr.title = What is your {0} Unique Taxpayer Reference?
 utr.heading = What is your {0} Unique Taxpayer Reference?
@@ -182,20 +182,20 @@ utr.corporationTax = Corporation Tax
 contactEmail.title = What is the email address for the first contact?
 contactEmail.heading = What is the email address for {0}?
 contactEmail.p1 = We will use this email address to send confirmation of your reports or if we have any questions about them.
-contactEmail.checkYourAnswersLabel = Email address
+contactEmail.checkYourAnswersLabel = First contact email address
 contactEmail.error.required = Enter an email address for the first contact
 contactEmail.error.length = The email address must be 132 characters or less
 contactEmail.error.invalid = Enter an email address in the right format, like yourname@example.com
-contactEmail.change.hidden = Change email address
+contactEmail.change.hidden = Change first contact email address
 
 contactPhone.title = What is the telephone number for the first contact?
 contactPhone.heading = What is the telephone number for {0}?
 contactPhone.hint = For international numbers, include the country code.
-contactPhone.checkYourAnswersLabel = Telephone number
+contactPhone.checkYourAnswersLabel = First contact telephone number
 contactPhone.error.required = Enter a telephone number for the first contact
 contactPhone.error.length = The telephone number must be 24 characters or less
 contactPhone.error.invalid = The telephone number must only include numbers 0 to 9 and a plus sign, like 01632 960 001, 07700 900 982 or +44 808 157 0192
-contactPhone.change.hidden = Change telephone number
+contactPhone.change.hidden = Change first contact telephone number
 
 haveTelephone.title = Can we contact them by telephone?
 haveTelephone.heading = Can we contact {0} by telephone?
