@@ -333,7 +333,7 @@ isRegisteredAddressInUk.title = Is your organisation’s registered address in t
 isRegisteredAddressInUk.heading = Is your organisation’s registered address in the UK?
 isRegisteredAddressInUk.checkYourAnswersLabel = Is your organisation’s registered address in the UK?
 isRegisteredAddressInUk.error.required = Select yes if your organisation’s registered address is in the UK
-isRegisteredAddressInUk.change.hidden = Change if your organisation’s registered address is in the UK
+isRegisteredAddressInUk.change.hidden = Change whether your registered address is in the UK
 
 enquiries.email = aeoi.enquiries@hmrc.gov.uk
 
