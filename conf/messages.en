@@ -319,10 +319,10 @@ pageNotFound.p1 = If you typed the web address, check it is correct.
 pageNotFound.p2 = If you pasted the web address, check you copied the entire address.
 pageNotFound.link = You can email {0} if you have any questions about this service.
 
-yourContactDetails.title = Setting up contact details for CBC
-yourContactDetails.heading = Setting up contact details for CBC
+yourContactDetails.title = Setting up contact details
+yourContactDetails.heading = Setting up contact details
 yourContactDetails.p1 = Provide the name and contact details for one or two people or teams within your organisation who could answer questions about your reports.
-yourContactDetails.p2 = You can change your CBC contact names and details later, if you want to.
+yourContactDetails.p2 = You can change your country-by-country contact names and details later, if you want to.
 
 informationSent.title = Information sent
 informationSent.heading = Information sent
