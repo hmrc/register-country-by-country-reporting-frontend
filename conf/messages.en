@@ -229,9 +229,9 @@ secondContactPhone.error.invalid = The telephone number must only include number
 secondContactPhone.error.length = The telephone number must be 24 characters or less
 secondContactPhone.change.hidden = Change second contact telephone number
 
-doYouHaveSecondContact.title = Is there someone else we can contact?
+doYouHaveSecondContact.title = Is there someone else we can contact if your first contact is not available?
 doYouHaveSecondContact.heading = Is there someone else we can contact if {0} is not available?
-doYouHaveSecondContact.hint = This can be a team mailbox or another contact.
+doYouHaveSecondContact.p1 = This can be a team mailbox or another contact.
 doYouHaveSecondContact.checkYourAnswersLabel = Do you have a second contact?
 doYouHaveSecondContact.error.required = Select yes if there is someone else we can contact
 doYouHaveSecondContact.change.hidden = Change if you have a second contact
