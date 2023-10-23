@@ -215,7 +215,7 @@ secondContactName.error.length = The name must be 35 characters or less
 
 secondContactHavePhone.title = Can we contact your second contact by telephone?
 secondContactHavePhone.heading = Can we contact {0} by telephone?
-secondContactHavePhone.p1 = We will call you if we have any questions about your reports.
+secondContactHavePhone.p1 = We will call if we have any questions about your reports.
 secondContactHavePhone.checkYourAnswersLabel = Can we contact them by telephone?
 secondContactHavePhone.error.required = Select yes if they can be contacted by telephone
 secondContactHavePhone.change.hidden = Change can we contact them by telephone?
