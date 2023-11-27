@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.matching
 
-import models.UniqueTaxpayerReference
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.Enrolment
+import models.BusinessType
+import play.api.libs.json.{Json, OFormat}
 
-case class IdentifierRequest[A](request: Request[A], userId: String, enrolments: Set[Enrolment] = Set.empty, utr: Option[UniqueTaxpayerReference] = None)
-  extends WrappedRequest[A](request)
+import java.time.LocalDate
+
+case class RegistrationRequest(identifierType: String,
+                               identifier: String,
+                               name: String,
+                               businessType: Option[BusinessType] = None,
+                               dob: Option[LocalDate] = None
+)
+
+object RegistrationRequest {
+
+  implicit val format: OFormat[RegistrationRequest] = Json.format[RegistrationRequest]
+}

@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package models.requests
+package models
 
-import models.UniqueTaxpayerReference
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.Enrolment
+import java.util.UUID
 
-case class IdentifierRequest[A](request: Request[A], userId: String, enrolments: Set[Enrolment] = Set.empty, utr: Option[UniqueTaxpayerReference] = None)
-  extends WrappedRequest[A](request)
+trait UUIDGen {
+  def randomUUID(): UUID
+}
+
+class UUIDGenImpl extends UUIDGen {
+  override def randomUUID(): UUID = UUID.randomUUID()
+}

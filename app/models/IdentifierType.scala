@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package models.requests
+package models
 
-import models.UniqueTaxpayerReference
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.Enrolment
+object IdentifierType {
+  val UTR  = "UTR"
+  val NINO = "NINO"
+  val SAFE = "SAFE"
 
-case class IdentifierRequest[A](request: Request[A], userId: String, enrolments: Set[Enrolment] = Set.empty, utr: Option[UniqueTaxpayerReference] = None)
-  extends WrappedRequest[A](request)
+  val MDRID  = "MDRID"
+  val SAFEID = "SAFEID"
+  val SAUTR  = "SAUTR"
+  val CTUTR  = "CTUTR"
+
+  val NonUKPostalCode = "NonUKPostalCode"
+}

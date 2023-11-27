@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-package models.requests
+package models
 
-import models.UniqueTaxpayerReference
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.Enrolment
+sealed trait Regime
 
-case class IdentifierRequest[A](request: Request[A], userId: String, enrolments: Set[Enrolment] = Set.empty, utr: Option[UniqueTaxpayerReference] = None)
-  extends WrappedRequest[A](request)
+object Regime extends Enumerable.Implicits {
+
+  case object CBC extends WithName("CBC") with Regime
+
+  val values: Seq[Regime] = Seq(CBC)
+
+  implicit val enumerable: Enumerable[Regime] =
+    Enumerable(
+      values.map(
+        v => v.toString -> v
+      ): _*
+    )
+
+}

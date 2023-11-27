@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-package models.requests
+package models
 
-import models.UniqueTaxpayerReference
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.Enrolment
+import play.api.libs.json._
 
-case class IdentifierRequest[A](request: Request[A], userId: String, enrolments: Set[Enrolment] = Set.empty, utr: Option[UniqueTaxpayerReference] = None)
-  extends WrappedRequest[A](request)
+//strings between 1 and 35 inclusive ^[a-zA-Z &`\\-\\'^]{1,35}$
+case class Name(firstName: String, lastName: String) {
+
+  val fullName: String = s"$firstName $lastName"
+}
+
+object Name {
+  implicit val format = Json.format[Name]
+}
