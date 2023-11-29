@@ -55,10 +55,4 @@ class RegistrationConnector @Inject() (val config: FrontendAppConfig, val http: 
         logger.warn(s"RegisterWithoutID call failed with Status ${errorResponse.status}")
         Left(InternalServerError)
     }
-
-  def withOrganisationNoId(
-                            registration: RegisterWithoutId
-                          )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[ApiError, Option[SafeId]]] =
-    registerWithoutID(registration)
-
 }

@@ -18,7 +18,7 @@ package models.register.request
 
 import models.Regime.CBC
 import models.UUIDGen
-import models.matching.{AutoMatchedRegistrationRequest, RegistrationRequest}
+import models.matching.RegistrationRequest
 import play.api.libs.json._
 
 import java.time.Clock
@@ -28,7 +28,7 @@ case class RegisterWithID(registerWithIDRequest: RegisterWithIDRequest)
 object RegisterWithID {
   implicit val format: Format[RegisterWithID] = Json.format[RegisterWithID]
 
-  def apply(registrationRequest: AutoMatchedRegistrationRequest)(implicit uuidGenerator: UUIDGen, clock: Clock): RegisterWithID =
+  def apply(registrationRequest: RegistrationRequest)(implicit uuidGenerator: UUIDGen, clock: Clock): RegisterWithID =
     RegisterWithID(
       RegisterWithIDRequest(
         RequestCommon(CBC.toString),
