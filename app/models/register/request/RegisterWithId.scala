@@ -17,27 +17,16 @@
 package models.register.request
 
 import models.Regime.CBC
-import models.{Name, UUIDGen}
-import models.matching.AutoMatchedRegistrationRequest
+import models.UUIDGen
+import models.matching.{AutoMatchedRegistrationRequest, RegistrationRequest}
 import play.api.libs.json._
 
-import java.time.{Clock, LocalDate}
+import java.time.Clock
 
 case class RegisterWithID(registerWithIDRequest: RegisterWithIDRequest)
 
 object RegisterWithID {
   implicit val format: Format[RegisterWithID] = Json.format[RegisterWithID]
-
-  def apply(name: Name, dob: Option[LocalDate], identifierName: String, identifierValue: String)(implicit
-                                                                                                 uuidGenerator: UUIDGen,
-                                                                                                 clock: Clock
-  ): RegisterWithID =
-    RegisterWithID(
-      RegisterWithIDRequest(
-        RequestCommon(CBC.toString),
-        RequestWithIDDetails(name, dob, identifierName, identifierValue)
-      )
-    )
 
   def apply(registrationRequest: AutoMatchedRegistrationRequest)(implicit uuidGenerator: UUIDGen, clock: Clock): RegisterWithID =
     RegisterWithID(
@@ -106,4 +95,13 @@ object RequestWithIDDetails {
         "organisation" -> idDetails.partnerDetails
       )
     }
+
+  def apply(registrationRequest: RegistrationRequest): RequestWithIDDetails =
+    RequestWithIDDetails(
+      registrationRequest.identifierType,
+      registrationRequest.identifier,
+      requiresNameMatch = true,
+      isAnAgent = false,
+      Option(WithIDOrganisation(registrationRequest.name, registrationRequest.businessType.map(_.code).getOrElse("")))
+    )
 }
