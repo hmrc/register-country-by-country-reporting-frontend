@@ -18,11 +18,9 @@ package controllers.actions
 
 import config.FrontendAppConfig
 import models.requests.IdentifierRequest
-import models.{IdentifierType, NormalMode, UniqueTaxpayerReference}
+import models.{IdentifierType, UniqueTaxpayerReference}
 import play.api.Logging
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFunction, Result}
-import uk.gov.hmrc.auth.core.AffinityGroup
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

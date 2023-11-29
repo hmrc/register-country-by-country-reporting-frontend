@@ -20,8 +20,7 @@ import models.UUIDGen
 import play.api.libs.json._
 
 import java.time.format.DateTimeFormatter
-import java.time.{Clock, ZoneId, ZonedDateTime}
-import java.util.UUID
+import java.time.{Clock, ZonedDateTime}
 case class NoIdOrganisation(organisationName: String)
 
 object NoIdOrganisation {
@@ -134,7 +133,7 @@ case class RegisterWithoutId(
 object RegisterWithoutId {
   implicit val format: OFormat[RegisterWithoutId] = Json.format[RegisterWithoutId]
 
-  def apply(organisationName: String, address: Address, contactDetails: ContactDetails): RegisterWithoutId =
+  def apply(organisationName: String, address: Address, contactDetails: ContactDetails)(implicit uuidGenerator: UUIDGen, clock: Clock): RegisterWithoutId =
     RegisterWithoutId(
       RegisterWithoutIDRequest(
         RequestCommon("CBC"),

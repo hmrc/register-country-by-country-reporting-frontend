@@ -19,24 +19,19 @@ package services
 import connectors.RegistrationConnector
 import models.register.request.ContactDetails
 import models.requests.DataRequest
-import models.register.request.RegisterWithoutId
-import models.{Address, ApiError, MandatoryInformationMissingError, Name, SafeId, UUIDGen}
+import models.{Address, ApiError, MandatoryInformationMissingError, SafeId, UUIDGen}
 import pages._
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.{Clock, LocalDate}
+import java.time.Clock
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessMatchingWithoutIdService @Inject() (registrationConnector: RegistrationConnector, uuidGen: UUIDGen, clock: Clock)(implicit ec: ExecutionContext) {
 
-  implicit private val uuidGenerator: UUIDGen = uuidGen
-  implicit private val implicitClock: Clock   = clock
 
   def registerWithoutId()(implicit request: DataRequest[AnyContent], hc: HeaderCarrier): Future[Either[ApiError, SafeId]] = businessRegistration()
-
-
 
   private val registrationError = Future.successful(Left(MandatoryInformationMissingError()))
 
