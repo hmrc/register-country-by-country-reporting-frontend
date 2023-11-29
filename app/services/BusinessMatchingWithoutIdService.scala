@@ -17,7 +17,7 @@
 package services
 
 import connectors.RegistrationConnector
-import models.register.request.ContactDetails
+import models.register.request.{ContactDetails, RegisterWithoutId}
 import models.requests.DataRequest
 import models.{Address, ApiError, MandatoryInformationMissingError, SafeId, UUIDGen}
 import pages._
@@ -28,7 +28,7 @@ import java.time.Clock
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class BusinessMatchingWithoutIdService @Inject() (registrationConnector: RegistrationConnector, uuidGen: UUIDGen, clock: Clock)(implicit ec: ExecutionContext) {
+class BusinessMatchingWithoutIdService @Inject() (registrationConnector: RegistrationConnector)(implicit ec: ExecutionContext, uuidGen: UUIDGen, clock: Clock) {
 
 
   def registerWithoutId()(implicit request: DataRequest[AnyContent], hc: HeaderCarrier): Future[Either[ApiError, SafeId]] = businessRegistration()
@@ -44,11 +44,11 @@ class BusinessMatchingWithoutIdService @Inject() (registrationConnector: Registr
     } yield sendBusinessRegistration(organisationName, address, ContactDetails(phoneNumber, None, None, emailAddress)))
       .getOrElse(registrationError)
 
-  def sendBusinessRegistration(businessName: String, address: Address, contactDetails: ContactDetails)(implicit
+  def sendBusinessRegistration(organisationName: String, address: Address, contactDetails: ContactDetails)(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[Either[ApiError, SafeId]] =
     registrationConnector
-      .registerWithoutID(RegisterWithoutId(businessName, address, contactDetails))
+      .registerWithoutID(RegisterWithoutId.apply(organisationName, address, contactDetails))
 
 }

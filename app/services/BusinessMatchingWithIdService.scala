@@ -33,14 +33,8 @@ class BusinessMatchingWithIdService @Inject() (registrationConnector: Registrati
   ): Future[Either[ApiError, RegistrationInfo]] =
     registrationConnector
       .registerWithID(registerWithID)
-      .subflatMap {
-        response =>
-          (for {
-            safeId  <- response.safeId
-            name    <- response.name
-            address <- response.address
-          } yield OrgRegistrationInfo(safeId, name, address)).toRight(MandatoryInformationMissingError())
+      .map {
+        response => response.map(x => RegistrationInfo.apply(x))
       }
-      .value
 
 }
