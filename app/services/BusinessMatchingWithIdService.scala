@@ -32,7 +32,7 @@ class BusinessMatchingWithIdService @Inject() (registrationConnector: Registrati
     ec: ExecutionContext
   ): Future[Either[ApiError, RegistrationInfo]] =
     registrationConnector
-      .withOrganisationUtr(registerWithID)
+      .registerWithID(registerWithID)
       .subflatMap {
         response =>
           (for {

@@ -32,11 +32,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class RegistrationConnector @Inject() (val config: FrontendAppConfig, val http: HttpClient) extends Logging {
   val registrationUrl = s"${config.registerCountryByCountryUrl}/registration"
 
-  def withOrganisationUtr(
-                           registration: RegisterWithID
-                         )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[ApiError, RegisterWithIDResponse]] =
-    registerWithID(registration)
-
   def registerWithID(registration: RegisterWithID)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[ApiError, RegisterWithIDResponse]] =
     http.POST[RegisterWithID, HttpResponse](s"$registrationUrl/utr", registration) map {
       case response if is2xx(response.status) =>
