@@ -19,7 +19,7 @@ package pages
 import models.BusinessType.LimitedCompany
 import models.matching.RegistrationInfo
 import models.register.response.details.AddressResponse
-import models.{Address, Country, SafeId, UserAnswers}
+import models.{Address, Country, SafeId, UniqueTaxpayerReference, UserAnswers}
 import pages.behaviours.PageBehaviours
 
 class DoYouHaveUTRPageSpec extends PageBehaviours {
@@ -106,7 +106,7 @@ class DoYouHaveUTRPageSpec extends PageBehaviours {
         .set(BusinessTypePage, LimitedCompany)
         .success
         .value
-        .set(UTRPage, "1234567890")
+        .set(UTRPage, UniqueTaxpayerReference("1234567890"))
         .success
         .value
         .set(BusinessNamePage, "Company 2")

@@ -17,7 +17,7 @@
 package base
 
 import controllers.actions._
-import models.UserAnswers
+import models.{UUIDGen, UUIDGenImpl, UniqueTaxpayerReference, UserAnswers}
 import navigation.{CBCRNavigator, FakeCBCRNavigator}
 import org.mockito.MockitoSugar
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -29,10 +29,13 @@ import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
+
+import java.time.{Clock, Instant, ZoneId}
 
 trait SpecBase
     extends AnyFreeSpec
@@ -46,11 +49,13 @@ trait SpecBase
     with IntegrationPatience {
 
   val userAnswersId: String      = "id"
+  val utr: UniqueTaxpayerReference = UniqueTaxpayerReference("UTR")
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   def onwardRoute: Call                                  = Call("GET", "/foo")
   final val mockDataRetrievalAction: DataRetrievalAction = mock[DataRetrievalAction]
   final val mockSessionRepository: SessionRepository     = mock[SessionRepository]
+  final val mockCtUtrRetrievalAction: CtUtrRetrievalAction = mock[CtUtrRetrievalAction]
   protected val cbcrFakeNavigator: CBCRNavigator         = new FakeCBCRNavigator(onwardRoute)
 
   protected def retrieveNoData(): Unit =
@@ -59,7 +64,11 @@ trait SpecBase
   protected def retrieveUserAnswersData(userAnswers: UserAnswers): Unit =
     when(mockDataRetrievalAction).thenReturn(new FakeDataRetrievalAction(Some(userAnswers)))
 
-  def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
+  def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId, Json.obj(), Instant.now(fixedClock))
+
+  implicit val uuidGenerator: UUIDGen = new UUIDGenImpl
+
+  implicit val fixedClock: Clock = Clock.fixed(Instant.now(), ZoneId.of("UTC"))
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 

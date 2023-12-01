@@ -17,7 +17,7 @@
 package services
 
 import connectors.RegistrationConnector
-import models.register.request.{ContactDetails, RegisterWithoutId}
+import models.register.request.{ContactDetails, RegisterWithoutId, Address => RegistrationAddress}
 import models.requests.DataRequest
 import models.{Address, ApiError, MandatoryInformationMissingError, SafeId, UUIDGen}
 import pages._
@@ -31,11 +31,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class BusinessMatchingWithoutIdService @Inject() (registrationConnector: RegistrationConnector)(implicit ec: ExecutionContext, uuidGen: UUIDGen, clock: Clock) {
 
 
-  def registerWithoutId()(implicit request: DataRequest[AnyContent], hc: HeaderCarrier): Future[Either[ApiError, SafeId]] = businessRegistration()
+  def registerWithoutId()(implicit request: DataRequest[AnyContent], hc: HeaderCarrier): Future[Either[ApiError, Option[SafeId]]] = businessRegistration()
 
   private val registrationError = Future.successful(Left(MandatoryInformationMissingError()))
 
-  private def businessRegistration()(implicit request: DataRequest[AnyContent], hc: HeaderCarrier): Future[Either[ApiError, SafeId]] =
+  private def businessRegistration()(implicit request: DataRequest[AnyContent], hc: HeaderCarrier): Future[Either[ApiError, Option[SafeId]]] =
     (for {
       organisationName <- request.userAnswers.get(BusinessWithoutIDNamePage)
       phoneNumber  = request.userAnswers.get(ContactPhonePage)
@@ -47,8 +47,8 @@ class BusinessMatchingWithoutIdService @Inject() (registrationConnector: Registr
   def sendBusinessRegistration(organisationName: String, address: Address, contactDetails: ContactDetails)(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext
-  ): Future[Either[ApiError, SafeId]] =
+  ): Future[Either[ApiError, Option[SafeId]]] =
     registrationConnector
-      .registerWithoutID(RegisterWithoutId.apply(organisationName, address, contactDetails))
+      .registerWithoutID(RegisterWithoutId(organisationName, RegistrationAddress.fromAddress(address), contactDetails))
 
 }

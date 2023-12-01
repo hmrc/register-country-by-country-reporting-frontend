@@ -26,18 +26,18 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CtUtrRetrievalActionImpl @Inject() (
-  val config: FrontendAppConfig
-)(implicit val executionContext: ExecutionContext)
-    extends CtUtrRetrievalAction {
+                                           val config: FrontendAppConfig
+                                         )(implicit val executionContext: ExecutionContext)
+  extends CtUtrRetrievalAction {
 
   override def apply(): ActionFunction[IdentifierRequest, IdentifierRequest] =
     new CtUtrRetrievalActionProvider(config)
 }
 
 class CtUtrRetrievalActionProvider @Inject() (
-  val config: FrontendAppConfig
-)(implicit val executionContext: ExecutionContext)
-    extends ActionFunction[IdentifierRequest, IdentifierRequest]
+                                               val config: FrontendAppConfig
+                                             )(implicit val executionContext: ExecutionContext)
+  extends ActionFunction[IdentifierRequest, IdentifierRequest]
     with Logging {
 
   override def invokeBlock[A](request: IdentifierRequest[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
@@ -48,7 +48,12 @@ class CtUtrRetrievalActionProvider @Inject() (
         case i if i.key == IdentifierType.UTR => UniqueTaxpayerReference(i.value)
       })
 
-    block(request.copy(utr = ctUtr))
+    ctUtr match {
+      case Some(_) =>
+        block(request.copy(utr = ctUtr))
+      case _ =>
+        block(request)
+    }
   }
 }
 

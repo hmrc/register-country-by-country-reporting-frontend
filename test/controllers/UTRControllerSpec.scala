@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import forms.UTRFormProvider
 import models.BusinessType.{LimitedCompany, Partnership}
-import models.{NormalMode, UserAnswers}
+import models.{NormalMode, UniqueTaxpayerReference, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import pages.{BusinessTypePage, UTRPage}
 import play.api.data.Form
@@ -33,7 +33,7 @@ class UTRControllerSpec extends SpecBase {
 
   lazy val utrRoute = routes.UTRController.onPageLoad(NormalMode).url
   val formProvider = new UTRFormProvider()
-  val form: Form[String] = formProvider("")
+  val form: Form[UniqueTaxpayerReference] = formProvider("")
   val caTaxType = "Corporation Tax"
   val saTaxType = "Self Assessment"
 
@@ -88,7 +88,7 @@ class UTRControllerSpec extends SpecBase {
         .set(BusinessTypePage, Partnership)
         .success
         .value
-        .set(UTRPage, "answer")
+        .set(UTRPage, utr)
         .success
         .value
 
@@ -102,7 +102,7 @@ class UTRControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, saTaxType)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(utr), NormalMode, saTaxType)(request, messages(application)).toString
       }
     }
 
@@ -138,7 +138,7 @@ class UTRControllerSpec extends SpecBase {
           FakeRequest(POST, utrRoute)
             .withFormUrlEncodedBody(("value", ""))
 
-        val form: Form[String] = formProvider(caTaxType)
+        val form: Form[UniqueTaxpayerReference] = formProvider(caTaxType)
         val boundForm = form.bind(Map("value" -> ""))
 
         val view = application.injector.instanceOf[UTRView]

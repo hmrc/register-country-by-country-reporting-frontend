@@ -23,7 +23,7 @@ import models.BusinessType.LimitedCompany
 import models.matching.RegistrationInfo
 import models.register.response.RegisterWithIDResponse
 import models.register.response.details.{AddressResponse, OrganisationResponse}
-import models.{EnrolmentExistsError, NormalMode, NotFoundError, SafeId, SubscriptionID, UserAnswers}
+import models.{EnrolmentExistsError, NormalMode, NotFoundError, SafeId, SubscriptionID, UniqueTaxpayerReference, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import pages.{BusinessNamePage, BusinessTypePage, IsThisYourBusinessPage, RegistrationInfoPage, UTRPage}
 import play.api.inject.bind
@@ -41,11 +41,17 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
 
   lazy val isThisYourBusinessRoute = routes.IsThisYourBusinessController.onPageLoad(NormalMode).url
 
+  private val SafeIdValue = "XE0000123456789"
+  val UtrValue = "1234567890"
+  val OrgName             = "Some Test Org"
+  val safeId: SafeId = SafeId("XE0000123456789")
+
+
   val baseUserAnswers: UserAnswers = emptyUserAnswers
     .set(BusinessTypePage, LimitedCompany)
     .success
     .value
-    .set(UTRPage, "1234567890")
+    .set(UTRPage, utr)
     .success
     .value
     .set(BusinessNamePage, "Business Name")

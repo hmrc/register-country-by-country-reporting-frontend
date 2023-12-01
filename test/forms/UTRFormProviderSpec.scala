@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.UniqueTaxpayerReference
 import play.api.data.{Form, FormError}
 
 class UTRFormProviderSpec extends StringFieldBehaviours {
@@ -26,7 +27,7 @@ class UTRFormProviderSpec extends StringFieldBehaviours {
   val lengthKey = "utr.error.length"
   val maxLength = 10
 
-  val form: Form[String] = new UTRFormProvider().apply("Self Assessment")
+  val form: Form[UniqueTaxpayerReference] = new UTRFormProvider().apply("Self Assessment")
 
   ".value" - {
 

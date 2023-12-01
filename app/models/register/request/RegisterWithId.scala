@@ -81,28 +81,29 @@ object RequestWithIDDetails {
         (__ \ "IDNumber").read[String] and
         (__ \ "requiresNameMatch").read[Boolean] and
         (__ \ "isAnAgent").read[Boolean] and
-        (__ \ "organisation").read[WithIDOrganisation]
+        (__ \ "organisation").readNullable[WithIDOrganisation]
     )((idType, idNumber, requiresNameMatch, isAnAgent, organisation) =>
-      RequestWithIDDetails(
-        idType,
-        idNumber,
-        requiresNameMatch,
-        isAnAgent,
-        Some(organisation)
-      )
+       RequestWithIDDetails(idType, idNumber, requiresNameMatch, isAnAgent, organisation)
     )
   }
 
-  implicit lazy val requestWithIDDetailsWrites: OWrites[RequestWithIDDetails] =
-    OWrites[RequestWithIDDetails] { idDetails =>
-      Json.obj(
-        "IDType" -> idDetails.IDType,
-        "IDNumber" -> idDetails.IDNumber,
-        "requiresNameMatch" -> idDetails.requiresNameMatch,
-        "isAnAgent" -> idDetails.isAnAgent,
-        "organisation" -> idDetails.partnerDetails
-      )
-    }
+  implicit lazy val requestWithIDDetailsWrites: OWrites[RequestWithIDDetails] = {
+    case RequestWithIDDetails(idType, idNumber, requiresNameMatch, isAnAgent, Some(organisation @ WithIDOrganisation(_, _) )) =>
+    Json.obj(
+      "IDType" -> idType,
+      "IDNumber" -> idNumber,
+      "requiresNameMatch" -> requiresNameMatch,
+      "isAnAgent" -> isAnAgent,
+      "organisation" -> organisation
+    )
+    case RequestWithIDDetails(idType, idNumber, requiresNameMatch, isAnAgent, None) =>
+    Json.obj(
+      "IDType" -> idType,
+      "IDNumber" -> idNumber,
+      "requiresNameMatch" -> requiresNameMatch,
+      "isAnAgent" -> isAnAgent
+    )
+  }
 
   def apply(registrationRequest: RegistrationRequest): RequestWithIDDetails =
     RequestWithIDDetails(
