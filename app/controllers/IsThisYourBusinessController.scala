@@ -22,7 +22,6 @@ import forms.IsThisYourBusinessFormProvider
 import models.IdentifierType.UTR
 import models.matching.{AutoMatchedRegistrationRequest, RegistrationInfo, RegistrationRequest}
 import models.register.request._
-import models.register.response.RegisterWithIDResponse
 import models.requests.DataRequest
 import models.{Mode, NotFoundError, UUIDGen, UniqueTaxpayerReference}
 import navigation.CBCRNavigator
@@ -32,7 +31,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.{BusinessMatchingWithIdService, SubscriptionService, TaxEnrolmentService}
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.IsThisYourBusinessView
 
@@ -134,24 +132,6 @@ class IsThisYourBusinessController @Inject() (
           Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
       }
     } yield result
-
-  private def checkExistingSubscription(mode: Mode,
-                                        response: RegisterWithIDResponse
-  )(implicit request: DataRequest[AnyContent], hc: HeaderCarrier, ec: ExecutionContext): Future[Result] = {
-    for {
-      ua                  <- Future.fromTry(request.userAnswers.set(RegistrationInfoPage, RegistrationInfo(response)))
-      _                   <- sessionRepository.set(ua)
-      mayBeSubscriptionId <- subscriptionService.getDisplaySubscriptionId(response.safeId)
-    } yield mayBeSubscriptionId match {
-      case Some(subscriptionID) => updateSubscriptionIdAndCreateEnrolment(response.safeId, subscriptionID)
-      case _ =>
-        val preparedForm = request.userAnswers.get(IsThisYourBusinessPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
-        Future.successful(Ok(view(preparedForm, RegistrationInfo(response), mode)))
-    }
-  }.flatten
 
   def buildRegistrationRequest()(implicit request: DataRequest[AnyContent]): Option[RegisterWithID] =
     for {

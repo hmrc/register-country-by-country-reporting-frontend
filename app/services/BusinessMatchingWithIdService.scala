@@ -17,9 +17,9 @@
 package services
 
 import connectors.RegistrationConnector
+import models.ApiError
 import models.matching.RegistrationInfo
 import models.register.request.RegisterWithID
-import models.{ApiError, MandatoryInformationMissingError}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
