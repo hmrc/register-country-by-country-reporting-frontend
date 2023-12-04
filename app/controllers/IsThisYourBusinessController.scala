@@ -52,7 +52,6 @@ class IsThisYourBusinessController @Inject() (
   matchingService: BusinessMatchingWithIdService,
   formProvider: IsThisYourBusinessFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  controllerHelper: CreateSubscriptionAndUpdateEnrolment,
   uuidGen: UUIDGen,
   clock: Clock,
   view: IsThisYourBusinessView
@@ -70,7 +69,7 @@ class IsThisYourBusinessController @Inject() (
                                                                                              request: DataRequest[AnyContent]
   ): Future[Result] =
     subscriptionService.getDisplaySubscriptionId(registrationInfo.safeId) flatMap {
-      case Some(subscriptionId) => controllerHelper.updateSubscriptionIdAndCreateEnrolment(registrationInfo.safeId, subscriptionId)
+      case Some(subscriptionId) => updateSubscriptionIdAndCreateEnrolment(registrationInfo.safeId, subscriptionId)
       case _ =>
         val preparedForm = request.userAnswers.get(IsThisYourBusinessPage) match {
           case None => form

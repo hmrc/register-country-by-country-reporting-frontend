@@ -57,7 +57,7 @@ class IndexController @Inject() (
                 InternalServerError(errorView())
             }
           } yield result
-        case None => Future.successful(Redirect(routes.BusinessTypeController.onPageLoad(NormalMode)))
+        case None => Future.successful(Redirect(routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode)))
       }
   }
 }

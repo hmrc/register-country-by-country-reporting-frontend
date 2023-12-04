@@ -32,8 +32,9 @@ import scala.concurrent.Future
 class UTRControllerSpec extends SpecBase {
 
   lazy val utrRoute = routes.UTRController.onPageLoad(NormalMode).url
+  lazy val utrRouteSubmit = routes.UTRController.onSubmit(NormalMode).url
   val formProvider = new UTRFormProvider()
-  val form: Form[UniqueTaxpayerReference] = formProvider("")
+  val form: Form[UniqueTaxpayerReference] = formProvider("Self Assessment")
   val caTaxType = "Corporation Tax"
   val saTaxType = "Self Assessment"
 
@@ -108,14 +109,19 @@ class UTRControllerSpec extends SpecBase {
 
     "must redirect to the next page when valid data is submitted" in {
 
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(BusinessTypePage, LimitedCompany)
+        .success
+        .value
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, utrRoute)
-            .withFormUrlEncodedBody(("value", "1234567890"))
+          FakeRequest(POST, utrRouteSubmit)
+            .withFormUrlEncodedBody(("value", utr.uniqueTaxPayerReference))
 
         val result = route(application, request).value
 

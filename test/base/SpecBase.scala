@@ -49,7 +49,7 @@ trait SpecBase
     with IntegrationPatience {
 
   val userAnswersId: String      = "id"
-  val utr: UniqueTaxpayerReference = UniqueTaxpayerReference("UTR")
+  val utr: UniqueTaxpayerReference = UniqueTaxpayerReference("1234567890")
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   def onwardRoute: Call                                  = Call("GET", "/foo")
