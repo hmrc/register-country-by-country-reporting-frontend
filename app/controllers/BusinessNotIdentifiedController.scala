@@ -44,6 +44,7 @@ class BusinessNotIdentifiedController @Inject()(
       val businessType: String  = request.userAnswers.get(BusinessTypePage) match {
         case Some(LimitedCompany) => "LimitedCompany"
         case Some(UnincorporatedAssociation) => "UnincorporatedAssociation"
+        case Some(UnincorporatedAssociation) => "UnincorporatedAssociation"
         case _ => ""
       }
 
