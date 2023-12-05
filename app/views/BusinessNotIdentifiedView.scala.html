@@ -15,6 +15,7 @@
  *@
 
 @import config.FrontendAppConfig
+@import models.BusinessType
 
 @this(
 layout: templates.Layout,
@@ -23,13 +24,13 @@ appConfig: FrontendAppConfig,
 govukButton: GovukButton
 )
 
-@(contactUrl: String, startUrl: String , businessType: String)(implicit request: Request[_], messages: Messages)
+@(contactUrl: String, startUrl: String, businessType: Option[BusinessType])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("businessNotIdentified.title"))) {
 
-   <h1 class="govuk-heading-l">@messages("businessNotIdentified.heading")</h1>
+  <h1 class="govuk-heading-l">@messages("businessNotIdentified.heading")</h1>
 
-   <p class="govuk-body">@messages("businessNotIdentified.p1")</p>
+  <p class="govuk-body">@messages("businessNotIdentified.p1")</p>
 
   <h2 class="govuk-heading-m">@messages("businessNotIdentified.subheading1")</h2>
 
@@ -37,35 +38,36 @@ govukButton: GovukButton
 
   <h2 class="govuk-heading-m">@messages("businessNotIdentified.subheading2")</h2>
 
-      @if(businessType == "LimitedCompany") {
-      <p class="govuk-body">@messages("businessNotIdentified.limitedCompany.p3")</p>
-      } else if(businessType == "UnincorporatedAssociation"){
-      <p class="govuk-body">@messages("businessNotIdentified.Unincorporated.p3")</p>
-      } else {
-      <p class="govuk-body">@messages("businessNotIdentified.partnership.p3")</p>
-      }
+  @if(businessType == Some(BusinessType.LimitedCompany)) {
+    <p class="govuk-body">@messages("businessNotIdentified.limitedCompany.p3")</p>
+  } else if (businessType == Some(BusinessType.UnincorporatedAssociation)){
+    <p class="govuk-body">@messages("businessNotIdentified.Unincorporated.p3")</p>
+  } else {
+    <p class="govuk-body">@messages("businessNotIdentified.partnership.p3")</p>
+  }
+
   <p class="govuk-body">@messages("businessNotIdentified.p3b")</p>
-      <ul class="govuk-list govuk-list--bullet" style="padding-left:20px;list-style-type:disc">
-      <li>@messages("businessNotIdentified.bullet1")</li>
-      <li>@messages("businessNotIdentified.bullet2")</li>
-   </ul>
 
-   @if(businessType =="LimitedCompany") {
-      <p class="govuk-body">@messages("businessNotIdentified.limitedCompany.p4") @link(contactUrl, "businessNotIdentified.limitedCompany.p4.link", openInNewWindow = true).</p>
-    } else if(businessType =="UnincorporatedAssociation"){
-   } else{
-     <p class="govuk-body">@messages("businessNotIdentified.partnership.p4") @link(contactUrl, "businessNotIdentified.partnership.p4.link", openInNewWindow = true).</p>
-   }
+  <ul class="govuk-list govuk-list--bullet" style="padding-left:20px;list-style-type:disc">
+    <li>@messages("businessNotIdentified.bullet1")</li>
+    <li>@messages("businessNotIdentified.bullet2")</li>
+  </ul>
 
-   <h2 class="govuk-heading-m">@messages("businessNotIdentified.subheading3")</h2>
+  @if(businessType == Some(BusinessType.LimitedCompany)) {
+    <p class="govuk-body">@messages("businessNotIdentified.limitedCompany.p4") @link(contactUrl, "businessNotIdentified.limitedCompany.p4.link", openInNewWindow = true).</p>
+  } else if (businessType != Some(BusinessType.UnincorporatedAssociation)) {
+    <p class="govuk-body">@messages("businessNotIdentified.partnership.p4") @link(contactUrl, "businessNotIdentified.partnership.p4.link", openInNewWindow = true).</p>
+  }
 
-   <p class="bottom-margin govuk-body">@messages("businessNotIdentified.p5")
-      <a href="mailto:@appConfig.emailEnquiries" class="govuk-link">@messages("enquiries.email")</a>
-      @messages("businessNotIdentified.p5b")
-   </p>
+  <h2 class="govuk-heading-m">@messages("businessNotIdentified.subheading3")</h2>
 
-   @govukButton(
-      ButtonViewModel(messages("businessNotIdentified.button")).withAttribute("id" -> "submit").asLink(startUrl)
-   )
+  <p class="bottom-margin govuk-body">@messages("businessNotIdentified.p5")
+    <a href="mailto:@appConfig.emailEnquiries" class="govuk-link">@messages("enquiries.email")</a>
+    @messages("businessNotIdentified.p5b")
+  </p>
+
+  @govukButton(
+    ButtonViewModel(messages("businessNotIdentified.button")).withAttribute("id" -> "submit").asLink(startUrl)
+  )
 
 }

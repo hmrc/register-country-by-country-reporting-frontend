@@ -40,19 +40,14 @@ class BusinessNotIdentifiedController @Inject()(
   def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
       val startUrl = routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
+      val businessType = request.userAnswers.get(BusinessTypePage)
 
-      val businessType: String  = request.userAnswers.get(BusinessTypePage) match {
-        case Some(LimitedCompany) => "LimitedCompany"
-        case Some(UnincorporatedAssociation) => "UnincorporatedAssociation"
-        case Some(UnincorporatedAssociation) => "UnincorporatedAssociation"
-        case _ => ""
-      }
-
-      val contactUrl: String = request.userAnswers.get(BusinessTypePage) match {
+      val contactUrl: String = businessType match {
         case Some(LimitedCompany) | Some(UnincorporatedAssociation) => appConfig.corporationTaxEnquiriesLink
         case _                                                      => appConfig.selfAssessmentEnquiriesLink
       }
 
       Ok(view(contactUrl, startUrl, businessType))
   }
+
 }
