@@ -16,6 +16,7 @@
 
 package pages
 
+import models.UniqueTaxpayerReference
 import pages.behaviours.PageBehaviours
 
 
@@ -23,10 +24,10 @@ class UTRPageSpec extends PageBehaviours {
 
   "UTRPage" - {
 
-    beRetrievable[String](UTRPage)
+    beRetrievable[UniqueTaxpayerReference](UTRPage)
 
-    beSettable[String](UTRPage)
+    beSettable[UniqueTaxpayerReference](UTRPage)
 
-    beRemovable[String](UTRPage)
+    beRemovable[UniqueTaxpayerReference](UTRPage)
   }
 }

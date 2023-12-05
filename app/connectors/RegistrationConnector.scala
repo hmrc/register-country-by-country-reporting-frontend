@@ -55,5 +55,4 @@ class RegistrationConnector @Inject() (val config: FrontendAppConfig, val http: 
         logger.warn(s"RegisterWithoutID call failed with Status ${errorResponse.status}")
         Left(InternalServerError)
     }
-
 }

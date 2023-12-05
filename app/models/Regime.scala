@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import forms.mappings.Mappings
-import models.UniqueTaxpayerReference
-import play.api.data.Form
-import play.api.data.Forms.mapping
-import utils.RegexConstants
+sealed trait Regime
 
-import javax.inject.Inject
+object Regime extends Enumerable.Implicits {
 
-class UTRFormProvider @Inject() extends Mappings with RegexConstants {
+  case object CBC extends WithName("CBC") with Regime
 
-  def apply(msgArg: String): Form[UniqueTaxpayerReference] =
-    Form(
-      mapping(
-        "value" -> validatedUTR("utr.error.required", "utr.error.invalid", "utr.error.length", utrRegex, msgArg)
-      )(UniqueTaxpayerReference.apply)(UniqueTaxpayerReference.unapply)
+  val values: Seq[Regime] = Seq(CBC)
+
+  implicit val enumerable: Enumerable[Regime] =
+    Enumerable(
+      values.map(
+        v => v.toString -> v
+      ): _*
     )
+
 }
