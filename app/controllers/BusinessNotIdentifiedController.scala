@@ -34,7 +34,7 @@ class BusinessNotIdentifiedController @Inject()(
                                        standardActionSets: StandardActionSets,
                                        val controllerComponents: MessagesControllerComponents,
                                        appConfig: FrontendAppConfig,
-                                       view: BusinessNotIdentifiedView,
+                                       view: BusinessNotIdentifiedView
                                      ) extends FrontendBaseController with I18nSupport with Logging{
 
   def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() {
