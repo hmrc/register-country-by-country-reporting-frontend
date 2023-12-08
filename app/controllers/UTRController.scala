@@ -41,9 +41,8 @@ class UTRController @Inject()(
                                view: UTRView
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithDependantAnswer(BusinessTypePage).async {
     implicit request =>
-
       val taxType = getTaxType(request.userAnswers)
       val form = formProvider(taxType)
 
@@ -52,35 +51,29 @@ class UTRController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, taxType))
+      Future.successful(Ok(view(preparedForm, mode, taxType)))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithDependantAnswer(BusinessTypePage).async {
     implicit request =>
-
       val taxType = getTaxType(request.userAnswers)
       val form = formProvider(taxType)
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(
-            formWithErrors,
-            mode,
-            taxType))
-          ),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UTRPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(UTRPage, mode, updatedAnswers))
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, taxType))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(UTRPage, value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(UTRPage, mode, updatedAnswers))
+        )
   }
 
-  private def getTaxType(userAnswers: UserAnswers)(implicit messages: Messages): String = {
-      userAnswers.get(BusinessTypePage) match {
-        case Some(LimitedCompany) | Some(UnincorporatedAssociation) => messages("utr.corporationTax")
-        case _ => messages("utr.selfAssessment")
-      }
-  }
+  private def getTaxType(userAnswers: UserAnswers)(implicit messages: Messages): String =
+    userAnswers.get(BusinessTypePage) match {
+      case Some(LimitedCompany) | Some(UnincorporatedAssociation) => messages("utr.corporationTax")
+      case _ => messages("utr.selfAssessment")
+    }
 }

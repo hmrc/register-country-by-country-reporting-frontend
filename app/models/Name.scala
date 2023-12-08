@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import forms.mappings.Mappings
-import models.UniqueTaxpayerReference
-import play.api.data.Form
-import play.api.data.Forms.mapping
-import utils.RegexConstants
+import play.api.libs.json._
 
-import javax.inject.Inject
+//strings between 1 and 35 inclusive ^[a-zA-Z &`\\-\\'^]{1,35}$
+case class Name(firstName: String, lastName: String) {
 
-class UTRFormProvider @Inject() extends Mappings with RegexConstants {
+  val fullName: String = s"$firstName $lastName"
+}
 
-  def apply(msgArg: String): Form[UniqueTaxpayerReference] =
-    Form(
-      mapping(
-        "value" -> validatedUTR("utr.error.required", "utr.error.invalid", "utr.error.length", utrRegex, msgArg)
-      )(UniqueTaxpayerReference.apply)(UniqueTaxpayerReference.unapply)
-    )
+object Name {
+  implicit val format = Json.format[Name]
 }

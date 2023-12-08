@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package models.matching
 
-import forms.mappings.Mappings
-import models.UniqueTaxpayerReference
-import play.api.data.Form
-import play.api.data.Forms.mapping
-import utils.RegexConstants
+import models.BusinessType
+import play.api.libs.json.{Json, OFormat}
 
-import javax.inject.Inject
+import java.time.LocalDate
 
-class UTRFormProvider @Inject() extends Mappings with RegexConstants {
+case class RegistrationRequest(identifierType: String,
+                               identifier: String,
+                               name: String,
+                               businessType: Option[BusinessType] = None,
+                               dob: Option[LocalDate] = None
+)
 
-  def apply(msgArg: String): Form[UniqueTaxpayerReference] =
-    Form(
-      mapping(
-        "value" -> validatedUTR("utr.error.required", "utr.error.invalid", "utr.error.length", utrRegex, msgArg)
-      )(UniqueTaxpayerReference.apply)(UniqueTaxpayerReference.unapply)
-    )
+object RegistrationRequest {
+
+  implicit val format: OFormat[RegistrationRequest] = Json.format[RegistrationRequest]
 }

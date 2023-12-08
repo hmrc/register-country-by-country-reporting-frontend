@@ -16,11 +16,11 @@
 
 package models.register.request
 
+import models.UUIDGen
 import play.api.libs.json._
 
 import java.time.format.DateTimeFormatter
-import java.time.{ZoneId, ZonedDateTime}
-import java.util.UUID
+import java.time.{Clock, ZonedDateTime}
 case class NoIdOrganisation(organisationName: String)
 
 object NoIdOrganisation {
@@ -82,12 +82,12 @@ case class RequestCommon(
 object RequestCommon {
   implicit val requestCommonFormats: OFormat[RequestCommon] = Json.format[RequestCommon]
 
-  def apply(regime: String): RequestCommon = {
-    val acknRef: String = UUID.randomUUID().toString.replaceAll("-", "") //uuids are 36 and spec demands 32
+  def apply(regime: String)(implicit uuidGenerator: UUIDGen, clock: Clock): RequestCommon = {
+    val acknRef: String = uuidGenerator.randomUUID().toString.replaceAll("-", "") //uuids are 36 and spec demands 32
     //Format: ISO 8601 YYYY-MM-DDTHH:mm:ssZ e.g. 2020-09-23T16:12:11Z
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
     val dateTime: String = ZonedDateTime
-      .now(ZoneId.of("UTC"))
+      .now(clock)
       .format(formatter)
     RequestCommon(dateTime, regime, acknRef, None)
   }
@@ -133,7 +133,7 @@ case class RegisterWithoutId(
 object RegisterWithoutId {
   implicit val format: OFormat[RegisterWithoutId] = Json.format[RegisterWithoutId]
 
-  def apply(organisationName: String, address: Address, contactDetails: ContactDetails): RegisterWithoutId =
+  def apply(organisationName: String, address: Address, contactDetails: ContactDetails)(implicit uuidGenerator: UUIDGen, clock: Clock): RegisterWithoutId =
     RegisterWithoutId(
       RegisterWithoutIDRequest(
         RequestCommon("CBC"),

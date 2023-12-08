@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import forms.mappings.Mappings
 import models.UniqueTaxpayerReference
-import play.api.data.Form
-import play.api.data.Forms.mapping
-import utils.RegexConstants
+import play.api.libs.json.JsPath
+import queries.{Gettable, Settable}
 
-import javax.inject.Inject
+case object AutoMatchedUTRPage extends Gettable[UniqueTaxpayerReference] with Settable[UniqueTaxpayerReference] {
 
-class UTRFormProvider @Inject() extends Mappings with RegexConstants {
+  override def path: JsPath = JsPath \ toString
 
-  def apply(msgArg: String): Form[UniqueTaxpayerReference] =
-    Form(
-      mapping(
-        "value" -> validatedUTR("utr.error.required", "utr.error.invalid", "utr.error.length", utrRegex, msgArg)
-      )(UniqueTaxpayerReference.apply)(UniqueTaxpayerReference.unapply)
-    )
+  override def toString: String = "autoMatchedUTR"
+
 }

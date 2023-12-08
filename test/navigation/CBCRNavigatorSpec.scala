@@ -109,11 +109,12 @@ class CBCRNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
       }
 
       "must go from UTR page to BusinessName page" in {
+        val utr: UniqueTaxpayerReference = UniqueTaxpayerReference("1234567890")
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers =
               answers
-                .set(UTRPage, "1234567890")
+                .set(UTRPage, utr)
                 .success
                 .value
 
@@ -488,9 +489,11 @@ class CBCRNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
       }
 
       "must go from UTR page to BusinessName page" in {
-            val updatedAnswers =
+        val utr: UniqueTaxpayerReference = UniqueTaxpayerReference("1234567890")
+
+        val updatedAnswers =
               emptyUserAnswers
-                .set(UTRPage, "1234567890")
+                .set(UTRPage, utr)
                 .success
                 .value
 

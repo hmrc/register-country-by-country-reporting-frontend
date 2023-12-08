@@ -70,6 +70,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
 
   val enrolmentKey: String                             = configuration.get[String](s"keys.enrolmentKey.cbcr")
   val nonUkEnrolmentKey: String                        = configuration.get[String](s"keys.enrolmentKey.cbcrNonUk")
+  val ctEnrolmentKey: String = configuration.get[String]("keys.enrolmentKey.ct")
 
   lazy val countryByCountryReportingFrontendUrl: String = configuration.get[String]("urls.country-by-country-reporting-frontend")
 

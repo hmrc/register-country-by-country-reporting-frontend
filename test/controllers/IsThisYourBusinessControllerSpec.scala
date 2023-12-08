@@ -20,18 +20,21 @@ import base.SpecBase
 import connectors.RegistrationConnector
 import forms.IsThisYourBusinessFormProvider
 import models.BusinessType.LimitedCompany
-import models.matching.RegistrationInfo
+import models.IdentifierType.UTR
+import models.matching.{RegistrationInfo, RegistrationRequest}
+import models.register.request.RegisterWithID
 import models.register.response.RegisterWithIDResponse
 import models.register.response.details.{AddressResponse, OrganisationResponse}
-import models.{EnrolmentExistsError, NormalMode, NotFoundError, SafeId, SubscriptionID, UserAnswers}
-import org.mockito.ArgumentMatchers.any
+import models.{EnrolmentExistsError, NormalMode, NotFoundError, SafeId, SubscriptionID, UUIDGen, UniqueTaxpayerReference, UserAnswers}
+import org.mockito.ArgumentMatchers.{any, eq => mockitoEq}
 import pages.{BusinessNamePage, BusinessTypePage, IsThisYourBusinessPage, RegistrationInfoPage, UTRPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{SubscriptionService, TaxEnrolmentService}
-import views.html.IsThisYourBusinessView
+import services.{BusinessMatchingWithIdService, SubscriptionService, TaxEnrolmentService}
+import views.html.{BusinessNotIdentifiedView, IsThisYourBusinessView}
 
+import java.time.Clock
 import scala.concurrent.Future
 
 class IsThisYourBusinessControllerSpec extends SpecBase {
@@ -40,18 +43,27 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
   val form         = formProvider()
 
   lazy val isThisYourBusinessRoute = routes.IsThisYourBusinessController.onPageLoad(NormalMode).url
+  lazy val businessNotIdentifiedRoute = routes.BusinessNotIdentifiedController.onPageLoad.url
+
+  private val SafeIdValue = "XE0000123456789"
+  val UtrValue = "1234567890"
+  val OrgName             = "Some Test Org"
+  val safeId: SafeId = SafeId("XE0000123456789")
+  private val address = AddressResponse("line1", None, None, None, None, "GB")
+
 
   val baseUserAnswers: UserAnswers = emptyUserAnswers
     .set(BusinessTypePage, LimitedCompany)
     .success
     .value
-    .set(UTRPage, "1234567890")
+    .set(UTRPage, utr)
     .success
     .value
     .set(BusinessNamePage, "Business Name")
     .success
     .value
 
+  private val registrationRequest = RegistrationRequest(UTR, utr.uniqueTaxPayerReference, OrgName, Some(LimitedCompany))
   val registrationInfo: RegistrationInfo = RegistrationInfo(
     SafeId("safe"),
     "Business Name",
@@ -61,6 +73,8 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
   val mockRegistrationConnector: RegistrationConnector = mock[RegistrationConnector]
   val mockSubscriptionService: SubscriptionService     = mock[SubscriptionService]
   val mockTaxEnrolmentsService: TaxEnrolmentService    = mock[TaxEnrolmentService]
+  val mockMatchingService: BusinessMatchingWithIdService = mock[BusinessMatchingWithIdService]
+  val mockUUIDGen: UUIDGen = mock[UUIDGen]
 
   override def beforeEach(): Unit =
     reset(
@@ -106,6 +120,47 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
         contentAsString(result) mustEqual view(form, registrationInfo, NormalMode)(request, messages(application)).toString
       }
     }
+
+    "must return OK and the correct view for a GET when there is no CT UTR" in {
+
+      val registerWithID = RegisterWithID(registrationRequest)
+
+      val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
+        .overrides(
+          bind[RegistrationConnector].toInstance(mockRegistrationConnector),
+          bind[SubscriptionService].toInstance(mockSubscriptionService),
+          bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+        )
+        .build()
+      when(mockMatchingService.sendBusinessRegistrationInformation(mockitoEq(registerWithID))(any(), any()))
+        .thenReturn(Future.successful(Right(RegistrationInfo(safeId, OrgName, address))))
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockRegistrationConnector.registerWithID(any())(any(), any()))
+        .thenReturn(
+          Future.successful(
+            Right(
+              RegisterWithIDResponse(
+                SafeId("safe"),
+                OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
+                AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
+              )
+            )
+          )
+        )
+
+      running(application) {
+        val request = FakeRequest(GET, isThisYourBusinessRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[IsThisYourBusinessView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form, registrationInfo, NormalMode)(request, messages(application)).toString
+      }
+    }
+
 
     "redirect to Registration Confirmation Page for business when they are already subscribed but no enrolment created" in {
 
@@ -177,7 +232,50 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result) mustBe Some(routes.PreRegisteredController.onPageLoad(false).url)
+        redirectLocation(result) mustBe Some(routes.PreRegisteredController.onPageLoad(true).url)
+      }
+    }
+
+    "must redirect to the BusinessNotIdentifiedPage for a GET when there is no CT UTR and RegistrationInfo not found" in {
+
+      val registerWithID = RegisterWithID(registrationRequest)
+      val startUrl = routes.DoYouHaveUTRController.onPageLoad(NormalMode).url
+      val  corporationTaxEnquiries = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/corporation-tax-enquiries"
+
+
+      val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
+        .overrides(
+          bind[RegistrationConnector].toInstance(mockRegistrationConnector),
+          bind[SubscriptionService].toInstance(mockSubscriptionService),
+          bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+        )
+        .build()
+      when(mockMatchingService.sendBusinessRegistrationInformation(mockitoEq(registerWithID))(any(), any()))
+        .thenReturn(Future.successful(Left(NotFoundError)))
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockRegistrationConnector.registerWithID(any())(any(), any()))
+        .thenReturn(
+          Future.successful(
+            Right(
+              RegisterWithIDResponse(
+                SafeId("safe"),
+                OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
+                AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
+              )
+            )
+          )
+        )
+
+      running(application) {
+        val request = FakeRequest(GET, businessNotIdentifiedRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[BusinessNotIdentifiedView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(corporationTaxEnquiries,startUrl)(request, messages(application)).toString
       }
     }
 

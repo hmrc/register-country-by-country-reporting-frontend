@@ -19,18 +19,21 @@ package services
 import connectors.RegistrationConnector
 import models.register.request.{ContactDetails, RegisterWithoutId}
 import models.requests.DataRequest
-import models.{ApiError, MandatoryInformationMissingError, RegistrationWithoutIdInformationMissingError, SafeId}
+import models.{ApiError, MandatoryInformationMissingError, RegistrationWithoutIdInformationMissingError, SafeId, UUIDGen}
 import pages._
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.http.HeaderCarrier
 import models.register.request.Address
 import play.api.Logging
 
+import java.time.Clock
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RegisterWithoutIdService @Inject() (registrationConnector: RegistrationConnector)(implicit ec: ExecutionContext) extends Logging {
+class RegisterWithoutIdService @Inject() (registrationConnector: RegistrationConnector, uuidGen: UUIDGen, clock: Clock)(implicit ec: ExecutionContext) extends Logging {
 
+  implicit private val uuidGenerator: UUIDGen = uuidGen
+  implicit private val implicitClock: Clock = clock
   def registerWithoutId()(implicit request: DataRequest[AnyContent], hc: HeaderCarrier): Future[Either[ApiError, SafeId]] =
     {for {
       organisationName <- request.userAnswers.get(BusinessWithoutIDNamePage)

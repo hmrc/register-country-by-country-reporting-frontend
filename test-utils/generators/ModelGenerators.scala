@@ -18,7 +18,7 @@ package generators
 
 import models.email.EmailRequest
 import models.subscription.request._
-import models.{Address, BusinessType, Country}
+import models.{Address, BusinessType, Country, UniqueTaxpayerReference}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -109,6 +109,12 @@ trait ModelGenerators {
         SubscriptionRequest(requestCommon, requestDetail)
       )
     }
+
+  implicit lazy val arbitraryUniqueTaxpayerReference: Arbitrary[UniqueTaxpayerReference] = Arbitrary {
+    for {
+      utr <- arbitrary[String]
+    } yield UniqueTaxpayerReference(utr)
+  }
 
   implicit val arbitraryEmailRequest: Arbitrary[EmailRequest] = Arbitrary {
     for {
