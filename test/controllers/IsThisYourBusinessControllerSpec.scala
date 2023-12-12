@@ -268,14 +268,12 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
         )
 
       running(application) {
-        val request = FakeRequest(GET, businessNotIdentifiedRoute)
+        val request = FakeRequest(GET, isThisYourBusinessRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[BusinessNotIdentifiedView]
-
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(corporationTaxEnquiries , startUrl , Some(LimitedCompany))(request, messages(application)).toString
+        redirectLocation(result) mustBe Some(routes.BusinessNotIdentifiedController.onPageLoad().url)
       }
     }
 

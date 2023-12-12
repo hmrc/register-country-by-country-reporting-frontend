@@ -42,12 +42,7 @@ class BusinessNotIdentifiedController @Inject()(
       val startUrl = routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
       val businessType = request.userAnswers.get(BusinessTypePage)
 
-      val contactUrl: String = businessType match {
-        case Some(LimitedCompany) | Some(UnincorporatedAssociation) => appConfig.corporationTaxEnquiriesLink
-        case _                                                      => appConfig.selfAssessmentEnquiriesLink
-      }
-
-      Ok(view(contactUrl, startUrl, businessType))
+      Ok(view(appConfig.findCompanyName, startUrl, businessType))
   }
 
 }

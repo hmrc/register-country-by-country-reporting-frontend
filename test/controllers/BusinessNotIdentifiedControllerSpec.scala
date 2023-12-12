@@ -27,13 +27,13 @@ import views.html.BusinessNotIdentifiedView
 class BusinessNotIdentifiedControllerSpec extends SpecBase {
 
   val startUrl = routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
+  val  findCompanyName = "https://find-and-update.company-information.service.gov.uk/"
 
   "BusinessNotIdentified Controller" - {
 
     "must return OK and the correct view for a GET with link for corporation tax enquiries" in {
 
       val userAnswers = UserAnswers(userAnswersId).set(BusinessTypePage, LimitedCompany).success.value
-      val  corporationTaxEnquiries = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/corporation-tax-enquiries"
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -46,14 +46,13 @@ class BusinessNotIdentifiedControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
 
-        contentAsString(result) mustEqual view(corporationTaxEnquiries, startUrl , Some(LimitedCompany))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(findCompanyName, startUrl , Some(LimitedCompany))(request, messages(application)).toString
       }
     }
 
     "must return OK and the correct view for a GET with link for self assessment enquiries" in {
 
       val userAnswers = UserAnswers(userAnswersId).set(BusinessTypePage, LimitedPartnership).success.value
-      val selfAssessmentEnquiries = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -65,14 +64,13 @@ class BusinessNotIdentifiedControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[BusinessNotIdentifiedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(selfAssessmentEnquiries, startUrl , Some(LimitedPartnership))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(findCompanyName, startUrl , Some(LimitedPartnership))(request, messages(application)).toString
       }
     }
 
     "must return OK and the default page if the user has not selected a business type" in {
 
       val userAnswers = UserAnswers(userAnswersId)
-      val selfAssessmentEnquiries = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/self-assessment"
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -84,7 +82,7 @@ class BusinessNotIdentifiedControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[BusinessNotIdentifiedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(selfAssessmentEnquiries, startUrl, None)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(findCompanyName, startUrl, None)(request, messages(application)).toString
       }
 
     }
