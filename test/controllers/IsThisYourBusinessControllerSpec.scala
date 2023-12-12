@@ -44,7 +44,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
 
   lazy val isThisYourBusinessRoute = routes.IsThisYourBusinessController.onPageLoad(NormalMode).url
   lazy val businessNotIdentifiedRoute = routes.BusinessNotIdentifiedController.onPageLoad.url
-
+  val  findCompanyName = "https://find-and-update.company-information.service.gov.uk/"
   private val SafeIdValue = "XE0000123456789"
   val UtrValue = "1234567890"
   val OrgName             = "Some Test Org"
@@ -240,7 +240,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
 
       val registerWithID = RegisterWithID(registrationRequest)
       val startUrl = routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
-      val  corporationTaxEnquiries = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/corporation-tax-enquiries"
+
 
 
       val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
@@ -268,12 +268,14 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
         )
 
       running(application) {
-        val request = FakeRequest(GET, isThisYourBusinessRoute)
+        val request = FakeRequest(GET, businessNotIdentifiedRoute)
 
         val result = route(application, request).value
 
+        val view = application.injector.instanceOf[BusinessNotIdentifiedView]
+
         status(result) mustEqual OK
-        redirectLocation(result) mustBe Some(routes.BusinessNotIdentifiedController.onPageLoad().url)
+        contentAsString(result) mustEqual view(findCompanyName ,startUrl , Some(LimitedCompany))(request, messages(application)).toString
       }
     }
 
