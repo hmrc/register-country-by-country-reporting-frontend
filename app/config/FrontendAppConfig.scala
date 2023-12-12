@@ -40,7 +40,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
   lazy val selfAssessmentEnquiriesLink: String         = configuration.get[String]("urls.selfAssessmentEnquiries")
   lazy val businessTaxAccountLink: String         = configuration.get[String]("urls.btaLogin")
   lazy val emailEnquiries: String                      = configuration.get[String]("urls.emailEnquiries")
-
+  lazy val findCompanyName: String            = configuration.get[String]("urls.findCompanyName")
   lazy val registerCountryByCountryUrl: String =
     s"${configuration.get[Service]("microservice.services.register-country-by-country").baseUrl}${configuration.get[String]("microservice.services.register-country-by-country.startUrl")}"
 

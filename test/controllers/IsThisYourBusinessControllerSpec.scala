@@ -44,7 +44,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
 
   lazy val isThisYourBusinessRoute = routes.IsThisYourBusinessController.onPageLoad(NormalMode).url
   lazy val businessNotIdentifiedRoute = routes.BusinessNotIdentifiedController.onPageLoad.url
-
+  val  findCompanyName = "https://find-and-update.company-information.service.gov.uk/"
   private val SafeIdValue = "XE0000123456789"
   val UtrValue = "1234567890"
   val OrgName             = "Some Test Org"
@@ -239,8 +239,8 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
     "must redirect to the BusinessNotIdentifiedPage for a GET when there is no CT UTR and RegistrationInfo not found" in {
 
       val registerWithID = RegisterWithID(registrationRequest)
-      val startUrl = routes.DoYouHaveUTRController.onPageLoad(NormalMode).url
-      val  corporationTaxEnquiries = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/corporation-tax-enquiries"
+      val startUrl = routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
+
 
 
       val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
@@ -275,7 +275,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[BusinessNotIdentifiedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(corporationTaxEnquiries,startUrl)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(findCompanyName ,startUrl , Some(LimitedCompany))(request, messages(application)).toString
       }
     }
 

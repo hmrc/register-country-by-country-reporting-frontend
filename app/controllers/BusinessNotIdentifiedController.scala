@@ -27,6 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.BusinessNotIdentifiedView
+import play.api.Logging
 
 class BusinessNotIdentifiedController @Inject()(
                                        override val messagesApi: MessagesApi,
@@ -34,16 +35,14 @@ class BusinessNotIdentifiedController @Inject()(
                                        val controllerComponents: MessagesControllerComponents,
                                        appConfig: FrontendAppConfig,
                                        view: BusinessNotIdentifiedView
-                                     ) extends FrontendBaseController with I18nSupport {
+                                     ) extends FrontendBaseController with I18nSupport with Logging{
 
   def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
-      val startUrl = routes.DoYouHaveUTRController.onPageLoad(NormalMode).url
+      val startUrl = routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
+      val businessType = request.userAnswers.get(BusinessTypePage)
 
-      val contactUrl: String = request.userAnswers.get(BusinessTypePage) match {
-        case Some(LimitedCompany) | Some(UnincorporatedAssociation) => appConfig.corporationTaxEnquiriesLink
-        case _                                                      => appConfig.selfAssessmentEnquiriesLink
-      }
-      Ok(view(contactUrl,startUrl))
+      Ok(view(appConfig.findCompanyName, startUrl, businessType))
   }
+
 }
