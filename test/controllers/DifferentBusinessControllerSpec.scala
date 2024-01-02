@@ -16,19 +16,22 @@
 
 package controllers.organisation
 
-import helpers.JsonFixtures._
 import models.UserAnswers
 import models.matching.RegistrationInfo
 import models.register.response.details.AddressResponse
 import pages.RegistrationInfoPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.organisation.DifferentBusinessView
+import play.api.i18n.Messages
+import views.html.DifferentBusinessView
 import base.SpecBase
-
+import models.SafeId
 class DifferentBusinessControllerSpec extends SpecBase {
 
   lazy val loginURL: String = "http://localhost:9949/auth-login-stub/gg-sign-in"
+  val SafeIdValue = "XCBC0000123456789"
+  val safeId: SafeId = SafeId(SafeIdValue)
+  val OrgName             = "Some Test Org"
 
   val userAnswers: UserAnswers =
     emptyUserAnswers
@@ -40,33 +43,31 @@ class DifferentBusinessControllerSpec extends SpecBase {
 
     "must return OK and the correct view for a GET" in {
 
-      implicit val request = FakeRequest(GET, controllers.organisation.routes.DifferentBusinessController.onPageLoad().url)
+      implicit val request = FakeRequest(GET, controllers.routes.DifferentBusinessController.onPageLoad().url)
 
-      val application = guiceApplicationBuilder(Option(userAnswers)).build()
-
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
       running(application) {
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[DifferentBusinessView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(loginURL, Some(OrgName), Some(List("line1", ""))).toString
+        contentAsString(result) mustEqual view(loginURL, Some(OrgName), Some(List("line1", "")))(request, messages(application)).toString
       }
     }
 
     "must return OK and the correct view for a GET with no registrationInfo set" in {
 
-      implicit val request = FakeRequest(GET, controllers.organisation.routes.DifferentBusinessController.onPageLoad().url)
+      implicit val request = FakeRequest(GET, controllers.routes.DifferentBusinessController.onPageLoad().url)
 
-      val application = guiceApplicationBuilder(Option(emptyUserAnswers)).build()
-
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       running(application) {
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[DifferentBusinessView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(loginURL, None, None).toString
+        contentAsString(result) mustEqual view(loginURL, None, None)(request, messages(application)).toString
       }
     }
   }
