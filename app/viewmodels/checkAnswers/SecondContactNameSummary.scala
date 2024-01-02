@@ -25,6 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import pages.AutoMatchedUTRPage
 
 object SecondContactNameSummary  {
 
@@ -43,7 +44,11 @@ object SecondContactNameSummary  {
                    |<span class="govuk-visually-hidden">${messages("secondContactName.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = routes.SecondContactNameController.onPageLoad(CheckMode).url
+              href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
+                routes.SecondContactNameController.onPageLoad(CheckMode).url
+              } else {
+                routes.UnableToChangeBusinessController.onPageLoad().url
+              }
             ).withAttribute(("id","second-contact-name"))
           )
         )

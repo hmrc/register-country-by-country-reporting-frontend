@@ -25,6 +25,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import pages.AutoMatchedUTRPage
+import pages.AutoMatchedUTRPage
 
 object WhatIsTradingNameSummary  {
 
@@ -44,7 +46,11 @@ object WhatIsTradingNameSummary  {
                    |<span class="govuk-visually-hidden">${messages("whatIsTradingName.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = routes.BusinessHaveDifferentNameController.onPageLoad(CheckMode).url
+              href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
+                routes.BusinessHaveDifferentNameController.onPageLoad(CheckMode).url
+              } else {
+                routes.UnableToChangeBusinessController.onPageLoad().url
+              }
             ).withAttribute(("id","what-is-you-trading-name"))
           )
         ))

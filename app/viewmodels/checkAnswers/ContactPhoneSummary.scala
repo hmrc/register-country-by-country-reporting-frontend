@@ -25,6 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import pages.AutoMatchedUTRPage
 
 object ContactPhoneSummary {
 
@@ -42,7 +43,11 @@ object ContactPhoneSummary {
                |<span class="govuk-visually-hidden">${messages("contactPhone.change.hidden")}</span>
                |""".stripMargin
           ),
-          href = routes.HaveTelephoneController.onPageLoad(CheckMode).url
+          href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
+            routes.HaveTelephoneController.onPageLoad(CheckMode).url
+          } else {
+            routes.UnableToChangeBusinessController.onPageLoad().url
+          }
         ).withAttribute(("id","contact-phone"))
       )
     ))

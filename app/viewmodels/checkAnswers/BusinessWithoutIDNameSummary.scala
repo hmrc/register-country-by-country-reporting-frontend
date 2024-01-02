@@ -25,6 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import pages.AutoMatchedUTRPage
 
 object BusinessWithoutIDNameSummary  {
 
@@ -43,7 +44,11 @@ object BusinessWithoutIDNameSummary  {
                    |<span class="govuk-visually-hidden">${messages("businessWithoutIDName.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = routes.BusinessWithoutIDNameController.onPageLoad(CheckMode).url
+              href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
+                routes.BusinessWithoutIDNameController.onPageLoad(CheckMode).url
+              } else {
+                routes.UnableToChangeBusinessController.onPageLoad().url
+              }
             ).withAttribute(("id","business-without-id-name"))
           )
         )

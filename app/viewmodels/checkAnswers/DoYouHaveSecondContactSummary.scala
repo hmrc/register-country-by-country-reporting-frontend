@@ -25,6 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.SummaryHelper
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import pages.AutoMatchedUTRPage
 
 object DoYouHaveSecondContactSummary  {
 
@@ -45,7 +46,11 @@ object DoYouHaveSecondContactSummary  {
                    |<span class="govuk-visually-hidden">${messages("doYouHaveSecondContact.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = routes.DoYouHaveSecondContactController.onPageLoad(CheckMode).url
+              href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
+                routes.DoYouHaveSecondContactController.onPageLoad(CheckMode).url
+              } else {
+                routes.UnableToChangeBusinessController.onPageLoad().url
+              }
             ).withAttribute(("id","do-you-have-second-contact"))
           )
         )

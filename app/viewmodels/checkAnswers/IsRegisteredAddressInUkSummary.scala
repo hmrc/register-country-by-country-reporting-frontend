@@ -24,6 +24,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import pages.AutoMatchedUTRPage
 
 object IsRegisteredAddressInUkSummary  {
 
@@ -44,7 +45,11 @@ object IsRegisteredAddressInUkSummary  {
                    |<span class="govuk-visually-hidden">${messages("isRegisteredAddressInUk.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = routes.IsRegisteredAddressInUkController.onPageLoad(CheckMode).url
+              href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
+                routes.IsRegisteredAddressInUkController.onPageLoad(CheckMode).url
+              } else {
+                routes.UnableToChangeBusinessController.onPageLoad().url
+              }
             ).withAttribute(("id","is-registered-address-uk"))
           )
         )

@@ -25,6 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.SummaryHelper
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import pages.AutoMatchedUTRPage
 
 object DoYouHaveUTRSummary  {
 
@@ -45,7 +46,11 @@ object DoYouHaveUTRSummary  {
                    |<span class="govuk-visually-hidden">${messages("doYouHaveUTR.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = routes.DoYouHaveUTRController.onPageLoad(CheckMode).url
+              href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
+                routes.DoYouHaveUTRController.onPageLoad(CheckMode).url
+              } else {
+                routes.UnableToChangeBusinessController.onPageLoad().url
+              }
             ).withAttribute(("id","do-you-have-UTR"))
           )
         )
