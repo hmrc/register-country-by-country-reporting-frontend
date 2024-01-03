@@ -44,11 +44,8 @@ object ContactEmailSummary  {
                    |<span class="govuk-visually-hidden">${messages("contactEmail.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
-                routes.ContactEmailController.onPageLoad(CheckMode).url
-              } else {
-                routes.UnableToChangeBusinessController.onPageLoad().url
-              }
+              href = routes.ContactEmailController.onPageLoad(CheckMode).url
+
             ).withAttribute(("id","contact-email"))
           )
         )

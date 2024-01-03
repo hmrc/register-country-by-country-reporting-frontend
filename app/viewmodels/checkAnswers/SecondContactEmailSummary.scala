@@ -44,11 +44,8 @@ object SecondContactEmailSummary  {
                    |<span class="govuk-visually-hidden">${messages("secondContactEmail.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
-                routes.SecondContactEmailController.onPageLoad(CheckMode).url
-              } else {
-                routes.UnableToChangeBusinessController.onPageLoad().url
-              }
+              href = routes.SecondContactEmailController.onPageLoad(CheckMode).url
+
             ).withAttribute(("id","second-contact-email"))
           )
         )

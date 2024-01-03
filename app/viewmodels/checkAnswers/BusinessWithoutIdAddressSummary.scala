@@ -61,11 +61,8 @@ object BusinessWithoutIdAddressSummary {
                    |<span class="govuk-visually-hidden">${messages("businessWithoutIdAddress.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
-                routes.BusinessWithoutIdAddressController.onPageLoad(CheckMode).url
-              } else {
-                routes.UnableToChangeBusinessController.onPageLoad().url
-              }
+              href =  routes.BusinessWithoutIdAddressController.onPageLoad(CheckMode).url
+
             ).withAttribute(("id","business-without-id-address"))
           )
         )

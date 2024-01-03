@@ -43,11 +43,8 @@ object ContactPhoneSummary {
                |<span class="govuk-visually-hidden">${messages("contactPhone.change.hidden")}</span>
                |""".stripMargin
           ),
-          href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
-            routes.HaveTelephoneController.onPageLoad(CheckMode).url
-          } else {
-            routes.UnableToChangeBusinessController.onPageLoad().url
-          }
+          href = routes.HaveTelephoneController.onPageLoad(CheckMode).url
+
         ).withAttribute(("id","contact-phone"))
       )
     ))

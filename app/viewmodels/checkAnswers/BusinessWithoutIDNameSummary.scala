@@ -44,11 +44,8 @@ object BusinessWithoutIDNameSummary  {
                    |<span class="govuk-visually-hidden">${messages("businessWithoutIDName.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
-                routes.BusinessWithoutIDNameController.onPageLoad(CheckMode).url
-              } else {
-                routes.UnableToChangeBusinessController.onPageLoad().url
-              }
+              href =  routes.BusinessWithoutIDNameController.onPageLoad(CheckMode).url
+
             ).withAttribute(("id","business-without-id-name"))
           )
         )

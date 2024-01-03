@@ -44,11 +44,8 @@ object ContactNameSummary  {
                    |<span class="govuk-visually-hidden">${messages("contactName.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
-                routes.ContactNameController.onPageLoad(CheckMode).url
-              } else {
-                routes.UnableToChangeBusinessController.onPageLoad().url
-              }
+              href =  routes.ContactNameController.onPageLoad(CheckMode).url
+
             ).withAttribute(("id","contact-name"))
           )
         )

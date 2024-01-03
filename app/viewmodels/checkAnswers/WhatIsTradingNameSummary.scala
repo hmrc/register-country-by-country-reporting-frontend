@@ -46,11 +46,8 @@ object WhatIsTradingNameSummary  {
                    |<span class="govuk-visually-hidden">${messages("whatIsTradingName.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
-                routes.BusinessHaveDifferentNameController.onPageLoad(CheckMode).url
-              } else {
-                routes.UnableToChangeBusinessController.onPageLoad().url
-              }
+              href = routes.BusinessHaveDifferentNameController.onPageLoad(CheckMode).url
+
             ).withAttribute(("id","what-is-you-trading-name"))
           )
         ))

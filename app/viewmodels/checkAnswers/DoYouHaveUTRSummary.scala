@@ -46,11 +46,8 @@ object DoYouHaveUTRSummary  {
                    |<span class="govuk-visually-hidden">${messages("doYouHaveUTR.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
-                routes.DoYouHaveUTRController.onPageLoad(CheckMode).url
-              } else {
-                routes.UnableToChangeBusinessController.onPageLoad().url
-              }
+              href =  routes.DoYouHaveUTRController.onPageLoad(CheckMode).url
+
             ).withAttribute(("id","do-you-have-UTR"))
           )
         )

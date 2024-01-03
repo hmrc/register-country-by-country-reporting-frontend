@@ -45,11 +45,8 @@ object IsRegisteredAddressInUkSummary  {
                    |<span class="govuk-visually-hidden">${messages("isRegisteredAddressInUk.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
-                routes.IsRegisteredAddressInUkController.onPageLoad(CheckMode).url
-              } else {
-                routes.UnableToChangeBusinessController.onPageLoad().url
-              }
+              href = routes.IsRegisteredAddressInUkController.onPageLoad(CheckMode).url
+
             ).withAttribute(("id","is-registered-address-uk"))
           )
         )

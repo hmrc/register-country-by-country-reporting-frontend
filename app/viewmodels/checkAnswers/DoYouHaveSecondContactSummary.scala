@@ -46,11 +46,7 @@ object DoYouHaveSecondContactSummary  {
                    |<span class="govuk-visually-hidden">${messages("doYouHaveSecondContact.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
-                routes.DoYouHaveSecondContactController.onPageLoad(CheckMode).url
-              } else {
-                routes.UnableToChangeBusinessController.onPageLoad().url
-              }
+              href = routes.DoYouHaveSecondContactController.onPageLoad(CheckMode).url
             ).withAttribute(("id","do-you-have-second-contact"))
           )
         )

@@ -44,11 +44,8 @@ object SecondContactPhoneSummary {
                |<span class="govuk-visually-hidden">${messages("secondContactPhone.change.hidden")}</span>
                |""".stripMargin
           ),
-          href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
-            routes.SecondContactHavePhoneController.onPageLoad(CheckMode).url
-          } else {
-            routes.UnableToChangeBusinessController.onPageLoad().url
-          }
+          href = routes.SecondContactHavePhoneController.onPageLoad(CheckMode).url
+
         ).withAttribute(("id","second-contact-phone"))
       )
     ))
