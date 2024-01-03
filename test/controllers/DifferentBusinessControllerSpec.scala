@@ -16,6 +16,7 @@
 
 package controllers.organisation
 
+
 import models.UserAnswers
 import models.matching.RegistrationInfo
 import models.register.response.details.AddressResponse
@@ -46,12 +47,14 @@ class DifferentBusinessControllerSpec extends SpecBase {
       implicit val request = FakeRequest(GET, controllers.routes.DifferentBusinessController.onPageLoad().url)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
       running(application) {
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[DifferentBusinessView]
 
         status(result) mustEqual OK
+
         contentAsString(result) mustEqual view(loginURL, Some(OrgName), Some(List("line1", "")))(request, messages(application)).toString
       }
     }
@@ -61,12 +64,14 @@ class DifferentBusinessControllerSpec extends SpecBase {
       implicit val request = FakeRequest(GET, controllers.routes.DifferentBusinessController.onPageLoad().url)
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
       running(application) {
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[DifferentBusinessView]
 
         status(result) mustEqual OK
+
         contentAsString(result) mustEqual view(loginURL, None, None)(request, messages(application)).toString
       }
     }

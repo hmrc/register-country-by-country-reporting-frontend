@@ -25,7 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.SummaryHelper
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
-import pages.AutoMatchedUTRPage
+
 
 object DoYouHaveUTRSummary  {
 
