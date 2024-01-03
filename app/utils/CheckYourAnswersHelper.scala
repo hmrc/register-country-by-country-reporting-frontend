@@ -27,12 +27,16 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers,
                              countryListFactory: CountryListFactory)(implicit val messages: Messages) {
 
   def businessSection: Seq[SummaryListRow] = {
+    Console.println("Address :: 86768 :: "+ userAnswers)
     (userAnswers.get(IsRegisteredAddressInUkPage), userAnswers.get(DoYouHaveUTRPage) , userAnswers.get(AutoMatchedUTRPage).isEmpty) match {
-    case ( _ , _ , false) => businessWithIDSection
-    case (Some(false), Some(true) ,_) => businessWithIDSection
-    case (Some(false), _ , _) => businessWithoutIDSection
-    case _ => Seq.empty[SummaryListRow]
-    }
+      case (_, _ , false) => businessWithIDSection
+      case (Some(true), _ , _) => businessWithIDSection
+      case (Some(false), Some(true) ,_) => businessWithIDSection
+      case (Some(false), _ , _) => businessWithoutIDSection
+      case _ => {
+      Console.println("Address :: 576586 :: "+ userAnswers.get(IsRegisteredAddressInUkPage)+ userAnswers.get(DoYouHaveUTRPage) + userAnswers.get(AutoMatchedUTRPage).isEmpty)
+      Seq.empty[SummaryListRow]}
+  }
 }
 
   def tradingNameSummary: Option[SummaryListRow] = userAnswers.get(BusinessHaveDifferentNamePage) flatMap (_ => WhatIsTradingNameSummary.row(userAnswers))
