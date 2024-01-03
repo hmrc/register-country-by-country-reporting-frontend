@@ -27,9 +27,6 @@ object RegistrationInfo {
 
   implicit val format: OFormat[RegistrationInfo] = Json.format[RegistrationInfo]
 
-
-
-
   def apply(response: RegisterWithIDResponse): RegistrationInfo = {
     RegistrationInfo(response.safeId ,response.organisation.organisationName, response.address)
   }

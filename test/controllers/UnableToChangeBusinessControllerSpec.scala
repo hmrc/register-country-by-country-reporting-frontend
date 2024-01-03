@@ -86,9 +86,6 @@ class UnableToChangeBusinessControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(loginURL, None, None)(request, messages(application)).toString
-//=======
-//        contentAsString(result) mustEqual view()(request, messages(application)).toString
-//>>>>>>> 76969e2 (Added problem pages)
       }
     }
   }

@@ -20,7 +20,7 @@ govukButton: GovukButton,
 link: components.Link
 )
 
-@(contactLink: String, name: Option[String], address: Option[List[String]])(implicit request: Request[_], messages: Messages)
+@(contactLink: String, name: Option[String] =  None , address: Option[List[String]] = None )(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("differentBusiness.title"))) {
 
