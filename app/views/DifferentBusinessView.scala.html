@@ -25,10 +25,9 @@ link: components.Link
 @layout(pageTitle = titleNoForm(messages("differentBusiness.title"))) {
 
 <h1 class="govuk-heading-l">@messages("differentBusiness.heading")</h1>
+      @if(!name.isDefined || !address.isDefined){<p class="govuk-body">@messages("differentBusiness.p3")</p>}
 
-@if(!name.isDefined || !address.isDefined){<p class="govuk-body">@messages("differentBusiness.p3")</p>}
-
-       @name.map { businessName =>
+        @name.map { businessName =>
         @address.map { businessAddress =>
           <p class="govuk-body">@messages("differentBusiness.p1")</p>
          <div class="govuk-body">
