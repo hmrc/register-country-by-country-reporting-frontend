@@ -26,6 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
+
 object SecondContactNameSummary  {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
@@ -44,6 +45,7 @@ object SecondContactNameSummary  {
                    |""".stripMargin
               ),
               href = routes.SecondContactNameController.onPageLoad(CheckMode).url
+
             ).withAttribute(("id","second-contact-name"))
           )
         )

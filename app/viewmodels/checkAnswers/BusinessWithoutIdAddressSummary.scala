@@ -25,6 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import pages.AutoMatchedUTRPage
 
 object BusinessWithoutIdAddressSummary {
 
@@ -60,7 +61,8 @@ object BusinessWithoutIdAddressSummary {
                    |<span class="govuk-visually-hidden">${messages("businessWithoutIdAddress.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = routes.BusinessWithoutIdAddressController.onPageLoad(CheckMode).url
+              href =  routes.BusinessWithoutIdAddressController.onPageLoad(CheckMode).url
+
             ).withAttribute(("id","business-without-id-address"))
           )
         )

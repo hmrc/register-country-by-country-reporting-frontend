@@ -26,6 +26,7 @@ import utils.SummaryHelper
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
+
 object DoYouHaveUTRSummary  {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
@@ -45,7 +46,8 @@ object DoYouHaveUTRSummary  {
                    |<span class="govuk-visually-hidden">${messages("doYouHaveUTR.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href = routes.DoYouHaveUTRController.onPageLoad(CheckMode).url
+              href =  routes.DoYouHaveUTRController.onPageLoad(CheckMode).url
+
             ).withAttribute(("id","do-you-have-UTR"))
           )
         )

@@ -23,7 +23,8 @@ GET         /account/sign-out                               controllers.auth.Aut
 GET         /register/problem/signed-out                    controllers.auth.SignedOutController.onPageLoad()
 
 GET         /unauthorised                                   controllers.UnauthorisedController.onPageLoad
-
+GET        /register/problem/different-business             controllers.DifferentBusinessController.onPageLoad()
+GET        /register/problem/unable-to-change-business      controllers.UnableToChangeBusinessController.onPageLoad()
 GET        /register/registered-address-in-uk               controllers.IsRegisteredAddressInUkController.onPageLoad(mode: Mode = NormalMode)
 POST       /register/registered-address-in-uk               controllers.IsRegisteredAddressInUkController.onSubmit(mode: Mode = NormalMode)
 GET        /register/change-registered-address-in-uk        controllers.IsRegisteredAddressInUkController.onPageLoad(mode: Mode = CheckMode)

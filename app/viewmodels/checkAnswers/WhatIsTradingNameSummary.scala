@@ -26,6 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
+
 object WhatIsTradingNameSummary  {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
@@ -45,6 +46,7 @@ object WhatIsTradingNameSummary  {
                    |""".stripMargin
               ),
               href = routes.BusinessHaveDifferentNameController.onPageLoad(CheckMode).url
+
             ).withAttribute(("id","what-is-you-trading-name"))
           )
         ))

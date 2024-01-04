@@ -28,13 +28,14 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.CountryListFactory
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import pages.AutoMatchedUTRPage
 
 
 object YourBusinessSummary {
 
-  def row(userAnswers: UserAnswers, countryListFactory: CountryListFactory)(implicit messages: Messages): Option[SummaryListRow] = {
+  def row(answers: UserAnswers, countryListFactory: CountryListFactory)(implicit messages: Messages): Option[SummaryListRow] = {
     val paragraphClass = """govuk-!-margin-0"""
-    (userAnswers.get(IsThisYourBusinessPage), userAnswers.get(RegistrationInfoPage)) match {
+    (answers.get(IsThisYourBusinessPage), answers.get(RegistrationInfoPage)) match {
       case (Some(true), Some(registrationInfo: RegistrationInfo)) =>
         val businessName: String = registrationInfo.name
         val address: AddressResponse = registrationInfo.address
@@ -69,7 +70,11 @@ object YourBusinessSummary {
                        |<span class="govuk-visually-hidden">${messages("businessWithIDName.change.hidden")}</span>
                        |""".stripMargin
                   ),
-                  href = routes.IsRegisteredAddressInUkController.onPageLoad(CheckMode).url
+                    href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
+                    routes.IsRegisteredAddressInUkController.onPageLoad(CheckMode).url
+                  } else {
+                    routes.UnableToChangeBusinessController.onPageLoad().url
+                  }
                 ).withAttribute(("id","your-business-details"))
               )
             ))

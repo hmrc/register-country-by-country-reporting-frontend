@@ -25,6 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import pages.AutoMatchedUTRPage
 
 object ContactPhoneSummary {
 
@@ -43,6 +44,7 @@ object ContactPhoneSummary {
                |""".stripMargin
           ),
           href = routes.HaveTelephoneController.onPageLoad(CheckMode).url
+
         ).withAttribute(("id","contact-phone"))
       )
     ))

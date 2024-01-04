@@ -339,5 +339,19 @@ isRegisteredAddressInUk.checkYourAnswersLabel = Is your organisation’s registe
 isRegisteredAddressInUk.error.required = Select yes if your organisation’s registered address is in the UK
 isRegisteredAddressInUk.change.hidden = Change whether your registered address is in the UK
 
+differentBusiness.title = You’re unable to use this service with this Government Gateway user ID
+differentBusiness.heading = You’re unable to use this service with this Government Gateway user ID
+differentBusiness.p1 = You have signed in with a Government Gateway user ID that is linked to the following business details:
+differentBusiness.p2 = If you want to register a different organisation for country-by-country reporting, you must {0}.
+differentBusiness.p3 = You have signed in with a Government Gateway user ID that is linked to different business details.
+differentBusiness.link = sign in with the Government Gateway user ID for the organisation you wish to register
+
+unableToChangeBusiness.title = You’re unable to change your business details
+unableToChangeBusiness.heading = You’re unable to change your business details
+unableToChangeBusiness.p1 = You have signed in with a Government Gateway user ID that is linked to the following business details:
+unableToChangeBusiness.p2 = If you want to register a different organisation for country-by-country reporting, you must {0}.
+unableToChangeBusiness.p3 = You have signed in with a Government Gateway user ID that is linked to different business details.
+unableToChangeBusiness.link = sign in with the Government Gateway user ID for the organisation you wish to register
+
 enquiries.email = aeoi.enquiries@hmrc.gov.uk
 

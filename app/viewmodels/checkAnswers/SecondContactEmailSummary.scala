@@ -44,6 +44,7 @@ object SecondContactEmailSummary  {
                    |""".stripMargin
               ),
               href = routes.SecondContactEmailController.onPageLoad(CheckMode).url
+
             ).withAttribute(("id","second-contact-email"))
           )
         )

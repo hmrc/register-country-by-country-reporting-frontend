@@ -44,12 +44,7 @@ class CBCRNavigator @Inject()() extends Navigator {
     case BusinessTypePage   => _ => routes.UTRController.onPageLoad(NormalMode)
     case UTRPage   => _ => routes.BusinessNameController.onPageLoad(NormalMode)
     case BusinessNamePage   => _ => routes.IsThisYourBusinessController.onPageLoad(NormalMode)
-    case IsThisYourBusinessPage   => ua => yesNoPage(
-      ua,
-      IsThisYourBusinessPage,
-      routes.YourContactDetailsController.onPageLoad(NormalMode),
-      routes.BusinessNotIdentifiedController.onPageLoad()
-    )
+    case IsThisYourBusinessPage   => isThisYourBusiness(NormalMode)
     case BusinessWithoutIDNamePage   => _ => routes.BusinessHaveDifferentNameController.onPageLoad(NormalMode)
     case BusinessHaveDifferentNamePage   => ua => yesNoPage(
       ua,
@@ -159,4 +154,12 @@ class CBCRNavigator @Inject()() extends Navigator {
     ua.get(fromPage)
       .map(if (_) yesCall else noCall)
       .getOrElse(routes.ThereIsAProblemController.onPageLoad())
+
+  private def isThisYourBusiness(mode: Mode)(ua: UserAnswers): Call =
+    (ua.get(IsThisYourBusinessPage), ua.get(AutoMatchedUTRPage).isDefined) match {
+      case (Some(true), _) =>
+        checkNextPageForValueThenRoute(mode, ua, ContactNamePage, routes.YourContactDetailsController.onPageLoad(mode))
+      case (Some(false), true) => controllers.routes.DifferentBusinessController.onPageLoad()
+      case _ => controllers.routes.BusinessNotIdentifiedController.onPageLoad()
+    }
 }
