@@ -14,24 +14,8 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
+@this()
 
-@this(
-        layout: templates.Layout,
-        link: components.Link,
-        heading: components.Heading,
-        paragraph: components.Paragraph,
-        appConfig: FrontendAppConfig
-)
+@(headingContent: String, size: String = "l")
 
-@()(implicit request: Request[_], messages: Messages)
-
-@layout(pageTitle = titleNoForm(messages("informationSent.title")), showBackLink = false) {
-
-    @heading(messages("informationSent.heading"))
-
-    @paragraph(Html(messages("informationSent.p1")))
-
-    @paragraph(link(appConfig.countryByCountryReportingFrontendUrl, "informationSent.link"))
-
-}
+<h1 class="govuk-heading-@size wrappable" >@headingContent</h1>

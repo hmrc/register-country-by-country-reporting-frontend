@@ -53,8 +53,8 @@ checkYourAnswers.button = Confirm and send
 
 signedOut.title = For your security, we signed you out
 signedOut.heading = For your security, we signed you out
-signedOut.guidance = Your answers have not been saved.
-signedOut.backToCBCLink = Back to send a CBC Report
+signedOut.guidance = We did not save your answers.
+signedOut.backToCBCLink = Sign in again to use the service
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -255,11 +255,11 @@ registrationConfirmation.p3 = You can now {0}.
 registrationConfirmation.p3.link = send CBC reports
 registrationConfirmation.p4.link = What did you think of this service? (opens in new tab)
 
-unauthorisedIndividual.title = Sorry, you’re unable to use this service
-unauthorisedIndividual.heading = Sorry, you’re unable to use this service
+unauthorisedIndividual.title = You’re unable to use this service
+unauthorisedIndividual.heading = You’re unable to use this service
 unauthorisedIndividual.paragraph1 = You’ve signed in as an individual. Only organisations can send reports.
-unauthorisedIndividual.paragraph2 = If you need to send reports for an organisation,
-unauthorisedIndividual.link =  sign in with your organisation’s Government Gateway details
+unauthorisedIndividual.paragraph2 = If you need to send reports for an organisation, {0}.
+unauthorisedIndividual.paragraph2.link = sign in with your organisation’s Government Gateway details
 
 isThisYourBusiness.title = Is this your business?
 isThisYourBusiness.heading = Is this your business?
@@ -289,26 +289,26 @@ businessNotIdentified.p5 = If you have checked and entered your UTR and business
 businessNotIdentified.p5b = for help.
 businessNotIdentified.button = Try again
 
-preRegistered.title = Your organisation is already registered
-preRegistered.heading = Your organisation is already registered
-preRegistered.withOutID.information = You can access the service using the Government Gateway account you used to register.
-preRegistered.withOutID.GGLink = Sign in to your Government Gateway account (opens in new tab)
+preRegistered.title = Your organisation is already registered to use this service
+preRegistered.heading = Your organisation is already registered to use this service
+preRegistered.withOutID.information = You can access the service using the Government Gateway details that were used to register for country-by-country reporting.
+preRegistered.withOutID.GGLink = Sign in using Government Gateway
 preRegistered.help = You can email {0} if you’re having problems accessing the service.
 preRegistered.help.linkLocation = mailto:aeoi.enquiries@hmrc.gov.uk
-preRegistered.withID.information = You will need to contact your administrator to give you access via the ‘Manage account’ settings within their Business Tax Account.
+preRegistered.withID.information = You will need to contact your administrator to give you access via the ‘Manage account’ settings within their business tax account.
 
 thereIsAProblem.title = Sorry, there is a problem with the service
 thereIsAProblem.heading = Sorry, there is a problem with the service
 thereIsAProblem.p1 = Try again later.
-thereIsAProblem.help = You can email {0} if you need to contact someone about your CBC reporting.
+thereIsAProblem.help = You can email {0} if you need to contact someone about your country-by-country reporting.
 
-unauthorisedStandardUser.title = Sorry, you’re unable to use this service
-unauthorisedStandardUser.heading = Sorry, you’re unable to use this service
-unauthorisedStandardUser.paragraph1 = You’ve signed in as a standard user. Only people in your organisation with an administrator role can register for the service.
-unauthorisedStandardUser.paragraph2 = You need to find someone with an administrator’s credentials who can then sign in with their Government Gateway details.
-unauthorisedStandardUser.paragraph3 = Once registered, they can give you permission to use the service to submit country-by-country reports using your own Government Gateway credentials.
-unauthorisedStandardUser.paragraph4 = Your administrator can add, delete or change team members’ access in the manage account section within your organisation’s
-unauthorisedStandardUser.link =  business tax account (opens in new tab)
+unauthorisedStandardUser.title = You’re unable to use this service
+unauthorisedStandardUser.heading = You’re unable to use this service
+unauthorisedStandardUser.paragraph1 = You have signed in as a standard user. Only people in your organisation with an administrator role can register for the service.
+unauthorisedStandardUser.paragraph2 = You need to find an administrator who can then sign in with their Government Gateway details.
+unauthorisedStandardUser.paragraph3 = Once registered, they can give you permission to use the service to send country-by-country reports using your own Government Gateway details.
+unauthorisedStandardUser.paragraph4 = Your administrator can add, delete or change access for team members in the ‘Manage account’ section within your organisation’s
+unauthorisedStandardUser.link = business tax account
 
 businessWithIDName.checkYourAnswersLabel = Your business
 businessWithIDName.change.hidden = Change your business
@@ -328,10 +328,10 @@ yourContactDetails.heading = Setting up contact details
 yourContactDetails.p1 = Provide the name and contact details for one or two people or teams within your organisation who could answer questions about your reports.
 yourContactDetails.p2 = You can change your country-by-country contact names and details later, if you want to.
 
-informationSent.title = Information sent
-informationSent.heading = Information sent
+informationSent.title = You have already sent this information
+informationSent.heading = You have already sent this information
 informationSent.p1 = We will contact you if we have any questions about the details you have provided.
-informationSent.link = Back to manage your country-by-country report
+informationSent.link = Send a country-by-country report
 
 isRegisteredAddressInUk.title = Is your organisation’s registered address in the UK?
 isRegisteredAddressInUk.heading = Is your organisation’s registered address in the UK?

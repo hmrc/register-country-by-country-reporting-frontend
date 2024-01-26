@@ -19,6 +19,8 @@
 @this(
         layout: templates.Layout,
         link: components.Link,
+        heading: components.Heading,
+        paragraph: components.Paragraph,
         appConfig: FrontendAppConfig
 )
 
@@ -27,11 +29,9 @@
 @layout(pageTitle = titleNoForm(messages("unauthorisedIndividual.title")),
         showBackLink = false) {
 
-    <h1 class="govuk-heading-l">@messages("unauthorisedIndividual.heading")</h1>
+    @heading(messages("unauthorisedIndividual.heading"))
 
-    <p class="govuk-body">@messages("unauthorisedIndividual.paragraph1")</p>
+    @paragraph(Html(messages("unauthorisedIndividual.paragraph1")))
 
-    <p class="govuk-body">@messages("unauthorisedIndividual.paragraph2")
-        <span> @link(appConfig.loginUrl, "unauthorisedIndividual.link", openInNewWindow = true).</span>
-    </p>
+    @paragraph(Html(messages("unauthorisedIndividual.paragraph2", link(appConfig.loginUrl, "unauthorisedIndividual.paragraph2.link"))))
 }
