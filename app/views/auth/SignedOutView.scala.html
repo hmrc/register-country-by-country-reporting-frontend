@@ -14,9 +14,14 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
+
 @this(
     layout: templates.Layout,
-    link: components.Link
+    link: components.Link,
+    heading: components.Heading,
+    paragraph: components.Paragraph,
+    appConfig: FrontendAppConfig
 )
 
 @(loginUrl: String)(implicit request: Request[_], messages: Messages)
@@ -28,10 +33,10 @@
     showSignOut  = false
 ) {
 
-    <h1 class="govuk-heading-l">@messages("signedOut.heading")</h1>
+    @heading(messages("signedOut.heading"))
 
-    <p class="govuk-body">@messages("signedOut.guidance")</p>
+    @paragraph(Html(messages("signedOut.guidance")))
 
-    <p class="govuk-body">@link(loginUrl, "signedOut.backToCBCLink")</p>
+    @paragraph(link(appConfig.loginUrl, "signedOut.backToCBCLink"))
 
 }

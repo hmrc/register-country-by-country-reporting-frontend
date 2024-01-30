@@ -20,6 +20,8 @@
         layout: templates.Layout,
         govukButton: GovukButton,
         link: components.Link,
+        heading: components.Heading,
+        paragraph: components.Paragraph,
         appConfig: FrontendAppConfig
 )
 
@@ -27,12 +29,12 @@
 
 @layout(pageTitle = titleNoForm(messages("preRegistered.title")), showBackLink = false) {
 
-    <h1 class="govuk-heading-l">@messages("preRegistered.heading")</h1>
+    @heading(messages("preRegistered.heading"))
     @if(withId) {
-        <p class="govuk-body">@messages("preRegistered.withID.information")</p>
+        @paragraph(Html(messages("preRegistered.withID.information")))
     } else {
-        <p class="govuk-body">@messages("preRegistered.withOutID.information")</p>
-        <p class="govuk-body">@link(appConfig.loginUrl, "preRegistered.withOutID.GGLink", openInNewWindow = true)</p>
+        @paragraph(Html(messages("preRegistered.withOutID.information")))
+        @paragraph(link(appConfig.loginUrl, "preRegistered.withOutID.GGLink"))
     }
-    <p class="govuk-body">@Html(messages("preRegistered.help" , link(s"mailto:$emailLink", "enquiries.email", openInNewWindow = true)))</p>
+    @paragraph(Html(messages("preRegistered.help" , link(s"mailto:$emailLink", "enquiries.email"))))
 }

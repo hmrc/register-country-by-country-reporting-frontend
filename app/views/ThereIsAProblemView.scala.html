@@ -20,6 +20,8 @@
         layout: templates.Layout,
         govukButton: GovukButton,
         link: components.Link,
+        heading: components.Heading,
+        paragraph: components.Paragraph,
         appConfig: FrontendAppConfig
 )
 
@@ -27,9 +29,9 @@
 
 @layout(pageTitle = titleNoForm(messages("thereIsAProblem.title")), showBackLink = false) {
 
-    <h1 class="govuk-heading-l">@messages("thereIsAProblem.heading")</h1>
+    @heading(messages("thereIsAProblem.heading"))
 
-    <p class="govuk-body">@messages("thereIsAProblem.p1")</p>
+    @paragraph(Html(messages("thereIsAProblem.p1")))
 
-    <p class="govuk-body">@Html(messages("thereIsAProblem.help" , link(s"mailto:${appConfig.emailEnquiries}", "enquiries.email", openInNewWindow = true)))</p>
+    @paragraph(Html(messages("thereIsAProblem.help", link(s"mailto:${appConfig.emailEnquiries}", "enquiries.email"))))
 }
