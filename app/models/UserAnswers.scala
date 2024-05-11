@@ -16,9 +16,13 @@
 
 package models
 
+import models.crypto.SensitiveJsObject
 import pages.QuestionPage
+import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import queries.{Gettable, Settable}
+import uk.gov.hmrc.crypto.json.JsonEncryption
+import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.Instant
@@ -77,9 +81,6 @@ final case class UserAnswers(
 object UserAnswers {
 
   val reads: Reads[UserAnswers] = {
-
-    import play.api.libs.functional.syntax._
-
     (
       (__ \ "_id").read[String] and
       (__ \ "data").read[JsObject] and
@@ -88,9 +89,6 @@ object UserAnswers {
   }
 
   val writes: OWrites[UserAnswers] = {
-
-    import play.api.libs.functional.syntax._
-
     (
       (__ \ "_id").write[String] and
       (__ \ "data").write[JsObject] and
@@ -99,4 +97,29 @@ object UserAnswers {
   }
 
   implicit val format: OFormat[UserAnswers] = OFormat(reads, writes)
+
+  def mongoFormat(encryptionEnabled: Boolean)(implicit crypto: Encrypter with Decrypter): OFormat[UserAnswers] =
+    if (encryptionEnabled) encryptedFormat else format
+
+  private def encryptedFormat(implicit crypto: Encrypter with Decrypter): OFormat[UserAnswers] = {
+    implicit val sensitiveFormat: Format[SensitiveJsObject] = {
+      JsonEncryption.sensitiveEncrypterDecrypter(SensitiveJsObject.apply)
+    }
+
+    val encryptedReads: Reads[UserAnswers] =
+      (
+        (__ \ "_id").read[String] and
+        (__ \ "data").read[SensitiveJsObject] and
+        (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
+      )((id, data, lastUpdated) => UserAnswers(id, data.decryptedValue, lastUpdated))
+
+    val encryptedWrites: OWrites[UserAnswers] =
+      (
+        (__ \ "_id").write[String] and
+        (__ \ "data").write[SensitiveJsObject] and
+        (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
+      )(ua => (ua.id, SensitiveJsObject(ua.data), ua.lastUpdated))
+
+    OFormat(encryptedReads, encryptedWrites)
+  }
 }

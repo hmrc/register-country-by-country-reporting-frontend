@@ -76,4 +76,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
 
   lazy val sendEmailUrl: String              = configuration.get[Service]("microservice.services.email").baseUrl
   lazy val emailOrganisationTemplate: String = configuration.get[String]("emailtemplates.organisation")
+
+  lazy val encryptionEnabled: Boolean = configuration.get[Boolean]("mongodb.encryptionEnabled")
 }
