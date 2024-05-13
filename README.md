@@ -2,9 +2,11 @@
 
 ## Info
 
-This service allows a user(agent, client or organisation) to register to CBCR services.
+This is a ROSM registration frontend which allows a user (agent, client, or organisation) to register & subscribe to Country By Country Reporting.
 
-This service has a corresponding back-end service, namely register-country-by-country-reporting can be viewed [here](https://github.com/hmrc/register-country-by-country-reporting) which integrates with HOD, i.e. DES/ETMP.
+The service has a backend ([register-country-by-country-reporting](https://github.com/hmrc/country-by-country-reporting)) which integrates with ETMP for registrations and subscriptions.
+
+Once a user has registered and subscribed to CBC they can then use the [County by Country Reporting Frontend](https://github.com/hmrc/country-by-country-reporting-frontend) to submit CBC reports to HMRC.
 
 ### Dependencies
 
@@ -14,15 +16,8 @@ This service has a corresponding back-end service, namely register-country-by-co
 | Email                                         | https://github.com/hmrc/email                                           |
 | Auth                                          | https://github.com/hmrc/auth                                            |
 | Tax Enrolments                                | https://github.com/hmrc/tax-enrolments                                  |
-| Country by country reporting frontend         | https://github.com/hmrc/country-by-country-reporting-frontend           |
-| Country by country reporting                  | https://github.com/hmrc/country-by-country-reporting           |
-| Country by country reporting stubs            | https://github.com/hmrc/country-by-country-reporting-stubs              |
-| Register country by country reporting stubs   | https://github.com/hmrc/register-country-by-country-reporting-stubs     |
 | Register country by country reporting         | https://github.com/hmrc/register-country-by-country-reporting           |
-
-### Origin
-
-https://github.com/hmrc/register-country-by-country-reporting-frontend 
+| Register country by country reporting stubs   | https://github.com/hmrc/register-country-by-country-reporting-stubs     |
 
 ### Endpoints used
 
@@ -42,11 +37,13 @@ Service Manager: CBCR_NEW_ALL
 
 Port: 10026
 
-Link: http://localhost:10026/register-to-send-a-country-by-country-report/register/have-utr
+Link: http://localhost:10026/register-to-send-a-country-by-country-report
+
+Affinity Group: Organisation
 
 ## Tests and prototype
 
-[View the prototype here](https://cbc-reporting-prototype.herokuapp.com/)
+[View the prototype here](https://cbcr-prototype.herokuapp.com/)
 
 [View the journey tests here](https://github.com/hmrc/register-country-by-country-reporting-ui-tests)
 
