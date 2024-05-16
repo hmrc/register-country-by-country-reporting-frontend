@@ -80,46 +80,32 @@ final case class UserAnswers(
 
 object UserAnswers {
 
-  val reads: Reads[UserAnswers] = {
-    (
-      (__ \ "_id").read[String] and
-      (__ \ "data").read[JsObject] and
-      (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
-    ) (UserAnswers.apply _)
-  }
-
-  val writes: OWrites[UserAnswers] = {
-    (
-      (__ \ "_id").write[String] and
-      (__ \ "data").write[JsObject] and
-      (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
-    ) (unlift(UserAnswers.unapply))
-  }
-
-  implicit val format: OFormat[UserAnswers] = OFormat(reads, writes)
-
-  def mongoFormat(encryptionEnabled: Boolean)(implicit crypto: Encrypter with Decrypter): OFormat[UserAnswers] =
-    if (encryptionEnabled) encryptedFormat else format
-
-  private def encryptedFormat(implicit crypto: Encrypter with Decrypter): OFormat[UserAnswers] = {
+  def mongoFormat(encryptionEnabled: Boolean)(implicit crypto: Encrypter with Decrypter): OFormat[UserAnswers] = {
     implicit val sensitiveFormat: Format[SensitiveJsObject] = {
-      JsonEncryption.sensitiveEncrypterDecrypter(SensitiveJsObject.apply)
+      if (encryptionEnabled) {
+        JsonEncryption.sensitiveEncrypterDecrypter(SensitiveJsObject.apply)
+      } else {
+        Json.format[SensitiveJsObject]
+      }
     }
 
-    val encryptedReads: Reads[UserAnswers] =
+    val reads: Reads[UserAnswers] = {
       (
         (__ \ "_id").read[String] and
         (__ \ "data").read[SensitiveJsObject] and
         (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
       )((id, data, lastUpdated) => UserAnswers(id, data.decryptedValue, lastUpdated))
+    }
 
-    val encryptedWrites: OWrites[UserAnswers] =
+    val writes: OWrites[UserAnswers] = {
       (
         (__ \ "_id").write[String] and
         (__ \ "data").write[SensitiveJsObject] and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
       )(ua => (ua.id, SensitiveJsObject(ua.data), ua.lastUpdated))
+    }
 
-    OFormat(encryptedReads, encryptedWrites)
+    OFormat(reads, writes)
   }
+
 }
