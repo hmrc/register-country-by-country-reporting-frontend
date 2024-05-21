@@ -19,13 +19,13 @@ package config
 import com.google.inject.AbstractModule
 import controllers.actions.{CheckForSubmissionActionImpl, _}
 import models.{UUIDGen, UUIDGenImpl}
+import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 
 import java.time.{Clock, ZoneOffset}
 
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
-
     bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
     bind(classOf[DataInitializeAction]).to(classOf[DataInitializeActionImpl]).asEagerSingleton()
@@ -34,5 +34,8 @@ class Module extends AbstractModule {
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction])
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
     bind(classOf[UUIDGen]).to(classOf[UUIDGenImpl])
+    bind(classOf[Encrypter]).toProvider(classOf[CryptoProvider])
+    bind(classOf[Decrypter]).toProvider(classOf[CryptoProvider])
   }
+
 }
