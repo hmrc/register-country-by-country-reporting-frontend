@@ -59,6 +59,6 @@ class CountryListFactory @Inject()(environment: Environment, appConfig: Frontend
       country =>
         SelectItem(Some(country.code),country.description, containsCountry(country))
     }
-    SelectItem(None, "&nbsp") +: countryJsonList
+    SelectItem(None, "") +: countryJsonList
   }
 }
