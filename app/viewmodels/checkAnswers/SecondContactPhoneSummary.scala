@@ -31,22 +31,22 @@ object SecondContactPhoneSummary {
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
     val value = answers.get(SecondContactPhonePage).getOrElse("None")
 
-
-    Some(SummaryListRowViewModel(
-      key = "secondContactPhone.checkYourAnswersLabel",
-      value = ValueViewModel(HtmlFormat.escape(value).toString),
-      actions = Seq(
-        ActionItemViewModel(
-          content = HtmlContent(
-            s"""
+    Some(
+      SummaryListRowViewModel(
+        key = "secondContactPhone.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(value).toString),
+        actions = Seq(
+          ActionItemViewModel(
+            content = HtmlContent(
+              s"""
                |<span aria-hidden="true">${messages("site.change")}</span>
                |<span class="govuk-visually-hidden">${messages("secondContactPhone.change.hidden")}</span>
                |""".stripMargin
-          ),
-          href = routes.SecondContactHavePhoneController.onPageLoad(CheckMode).url
-
-        ).withAttribute(("id","second-contact-phone"))
+            ),
+            href = routes.SecondContactHavePhoneController.onPageLoad(CheckMode).url
+          ).withAttribute(("id", "second-contact-phone"))
+        )
       )
-    ))
+    )
   }
 }

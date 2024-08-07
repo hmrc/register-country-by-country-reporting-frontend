@@ -27,9 +27,6 @@ case object DoYouHaveSecondContactPage extends QuestionPage[Boolean] {
 
   override def toString: String = "doYouHaveSecondContact"
 
-
-
-
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(false) =>

@@ -36,7 +36,7 @@ import scala.concurrent.Future
 class IsRegisteredAddressInUkControllerSpec extends SpecBase {
 
   val formProvider = new IsRegisteredAddressInUkFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   lazy val isRegisteredAddressInUkRoute = routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
 

@@ -30,7 +30,7 @@ class DoYouHaveSecondContactPageSpec extends PageBehaviours {
     beRemovable[Boolean](DoYouHaveSecondContactPage)
   }
 
-  "cleanup"- {
+  "cleanup" - {
     "must clean up Second contact pages when user chooses No to have second contact" in {
       val userAnswersId: String = "id"
       val userAnswers = UserAnswers(userAnswersId)
@@ -50,11 +50,11 @@ class DoYouHaveSecondContactPageSpec extends PageBehaviours {
         .success
         .value
 
-        userAnswers.get(SecondContactNamePage) must not be defined
-        userAnswers.get(SecondContactEmailPage) must not be defined
-        userAnswers.get(SecondContactHavePhonePage) must not be defined
-        userAnswers.get(SecondContactPhonePage) must not be defined
-        userAnswers.get(DoYouHaveSecondContactPage) mustBe Some(false)
+      userAnswers.get(SecondContactNamePage) must not be defined
+      userAnswers.get(SecondContactEmailPage) must not be defined
+      userAnswers.get(SecondContactHavePhonePage) must not be defined
+      userAnswers.get(SecondContactPhonePage) must not be defined
+      userAnswers.get(DoYouHaveSecondContactPage) mustBe Some(false)
     }
   }
 }

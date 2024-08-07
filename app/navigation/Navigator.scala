@@ -24,7 +24,7 @@ import models._
 import play.api.libs.json.Reads
 
 @Singleton
-class Navigator @Inject()() {
+class Navigator @Inject() () {
 
   val normalRoutes: Page => UserAnswers => Call = {
     case _ => _ => routes.IndexController.onPageLoad

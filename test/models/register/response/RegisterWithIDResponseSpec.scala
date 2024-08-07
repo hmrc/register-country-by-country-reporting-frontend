@@ -27,8 +27,7 @@ class RegisterWithIDResponseSpec extends AnyFreeSpec with Matchers {
   "RegisterWithIDResponse" - {
 
     "must read json as RegisterWithIDResponse" in {
-      val json: JsValue = Json.parse(
-        """
+      val json: JsValue = Json.parse("""
           |{
           | "registerWithIDResponse": {
           |  "responseDetail": {
@@ -57,9 +56,11 @@ class RegisterWithIDResponseSpec extends AnyFreeSpec with Matchers {
           |} }
           |""".stripMargin)
 
-      json.as[RegisterWithIDResponse] mustBe RegisterWithIDResponse(SafeId("XE0000123456789"),
-          OrganisationResponse("Org Name",true,Some("LLP"),Some("0002")),
-          AddressResponse("addressLine1",Some("addressLine2"),Some("addressLine3"),Some("addressLine4"),Some("AA1 1AA"),"GB"))
+      json.as[RegisterWithIDResponse] mustBe RegisterWithIDResponse(
+        SafeId("XE0000123456789"),
+        OrganisationResponse("Org Name", true, Some("LLP"), Some("0002")),
+        AddressResponse("addressLine1", Some("addressLine2"), Some("addressLine3"), Some("addressLine4"), Some("AA1 1AA"), "GB")
+      )
 
     }
 

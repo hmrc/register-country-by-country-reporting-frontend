@@ -32,16 +32,19 @@ import views.html.BusinessWithoutIdAddressView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class BusinessWithoutIdAddressController @Inject()(
-                                                    override val messagesApi: MessagesApi,
-                                                    countryListFactory: CountryListFactory,
-                                                    sessionRepository: SessionRepository,
-                                                    navigator: CBCRNavigator,
-                                                    standardActionSets: StandardActionSets,
-                                                    formProvider: BusinessWithoutIdAddressFormProvider,
-                                                    val controllerComponents: MessagesControllerComponents,
-                                                    view: BusinessWithoutIdAddressView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class BusinessWithoutIdAddressController @Inject() (
+  override val messagesApi: MessagesApi,
+  countryListFactory: CountryListFactory,
+  sessionRepository: SessionRepository,
+  navigator: CBCRNavigator,
+  standardActionSets: StandardActionSets,
+  formProvider: BusinessWithoutIdAddressFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: BusinessWithoutIdAddressView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with Logging {
 
   val countriesList: Option[Seq[Country]] = countryListFactory.countryListWithoutGB
 
@@ -50,12 +53,12 @@ class BusinessWithoutIdAddressController @Inject()(
       countriesList match {
         case Some(countries) =>
           val form = formProvider(countries)
-      val preparedForm = request.userAnswers.get(BusinessWithoutIdAddressPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+          val preparedForm = request.userAnswers.get(BusinessWithoutIdAddressPage) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
 
-      Ok(view(preparedForm, countryListFactory.countrySelectList(form.data, countries), mode))
+          Ok(view(preparedForm, countryListFactory.countrySelectList(form.data, countries), mode))
         case None =>
           logger.error("Could not retrieve countries list from JSON file.")
           Redirect(routes.ThereIsAProblemController.onPageLoad())
@@ -67,16 +70,16 @@ class BusinessWithoutIdAddressController @Inject()(
       countriesList match {
         case Some(countries) =>
           val form = formProvider(countries)
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, countryListFactory.countrySelectList(form.data, countries), mode))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessWithoutIdAddressPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessWithoutIdAddressPage, mode, updatedAnswers))
-      )
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, countryListFactory.countrySelectList(form.data, countries), mode))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessWithoutIdAddressPage, value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(BusinessWithoutIdAddressPage, mode, updatedAnswers))
+            )
         case None =>
           logger.error("Could not retrieve countries list from JSON file.")
           Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))

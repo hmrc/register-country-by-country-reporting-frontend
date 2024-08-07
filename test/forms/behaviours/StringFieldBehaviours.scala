@@ -22,11 +22,7 @@ import utils.RegexConstants
 
 trait StringFieldBehaviours extends FieldBehaviours with RegexConstants {
 
-    def fieldWithMaxLength(form: Form[_],
-                           fieldName: String,
-                           maxLength: Int,
-                           lengthError: FormError): Unit = {
-
+  def fieldWithMaxLength(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
     s"not bind strings longer than $maxLength characters" in {
 
       forAll(stringsLongerThan(maxLength) -> "longString") {
@@ -35,7 +31,6 @@ trait StringFieldBehaviours extends FieldBehaviours with RegexConstants {
           result.errors must contain only lengthError
       }
     }
-  }
 
   def fieldWithPostCodeRequired(form: Form[_], fieldName: String, countryCodeList: Seq[String], invalidError: FormError): Unit =
     s"must not bind when postcode is required for a country" in {
@@ -82,8 +77,6 @@ trait StringFieldBehaviours extends FieldBehaviours with RegexConstants {
           result.errors mustEqual Seq(lengthError)
       }
     }
-
-
 
   def fieldWithMaxLengthPhoneNumber(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
     s"must not bind strings longer than $maxLength characters" in {

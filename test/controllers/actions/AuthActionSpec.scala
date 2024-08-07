@@ -27,7 +27,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.auth.core.retrieve.{~, Retrieval}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.RetrievalOps.Ops
 
@@ -45,7 +45,7 @@ class AuthActionSpec extends SpecBase {
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
   val bodyParsers: BodyParsers.Default = app.injector.instanceOf[BodyParsers.Default]
-  val appConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  val appConfig: FrontendAppConfig     = app.injector.instanceOf[FrontendAppConfig]
 
   type AuthRetrievals = Option[String] ~ Enrolments ~ Option[AffinityGroup] ~ Option[CredentialRole]
 

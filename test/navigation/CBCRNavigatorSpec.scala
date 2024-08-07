@@ -25,7 +25,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 
-class CBCRNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators{
+class CBCRNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   val navigator = new CBCRNavigator
 
@@ -234,7 +234,7 @@ class CBCRNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
           answers =>
             val updatedAnswers =
               answers
-                .set(BusinessWithoutIdAddressPage, Address("line 1",None, "Line 3", None, None, Country("valid", "DE", "Germany")))
+                .set(BusinessWithoutIdAddressPage, Address("line 1", None, "Line 3", None, None, Country("valid", "DE", "Germany")))
                 .success
                 .value
 
@@ -428,479 +428,483 @@ class CBCRNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
     "in Check mode" - {
 
       "must go from IsRegisteredAddressInUk page to BusinessType page if Yes is selected" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(IsRegisteredAddressInUkPage, true)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(IsRegisteredAddressInUkPage, true)
+            .success
+            .value
 
-            navigator
-              .nextPage(IsRegisteredAddressInUkPage, CheckMode, updatedAnswers)
-              .mustBe(routes.BusinessTypeController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(IsRegisteredAddressInUkPage, CheckMode, updatedAnswers)
+          .mustBe(routes.BusinessTypeController.onPageLoad(CheckMode))
 
       }
 
       "must go from IsRegisteredAddressInUk page to DoYouHaveUTR page if NO is selected" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(IsRegisteredAddressInUkPage, false)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(IsRegisteredAddressInUkPage, false)
+            .success
+            .value
 
-            navigator
-              .nextPage(IsRegisteredAddressInUkPage, CheckMode, updatedAnswers)
-              .mustBe(routes.DoYouHaveUTRController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(IsRegisteredAddressInUkPage, CheckMode, updatedAnswers)
+          .mustBe(routes.DoYouHaveUTRController.onPageLoad(CheckMode))
       }
 
       "must go from DoYouHaveUTR page to BusinessType page if Yes is selected" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(DoYouHaveUTRPage, true)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(DoYouHaveUTRPage, true)
+            .success
+            .value
 
-            navigator
-              .nextPage(DoYouHaveUTRPage, CheckMode, updatedAnswers)
-              .mustBe(routes.BusinessTypeController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(DoYouHaveUTRPage, CheckMode, updatedAnswers)
+          .mustBe(routes.BusinessTypeController.onPageLoad(CheckMode))
       }
 
       "must go from DoYouHaveUTR page to BusinessWithoutIDName page if NO is selected" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(DoYouHaveUTRPage, false)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(DoYouHaveUTRPage, false)
+            .success
+            .value
 
-            navigator
-              .nextPage(DoYouHaveUTRPage, CheckMode, updatedAnswers)
-              .mustBe(routes.BusinessWithoutIDNameController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(DoYouHaveUTRPage, CheckMode, updatedAnswers)
+          .mustBe(routes.BusinessWithoutIDNameController.onPageLoad(CheckMode))
       }
 
       "must go from BusinessType page to UTR page" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(BusinessTypePage, LimitedCompany)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(BusinessTypePage, LimitedCompany)
+            .success
+            .value
 
-            navigator
-              .nextPage(BusinessTypePage, CheckMode, updatedAnswers)
-              .mustBe(routes.UTRController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(BusinessTypePage, CheckMode, updatedAnswers)
+          .mustBe(routes.UTRController.onPageLoad(CheckMode))
       }
 
       "must go from UTR page to BusinessName page" in {
         val utr: UniqueTaxpayerReference = UniqueTaxpayerReference("1234567890")
 
         val updatedAnswers =
-              emptyUserAnswers
-                .set(UTRPage, utr)
-                .success
-                .value
+          emptyUserAnswers
+            .set(UTRPage, utr)
+            .success
+            .value
 
-            navigator
-              .nextPage(UTRPage, CheckMode, updatedAnswers)
-              .mustBe(routes.BusinessNameController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(UTRPage, CheckMode, updatedAnswers)
+          .mustBe(routes.BusinessNameController.onPageLoad(CheckMode))
       }
 
       "must go from BusinessName page to IsThisYourBusiness page" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(BusinessNamePage, "name")
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(BusinessNamePage, "name")
+            .success
+            .value
 
-            navigator
-              .nextPage(BusinessNamePage, CheckMode, updatedAnswers)
-              .mustBe(routes.IsThisYourBusinessController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(BusinessNamePage, CheckMode, updatedAnswers)
+          .mustBe(routes.IsThisYourBusinessController.onPageLoad(CheckMode))
       }
 
       "must go from IsThisYourBusiness page to YourContactDetails page if Yes is selected" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(IsThisYourBusinessPage, true)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(IsThisYourBusinessPage, true)
+            .success
+            .value
 
-            navigator
-              .nextPage(IsThisYourBusinessPage, CheckMode, updatedAnswers)
-              .mustBe(routes.YourContactDetailsController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(IsThisYourBusinessPage, CheckMode, updatedAnswers)
+          .mustBe(routes.YourContactDetailsController.onPageLoad(CheckMode))
       }
 
       "must go from IsThisYourBusiness page to BusinessNotIdentified page if No is selected" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(IsThisYourBusinessPage, false)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(IsThisYourBusinessPage, false)
+            .success
+            .value
 
-            navigator
-              .nextPage(IsThisYourBusinessPage, CheckMode, updatedAnswers)
-              .mustBe(routes.BusinessNotIdentifiedController.onPageLoad())
+        navigator
+          .nextPage(IsThisYourBusinessPage, CheckMode, updatedAnswers)
+          .mustBe(routes.BusinessNotIdentifiedController.onPageLoad())
       }
 
       "must go from BusinessWithoutIDName page to BusinessHaveDifferentName page when next page is not completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(BusinessWithoutIDNamePage, "Name")
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(BusinessWithoutIDNamePage, "Name")
+            .success
+            .value
 
-            navigator
-              .nextPage(BusinessWithoutIDNamePage, CheckMode, updatedAnswers)
-              .mustBe(routes.BusinessHaveDifferentNameController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(BusinessWithoutIDNamePage, CheckMode, updatedAnswers)
+          .mustBe(routes.BusinessHaveDifferentNameController.onPageLoad(CheckMode))
       }
 
       "must go from BusinessWithoutIDName page to CheckYourAnswers page when next page is completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(BusinessWithoutIDNamePage, "Name").success.value
-                .set(BusinessHaveDifferentNamePage, true).success.value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(BusinessWithoutIDNamePage, "Name")
+            .success
+            .value
+            .set(BusinessHaveDifferentNamePage, true)
+            .success
+            .value
 
-            navigator
-              .nextPage(BusinessWithoutIDNamePage, CheckMode, updatedAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad)
+        navigator
+          .nextPage(BusinessWithoutIDNamePage, CheckMode, updatedAnswers)
+          .mustBe(routes.CheckYourAnswersController.onPageLoad)
       }
 
       "must go from BusinessHaveDifferentName page to WhatIsTradingName page if Yes is selected" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(BusinessHaveDifferentNamePage, true)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(BusinessHaveDifferentNamePage, true)
+            .success
+            .value
 
-            navigator
-              .nextPage(BusinessHaveDifferentNamePage, CheckMode, updatedAnswers)
-              .mustBe(routes.WhatIsTradingNameController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(BusinessHaveDifferentNamePage, CheckMode, updatedAnswers)
+          .mustBe(routes.WhatIsTradingNameController.onPageLoad(CheckMode))
       }
 
       "must go from BusinessHaveDifferentName page to BusinessWithoutIdAddress page if No is selected and next page is not completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(BusinessHaveDifferentNamePage, false)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(BusinessHaveDifferentNamePage, false)
+            .success
+            .value
 
-            navigator
-              .nextPage(BusinessHaveDifferentNamePage, CheckMode, updatedAnswers)
-              .mustBe(routes.BusinessWithoutIdAddressController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(BusinessHaveDifferentNamePage, CheckMode, updatedAnswers)
+          .mustBe(routes.BusinessWithoutIdAddressController.onPageLoad(CheckMode))
       }
 
       "must go from BusinessHaveDifferentName page to CheckYourAnswers page if No is selected and next page is completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(BusinessHaveDifferentNamePage, false)
-                .success
-                .value
-                .set(BusinessWithoutIdAddressPage, Address("line 1", None, "Line 3", None, None, Country("valid", "DE", "Germany")))
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(BusinessHaveDifferentNamePage, false)
+            .success
+            .value
+            .set(BusinessWithoutIdAddressPage, Address("line 1", None, "Line 3", None, None, Country("valid", "DE", "Germany")))
+            .success
+            .value
 
-            navigator
-              .nextPage(BusinessHaveDifferentNamePage, CheckMode, updatedAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad)
+        navigator
+          .nextPage(BusinessHaveDifferentNamePage, CheckMode, updatedAnswers)
+          .mustBe(routes.CheckYourAnswersController.onPageLoad)
       }
 
       "must go from WhatIsTradingName page to BusinessWithoutIdAddress page when next page is not completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(WhatIsTradingNamePage, "Trading Name")
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(WhatIsTradingNamePage, "Trading Name")
+            .success
+            .value
 
-            navigator
-              .nextPage(WhatIsTradingNamePage, CheckMode, updatedAnswers)
-              .mustBe(routes.BusinessWithoutIdAddressController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(WhatIsTradingNamePage, CheckMode, updatedAnswers)
+          .mustBe(routes.BusinessWithoutIdAddressController.onPageLoad(CheckMode))
       }
 
       "must go from WhatIsTradingName page to CheckYourAnswers page when next page is completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(WhatIsTradingNamePage, "Trading Name")
-                .success
-                .value
-                .set(BusinessWithoutIdAddressPage, Address("line 1", None, "Line 3", None, None, Country("valid", "DE", "Germany")))
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(WhatIsTradingNamePage, "Trading Name")
+            .success
+            .value
+            .set(BusinessWithoutIdAddressPage, Address("line 1", None, "Line 3", None, None, Country("valid", "DE", "Germany")))
+            .success
+            .value
 
-            navigator
-              .nextPage(WhatIsTradingNamePage, CheckMode, updatedAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad)
+        navigator
+          .nextPage(WhatIsTradingNamePage, CheckMode, updatedAnswers)
+          .mustBe(routes.CheckYourAnswersController.onPageLoad)
       }
 
       "must go from BusinessWithoutIdAddress page to YourContactDetails page when next page is not completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(BusinessWithoutIdAddressPage, Address("line 1", None, "Line 3", None, None, Country("valid", "DE", "Germany")))
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(BusinessWithoutIdAddressPage, Address("line 1", None, "Line 3", None, None, Country("valid", "DE", "Germany")))
+            .success
+            .value
 
-            navigator
-              .nextPage(BusinessWithoutIdAddressPage, CheckMode, updatedAnswers)
-              .mustBe(routes.YourContactDetailsController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(BusinessWithoutIdAddressPage, CheckMode, updatedAnswers)
+          .mustBe(routes.YourContactDetailsController.onPageLoad(CheckMode))
       }
 
       "must go from BusinessWithoutIdAddress page to CheckYourAnswers page when next page is completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(BusinessWithoutIdAddressPage, Address("line 1", None, "Line 3", None, None, Country("valid", "DE", "Germany")))
-                .success
-                .value
-                .set(ContactNamePage, "Name")
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(BusinessWithoutIdAddressPage, Address("line 1", None, "Line 3", None, None, Country("valid", "DE", "Germany")))
+            .success
+            .value
+            .set(ContactNamePage, "Name")
+            .success
+            .value
 
-            navigator
-              .nextPage(BusinessWithoutIdAddressPage, CheckMode, updatedAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad)
+        navigator
+          .nextPage(BusinessWithoutIdAddressPage, CheckMode, updatedAnswers)
+          .mustBe(routes.CheckYourAnswersController.onPageLoad)
       }
 
       "must go from ContactName page to ContactEmail page when next page is not completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(ContactNamePage, "Name")
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(ContactNamePage, "Name")
+            .success
+            .value
 
-            navigator
-              .nextPage(ContactNamePage, CheckMode, updatedAnswers)
-              .mustBe(routes.ContactEmailController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(ContactNamePage, CheckMode, updatedAnswers)
+          .mustBe(routes.ContactEmailController.onPageLoad(CheckMode))
       }
 
       "must go from ContactName page to CheckYourAnswers page when next page is completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(ContactNamePage, "Name")
-                .success
-                .value
-                .set(ContactEmailPage, "test@test.com")
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(ContactNamePage, "Name")
+            .success
+            .value
+            .set(ContactEmailPage, "test@test.com")
+            .success
+            .value
 
-            navigator
-              .nextPage(ContactNamePage, CheckMode, updatedAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad)
+        navigator
+          .nextPage(ContactNamePage, CheckMode, updatedAnswers)
+          .mustBe(routes.CheckYourAnswersController.onPageLoad)
       }
 
       "must go from ContactEmailPage page to HaveTelephone page when next page is not completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(ContactEmailPage, "test@test.com")
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(ContactEmailPage, "test@test.com")
+            .success
+            .value
 
-            navigator
-              .nextPage(ContactEmailPage, CheckMode, updatedAnswers)
-              .mustBe(routes.HaveTelephoneController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(ContactEmailPage, CheckMode, updatedAnswers)
+          .mustBe(routes.HaveTelephoneController.onPageLoad(CheckMode))
       }
 
       "must go from ContactEmailPage page to CheckYourAnswers page when next page is completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(ContactEmailPage, "test@test.com")
-                .success
-                .value
-                .set(HaveTelephonePage, true)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(ContactEmailPage, "test@test.com")
+            .success
+            .value
+            .set(HaveTelephonePage, true)
+            .success
+            .value
 
-            navigator
-              .nextPage(ContactEmailPage, CheckMode, updatedAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad)
+        navigator
+          .nextPage(ContactEmailPage, CheckMode, updatedAnswers)
+          .mustBe(routes.CheckYourAnswersController.onPageLoad)
       }
 
       "must go from HaveTelephone page to ContactPhone page if Yes is selected" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(HaveTelephonePage, true)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(HaveTelephonePage, true)
+            .success
+            .value
 
-            navigator
-              .nextPage(HaveTelephonePage, CheckMode, updatedAnswers)
-              .mustBe(routes.ContactPhoneController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(HaveTelephonePage, CheckMode, updatedAnswers)
+          .mustBe(routes.ContactPhoneController.onPageLoad(CheckMode))
       }
 
       "must go from HaveTelephone page to DoYouHaveSecondContact page if No is selected and next page is not completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(HaveTelephonePage, false)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(HaveTelephonePage, false)
+            .success
+            .value
 
-            navigator
-              .nextPage(HaveTelephonePage, CheckMode, updatedAnswers)
-              .mustBe(routes.DoYouHaveSecondContactController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(HaveTelephonePage, CheckMode, updatedAnswers)
+          .mustBe(routes.DoYouHaveSecondContactController.onPageLoad(CheckMode))
       }
 
       "must go from HaveTelephone page to CheckYourAnswers page if No is selected and next page is completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(HaveTelephonePage, false)
-                .success
-                .value
-                .set(DoYouHaveSecondContactPage, true)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(HaveTelephonePage, false)
+            .success
+            .value
+            .set(DoYouHaveSecondContactPage, true)
+            .success
+            .value
 
-            navigator
-              .nextPage(HaveTelephonePage, CheckMode, updatedAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad)
+        navigator
+          .nextPage(HaveTelephonePage, CheckMode, updatedAnswers)
+          .mustBe(routes.CheckYourAnswersController.onPageLoad)
       }
 
       "must go from ContactPhonePage page to DoYouHaveSecondContact page when next page is not completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(ContactPhonePage, "0987654321")
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(ContactPhonePage, "0987654321")
+            .success
+            .value
 
-            navigator
-              .nextPage(ContactPhonePage, CheckMode, updatedAnswers)
-              .mustBe(routes.DoYouHaveSecondContactController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(ContactPhonePage, CheckMode, updatedAnswers)
+          .mustBe(routes.DoYouHaveSecondContactController.onPageLoad(CheckMode))
       }
 
       "must go from ContactPhonePage page to CheckYourAnswers page when next page is completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(ContactPhonePage, "0987654321")
-                .success
-                .value
-                .set(DoYouHaveSecondContactPage, true)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(ContactPhonePage, "0987654321")
+            .success
+            .value
+            .set(DoYouHaveSecondContactPage, true)
+            .success
+            .value
 
-            navigator
-              .nextPage(ContactPhonePage, CheckMode, updatedAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad)
+        navigator
+          .nextPage(ContactPhonePage, CheckMode, updatedAnswers)
+          .mustBe(routes.CheckYourAnswersController.onPageLoad)
       }
 
       "must go from DoYouHaveSecondContact page to SecondContactName page if Yes is selected and next page is not completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(DoYouHaveSecondContactPage, true)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(DoYouHaveSecondContactPage, true)
+            .success
+            .value
 
-            navigator
-              .nextPage(DoYouHaveSecondContactPage, CheckMode, updatedAnswers)
-              .mustBe(routes.SecondContactNameController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(DoYouHaveSecondContactPage, CheckMode, updatedAnswers)
+          .mustBe(routes.SecondContactNameController.onPageLoad(CheckMode))
       }
 
       "must go from DoYouHaveSecondContact page to CheckYourAnswers page if Yes is selected and next page is completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(DoYouHaveSecondContactPage, true)
-                .success
-                .value
-                .set(SecondContactNamePage, "Name")
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(DoYouHaveSecondContactPage, true)
+            .success
+            .value
+            .set(SecondContactNamePage, "Name")
+            .success
+            .value
 
-            navigator
-              .nextPage(DoYouHaveSecondContactPage, CheckMode, updatedAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad)
+        navigator
+          .nextPage(DoYouHaveSecondContactPage, CheckMode, updatedAnswers)
+          .mustBe(routes.CheckYourAnswersController.onPageLoad)
       }
 
       "must go from DoYouHaveSecondContact page to CheckYourAnswers page if No is selected" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(DoYouHaveSecondContactPage, false)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(DoYouHaveSecondContactPage, false)
+            .success
+            .value
 
-            navigator
-              .nextPage(DoYouHaveSecondContactPage, CheckMode, updatedAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad)
+        navigator
+          .nextPage(DoYouHaveSecondContactPage, CheckMode, updatedAnswers)
+          .mustBe(routes.CheckYourAnswersController.onPageLoad)
       }
 
       "must go from SecondContactName page to SecondContactEmail page when next page is not completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(SecondContactNamePage, "Name")
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(SecondContactNamePage, "Name")
+            .success
+            .value
 
-            navigator
-              .nextPage(SecondContactNamePage, CheckMode, updatedAnswers)
-              .mustBe(routes.SecondContactEmailController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(SecondContactNamePage, CheckMode, updatedAnswers)
+          .mustBe(routes.SecondContactEmailController.onPageLoad(CheckMode))
       }
 
       "must go from SecondContactName page to CheckYourAnswers page when next page is completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(SecondContactNamePage, "Name")
-                .success
-                .value
-                .set(SecondContactEmailPage, "test@test.com")
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(SecondContactNamePage, "Name")
+            .success
+            .value
+            .set(SecondContactEmailPage, "test@test.com")
+            .success
+            .value
 
-            navigator
-              .nextPage(SecondContactNamePage, CheckMode, updatedAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad)
+        navigator
+          .nextPage(SecondContactNamePage, CheckMode, updatedAnswers)
+          .mustBe(routes.CheckYourAnswersController.onPageLoad)
       }
 
       "must go from SecondContactEmail page to SecondContactHavePhone page when next page is not completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(SecondContactEmailPage, "test@test.com")
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(SecondContactEmailPage, "test@test.com")
+            .success
+            .value
 
-            navigator
-              .nextPage(SecondContactEmailPage, CheckMode, updatedAnswers)
-              .mustBe(routes.SecondContactHavePhoneController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(SecondContactEmailPage, CheckMode, updatedAnswers)
+          .mustBe(routes.SecondContactHavePhoneController.onPageLoad(CheckMode))
       }
 
       "must go from SecondContactEmail page to CheckYourAnswers page when next page is completed" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(SecondContactEmailPage, "test@test.com")
-                .success
-                .value
-                .set(SecondContactHavePhonePage, true)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(SecondContactEmailPage, "test@test.com")
+            .success
+            .value
+            .set(SecondContactHavePhonePage, true)
+            .success
+            .value
 
-            navigator
-              .nextPage(SecondContactEmailPage, CheckMode, updatedAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad)
+        navigator
+          .nextPage(SecondContactEmailPage, CheckMode, updatedAnswers)
+          .mustBe(routes.CheckYourAnswersController.onPageLoad)
       }
 
       "must go from SecondContactHavePhone page to SecondContactPhone page if Yes is selected" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(SecondContactHavePhonePage, true)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(SecondContactHavePhonePage, true)
+            .success
+            .value
 
-            navigator
-              .nextPage(SecondContactHavePhonePage, CheckMode, updatedAnswers)
-              .mustBe(routes.SecondContactPhoneController.onPageLoad(CheckMode))
+        navigator
+          .nextPage(SecondContactHavePhonePage, CheckMode, updatedAnswers)
+          .mustBe(routes.SecondContactPhoneController.onPageLoad(CheckMode))
       }
 
       "must go from SecondContactHavePhone page to CheckYourAnswers page if No is selected" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(SecondContactHavePhonePage, false)
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(SecondContactHavePhonePage, false)
+            .success
+            .value
 
-            navigator
-              .nextPage(SecondContactHavePhonePage, CheckMode, updatedAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad)
+        navigator
+          .nextPage(SecondContactHavePhonePage, CheckMode, updatedAnswers)
+          .mustBe(routes.CheckYourAnswersController.onPageLoad)
       }
 
       "must go from SecondContactPhone page to CheckYourAnswers page" in {
-            val updatedAnswers =
-              emptyUserAnswers
-                .set(SecondContactPhonePage, "0987654321")
-                .success
-                .value
+        val updatedAnswers =
+          emptyUserAnswers
+            .set(SecondContactPhonePage, "0987654321")
+            .success
+            .value
 
-            navigator
-              .nextPage(SecondContactPhonePage, CheckMode, updatedAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad)
+        navigator
+          .nextPage(SecondContactPhonePage, CheckMode, updatedAnswers)
+          .mustBe(routes.CheckYourAnswersController.onPageLoad)
       }
     }
   }

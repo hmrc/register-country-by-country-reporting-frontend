@@ -42,7 +42,8 @@ class CheckYourAnswersController @Inject() (
   registerWithoutIdService: RegisterWithoutIdService,
   view: CheckYourAnswersView,
   countryListFactory: CountryListFactory
-)(implicit ec: ExecutionContext) extends FrontendBaseController
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport
     with CreateSubscriptionAndUpdateEnrolment {
 
@@ -68,8 +69,8 @@ class CheckYourAnswersController @Inject() (
             case Left(value) =>
               logger.warn(s"Error $value")
               value match {
-                case MandatoryInformationMissingError(_) =>  Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
-                case _ =>  Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+                case MandatoryInformationMissingError(_) => Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
+                case _                                   => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
               }
           }
       }

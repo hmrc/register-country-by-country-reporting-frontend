@@ -23,11 +23,12 @@ import views.html.ThereIsAProblemView
 
 import javax.inject.Inject
 
-class ThereIsAProblemController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: ThereIsAProblemView
-                                     ) extends FrontendBaseController with I18nSupport {
+class ThereIsAProblemController @Inject() (
+  override val messagesApi: MessagesApi,
+  val controllerComponents: MessagesControllerComponents,
+  view: ThereIsAProblemView
+) extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action {
     implicit request =>

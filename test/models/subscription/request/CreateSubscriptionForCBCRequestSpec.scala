@@ -26,17 +26,17 @@ class CreateSubscriptionForCBCRequestSpec extends SpecBase with Generators {
   "CreateSubscriptionForCBCRequest" - {
     "serialise and de-serialise to and from json" in {
 
-      val cbcRequest =  Arbitrary.arbitrary[CreateSubscriptionForCBCRequest].sample.value
+      val cbcRequest = Arbitrary.arbitrary[CreateSubscriptionForCBCRequest].sample.value
       Json.toJson(cbcRequest).as[CreateSubscriptionForCBCRequest] mustBe cbcRequest
 
     }
 
     "serialise to json" in {
-      val contactInformation =  ContactInformation(OrganisationDetails("orgName"), "test@email.com", None, None)
-      val requestDetail = RequestDetail("SAFE", "number", Some("tradingName"), true, contactInformation, None)
-      val requestCommon = RequestCommonForSubscription("CBC", None, "date", "ref", "MDTP", None)
+      val contactInformation  = ContactInformation(OrganisationDetails("orgName"), "test@email.com", None, None)
+      val requestDetail       = RequestDetail("SAFE", "number", Some("tradingName"), true, contactInformation, None)
+      val requestCommon       = RequestCommonForSubscription("CBC", None, "date", "ref", "MDTP", None)
       val subscriptionRequest = SubscriptionRequest(requestCommon, requestDetail)
-      val cbcRequest = CreateSubscriptionForCBCRequest(subscriptionRequest)
+      val cbcRequest          = CreateSubscriptionForCBCRequest(subscriptionRequest)
 
       val expectedJson = Json.parse("""
           |{

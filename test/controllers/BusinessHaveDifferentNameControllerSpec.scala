@@ -30,7 +30,7 @@ import scala.concurrent.Future
 class BusinessHaveDifferentNameControllerSpec extends SpecBase {
 
   val formProvider = new BusinessHaveDifferentNameFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   lazy val businessHaveDifferentNameRoute = routes.BusinessHaveDifferentNameController.onPageLoad(NormalMode).url
 

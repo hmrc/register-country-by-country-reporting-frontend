@@ -31,7 +31,7 @@ import scala.concurrent.Future
 class BusinessNameControllerSpec extends SpecBase {
 
   val formProvider = new BusinessNameFormProvider()
-  val form = formProvider(LimitedCompany)
+  val form         = formProvider(LimitedCompany)
 
   lazy val businessNameRoute = routes.BusinessNameController.onPageLoad(NormalMode).url
 
@@ -58,8 +58,12 @@ class BusinessNameControllerSpec extends SpecBase {
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = UserAnswers(userAnswersId)
-        .set(BusinessTypePage, LimitedCompany).success.value
-        .set(BusinessNamePage, "answer").success.value
+        .set(BusinessTypePage, LimitedCompany)
+        .success
+        .value
+        .set(BusinessNamePage, "answer")
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 

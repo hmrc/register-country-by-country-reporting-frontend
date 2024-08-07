@@ -27,17 +27,18 @@ import views.html.ErrorTemplate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-
 @Singleton
-class ErrorHandler @Inject()(
-                              val messagesApi: MessagesApi,
-                              view: ErrorTemplate
-                            )(implicit override val ec: ExecutionContext) extends FrontendErrorHandler with I18nSupport {
+class ErrorHandler @Inject() (
+  val messagesApi: MessagesApi,
+  view: ErrorTemplate
+)(implicit override val ec: ExecutionContext)
+    extends FrontendErrorHandler
+    with I18nSupport {
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] =
     statusCode match {
-      case play.mvc.Http.Status.NOT_FOUND   => Future.successful(Redirect(routes.PageNotFoundController.onPageLoad()))
-      case _                                => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+      case play.mvc.Http.Status.NOT_FOUND => Future.successful(Redirect(routes.PageNotFoundController.onPageLoad()))
+      case _                              => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
     }
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] =

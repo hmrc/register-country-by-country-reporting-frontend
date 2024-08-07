@@ -34,7 +34,6 @@ class BusinessTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
       forAll(gen) {
         businessType =>
-
           JsString(businessType.toString).validate[BusinessType].asOpt.value mustEqual businessType
       }
     }
@@ -45,7 +44,6 @@ class BusinessTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
       forAll(gen) {
         invalidValue =>
-
           JsString(invalidValue).validate[BusinessType] mustEqual JsError("error.invalid")
       }
     }
@@ -56,7 +54,6 @@ class BusinessTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
       forAll(gen) {
         businessType =>
-
           Json.toJson(businessType) mustEqual JsString(businessType.toString)
       }
     }

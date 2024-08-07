@@ -29,10 +29,10 @@ import java.time.Instant
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
-                              id: String,
-                              data: JsObject = Json.obj(),
-                              lastUpdated: Instant = Instant.now
-                            ) {
+  id: String,
+  data: JsObject = Json.obj(),
+  lastUpdated: Instant = Instant.now
+) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
@@ -48,7 +48,7 @@ final case class UserAnswers(
 
     updatedData.flatMap {
       d =>
-        val updatedAnswers = copy (data = d)
+        val updatedAnswers = copy(data = d)
         page.cleanup(Some(value), updatedAnswers)
     }
   }
@@ -64,7 +64,7 @@ final case class UserAnswers(
 
     updatedData.flatMap {
       d =>
-        val updatedAnswers = copy (data = d)
+        val updatedAnswers = copy(data = d)
         page.cleanup(None, updatedAnswers)
     }
   }
@@ -72,9 +72,8 @@ final case class UserAnswers(
   def hasNewValue[A](page: QuestionPage[A], value: A)(implicit rds: Reads[A]): Boolean =
     get(page) match {
       case Some(pageValue) if value == pageValue => false
-      case _ => true
+      case _                                     => true
     }
-
 
 }
 
@@ -89,21 +88,23 @@ object UserAnswers {
       }
     }
 
-    val reads: Reads[UserAnswers] = {
+    val reads: Reads[UserAnswers] =
       (
         (__ \ "_id").read[String] and
-        (__ \ "data").read[SensitiveJsObject] and
-        (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
-      )((id, data, lastUpdated) => UserAnswers(id, data.decryptedValue, lastUpdated))
-    }
+          (__ \ "data").read[SensitiveJsObject] and
+          (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
+      )(
+        (id, data, lastUpdated) => UserAnswers(id, data.decryptedValue, lastUpdated)
+      )
 
-    val writes: OWrites[UserAnswers] = {
+    val writes: OWrites[UserAnswers] =
       (
         (__ \ "_id").write[String] and
-        (__ \ "data").write[SensitiveJsObject] and
-        (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
-      )(ua => (ua.id, SensitiveJsObject(ua.data), ua.lastUpdated))
-    }
+          (__ \ "data").write[SensitiveJsObject] and
+          (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
+      )(
+        ua => (ua.id, SensitiveJsObject(ua.data), ua.lastUpdated)
+      )
 
     OFormat(reads, writes)
   }

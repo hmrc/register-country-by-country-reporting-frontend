@@ -33,7 +33,7 @@ import scala.concurrent.Future
 
 class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with ScalaCheckPropertyChecks with Generators {
 
-  lazy override val app: Application = new GuiceApplicationBuilder()
+  override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       conf = "microservice.services.register-country-by-country.port" -> server.port()
     )
@@ -42,12 +42,12 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with
   lazy val connector: SubscriptionConnector = app.injector.instanceOf[SubscriptionConnector]
   private val subscriptionUrl               = "/register-country-by-country-reporting/subscription"
   private val errorCodes: Gen[Int]          = Gen.oneOf(Seq(400, 404, 403, 500, 501, 502, 503, 504))
-  private val safeId = SafeId("safeId")
+  private val safeId                        = SafeId("safeId")
 
   "SubscriptionConnector" - {
     "readSubscription" - {
       "must return SubscriptionID for valid input request" in {
-        val expectedResponse  = SubscriptionID("subscriptionID")
+        val expectedResponse = SubscriptionID("subscriptionID")
 
         val subscriptionResponse: String =
           s"""
@@ -89,7 +89,7 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with
       }
 
       "must return None when read subscription fails" in {
-        val errorCode     = errorCodes.sample.value
+        val errorCode = errorCodes.sample.value
 
         val subscriptionErrorResponse: String =
           s"""
@@ -113,7 +113,7 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with
       val createSubscriptionRequest = Arbitrary.arbitrary[CreateSubscriptionForCBCRequest].sample.value
 
       "must return SubscriptionID for valid input request" in {
-        val expectedResponse  = SubscriptionID("XACBC0000123456")
+        val expectedResponse = SubscriptionID("XACBC0000123456")
 
         val subscriptionResponse: String =
           s"""

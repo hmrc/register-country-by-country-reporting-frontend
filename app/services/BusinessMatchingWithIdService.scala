@@ -34,7 +34,10 @@ class BusinessMatchingWithIdService @Inject() (registrationConnector: Registrati
     registrationConnector
       .registerWithID(registerWithID)
       .map {
-        response => response.map(x => RegistrationInfo.apply(x))
+        response =>
+          response.map(
+            x => RegistrationInfo.apply(x)
+          )
       }
 
 }

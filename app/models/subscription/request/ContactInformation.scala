@@ -24,12 +24,8 @@ object OrganisationDetails {
   implicit val format: OFormat[OrganisationDetails] = Json.format[OrganisationDetails]
 }
 
-case class ContactInformation(organisation: OrganisationDetails,
-                          email: String,
-                          phone: Option[String],
-                          mobile: Option[String])
+case class ContactInformation(organisation: OrganisationDetails, email: String, phone: Option[String], mobile: Option[String])
 
 object ContactInformation {
   implicit val format: OFormat[ContactInformation] = Json.format[ContactInformation]
 }
-

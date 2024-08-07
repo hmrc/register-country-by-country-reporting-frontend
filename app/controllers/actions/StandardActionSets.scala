@@ -23,16 +23,18 @@ import queries.Gettable
 
 import javax.inject.Inject
 
-class StandardActionSets @Inject()(identify: IdentifierAction,
-                                   getData: DataRetrievalAction,
-                                   requireData: DataRequiredAction,
-                                   initializeData: DataInitializeAction,
-                                   retrieveCtUTR: CtUtrRetrievalAction,
-                                   checkEnrolment: CheckEnrolledToServiceActionProvider,
-                                   dependantAnswer: DependantAnswerProvider
-                                  ) {
+class StandardActionSets @Inject() (identify: IdentifierAction,
+                                    getData: DataRetrievalAction,
+                                    requireData: DataRequiredAction,
+                                    initializeData: DataInitializeAction,
+                                    retrieveCtUTR: CtUtrRetrievalAction,
+                                    checkEnrolment: CheckEnrolledToServiceActionProvider,
+                                    dependantAnswer: DependantAnswerProvider
+) {
+
   def identifiedUserWithEnrolmentCheckAndCtUtrRetrieval(): ActionBuilder[IdentifierRequest, AnyContent] =
     identify andThen checkEnrolment() andThen retrieveCtUTR()
+
   def identifiedUserWithEnrolmentCheck(): ActionBuilder[IdentifierRequest, AnyContent] =
     identify andThen checkEnrolment()
 

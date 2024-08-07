@@ -42,11 +42,10 @@ class RegisterWithoutIDResponseSpec extends AnyFreeSpec with Matchers {
           |"SAFEID": "XE0000123456789",
           |"ARN": "ZARN1234567"
           |}}}""".stripMargin
-        )
+      )
 
       json.as[RegisterWithoutIDResponse] mustBe RegisterWithoutIDResponse(SafeId("XE0000123456789"))
     }
-
 
     "must fail to deserialize for invalid json" in {
       val json: JsValue = Json.parse(
@@ -66,7 +65,7 @@ class RegisterWithoutIDResponseSpec extends AnyFreeSpec with Matchers {
           |}}}""".stripMargin
       )
 
-      intercept[JsResultException] (
+      intercept[JsResultException](
         json.as[RegisterWithoutIDResponse]
       )
 

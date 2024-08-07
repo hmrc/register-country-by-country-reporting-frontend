@@ -25,7 +25,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait DataInitializeAction extends ActionRefiner[OptionalDataRequest, DataRequest]
 
-class DataInitializeActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends DataInitializeAction  {
+class DataInitializeActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends DataInitializeAction {
 
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
     request.userAnswers match {

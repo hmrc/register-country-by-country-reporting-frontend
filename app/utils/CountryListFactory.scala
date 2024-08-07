@@ -25,7 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CountryListFactory @Inject()(environment: Environment, appConfig: FrontendAppConfig) {
+class CountryListFactory @Inject() (environment: Environment, appConfig: FrontendAppConfig) {
 
   def uk: Country = Country("valid", "GB", "United Kingdom")
 
@@ -57,7 +57,7 @@ class CountryListFactory @Inject()(environment: Environment, appConfig: Frontend
       }
     val countryJsonList = countries.map {
       country =>
-        SelectItem(Some(country.code),country.description, containsCountry(country))
+        SelectItem(Some(country.code), country.description, containsCountry(country))
     }
     SelectItem(None, "") +: countryJsonList
   }

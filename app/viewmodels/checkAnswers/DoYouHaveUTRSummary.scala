@@ -26,18 +26,16 @@ import utils.SummaryHelper
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-
-object DoYouHaveUTRSummary  {
+object DoYouHaveUTRSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DoYouHaveUTRPage).map {
       answer =>
-
         val value = SummaryHelper.convertBooleanToYesNoMessage(answer)
 
         SummaryListRowViewModel(
-          key     = "doYouHaveUTR.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
+          key = "doYouHaveUTR.checkYourAnswersLabel",
+          value = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel(
               content = HtmlContent(
@@ -46,9 +44,8 @@ object DoYouHaveUTRSummary  {
                    |<span class="govuk-visually-hidden">${messages("doYouHaveUTR.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href =  routes.DoYouHaveUTRController.onPageLoad(CheckMode).url
-
-            ).withAttribute(("id","do-you-have-UTR"))
+              href = routes.DoYouHaveUTRController.onPageLoad(CheckMode).url
+            ).withAttribute(("id", "do-you-have-UTR"))
           )
         )
     }

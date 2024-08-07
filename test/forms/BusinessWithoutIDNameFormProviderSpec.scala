@@ -22,8 +22,8 @@ import play.api.data.FormError
 class BusinessWithoutIDNameFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "businessWithoutIDName.error.required"
-  val lengthKey = "businessWithoutIDName.error.length"
-  val maxLength = 105
+  val lengthKey   = "businessWithoutIDName.error.length"
+  val maxLength   = 105
 
   val form = new BusinessWithoutIDNameFormProvider()()
 

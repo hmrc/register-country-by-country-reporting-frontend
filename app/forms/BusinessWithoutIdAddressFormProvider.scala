@@ -38,9 +38,9 @@ class BusinessWithoutIdAddressFormProvider @Inject() extends Mappings with Regex
         addressLineLength
       ),
       "addressLine2" -> validatedOptionalText("businessWithoutIdAddress.error.addressLine2.invalid",
-        "businessWithoutIdAddress.error.addressLine2.length",
-        apiAddressRegex,
-        addressLineLength
+                                              "businessWithoutIdAddress.error.addressLine2.length",
+                                              apiAddressRegex,
+                                              addressLineLength
       ),
       "addressLine3" -> validatedText(
         "businessWithoutIdAddress.error.addressLine3.required",
@@ -50,9 +50,9 @@ class BusinessWithoutIdAddressFormProvider @Inject() extends Mappings with Regex
         addressLineLength
       ),
       "addressLine4" -> validatedOptionalText("businessWithoutIdAddress.error.addressLine4.invalid",
-        "businessWithoutIdAddress.error.addressLine4.length",
-        apiAddressRegex,
-        addressLineLength
+                                              "businessWithoutIdAddress.error.addressLine4.length",
+                                              apiAddressRegex,
+                                              addressLineLength
       ),
       "postCode" -> optionalPostcode(
         "businessWithoutIdAddress.error.postcode.required",
@@ -66,4 +66,4 @@ class BusinessWithoutIdAddressFormProvider @Inject() extends Mappings with Regex
         .transform[Country](value => countryList.find(_.code == value).get, _.code)
     )(Address.apply)(Address.unapply)
   )
- }
+}

@@ -98,7 +98,6 @@ class DoYouHaveUTRPageSpec extends PageBehaviours {
       userAnswers.get(SecondContactPhonePage) must not be defined
       userAnswers.get(DoYouHaveUTRPage) mustBe Some(true)
 
-
     }
     "must remove 'With Id' pages when user selects no to do you have a utr?" in {
       val userAnswersId: String = "id"
@@ -164,7 +163,6 @@ class DoYouHaveUTRPageSpec extends PageBehaviours {
       userAnswers.get(SecondContactHavePhonePage) must not be defined
       userAnswers.get(SecondContactPhonePage) must not be defined
       userAnswers.get(DoYouHaveUTRPage) mustBe Some(false)
-
 
     }
   }

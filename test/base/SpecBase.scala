@@ -48,15 +48,15 @@ trait SpecBase
     with BeforeAndAfterEach
     with IntegrationPatience {
 
-  val userAnswersId: String      = "id"
+  val userAnswersId: String        = "id"
   val utr: UniqueTaxpayerReference = UniqueTaxpayerReference("1234567890")
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val hc: HeaderCarrier   = HeaderCarrier()
 
-  def onwardRoute: Call                                  = Call("GET", "/foo")
-  final val mockDataRetrievalAction: DataRetrievalAction = mock[DataRetrievalAction]
-  final val mockSessionRepository: SessionRepository     = mock[SessionRepository]
+  def onwardRoute: Call                                    = Call("GET", "/foo")
+  final val mockDataRetrievalAction: DataRetrievalAction   = mock[DataRetrievalAction]
+  final val mockSessionRepository: SessionRepository       = mock[SessionRepository]
   final val mockCtUtrRetrievalAction: CtUtrRetrievalAction = mock[CtUtrRetrievalAction]
-  protected val cbcrFakeNavigator: CBCRNavigator         = new FakeCBCRNavigator(onwardRoute)
+  protected val cbcrFakeNavigator: CBCRNavigator           = new FakeCBCRNavigator(onwardRoute)
 
   protected def retrieveNoData(): Unit =
     when(mockDataRetrievalAction).thenReturn(new FakeDataRetrievalAction(None))

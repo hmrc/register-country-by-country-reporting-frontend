@@ -30,23 +30,24 @@ import views.html.BusinessWithoutIDNameView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class BusinessWithoutIDNameController @Inject()(
-                                                 override val messagesApi: MessagesApi,
-                                                 sessionRepository: SessionRepository,
-                                                 navigator: CBCRNavigator,
-                                                 standardActionSets: StandardActionSets,
-                                                 formProvider: BusinessWithoutIDNameFormProvider,
-                                                 val controllerComponents: MessagesControllerComponents,
-                                                 view: BusinessWithoutIDNameView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class BusinessWithoutIDNameController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: CBCRNavigator,
+  standardActionSets: StandardActionSets,
+  formProvider: BusinessWithoutIDNameFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: BusinessWithoutIDNameView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(BusinessWithoutIDNamePage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
@@ -55,16 +56,15 @@ class BusinessWithoutIDNameController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessWithoutIDNamePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessWithoutIDNamePage, mode, updatedAnswers))
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessWithoutIDNamePage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(BusinessWithoutIDNamePage, mode, updatedAnswers))
+        )
   }
 }

@@ -30,23 +30,24 @@ import views.html.SecondContactNameView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SecondContactNameController @Inject()(
-                                             override val messagesApi: MessagesApi,
-                                             sessionRepository: SessionRepository,
-                                             navigator: CBCRNavigator,
-                                             standardActions: StandardActionSets,
-                                             formProvider: SecondContactNameFormProvider,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             view: SecondContactNameView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class SecondContactNameController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: CBCRNavigator,
+  standardActions: StandardActionSets,
+  formProvider: SecondContactNameFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: SecondContactNameView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActions.identifiedUserWithData() {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(SecondContactNamePage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
@@ -55,16 +56,15 @@ class SecondContactNameController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActions.identifiedUserWithData().async {
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(SecondContactNamePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(SecondContactNamePage, mode, updatedAnswers))
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(SecondContactNamePage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(SecondContactNamePage, mode, updatedAnswers))
+        )
   }
 }

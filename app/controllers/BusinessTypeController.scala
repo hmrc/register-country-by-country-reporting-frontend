@@ -30,23 +30,24 @@ import views.html.BusinessTypeView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class BusinessTypeController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              sessionRepository: SessionRepository,
-                                              navigator: CBCRNavigator,
-                                              standardActionSets: StandardActionSets,
-                                              formProvider: BusinessTypeFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              view: BusinessTypeView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class BusinessTypeController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: CBCRNavigator,
+  standardActionSets: StandardActionSets,
+  formProvider: BusinessTypeFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: BusinessTypeView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(BusinessTypePage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
@@ -55,20 +56,19 @@ class BusinessTypeController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
-        value =>
-          if (request.userAnswers.hasNewValue(BusinessTypePage, value)) {
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessTypePage, value))
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(BusinessTypePage, mode, updatedAnswers))
-          } else {
-            Future.successful(Redirect(navigator.nextPage(BusinessTypePage, mode, request.userAnswers)))
-          }
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value =>
+            if (request.userAnswers.hasNewValue(BusinessTypePage, value)) {
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessTypePage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(BusinessTypePage, mode, updatedAnswers))
+            } else {
+              Future.successful(Redirect(navigator.nextPage(BusinessTypePage, mode, request.userAnswers)))
+            }
+        )
   }
 }

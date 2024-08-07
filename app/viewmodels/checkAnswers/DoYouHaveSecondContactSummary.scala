@@ -26,17 +26,16 @@ import utils.SummaryHelper
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object DoYouHaveSecondContactSummary  {
+object DoYouHaveSecondContactSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DoYouHaveSecondContactPage).map {
       answer =>
-
         val value = SummaryHelper.convertBooleanToYesNoMessage(answer)
 
         SummaryListRowViewModel(
-          key     = "doYouHaveSecondContact.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
+          key = "doYouHaveSecondContact.checkYourAnswersLabel",
+          value = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel(
               content = HtmlContent(
@@ -46,7 +45,7 @@ object DoYouHaveSecondContactSummary  {
                    |""".stripMargin
               ),
               href = routes.DoYouHaveSecondContactController.onPageLoad(CheckMode).url
-            ).withAttribute(("id","do-you-have-second-contact"))
+            ).withAttribute(("id", "do-you-have-second-contact"))
           )
         )
     }

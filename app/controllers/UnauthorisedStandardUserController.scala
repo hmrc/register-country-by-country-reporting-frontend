@@ -23,11 +23,12 @@ import views.html.UnauthorisedStandardUserView
 
 import javax.inject.Inject
 
-class UnauthorisedStandardUserController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: UnauthorisedStandardUserView
-                                     ) extends FrontendBaseController with I18nSupport {
+class UnauthorisedStandardUserController @Inject() (
+  override val messagesApi: MessagesApi,
+  val controllerComponents: MessagesControllerComponents,
+  view: UnauthorisedStandardUserView
+) extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action {
     implicit request =>

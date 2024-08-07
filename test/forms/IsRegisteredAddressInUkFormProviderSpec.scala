@@ -22,7 +22,7 @@ import play.api.data.FormError
 class IsRegisteredAddressInUkFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "isRegisteredAddressInUk.error.required"
-  val invalidKey = "error.boolean"
+  val invalidKey  = "error.boolean"
 
   val form = new IsRegisteredAddressInUkFormProvider()()
 

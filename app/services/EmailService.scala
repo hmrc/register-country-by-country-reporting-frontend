@@ -29,31 +29,29 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailService @Inject()(emailConnector: EmailConnector,
-                             appConfig: FrontendAppConfig)
-                            (implicit executionContext: ExecutionContext) extends Logging {
+class EmailService @Inject() (emailConnector: EmailConnector, appConfig: FrontendAppConfig)(implicit executionContext: ExecutionContext) extends Logging {
 
   private def sendAndLogEmail(emailRequest: EmailRequest)(implicit hc: HeaderCarrier): Future[Int] =
-    emailConnector.sendEmail(emailRequest) map { resp =>
-      resp.status match {
-        case ACCEPTED => logger.info("Email queued")
-        case _ => logger.warn(s"Email service failed to send an email")
-      }
-      resp.status
+    emailConnector.sendEmail(emailRequest) map {
+      resp =>
+        resp.status match {
+          case ACCEPTED => logger.info("Email queued")
+          case _        => logger.warn(s"Email service failed to send an email")
+        }
+        resp.status
     }
 
   def sendEmail(userAnswers: UserAnswers, subscriptionID: SubscriptionID)(implicit hc: HeaderCarrier): Future[Option[Int]] = {
 
-    val primaryResponse = userAnswers.get(ContactEmailPage).fold(Future.successful(Option.empty[Int])) { contactEmail =>
-      sendAndLogEmail(EmailRequest(contactEmail,
-        appConfig.emailOrganisationTemplate,
-        subscriptionID.value, userAnswers.get(ContactNamePage))).map(Some(_))
+    val primaryResponse = userAnswers.get(ContactEmailPage).fold(Future.successful(Option.empty[Int])) {
+      contactEmail =>
+        sendAndLogEmail(EmailRequest(contactEmail, appConfig.emailOrganisationTemplate, subscriptionID.value, userAnswers.get(ContactNamePage))).map(Some(_))
     }
 
-    userAnswers.get(SecondContactEmailPage).fold(Future.successful(Option.empty[Int]))  {contactEmail =>
-      sendAndLogEmail( EmailRequest(contactEmail,
-        appConfig.emailOrganisationTemplate,
-        subscriptionID.value, userAnswers.get(SecondContactNamePage))).map(Some(_))
+    userAnswers.get(SecondContactEmailPage).fold(Future.successful(Option.empty[Int])) {
+      contactEmail =>
+        sendAndLogEmail(EmailRequest(contactEmail, appConfig.emailOrganisationTemplate, subscriptionID.value, userAnswers.get(SecondContactNamePage)))
+          .map(Some(_))
     }
 
     primaryResponse

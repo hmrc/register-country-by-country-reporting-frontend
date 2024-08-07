@@ -30,9 +30,9 @@ import scala.concurrent.Future
 
 class ContactEmailControllerSpec extends SpecBase {
 
-  val formProvider = new ContactEmailFormProvider()
+  val formProvider       = new ContactEmailFormProvider()
   val form: Form[String] = formProvider()
-  val contactName = "Some Contact"
+  val contactName        = "Some Contact"
 
   lazy val contactEmailRoute = routes.ContactEmailController.onPageLoad(NormalMode).url
 
@@ -41,7 +41,9 @@ class ContactEmailControllerSpec extends SpecBase {
     "must return OK and the correct view for a GET" in {
 
       val userAnswers = UserAnswers(userAnswersId)
-        .set(ContactNamePage, contactName).success.value
+        .set(ContactNamePage, contactName)
+        .success
+        .value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
@@ -59,8 +61,12 @@ class ContactEmailControllerSpec extends SpecBase {
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = UserAnswers(userAnswersId)
-        .set(ContactNamePage, contactName).success.value
-        .set(ContactEmailPage, "email@email.com").success.value
+        .set(ContactNamePage, contactName)
+        .success
+        .value
+        .set(ContactEmailPage, "email@email.com")
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -97,7 +103,9 @@ class ContactEmailControllerSpec extends SpecBase {
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = UserAnswers(userAnswersId)
-        .set(ContactNamePage, contactName).success.value
+        .set(ContactNamePage, contactName)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 

@@ -28,7 +28,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubscriptionConnector @Inject()(val config: FrontendAppConfig, val http: HttpClient) extends Logging {
+class SubscriptionConnector @Inject() (val config: FrontendAppConfig, val http: HttpClient) extends Logging {
 
   def readSubscription(safeId: SafeId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SubscriptionID]] = {
 
@@ -52,9 +52,9 @@ class SubscriptionConnector @Inject()(val config: FrontendAppConfig, val http: H
       }
   }
 
-
-  def createSubscription(createSubscriptionForCBCRequest: CreateSubscriptionForCBCRequest
-                        )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SubscriptionID]] = {
+  def createSubscription(
+    createSubscriptionForCBCRequest: CreateSubscriptionForCBCRequest
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SubscriptionID]] = {
 
     val submissionUrl = s"${config.registerCountryByCountryUrl}/subscription/create-subscription"
     http

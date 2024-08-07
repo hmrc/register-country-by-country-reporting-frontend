@@ -30,43 +30,43 @@ import views.html.DoYouHaveSecondContactView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DoYouHaveSecondContactController @Inject()(
-                                                  override val messagesApi: MessagesApi,
-                                                  sessionRepository: SessionRepository,
-                                                  navigator: CBCRNavigator,
-                                                  standardActionSets: StandardActionSets,
-                                                  formProvider: DoYouHaveSecondContactFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  view: DoYouHaveSecondContactView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class DoYouHaveSecondContactController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: CBCRNavigator,
+  standardActionSets: StandardActionSets,
+  formProvider: DoYouHaveSecondContactFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: DoYouHaveSecondContactView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     standardActionSets.identifiedUserWithDependantAnswer(ContactNamePage).async {
-    implicit request =>
+      implicit request =>
+        val preparedForm = request.userAnswers.get(DoYouHaveSecondContactPage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      val preparedForm = request.userAnswers.get(DoYouHaveSecondContactPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Future.successful(Ok(view(preparedForm, mode, request.userAnswers.get(ContactNamePage).get)))
-  }
+        Future.successful(Ok(view(preparedForm, mode, request.userAnswers.get(ContactNamePage).get)))
+    }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     standardActionSets.identifiedUserWithDependantAnswer(ContactNamePage).async {
       implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.userAnswers.get(ContactNamePage).get))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DoYouHaveSecondContactPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DoYouHaveSecondContactPage, mode, updatedAnswers))
-      )
-  }
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.userAnswers.get(ContactNamePage).get))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(DoYouHaveSecondContactPage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(DoYouHaveSecondContactPage, mode, updatedAnswers))
+          )
+    }
 }

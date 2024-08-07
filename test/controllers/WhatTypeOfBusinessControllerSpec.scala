@@ -32,7 +32,7 @@ class BusinessTypeControllerSpec extends SpecBase {
   lazy val businessTypeRoute = routes.BusinessTypeController.onPageLoad(NormalMode).url
 
   val formProvider = new BusinessTypeFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   "BusinessType Controller" - {
 

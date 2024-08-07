@@ -30,8 +30,8 @@ import scala.concurrent.Future
 class SecondContactPhoneControllerSpec extends SpecBase {
 
   val secondContactName = "Second Contact"
-  val formProvider = new SecondContactPhoneFormProvider()
-  val form = formProvider()
+  val formProvider      = new SecondContactPhoneFormProvider()
+  val form              = formProvider()
 
   val baseUserAnswers = emptyUserAnswers.set(SecondContactNamePage, secondContactName).success.value
 

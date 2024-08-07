@@ -52,8 +52,9 @@ object SubscriptionInfo {
 
   private def getUTR(userAnswers: UserAnswers): Option[String] =
     userAnswers.get(BusinessTypePage) match {
-      case Some(Partnership) | Some(LimitedPartnership) | Some(LimitedCompany) | Some(UnincorporatedAssociation) => userAnswers.get(UTRPage).map(_.uniqueTaxPayerReference)
-      case _                                                                                                     => None
+      case Some(Partnership) | Some(LimitedPartnership) | Some(LimitedCompany) | Some(UnincorporatedAssociation) =>
+        userAnswers.get(UTRPage).map(_.uniqueTaxPayerReference)
+      case _ => None
     }
 
   private def getNonUkPostCodeIfProvided(userAnswers: UserAnswers): Option[String] =

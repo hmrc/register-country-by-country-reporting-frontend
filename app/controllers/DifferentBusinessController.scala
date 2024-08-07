@@ -27,19 +27,22 @@ import views.html.{DifferentBusinessView, ThereIsAProblemView}
 import javax.inject.Inject
 
 class DifferentBusinessController @Inject() (
-                                              override val messagesApi: MessagesApi,
-                                              standardActionSets: StandardActionSets,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              appConfig: FrontendAppConfig,
-                                              view: DifferentBusinessView,
-                                              errorView: ThereIsAProblemView
-                                            ) extends FrontendBaseController
-  with I18nSupport {
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  appConfig: FrontendAppConfig,
+  view: DifferentBusinessView,
+  errorView: ThereIsAProblemView
+) extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
       val registrationInfo = request.userAnswers.get(RegistrationInfoPage)
-      val (name, address) = registrationInfo.map(info => (Some(info.name), Some(info.address.asList)))
+      val (name, address) = registrationInfo
+        .map(
+          info => (Some(info.name), Some(info.address.asList))
+        )
         .getOrElse((None, None))
       Ok(view(appConfig.loginUrl, name, address))
   }
