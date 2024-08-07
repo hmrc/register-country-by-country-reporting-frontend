@@ -91,6 +91,7 @@
                 label = LabelViewModel(messages("businessWithoutIdAddress.country")),
                 items = countries
             )
+                    .withFormGroupClasses("govuk-input--width-20")
                     .withAttribute("autocomplete" -> "country-name")
                     .asAccessibleAutocomplete(Some(
                 AccessibleAutocomplete(
