@@ -30,21 +30,22 @@ import views.html.ContactEmailView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ContactEmailController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        navigator: CBCRNavigator,
-                                        standardActionSets: StandardActionSets,
-                                        formProvider: ContactEmailFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: ContactEmailView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class ContactEmailController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: CBCRNavigator,
+  standardActionSets: StandardActionSets,
+  formProvider: ContactEmailFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: ContactEmailView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(ContactEmailPage).fold(form)(form.fill)
 
       Ok(view(preparedForm, mode, getContactName(request.userAnswers)))
@@ -52,19 +53,18 @@ class ContactEmailController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, getContactName(request.userAnswers)))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ContactEmailPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ContactEmailPage, mode, updatedAnswers))
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, getContactName(request.userAnswers)))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(ContactEmailPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(ContactEmailPage, mode, updatedAnswers))
+        )
   }
 
-  private def getContactName(ua: UserAnswers)(implicit messages: Messages): String = {
+  private def getContactName(ua: UserAnswers)(implicit messages: Messages): String =
     ua.get(ContactNamePage).getOrElse(messages("default.firstContact.name"))
-  }
 }

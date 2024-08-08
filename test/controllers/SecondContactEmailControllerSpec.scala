@@ -30,8 +30,8 @@ import scala.concurrent.Future
 class SecondContactEmailControllerSpec extends SpecBase {
 
   val formProvider = new SecondContactEmailFormProvider()
-  val form = formProvider()
-  val contactName = "Second contact"
+  val form         = formProvider()
+  val contactName  = "Second contact"
 
   lazy val secondContactEmailRoute = routes.SecondContactEmailController.onPageLoad(NormalMode).url
 
@@ -40,7 +40,9 @@ class SecondContactEmailControllerSpec extends SpecBase {
     "must return OK and the correct view for a GET" in {
 
       val userAnswers = UserAnswers(userAnswersId)
-        .set(SecondContactNamePage, contactName).success.value
+        .set(SecondContactNamePage, contactName)
+        .success
+        .value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
@@ -58,8 +60,12 @@ class SecondContactEmailControllerSpec extends SpecBase {
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = UserAnswers(userAnswersId)
-        .set(SecondContactNamePage, contactName).success.value
-        .set(SecondContactEmailPage, "email@email.com").success.value
+        .set(SecondContactNamePage, contactName)
+        .success
+        .value
+        .set(SecondContactEmailPage, "email@email.com")
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -97,7 +103,9 @@ class SecondContactEmailControllerSpec extends SpecBase {
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = UserAnswers(userAnswersId)
-        .set(SecondContactNamePage, contactName).success.value
+        .set(SecondContactNamePage, contactName)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 

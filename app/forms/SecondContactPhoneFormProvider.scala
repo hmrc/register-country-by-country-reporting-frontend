@@ -23,7 +23,6 @@ import utils.RegexConstants
 
 class SecondContactPhoneFormProvider @Inject() extends Mappings with RegexConstants {
 
-
   val maxlength = 24
 
   def apply(): Form[String] =

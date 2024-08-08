@@ -26,8 +26,8 @@ import views.html.BusinessNotIdentifiedView
 
 class BusinessNotIdentifiedControllerSpec extends SpecBase {
 
-  val startUrl = routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
-  val  findCompanyName = "https://find-and-update.company-information.service.gov.uk/"
+  val startUrl        = routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
+  val findCompanyName = "https://find-and-update.company-information.service.gov.uk/"
 
   "BusinessNotIdentified Controller" - {
 
@@ -46,7 +46,7 @@ class BusinessNotIdentifiedControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
 
-        contentAsString(result) mustEqual view(findCompanyName, startUrl , Some(LimitedCompany))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(findCompanyName, startUrl, Some(LimitedCompany))(request, messages(application)).toString
       }
     }
 
@@ -64,7 +64,7 @@ class BusinessNotIdentifiedControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[BusinessNotIdentifiedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(findCompanyName, startUrl , Some(LimitedPartnership))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(findCompanyName, startUrl, Some(LimitedPartnership))(request, messages(application)).toString
       }
     }
 

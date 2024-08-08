@@ -31,23 +31,25 @@ import views.html.UTRView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class UTRController @Inject()(
-                               override val messagesApi: MessagesApi,
-                               sessionRepository: SessionRepository,
-                               navigator: CBCRNavigator,
-                               standardActionSets: StandardActionSets,
-                               formProvider: UTRFormProvider,
-                               val controllerComponents: MessagesControllerComponents,
-                               view: UTRView
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class UTRController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: CBCRNavigator,
+  standardActionSets: StandardActionSets,
+  formProvider: UTRFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: UTRView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithDependantAnswer(BusinessTypePage).async {
     implicit request =>
       val taxType = getTaxType(request.userAnswers)
-      val form = formProvider(taxType)
+      val form    = formProvider(taxType)
 
       val preparedForm = request.userAnswers.get(UTRPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
@@ -57,7 +59,7 @@ class UTRController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithDependantAnswer(BusinessTypePage).async {
     implicit request =>
       val taxType = getTaxType(request.userAnswers)
-      val form = formProvider(taxType)
+      val form    = formProvider(taxType)
 
       form
         .bindFromRequest()
@@ -66,7 +68,7 @@ class UTRController @Inject()(
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(UTRPage, value))
-              _ <- sessionRepository.set(updatedAnswers)
+              _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(UTRPage, mode, updatedAnswers))
         )
   }
@@ -74,6 +76,6 @@ class UTRController @Inject()(
   private def getTaxType(userAnswers: UserAnswers)(implicit messages: Messages): String =
     userAnswers.get(BusinessTypePage) match {
       case Some(LimitedCompany) | Some(UnincorporatedAssociation) => messages("utr.corporationTax")
-      case _ => messages("utr.selfAssessment")
+      case _                                                      => messages("utr.selfAssessment")
     }
 }

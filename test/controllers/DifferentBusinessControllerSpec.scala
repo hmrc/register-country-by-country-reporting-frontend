@@ -16,7 +16,6 @@
 
 package controllers.organisation
 
-
 import models.UserAnswers
 import models.matching.RegistrationInfo
 import models.register.response.details.AddressResponse
@@ -27,12 +26,13 @@ import play.api.i18n.Messages
 import views.html.DifferentBusinessView
 import base.SpecBase
 import models.SafeId
+
 class DifferentBusinessControllerSpec extends SpecBase {
 
   lazy val loginURL: String = "http://localhost:9949/auth-login-stub/gg-sign-in"
-  val SafeIdValue = "XCBC0000123456789"
-  val safeId: SafeId = SafeId(SafeIdValue)
-  val OrgName             = "Some Test Org"
+  val SafeIdValue           = "XCBC0000123456789"
+  val safeId: SafeId        = SafeId(SafeIdValue)
+  val OrgName               = "Some Test Org"
 
   val userAnswers: UserAnswers =
     emptyUserAnswers

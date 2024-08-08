@@ -26,11 +26,10 @@ import play.api.test.Helpers._
 import java.net.URLEncoder
 import scala.concurrent.Future
 
-class AuthControllerSpec extends SpecBase with BeforeAndAfterEach{
+class AuthControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  override def afterEach() = {
+  override def afterEach() =
     reset(mockSessionRepository)
-  }
 
   "signOut" - {
 
@@ -63,7 +62,7 @@ class AuthControllerSpec extends SpecBase with BeforeAndAfterEach{
 
       running(application) {
 
-        val request   = FakeRequest(GET, routes.AuthController.signOutNoSurvey().url)
+        val request = FakeRequest(GET, routes.AuthController.signOutNoSurvey().url)
 
         val result = route(application, request).value
 

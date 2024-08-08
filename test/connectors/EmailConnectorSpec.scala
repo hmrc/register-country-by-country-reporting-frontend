@@ -30,7 +30,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 
 class EmailConnectorSpec extends SpecBase with WireMockServerHandler with Generators with ScalaCheckPropertyChecks {
 
-  lazy override val app: Application = new GuiceApplicationBuilder()
+  override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       conf = "microservice.services.email.port" -> server.port()
     )

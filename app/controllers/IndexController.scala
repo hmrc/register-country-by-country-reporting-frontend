@@ -31,14 +31,14 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject() (
-                                  val controllerComponents: MessagesControllerComponents,
-                                  sessionRepository: SessionRepository,
-                                  clock: Clock,
-                                  identify: IdentifierAction,
-                                  standardActionSets: StandardActionSets,
-                                  errorView: ThereIsAProblemView
-                                )(implicit ec: ExecutionContext)
-  extends FrontendBaseController
+  val controllerComponents: MessagesControllerComponents,
+  sessionRepository: SessionRepository,
+  clock: Clock,
+  identify: IdentifierAction,
+  standardActionSets: StandardActionSets,
+  errorView: ThereIsAProblemView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport
     with Logging {
 

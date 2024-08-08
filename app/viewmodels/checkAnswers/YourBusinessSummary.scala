@@ -30,19 +30,17 @@ import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 import pages.AutoMatchedUTRPage
 
-
 object YourBusinessSummary {
 
   def row(answers: UserAnswers, countryListFactory: CountryListFactory)(implicit messages: Messages): Option[SummaryListRow] = {
     val paragraphClass = """govuk-!-margin-0"""
     (answers.get(IsThisYourBusinessPage), answers.get(RegistrationInfoPage)) match {
       case (Some(true), Some(registrationInfo: RegistrationInfo)) =>
-        val businessName: String = registrationInfo.name
+        val businessName: String     = registrationInfo.name
         val address: AddressResponse = registrationInfo.address
 
         countryListFactory.getDescriptionFromCode(address.countryCode) match {
           case Some(countryDescription) =>
-
             val value = Html(s"""
                   <p>$businessName</p>
                   <p class=$paragraphClass>${address.addressLine1}</p>
@@ -59,31 +57,32 @@ object YourBusinessSummary {
                  ${if (address.countryCode.toUpperCase != "GB") s"<p $paragraphClass>$countryDescription</p>" else ""}
                   """)
 
-            Some(SummaryListRowViewModel(
-              key     = "businessWithIDName.checkYourAnswersLabel",
-              value   = ValueViewModel(HtmlContent(value)),
-              actions = Seq(
-                ActionItemViewModel(
-                  content = HtmlContent(
-                    s"""
+            Some(
+              SummaryListRowViewModel(
+                key = "businessWithIDName.checkYourAnswersLabel",
+                value = ValueViewModel(HtmlContent(value)),
+                actions = Seq(
+                  ActionItemViewModel(
+                    content = HtmlContent(
+                      s"""
                        |<span aria-hidden="true">${messages("site.change")}</span>
                        |<span class="govuk-visually-hidden">${messages("businessWithIDName.change.hidden")}</span>
                        |""".stripMargin
-                  ),
+                    ),
                     href = if (answers.get(AutoMatchedUTRPage).isEmpty) {
-                    routes.IsRegisteredAddressInUkController.onPageLoad(CheckMode).url
-                  } else {
-                    routes.UnableToChangeBusinessController.onPageLoad().url
-                  }
-                ).withAttribute(("id","your-business-details"))
+                      routes.IsRegisteredAddressInUkController.onPageLoad(CheckMode).url
+                    } else {
+                      routes.UnableToChangeBusinessController.onPageLoad().url
+                    }
+                  ).withAttribute(("id", "your-business-details"))
+                )
               )
-            ))
+            )
           case _ => None
         }
 
       case _ => None
     }
   }
-
 
 }

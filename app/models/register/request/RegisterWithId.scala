@@ -46,18 +46,19 @@ object RegisterWithID {
 }
 
 case class RegisterWithIDRequest(
-    requestCommon: RequestCommon,
-    requestDetail: RequestWithIDDetails
+  requestCommon: RequestCommon,
+  requestDetail: RequestWithIDDetails
 )
 
 object RegisterWithIDRequest {
+
   implicit val format: Format[RegisterWithIDRequest] =
     Json.format[RegisterWithIDRequest]
 }
 
 case class WithIDOrganisation(
-    organisationName: String,
-    organisationType: String
+  organisationName: String,
+  organisationType: String
 )
 
 object WithIDOrganisation {
@@ -65,11 +66,11 @@ object WithIDOrganisation {
 }
 
 case class RequestWithIDDetails(
-    IDType: String,
-    IDNumber: String,
-    requiresNameMatch: Boolean,
-    isAnAgent: Boolean,
-    partnerDetails: Option[WithIDOrganisation] = None
+  IDType: String,
+  IDNumber: String,
+  requiresNameMatch: Boolean,
+  isAnAgent: Boolean,
+  partnerDetails: Option[WithIDOrganisation] = None
 )
 
 object RequestWithIDDetails {
@@ -82,27 +83,27 @@ object RequestWithIDDetails {
         (__ \ "requiresNameMatch").read[Boolean] and
         (__ \ "isAnAgent").read[Boolean] and
         (__ \ "organisation").readNullable[WithIDOrganisation]
-    )((idType, idNumber, requiresNameMatch, isAnAgent, organisation) =>
-       RequestWithIDDetails(idType, idNumber, requiresNameMatch, isAnAgent, organisation)
+    )(
+      (idType, idNumber, requiresNameMatch, isAnAgent, organisation) => RequestWithIDDetails(idType, idNumber, requiresNameMatch, isAnAgent, organisation)
     )
   }
 
   implicit lazy val requestWithIDDetailsWrites: OWrites[RequestWithIDDetails] = {
-    case RequestWithIDDetails(idType, idNumber, requiresNameMatch, isAnAgent, Some(organisation @ WithIDOrganisation(_, _) )) =>
-    Json.obj(
-      "IDType" -> idType,
-      "IDNumber" -> idNumber,
-      "requiresNameMatch" -> requiresNameMatch,
-      "isAnAgent" -> isAnAgent,
-      "organisation" -> organisation
-    )
+    case RequestWithIDDetails(idType, idNumber, requiresNameMatch, isAnAgent, Some(organisation @ WithIDOrganisation(_, _))) =>
+      Json.obj(
+        "IDType"            -> idType,
+        "IDNumber"          -> idNumber,
+        "requiresNameMatch" -> requiresNameMatch,
+        "isAnAgent"         -> isAnAgent,
+        "organisation"      -> organisation
+      )
     case RequestWithIDDetails(idType, idNumber, requiresNameMatch, isAnAgent, None) =>
-    Json.obj(
-      "IDType" -> idType,
-      "IDNumber" -> idNumber,
-      "requiresNameMatch" -> requiresNameMatch,
-      "isAnAgent" -> isAnAgent
-    )
+      Json.obj(
+        "IDType"            -> idType,
+        "IDNumber"          -> idNumber,
+        "requiresNameMatch" -> requiresNameMatch,
+        "isAnAgent"         -> isAnAgent
+      )
   }
 
   def apply(registrationRequest: RegistrationRequest): RequestWithIDDetails =

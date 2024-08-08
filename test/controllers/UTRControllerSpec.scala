@@ -31,12 +31,12 @@ import scala.concurrent.Future
 
 class UTRControllerSpec extends SpecBase {
 
-  lazy val utrRoute = routes.UTRController.onPageLoad(NormalMode).url
-  lazy val utrRouteSubmit = routes.UTRController.onSubmit(NormalMode).url
-  val formProvider = new UTRFormProvider()
+  lazy val utrRoute                       = routes.UTRController.onPageLoad(NormalMode).url
+  lazy val utrRouteSubmit                 = routes.UTRController.onSubmit(NormalMode).url
+  val formProvider                        = new UTRFormProvider()
   val form: Form[UniqueTaxpayerReference] = formProvider("Self Assessment")
-  val caTaxType = "Corporation Tax"
-  val saTaxType = "Self Assessment"
+  val caTaxType                           = "Corporation Tax"
+  val saTaxType                           = "Self Assessment"
 
   "UTR Controller" - {
 
@@ -60,7 +60,6 @@ class UTRControllerSpec extends SpecBase {
         contentAsString(result) mustEqual view(form, NormalMode, caTaxType)(request, messages(application)).toString
       }
     }
-
 
     "must return OK and the correct view for a GET when businessType is Partnership" in {
 
@@ -145,7 +144,7 @@ class UTRControllerSpec extends SpecBase {
             .withFormUrlEncodedBody(("value", ""))
 
         val form: Form[UniqueTaxpayerReference] = formProvider(caTaxType)
-        val boundForm = form.bind(Map("value" -> ""))
+        val boundForm                           = form.bind(Map("value" -> ""))
 
         val view = application.injector.instanceOf[UTRView]
 

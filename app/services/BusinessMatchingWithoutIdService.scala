@@ -30,7 +30,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessMatchingWithoutIdService @Inject() (registrationConnector: RegistrationConnector)(implicit ec: ExecutionContext, uuidGen: UUIDGen, clock: Clock) {
 
-
   def registerWithoutId()(implicit request: DataRequest[AnyContent], hc: HeaderCarrier): Future[Either[ApiError, Option[SafeId]]] = businessRegistration()
 
   private val registrationError = Future.successful(Left(MandatoryInformationMissingError()))

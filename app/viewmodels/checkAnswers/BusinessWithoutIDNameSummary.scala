@@ -26,15 +26,14 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object BusinessWithoutIDNameSummary  {
+object BusinessWithoutIDNameSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(BusinessWithoutIDNamePage).map {
       answer =>
-
         SummaryListRowViewModel(
-          key     = "businessWithoutIDName.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key = "businessWithoutIDName.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel(
               content = HtmlContent(
@@ -43,9 +42,8 @@ object BusinessWithoutIDNameSummary  {
                    |<span class="govuk-visually-hidden">${messages("businessWithoutIDName.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href =  routes.BusinessWithoutIDNameController.onPageLoad(CheckMode).url
-
-            ).withAttribute(("id","business-without-id-name"))
+              href = routes.BusinessWithoutIDNameController.onPageLoad(CheckMode).url
+            ).withAttribute(("id", "business-without-id-name"))
           )
         )
     }

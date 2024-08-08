@@ -33,20 +33,18 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
 trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
 
 class AuthenticatedIdentifierAction @Inject() (
-                                                override val authConnector: AuthConnector,
-                                                config: FrontendAppConfig,
-                                                val parser: BodyParsers.Default
-                                              )(implicit val executionContext: ExecutionContext)
-  extends IdentifierAction
+  override val authConnector: AuthConnector,
+  config: FrontendAppConfig,
+  val parser: BodyParsers.Default
+)(implicit val executionContext: ExecutionContext)
+    extends IdentifierAction
     with AuthorisedFunctions
     with Logging {
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
-
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
@@ -54,7 +52,10 @@ class AuthenticatedIdentifierAction @Inject() (
 
     authorised()
       .retrieve(Retrievals.internalId and Retrievals.allEnrolments and affinityGroup and credentialRole) {
-        case _ ~ enrolments ~ _ ~ Some(Assistant) if enrolments.enrolments.exists(enrolment => validKeys.contains(enrolment.key)) =>
+        case _ ~ enrolments ~ _ ~ Some(Assistant)
+            if enrolments.enrolments.exists(
+              enrolment => validKeys.contains(enrolment.key)
+            ) =>
           Future.successful(Redirect(config.countryByCountryReportingFrontendUrl))
         case _ ~ _ ~ Some(Agent) ~ _ =>
           Future.successful(Redirect(config.countryByCountryReportingFrontendUrl))
@@ -63,7 +64,7 @@ class AuthenticatedIdentifierAction @Inject() (
         case _ ~ _ ~ Some(Individual) ~ _ =>
           Future.successful(Redirect(routes.UnauthorisedIndividualController.onPageLoad()))
         case Some(internalID) ~ enrolments ~ _ ~ _ => block(IdentifierRequest(request, internalID, enrolments.enrolments))
-        case _                                                       => throw new UnauthorizedException("Unable to retrieve internal Id")
+        case _                                     => throw new UnauthorizedException("Unable to retrieve internal Id")
       }
       .recover {
         case _: NoActiveSession =>

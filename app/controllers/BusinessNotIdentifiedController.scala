@@ -28,17 +28,19 @@ import views.html.BusinessNotIdentifiedView
 
 import javax.inject.Inject
 
-class BusinessNotIdentifiedController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       standardActionSets: StandardActionSets,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       appConfig: FrontendAppConfig,
-                                       view: BusinessNotIdentifiedView
-                                     ) extends FrontendBaseController with I18nSupport with Logging{
+class BusinessNotIdentifiedController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  appConfig: FrontendAppConfig,
+  view: BusinessNotIdentifiedView
+) extends FrontendBaseController
+    with I18nSupport
+    with Logging {
 
   def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
-      val startUrl = routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
+      val startUrl     = routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
       val businessType = request.userAnswers.get(BusinessTypePage)
 
       Ok(view(appConfig.findCompanyName, startUrl, businessType))

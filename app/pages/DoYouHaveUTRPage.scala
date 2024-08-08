@@ -59,7 +59,6 @@ case object DoYouHaveUTRPage extends QuestionPage[Boolean] {
 
   override def toString: String = "doYouHaveUTR"
 
-
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
     case Some(true)  => withOutIDPages.foldLeft(Try(userAnswers))(Page.removePage)
     case Some(false) => withIdPages.foldLeft(Try(userAnswers))(Page.removePage)

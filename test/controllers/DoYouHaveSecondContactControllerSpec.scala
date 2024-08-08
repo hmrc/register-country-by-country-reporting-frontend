@@ -30,11 +30,10 @@ import scala.concurrent.Future
 
 class DoYouHaveSecondContactControllerSpec extends SpecBase {
 
-  val formProvider = new DoYouHaveSecondContactFormProvider()
-  val form: Form[Boolean] = formProvider()
-  val contactName = "someContact"
+  val formProvider             = new DoYouHaveSecondContactFormProvider()
+  val form: Form[Boolean]      = formProvider()
+  val contactName              = "someContact"
   val userAnswers: UserAnswers = UserAnswers(userAnswersId).set(ContactNamePage, contactName).success.value
-
 
   lazy val doYouHaveSecondContactRoute: String = routes.DoYouHaveSecondContactController.onPageLoad(NormalMode).url
 

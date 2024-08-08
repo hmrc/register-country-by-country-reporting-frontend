@@ -25,17 +25,16 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object IsRegisteredAddressInUkSummary  {
+object IsRegisteredAddressInUkSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(IsRegisteredAddressInUkPage).map {
       answer =>
-
         val value = if (answer) "site.yes" else "site.no"
 
         SummaryListRowViewModel(
-          key     = "isRegisteredAddressInUk.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
+          key = "isRegisteredAddressInUk.checkYourAnswersLabel",
+          value = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel(
               content = HtmlContent(
@@ -45,8 +44,7 @@ object IsRegisteredAddressInUkSummary  {
                    |""".stripMargin
               ),
               href = routes.IsRegisteredAddressInUkController.onPageLoad(CheckMode).url
-
-            ).withAttribute(("id","is-registered-address-uk"))
+            ).withAttribute(("id", "is-registered-address-uk"))
           )
         )
     }

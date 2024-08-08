@@ -19,13 +19,13 @@ package models
 import play.api.libs.json._
 
 case class Address(
-                    addressLine1: String,
-                    addressLine2: Option[String],
-                    addressLine3: String,
-                    addressLine4: Option[String],
-                    postCode: Option[String],
-                    country: Country
-                  ) {
+  addressLine1: String,
+  addressLine2: Option[String],
+  addressLine3: String,
+  addressLine4: Option[String],
+  postCode: Option[String],
+  country: Country
+) {
 
   val isOtherCountry: Boolean = this.country.code != "GB"
 }

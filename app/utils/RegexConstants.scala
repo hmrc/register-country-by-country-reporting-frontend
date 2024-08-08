@@ -18,10 +18,10 @@ package utils
 
 trait RegexConstants {
 
-  final val apiAddressRegex             = """^[A-Za-z0-9 \-,.&']*$"""
-  final val apiOrganisationNameRegex    = """^[a-zA-Z0-9 '&\\/]*$"""
-  final val orgNameRegex                = """^[a-zA-Z0-9 &`\-\'\\\^]*$"""
-  final val utrRegex                    = "^[0-9]*$"
+  final val apiAddressRegex          = """^[A-Za-z0-9 \-,.&']*$"""
+  final val apiOrganisationNameRegex = """^[a-zA-Z0-9 '&\\/]*$"""
+  final val orgNameRegex             = """^[a-zA-Z0-9 &`\-\'\\\^]*$"""
+  final val utrRegex                 = "^[0-9]*$"
 
   final val emailRegex = "^(?:[a-zA-Z0-9!#$%&*+\\/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&*+\\/=?^_`{|}~-]+)*)" +
     "@(?:[a-zA-Z0-9!#$%&*+\\/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&*+\\/=?^_`{|}~-]+)*)$"

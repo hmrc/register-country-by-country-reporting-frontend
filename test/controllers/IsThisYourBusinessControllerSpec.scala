@@ -42,15 +42,14 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
   val formProvider = new IsThisYourBusinessFormProvider()
   val form         = formProvider()
 
-  lazy val isThisYourBusinessRoute = routes.IsThisYourBusinessController.onPageLoad(NormalMode).url
+  lazy val isThisYourBusinessRoute    = routes.IsThisYourBusinessController.onPageLoad(NormalMode).url
   lazy val businessNotIdentifiedRoute = routes.BusinessNotIdentifiedController.onPageLoad.url
-  val  findCompanyName = "https://find-and-update.company-information.service.gov.uk/"
-  private val SafeIdValue = "XE0000123456789"
-  val UtrValue = "1234567890"
-  val OrgName             = "Some Test Org"
-  val safeId: SafeId = SafeId("XE0000123456789")
-  private val address = AddressResponse("line1", None, None, None, None, "GB")
-
+  val findCompanyName                 = "https://find-and-update.company-information.service.gov.uk/"
+  private val SafeIdValue             = "XE0000123456789"
+  val UtrValue                        = "1234567890"
+  val OrgName                         = "Some Test Org"
+  val safeId: SafeId                  = SafeId("XE0000123456789")
+  private val address                 = AddressResponse("line1", None, None, None, None, "GB")
 
   val baseUserAnswers: UserAnswers = emptyUserAnswers
     .set(BusinessTypePage, LimitedCompany)
@@ -64,17 +63,18 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
     .value
 
   private val registrationRequest = RegistrationRequest(UTR, utr.uniqueTaxPayerReference, OrgName, Some(LimitedCompany))
+
   val registrationInfo: RegistrationInfo = RegistrationInfo(
     SafeId("safe"),
     "Business Name",
     AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
   )
 
-  val mockRegistrationConnector: RegistrationConnector = mock[RegistrationConnector]
-  val mockSubscriptionService: SubscriptionService     = mock[SubscriptionService]
-  val mockTaxEnrolmentsService: TaxEnrolmentService    = mock[TaxEnrolmentService]
+  val mockRegistrationConnector: RegistrationConnector   = mock[RegistrationConnector]
+  val mockSubscriptionService: SubscriptionService       = mock[SubscriptionService]
+  val mockTaxEnrolmentsService: TaxEnrolmentService      = mock[TaxEnrolmentService]
   val mockMatchingService: BusinessMatchingWithIdService = mock[BusinessMatchingWithIdService]
-  val mockUUIDGen: UUIDGen = mock[UUIDGen]
+  val mockUUIDGen: UUIDGen                               = mock[UUIDGen]
 
   override def beforeEach(): Unit =
     reset(
@@ -161,7 +161,6 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
       }
     }
 
-
     "redirect to Registration Confirmation Page for business when they are already subscribed but no enrolment created" in {
 
       val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
@@ -239,9 +238,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
     "must redirect to the BusinessNotIdentifiedPage for a GET when there is no CT UTR and RegistrationInfo not found" in {
 
       val registerWithID = RegisterWithID(registrationRequest)
-      val startUrl = routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
-
-
+      val startUrl       = routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
 
       val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
         .overrides(
@@ -275,7 +272,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[BusinessNotIdentifiedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(findCompanyName ,startUrl , Some(LimitedCompany))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(findCompanyName, startUrl, Some(LimitedCompany))(request, messages(application)).toString
       }
     }
 

@@ -32,7 +32,11 @@ class CheckEnrolledToServiceAction @Inject() (config: FrontendAppConfig)(implici
 
   override protected def filter[A](request: IdentifierRequest[A]): Future[Option[Result]] = {
     val validKeys: Set[String] = Set(config.enrolmentKey, config.nonUkEnrolmentKey)
-    if (request.enrolments.exists(enrolment => validKeys.contains(enrolment.key))) {
+    if (
+      request.enrolments.exists(
+        enrolment => validKeys.contains(enrolment.key)
+      )
+    ) {
       logger.info(s"User is enrolled to the CBC service")
       successful(Some(Redirect(config.countryByCountryReportingFrontendUrl)))
     } else {

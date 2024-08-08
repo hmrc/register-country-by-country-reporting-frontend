@@ -21,7 +21,7 @@ import play.api.data.FormError
 import utils.RegexConstants
 import wolfendale.scalacheck.regexp.RegexpGen
 
-class WhatIsTradingNameFormProviderSpec extends StringFieldBehaviours with RegexConstants{
+class WhatIsTradingNameFormProviderSpec extends StringFieldBehaviours with RegexConstants {
 
   val form = new WhatIsTradingNameFormProvider()()
 

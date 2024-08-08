@@ -45,9 +45,9 @@ import models.SafeId
 class UnableToChangeBusinessControllerSpec extends SpecBase {
 
   lazy val loginURL: String = "http://localhost:9949/auth-login-stub/gg-sign-in"
-  val SafeIdValue = "XCBC0000123456789"
-  val safeId: SafeId = SafeId(SafeIdValue)
-  val OrgName = "Some Test Org"
+  val SafeIdValue           = "XCBC0000123456789"
+  val safeId: SafeId        = SafeId(SafeIdValue)
+  val OrgName               = "Some Test Org"
 
   val userAnswers: UserAnswers =
     emptyUserAnswers

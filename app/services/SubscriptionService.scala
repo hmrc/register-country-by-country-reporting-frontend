@@ -23,32 +23,29 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubscriptionService @Inject()(val subscriptionConnector: SubscriptionConnector) {
-
-
+class SubscriptionService @Inject() (val subscriptionConnector: SubscriptionConnector) {
 
   def checkAndCreateSubscription(safeID: SafeId, userAnswers: UserAnswers)(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext
-  ): Future[Either[ApiError, SubscriptionID]] = {
-    getDisplaySubscriptionId(safeID) flatMap  {
+  ): Future[Either[ApiError, SubscriptionID]] =
+    getDisplaySubscriptionId(safeID) flatMap {
       case Some(subscriptionID) => Future.successful(Right(subscriptionID))
       case _ =>
-      SubscriptionRequest.createSubscriptionRequest(safeID, userAnswers) match {
-        case Right(subscriptionRequest) => subscriptionConnector.createSubscription(CreateSubscriptionForCBCRequest(subscriptionRequest)) map {
-          case Some(subscriptionID) =>
-            Right(subscriptionID)
-          case None => Left(SubscriptionCreateError)
+        SubscriptionRequest.createSubscriptionRequest(safeID, userAnswers) match {
+          case Right(subscriptionRequest) =>
+            subscriptionConnector.createSubscription(CreateSubscriptionForCBCRequest(subscriptionRequest)) map {
+              case Some(subscriptionID) =>
+                Right(subscriptionID)
+              case None => Left(SubscriptionCreateError)
+            }
+          case Left(value) => Future.successful(Left(value))
         }
-        case Left(value) => Future.successful(Left(value))
-      }
     }
-  }
 
   def getDisplaySubscriptionId(safeId: SafeId)(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext
-  ): Future[Option[SubscriptionID]] = {
+  ): Future[Option[SubscriptionID]] =
     subscriptionConnector.readSubscription(safeId)
-  }
 }

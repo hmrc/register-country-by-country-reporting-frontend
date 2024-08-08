@@ -23,20 +23,20 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers._
 import pages.AutoMatchedUTRPage
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers,
-                             countryListFactory: CountryListFactory)(implicit val messages: Messages) {
+class CheckYourAnswersHelper(userAnswers: UserAnswers, countryListFactory: CountryListFactory)(implicit val messages: Messages) {
 
-  def businessSection: Seq[SummaryListRow] = {
-    (userAnswers.get(IsRegisteredAddressInUkPage), userAnswers.get(DoYouHaveUTRPage) , userAnswers.get(AutoMatchedUTRPage).isEmpty) match {
-      case (_, _ , false) => businessWithIDSection
-      case (Some(true), _ , _) => businessWithIDSection
-      case (Some(false), Some(true) ,_) => businessWithIDSection
-      case (Some(false), _ , _) => businessWithoutIDSection
-      case _ => Seq.empty[SummaryListRow]
-  }
-}
+  def businessSection: Seq[SummaryListRow] =
+    (userAnswers.get(IsRegisteredAddressInUkPage), userAnswers.get(DoYouHaveUTRPage), userAnswers.get(AutoMatchedUTRPage).isEmpty) match {
+      case (_, _, false)                => businessWithIDSection
+      case (Some(true), _, _)           => businessWithIDSection
+      case (Some(false), Some(true), _) => businessWithIDSection
+      case (Some(false), _, _)          => businessWithoutIDSection
+      case _                            => Seq.empty[SummaryListRow]
+    }
 
-  def tradingNameSummary: Option[SummaryListRow] = userAnswers.get(BusinessHaveDifferentNamePage) flatMap (_ => WhatIsTradingNameSummary.row(userAnswers))
+  def tradingNameSummary: Option[SummaryListRow] = userAnswers.get(BusinessHaveDifferentNamePage) flatMap (
+    _ => WhatIsTradingNameSummary.row(userAnswers)
+  )
 
   def businessWithoutIDSection: Seq[SummaryListRow] = Seq(
     IsRegisteredAddressInUkSummary.row(userAnswers),
@@ -49,16 +49,24 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers,
   def businessWithIDSection: Seq[SummaryListRow] =
     Seq(YourBusinessSummary.row(userAnswers, countryListFactory)).flatten
 
-  def contactPhoneSummary: Option[SummaryListRow] = userAnswers.get(HaveTelephonePage) flatMap (_ => ContactPhoneSummary.row(userAnswers))
+  def contactPhoneSummary: Option[SummaryListRow] = userAnswers.get(HaveTelephonePage) flatMap (
+    _ => ContactPhoneSummary.row(userAnswers)
+  )
 
-  def firstContactSection: Seq[SummaryListRow] = Seq(ContactNameSummary.row(userAnswers),
-    ContactEmailSummary.row(userAnswers), contactPhoneSummary).flatten
+  def firstContactSection: Seq[SummaryListRow] = Seq(ContactNameSummary.row(userAnswers), ContactEmailSummary.row(userAnswers), contactPhoneSummary).flatten
 
-  def secondContactPhoneSummary: Option[SummaryListRow] = userAnswers.get(HaveTelephonePage) flatMap (_ => SecondContactPhoneSummary.row(userAnswers))
+  def secondContactPhoneSummary: Option[SummaryListRow] = userAnswers.get(HaveTelephonePage) flatMap (
+    _ => SecondContactPhoneSummary.row(userAnswers)
+  )
 
   def secondContactSection: Seq[SummaryListRow] = userAnswers.get(DoYouHaveSecondContactPage) match {
-    case Some(true) => Seq(DoYouHaveSecondContactSummary.row(userAnswers),
-      SecondContactNameSummary.row(userAnswers), SecondContactEmailSummary.row(userAnswers), secondContactPhoneSummary).flatten
+    case Some(true) =>
+      Seq(
+        DoYouHaveSecondContactSummary.row(userAnswers),
+        SecondContactNameSummary.row(userAnswers),
+        SecondContactEmailSummary.row(userAnswers),
+        secondContactPhoneSummary
+      ).flatten
     case _ => Seq(DoYouHaveSecondContactSummary.row(userAnswers)).flatten
   }
 }

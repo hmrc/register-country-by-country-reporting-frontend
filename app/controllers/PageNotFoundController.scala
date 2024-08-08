@@ -25,13 +25,14 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.PageNotFoundView
 
-class PageNotFoundController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       standardActionSets: StandardActionSets,
-                                       frontendAppConfig: FrontendAppConfig,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: PageNotFoundView
-                                     ) extends FrontendBaseController with I18nSupport {
+class PageNotFoundController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  frontendAppConfig: FrontendAppConfig,
+  val controllerComponents: MessagesControllerComponents,
+  view: PageNotFoundView
+) extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithEnrolmentCheck() {
     implicit request =>

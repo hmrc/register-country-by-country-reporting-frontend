@@ -28,16 +28,14 @@ import viewmodels.implicits._
 
 object BusinessWithoutIdAddressSummary {
 
-
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(BusinessWithoutIdAddressPage).map {
       answer =>
-
         def formatLine(line: String) = s"""<div class="govuk-margin-bottom-0">${HtmlFormat.escape(line)}</div>"""
 
         val value =
           s"""<div class=govuk-margin-bottom-0>${HtmlFormat.escape(answer.addressLine1)}</div>""" concat {
-              answer.addressLine2.fold("")(formatLine)
+            answer.addressLine2.fold("")(formatLine)
           } concat {
             formatLine(answer.addressLine3)
           } concat {
@@ -46,8 +44,7 @@ object BusinessWithoutIdAddressSummary {
             answer.postCode.fold("")(formatLine)
           } concat {
             s"""<div class=govuk-margin-bottom-0>${HtmlFormat.escape(answer.country.description)}</div>"""
-            }
-
+          }
 
         SummaryListRowViewModel(
           key = "businessWithoutIdAddress.checkYourAnswersLabel",
@@ -60,9 +57,8 @@ object BusinessWithoutIdAddressSummary {
                    |<span class="govuk-visually-hidden">${messages("businessWithoutIdAddress.change.hidden")}</span>
                    |""".stripMargin
               ),
-              href =  routes.BusinessWithoutIdAddressController.onPageLoad(CheckMode).url
-
-            ).withAttribute(("id","business-without-id-address"))
+              href = routes.BusinessWithoutIdAddressController.onPageLoad(CheckMode).url
+            ).withAttribute(("id", "business-without-id-address"))
           )
         )
     }

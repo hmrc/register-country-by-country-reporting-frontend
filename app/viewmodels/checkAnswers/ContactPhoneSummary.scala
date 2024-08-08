@@ -31,22 +31,23 @@ object ContactPhoneSummary {
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
     val value = answers.get(ContactPhonePage).getOrElse("None")
 
-    Some(SummaryListRowViewModel(
-      key = "contactPhone.checkYourAnswersLabel",
-      value = ValueViewModel(HtmlFormat.escape(value).toString),
-      actions = Seq(
-        ActionItemViewModel(
-          content = HtmlContent(
-            s"""
+    Some(
+      SummaryListRowViewModel(
+        key = "contactPhone.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(value).toString),
+        actions = Seq(
+          ActionItemViewModel(
+            content = HtmlContent(
+              s"""
                |<span aria-hidden="true">${messages("site.change")}</span>
                |<span class="govuk-visually-hidden">${messages("contactPhone.change.hidden")}</span>
                |""".stripMargin
-          ),
-          href = routes.HaveTelephoneController.onPageLoad(CheckMode).url
-
-        ).withAttribute(("id","contact-phone"))
+            ),
+            href = routes.HaveTelephoneController.onPageLoad(CheckMode).url
+          ).withAttribute(("id", "contact-phone"))
+        )
       )
-    ))
+    )
 
   }
 

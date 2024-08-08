@@ -39,14 +39,13 @@ class EmailServiceSpec extends SpecBase with BeforeAndAfterEach with Generators 
       mockEmailConnector
     )
 
-
   private val mockEmailConnector: EmailConnector = mock[EmailConnector]
 
-  lazy override val app: Application = new GuiceApplicationBuilder()
+  override lazy val app: Application = new GuiceApplicationBuilder()
     .overrides(
-     bind[EmailConnector].toInstance(mockEmailConnector)
-    ).build()
-
+      bind[EmailConnector].toInstance(mockEmailConnector)
+    )
+    .build()
 
   val emailService: EmailService = app.injector.instanceOf[EmailService]
 
@@ -58,8 +57,12 @@ class EmailServiceSpec extends SpecBase with BeforeAndAfterEach with Generators 
       when(mockEmailConnector.sendEmail(any())(any())).thenReturn(Future.successful(HttpResponse(ACCEPTED, "")))
 
       val userAnswers = emptyUserAnswers
-        .set(ContactEmailPage, "test@gmail.com").success.value
-        .set(SecondContactEmailPage, "test@gmail.com").success.value
+        .set(ContactEmailPage, "test@gmail.com")
+        .success
+        .value
+        .set(SecondContactEmailPage, "test@gmail.com")
+        .success
+        .value
 
       val result = emailService.sendEmail(userAnswers, SubscriptionID("Id"))
 

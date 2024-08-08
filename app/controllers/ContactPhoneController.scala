@@ -30,27 +30,28 @@ import views.html.ContactPhoneView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ContactPhoneController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        navigator: CBCRNavigator,
-                                        standardActionSets: StandardActionSets,
-                                        formProvider: ContactPhoneFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: ContactPhoneView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class ContactPhoneController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: CBCRNavigator,
+  standardActionSets: StandardActionSets,
+  formProvider: ContactPhoneFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: ContactPhoneView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(ContactPhonePage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, getContactName(request.userAnswers),  mode))
+      Ok(view(preparedForm, getContactName(request.userAnswers), mode))
   }
 
   private def getContactName(userAnswers: UserAnswers)(implicit messages: Messages) =
@@ -61,16 +62,15 @@ class ContactPhoneController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, getContactName(request.userAnswers), mode))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ContactPhonePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ContactPhonePage, mode, updatedAnswers))
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, getContactName(request.userAnswers), mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(ContactPhonePage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(ContactPhonePage, mode, updatedAnswers))
+        )
   }
 }

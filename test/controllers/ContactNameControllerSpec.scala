@@ -30,7 +30,7 @@ import scala.concurrent.Future
 class ContactNameControllerSpec extends SpecBase {
 
   val formProvider = new ContactNameFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   lazy val contactNameRoute = routes.ContactNameController.onPageLoad(NormalMode).url
 

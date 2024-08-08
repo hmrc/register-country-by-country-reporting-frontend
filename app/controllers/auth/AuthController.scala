@@ -25,15 +25,15 @@ import javax.inject.Inject
 
 class AuthController @Inject() (
   val controllerComponents: MessagesControllerComponents,
-  config: FrontendAppConfig,
-  ) extends FrontendBaseController
+  config: FrontendAppConfig
+) extends FrontendBaseController
     with I18nSupport {
 
   def signOut(): Action[AnyContent] = Action {
-      Redirect(config.signOutUrl).withNewSession
+    Redirect(config.signOutUrl).withNewSession
   }
 
   def signOutNoSurvey(): Action[AnyContent] = Action {
-      Redirect(routes.SignedOutController.onPageLoad()).withNewSession
+    Redirect(routes.SignedOutController.onPageLoad()).withNewSession
   }
 }

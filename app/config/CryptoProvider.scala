@@ -23,8 +23,8 @@ import uk.gov.hmrc.crypto.{Decrypter, Encrypter, SymmetricCryptoFactory}
 
 @Singleton
 class CryptoProvider @Inject() (
-                                 configuration: Configuration
-                               ) extends Provider[Encrypter with Decrypter] {
+  configuration: Configuration
+) extends Provider[Encrypter with Decrypter] {
 
   override def get(): Encrypter with Decrypter =
     SymmetricCryptoFactory.aesGcmCryptoFromConfig("crypto", configuration.underlying)

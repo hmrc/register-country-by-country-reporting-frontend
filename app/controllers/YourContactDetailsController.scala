@@ -25,12 +25,13 @@ import views.html.YourContactDetailsView
 
 import javax.inject.Inject
 
-class YourContactDetailsController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       standardActionSets: StandardActionSets,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: YourContactDetailsView
-                                     ) extends FrontendBaseController with I18nSupport {
+class YourContactDetailsController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: YourContactDetailsView
+) extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>

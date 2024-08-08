@@ -28,13 +28,13 @@ import views.html.UnableToChangeBusinessView
 import javax.inject.Inject
 
 class UnableToChangeBusinessController @Inject() (
-                                                   override val messagesApi: MessagesApi,
-                                                   standardActionSets: StandardActionSets,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   appConfig: FrontendAppConfig,
-                                                   view: UnableToChangeBusinessView
-                                                 ) extends FrontendBaseController
-  with I18nSupport {
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  appConfig: FrontendAppConfig,
+  view: UnableToChangeBusinessView
+) extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>

@@ -30,7 +30,7 @@ import scala.concurrent.Future
 class WhatIsTradingNameControllerSpec extends SpecBase {
 
   val formProvider = new WhatIsTradingNameFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   lazy val whatIsTradingNameRoute = routes.WhatIsTradingNameController.onPageLoad(NormalMode).url
 

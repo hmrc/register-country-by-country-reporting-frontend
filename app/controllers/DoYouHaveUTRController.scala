@@ -30,14 +30,14 @@ import views.html.DoYouHaveUTRView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DoYouHaveUTRController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        navigator: CBCRNavigator,
-                                        standardActionSets: StandardActionSets,
-                                        formProvider: DoYouHaveUTRFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: DoYouHaveUTRView
+class DoYouHaveUTRController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: CBCRNavigator,
+  standardActionSets: StandardActionSets,
+  formProvider: DoYouHaveUTRFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: DoYouHaveUTRView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -65,7 +65,7 @@ class DoYouHaveUTRController @Inject()(
             if (request.userAnswers.hasNewValue(DoYouHaveUTRPage, value)) {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(DoYouHaveUTRPage, value))
-                _ <- sessionRepository.set(updatedAnswers)
+                _              <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(DoYouHaveUTRPage, mode, updatedAnswers))
             } else {
               Future.successful(Redirect(navigator.nextPage(DoYouHaveUTRPage, mode, request.userAnswers)))

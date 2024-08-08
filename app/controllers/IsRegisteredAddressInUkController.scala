@@ -30,23 +30,24 @@ import views.html.IsRegisteredAddressInUkView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IsRegisteredAddressInUkController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         navigator: CBCRNavigator,
-                                         standardActionSets: StandardActionSets,
-                                         formProvider: IsRegisteredAddressInUkFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: IsRegisteredAddressInUkView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class IsRegisteredAddressInUkController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: CBCRNavigator,
+  standardActionSets: StandardActionSets,
+  formProvider: IsRegisteredAddressInUkFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: IsRegisteredAddressInUkView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithInitializedData() {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(IsRegisteredAddressInUkPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
@@ -55,16 +56,15 @@ class IsRegisteredAddressInUkController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithInitializedData().async {
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(IsRegisteredAddressInUkPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IsRegisteredAddressInUkPage, mode, updatedAnswers))
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(IsRegisteredAddressInUkPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(IsRegisteredAddressInUkPage, mode, updatedAnswers))
+        )
   }
 }

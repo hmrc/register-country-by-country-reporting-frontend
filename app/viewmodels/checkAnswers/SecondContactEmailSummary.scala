@@ -26,15 +26,14 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object SecondContactEmailSummary  {
+object SecondContactEmailSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SecondContactEmailPage).map {
       answer =>
-
         SummaryListRowViewModel(
-          key     = "secondContactEmail.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key = "secondContactEmail.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel(
               content = HtmlContent(
@@ -44,8 +43,7 @@ object SecondContactEmailSummary  {
                    |""".stripMargin
               ),
               href = routes.SecondContactEmailController.onPageLoad(CheckMode).url
-
-            ).withAttribute(("id","second-contact-email"))
+            ).withAttribute(("id", "second-contact-email"))
           )
         )
     }

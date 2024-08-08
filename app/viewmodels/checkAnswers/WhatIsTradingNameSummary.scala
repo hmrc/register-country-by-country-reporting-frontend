@@ -26,29 +26,28 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
+object WhatIsTradingNameSummary {
 
-object WhatIsTradingNameSummary  {
+  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-{
+    val value = answers.get(WhatIsTradingNamePage).getOrElse("None")
 
-        val value = answers.get(WhatIsTradingNamePage).getOrElse("None")
-
-        Some(SummaryListRowViewModel(
-          key     = "whatIsTradingName.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(value).toString),
-          actions = Seq(
-            ActionItemViewModel(
-              content = HtmlContent(
-                s"""
+    Some(
+      SummaryListRowViewModel(
+        key = "whatIsTradingName.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(value).toString),
+        actions = Seq(
+          ActionItemViewModel(
+            content = HtmlContent(
+              s"""
                    |<span aria-hidden="true">${messages("site.change")}</span>
                    |<span class="govuk-visually-hidden">${messages("whatIsTradingName.change.hidden")}</span>
                    |""".stripMargin
-              ),
-              href = routes.BusinessHaveDifferentNameController.onPageLoad(CheckMode).url
-
-            ).withAttribute(("id","what-is-you-trading-name"))
-          )
-        ))
-    }
+            ),
+            href = routes.BusinessHaveDifferentNameController.onPageLoad(CheckMode).url
+          ).withAttribute(("id", "what-is-you-trading-name"))
+        )
+      )
+    )
+  }
 }

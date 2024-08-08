@@ -28,6 +28,6 @@ case object BusinessTypePage extends QuestionPage[BusinessType] {
   override def toString: String = "businessType"
 
   override def cleanup(value: Option[BusinessType], userAnswers: UserAnswers): Try[UserAnswers] =
-        List(UTRPage, BusinessNamePage, IsThisYourBusinessPage, RegistrationInfoPage).foldLeft(Try(userAnswers))(Page.removePage)
+    List(UTRPage, BusinessNamePage, IsThisYourBusinessPage, RegistrationInfoPage).foldLeft(Try(userAnswers))(Page.removePage)
 
 }

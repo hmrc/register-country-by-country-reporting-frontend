@@ -19,10 +19,11 @@ package models.subscription.request
 import play.api.libs.json.{Json, OFormat}
 
 case class CreateSubscriptionForCBCRequest(
-    createSubscriptionForCBCRequest: SubscriptionRequest
+  createSubscriptionForCBCRequest: SubscriptionRequest
 )
 
 object CreateSubscriptionForCBCRequest {
+
   implicit val format: OFormat[CreateSubscriptionForCBCRequest] =
     Json.format[CreateSubscriptionForCBCRequest]
 }

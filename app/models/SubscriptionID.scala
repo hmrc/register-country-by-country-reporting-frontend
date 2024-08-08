@@ -16,8 +16,7 @@
 
 package models
 
-import play.api.libs.json.{JsString, Reads, Writes, __}
-
+import play.api.libs.json.{__, JsString, Reads, Writes}
 
 case class SubscriptionID(value: String)
 

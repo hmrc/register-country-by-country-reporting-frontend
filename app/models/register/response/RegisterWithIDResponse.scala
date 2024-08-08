@@ -18,21 +18,22 @@ package models.register.response
 
 import models.SafeId
 import models.register.response.details.{AddressResponse, OrganisationResponse}
-import play.api.libs.json.{Reads, __}
+import play.api.libs.json.{__, Reads}
 
 case class RegisterWithIDResponse(
-                                   safeId: SafeId,
-                                   organisation: OrganisationResponse,
-                                   address: AddressResponse
-                                 )
+  safeId: SafeId,
+  organisation: OrganisationResponse,
+  address: AddressResponse
+)
 
 object RegisterWithIDResponse {
 
   import play.api.libs.functional.syntax._
+
   implicit val reads: Reads[RegisterWithIDResponse] = (
     (__ \ "registerWithIDResponse" \ "responseDetail" \ "SAFEID").read[SafeId] and
-      (__ \ "registerWithIDResponse"\ "responseDetail" \ "organisation").read[OrganisationResponse] and
+      (__ \ "registerWithIDResponse" \ "responseDetail" \ "organisation").read[OrganisationResponse] and
       (__ \ "registerWithIDResponse" \ "responseDetail" \ "address").read[AddressResponse]
-    )(RegisterWithIDResponse.apply _)
+  )(RegisterWithIDResponse.apply _)
 
 }

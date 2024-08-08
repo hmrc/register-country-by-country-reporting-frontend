@@ -27,23 +27,18 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
 
-  def genIntersperseString(gen: Gen[String],
-                           value: String,
-                           frequencyV: Int = 1,
-                           frequencyN: Int = 10): Gen[String] = {
+  def genIntersperseString(gen: Gen[String], value: String, frequencyV: Int = 1, frequencyN: Int = 10): Gen[String] = {
 
     val genValue: Gen[Option[String]] = Gen.frequency(frequencyN -> None, frequencyV -> Gen.const(Some(value)))
 
     for {
       seq1 <- gen
       seq2 <- Gen.listOfN(seq1.length, genValue)
-    } yield {
-      seq1.toSeq.zip(seq2).foldLeft("") {
-        case (acc, (n, Some(v))) =>
-          acc + n + v
-        case (acc, (n, _)) =>
-          acc + n
-      }
+    } yield seq1.toSeq.zip(seq2).foldLeft("") {
+      case (acc, (n, Some(v))) =>
+        acc + n + v
+      case (acc, (n, _)) =>
+        acc + n
     }
   }
 
@@ -61,10 +56,10 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
       pt4 <- Gen.choose(0, 9)
       pt5a <- Gen.alphaChar suchThat (
         ch => !disallowed.contains(ch.toLower)
-        )
+      )
       pt5b <- Gen.alphaChar suchThat (
         ch => !disallowed.contains(ch.toLower)
-        )
+      )
     } yield s"$pt1$pt2$pt3 $pt4$pt5a$pt5b"
   }
 
@@ -84,10 +79,14 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
   }
 
   def intsLargerThanMaxValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat (x => x > Int.MaxValue)
+    arbitrary[BigInt] suchThat (
+      x => x > Int.MaxValue
+    )
 
   def intsSmallerThanMinValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat (x => x < Int.MinValue)
+    arbitrary[BigInt] suchThat (
+      x => x < Int.MinValue
+    )
 
   def nonNumerics: Gen[String] =
     alphaStr suchThat (_.size > 0)
@@ -109,7 +108,9 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     arbitrary[Int] suchThat (_ > value)
 
   def intsOutsideRange(min: Int, max: Int): Gen[Int] =
-    arbitrary[Int] suchThat (x => x < min || x > max)
+    arbitrary[Int] suchThat (
+      x => x < min || x > max
+    )
 
   def nonBooleans: Gen[String] =
     arbitrary[String]
@@ -123,19 +124,19 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
   def stringsWithMaxLength(maxLength: Int): Gen[String] =
     for {
       length <- choose(1, maxLength)
-      chars <- listOfN(length, arbitrary[Char])
+      chars  <- listOfN(length, arbitrary[Char])
     } yield chars.mkString
 
   def stringsLongerThan(minLength: Int): Gen[String] = for {
     maxLength <- (minLength * 2).max(100)
-    length <- Gen.chooseNum(minLength + 1, maxLength)
-    chars <- listOfN(length, arbitrary[Char])
+    length    <- Gen.chooseNum(minLength + 1, maxLength)
+    chars     <- listOfN(length, arbitrary[Char])
   } yield chars.mkString
 
   def stringsLongerThanAlpha(minLength: Int): Gen[String] = for {
     maxLength <- (minLength * 2).max(100)
-    length <- Gen.chooseNum(minLength + 1, maxLength)
-    chars <- listOfN(length, Gen.alphaChar)
+    length    <- Gen.chooseNum(minLength + 1, maxLength)
+    chars     <- listOfN(length, Gen.alphaChar)
   } yield chars.mkString
 
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
@@ -160,19 +161,16 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     }
   }
 
-
   val subscriptionIDRegex              = "^[X][A-Z][0-9]{13}"
   def validSubscriptionID: Gen[String] = RegexpGen.from(subscriptionIDRegex)
 
   val safeIDRegex              = "^[0-9A-Za-z]{1,15}"
   def validSafeID: Gen[String] = RegexpGen.from(safeIDRegex)
 
-
-
   def stringsNotOfFixedLengthNumeric(givenLength: Int): Gen[String] = for {
     maxLength <- givenLength + 50
-    length <- Gen.chooseNum(1, maxLength).suchThat(_ != givenLength)
-    chars <- listOfN(length, Gen.numChar)
+    length    <- Gen.chooseNum(1, maxLength).suchThat(_ != givenLength)
+    chars     <- listOfN(length, Gen.numChar)
   } yield chars.mkString
 
   def validPhoneNumberTooLong(minLength: Int): Gen[String] = for {
@@ -190,5 +188,3 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     } yield s"$part.$part@$part.$part"
 
 }
-
-

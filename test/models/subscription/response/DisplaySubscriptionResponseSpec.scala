@@ -23,10 +23,10 @@ import play.api.libs.json.Json
 
 class DisplaySubscriptionResponseSpec extends SpecBase {
 
-    "DisplaySubscriptionResponse" - {
-      "must read DisplaySubscriptionForCBCResponse" in {
-        val json = Json.parse("""{"displaySubscriptionForCBCResponse": {"responseDetail":{"subscriptionID": "id"}}}""".stripMargin)
-        json.as[DisplaySubscriptionResponse] mustBe response.DisplaySubscriptionResponse(SubscriptionID("id"))
-      }
+  "DisplaySubscriptionResponse" - {
+    "must read DisplaySubscriptionForCBCResponse" in {
+      val json = Json.parse("""{"displaySubscriptionForCBCResponse": {"responseDetail":{"subscriptionID": "id"}}}""".stripMargin)
+      json.as[DisplaySubscriptionResponse] mustBe response.DisplaySubscriptionResponse(SubscriptionID("id"))
     }
+  }
 }

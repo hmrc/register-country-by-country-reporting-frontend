@@ -17,7 +17,7 @@
 package models.subscription.response
 
 import models.SubscriptionID
-import play.api.libs.json.{Reads, __}
+import play.api.libs.json.{__, Reads}
 
 case class DisplaySubscriptionResponse(subscriptionID: SubscriptionID)
 
@@ -25,6 +25,8 @@ object DisplaySubscriptionResponse {
 
   implicit val reads: Reads[DisplaySubscriptionResponse] = {
     import play.api.libs.functional.syntax._
-    (__ \ "displaySubscriptionForCBCResponse" \ "responseDetail" \ "subscriptionID").read[SubscriptionID] fmap (id => DisplaySubscriptionResponse(id))
+    (__ \ "displaySubscriptionForCBCResponse" \ "responseDetail" \ "subscriptionID").read[SubscriptionID] fmap (
+      id => DisplaySubscriptionResponse(id)
+    )
   }
 }

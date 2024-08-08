@@ -30,23 +30,24 @@ import java.time.Clock
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RegisterWithoutIdService @Inject() (registrationConnector: RegistrationConnector, uuidGen: UUIDGen, clock: Clock)(implicit ec: ExecutionContext) extends Logging {
+class RegisterWithoutIdService @Inject() (registrationConnector: RegistrationConnector, uuidGen: UUIDGen, clock: Clock)(implicit ec: ExecutionContext)
+    extends Logging {
 
   implicit private val uuidGenerator: UUIDGen = uuidGen
-  implicit private val implicitClock: Clock = clock
-  def registerWithoutId()(implicit request: DataRequest[AnyContent], hc: HeaderCarrier): Future[Either[ApiError, SafeId]] =
-    {for {
+  implicit private val implicitClock: Clock   = clock
+
+  def registerWithoutId()(implicit request: DataRequest[AnyContent], hc: HeaderCarrier): Future[Either[ApiError, SafeId]] = {
+    for {
       organisationName <- request.userAnswers.get(BusinessWithoutIDNamePage)
       phoneNumber  = request.userAnswers.get(ContactPhonePage)
       emailAddress = request.userAnswers.get(ContactEmailPage)
       address <- request.userAnswers.get(BusinessWithoutIdAddressPage)
       _       <- request.userAnswers.get(DoYouHaveSecondContactPage)
-    } yield
-      sendBusinessRegistration(organisationName, Address.fromAddress(address), ContactDetails(phoneNumber, None, None, emailAddress))
-    }.getOrElse {
-        logger.warn("Missing Registration Information")
-        registrationError
-      }
+    } yield sendBusinessRegistration(organisationName, Address.fromAddress(address), ContactDetails(phoneNumber, None, None, emailAddress))
+  }.getOrElse {
+    logger.warn("Missing Registration Information")
+    registrationError
+  }
 
   private val registrationError = Future.successful(Left(MandatoryInformationMissingError("Registration Information Missing")))
 
