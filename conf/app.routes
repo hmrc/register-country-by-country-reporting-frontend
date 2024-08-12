@@ -120,7 +120,7 @@ POST       /register/change-second-contact-email            controllers.SecondCo
 
 GET        /register/confirm-registration                   controllers.RegistrationConfirmationController.onPageLoad()
 
-GET        /register/business-not-identified                controllers.BusinessNotIdentifiedController.onPageLoad()
+GET        /register/problem/business-not-identified                controllers.BusinessNotIdentifiedController.onPageLoad()
 
 GET        /register/problem/individual-sign-in-problem     controllers.UnauthorisedIndividualController.onPageLoad()
 
