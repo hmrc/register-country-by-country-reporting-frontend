@@ -31,7 +31,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
   val feedbackLink    = s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
 
   def feedbackUrl(implicit request: RequestHeader): String = request.uri match {
-    case uri if uri.contains("problem") => s"$feedbackLink"
+    case uri if uri.contains("there-is-a-problem") => s"$feedbackLink"
     case _                              => s"$feedbackLink&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
   }
 
