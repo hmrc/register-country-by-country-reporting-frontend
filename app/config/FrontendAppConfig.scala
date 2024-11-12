@@ -32,7 +32,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
 
   def feedbackUrl(implicit request: RequestHeader): String = request.uri match {
     case uri if uri.contains("there-is-a-problem") => s"$feedbackLink"
-    case _                              => s"$feedbackLink&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
+    case _                                         => s"$feedbackLink&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
   }
 
   val loginUrl: String                         = configuration.get[String]("urls.login")
