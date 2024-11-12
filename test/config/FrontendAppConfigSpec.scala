@@ -8,7 +8,7 @@ import play.api.test.Helpers.GET
 class FrontendAppConfigSpec extends SpecBase {
 
   "FrontendAppConfig" - {
-    "feedbackUrl should include backUrl when request uri does not contain 'problem'" in {
+    "feedbackUrl should include backUrl when request uri does not contain 'there-is-a-problem'" in {
 
       val application = applicationBuilder(None).build()
       val appConfig   = application.injector.instanceOf[FrontendAppConfig]
@@ -16,7 +16,7 @@ class FrontendAppConfigSpec extends SpecBase {
       appConfig.feedbackUrl(request) must include("&backUrl=")
     }
 
-    "feedbackUrl should not include backUrl when request uri does contain 'problem'" in {
+    "feedbackUrl should not include backUrl when request uri does contain 'there-is-a-problem'" in {
 
       val application = applicationBuilder(None).build()
       val appConfig   = application.injector.instanceOf[FrontendAppConfig]
