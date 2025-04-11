@@ -22,18 +22,20 @@ import models.register.response.{RegisterWithIDResponse, RegisterWithoutIDRespon
 import models.{ApiError, InternalServerError, NotFoundError, SafeId}
 import play.api.Logging
 import play.api.http.Status.NOT_FOUND
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.HttpErrorFunctions.is2xx
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RegistrationConnector @Inject() (val config: FrontendAppConfig, val http: HttpClient) extends Logging {
+class RegistrationConnector @Inject() (val config: FrontendAppConfig, val http: HttpClientV2) extends Logging {
   val registrationUrl = s"${config.registerCountryByCountryUrl}/registration"
 
   def registerWithID(registration: RegisterWithID)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[ApiError, RegisterWithIDResponse]] =
-    http.POST[RegisterWithID, HttpResponse](s"$registrationUrl/utr", registration) map {
+    http.post(url"$registrationUrl/utr").withBody(Json.toJson(registration)).execute[HttpResponse] map {
       case response if is2xx(response.status) =>
         response.json.asOpt[RegisterWithIDResponse] match {
           case Some(responseDetails) => Right(responseDetails)
@@ -48,7 +50,7 @@ class RegistrationConnector @Inject() (val config: FrontendAppConfig, val http: 
     }
 
   def registerWithoutID(registration: RegisterWithoutId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[ApiError, Option[SafeId]]] =
-    http.POST[RegisterWithoutId, HttpResponse](s"$registrationUrl/noId", registration) map {
+    http.post(url"$registrationUrl/noId").withBody(Json.toJson(registration)).execute[HttpResponse] map {
       case response if is2xx(response.status) =>
         Right(response.json.asOpt[RegisterWithoutIDResponse].map(_.safeId))
       case errorResponse =>
