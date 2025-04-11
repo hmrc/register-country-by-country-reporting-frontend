@@ -22,12 +22,13 @@ import play.api.Logging
 import play.api.http.Status.NO_CONTENT
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.HttpErrorFunctions.is2xx
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EnrolmentStoreProxyConnector @Inject() (val config: FrontendAppConfig, val http: HttpClient) extends Logging {
+class EnrolmentStoreProxyConnector @Inject() (val config: FrontendAppConfig, val http: HttpClientV2) extends Logging {
 
   def enrolmentExists(subscriptionInfo: SubscriptionInfo)(implicit
     hc: HeaderCarrier,
@@ -41,12 +42,11 @@ class EnrolmentStoreProxyConnector @Inject() (val config: FrontendAppConfig, val
       }
       .getOrElse(s"HMRC-CBC-NONUK-ORG~cbcId~${subscriptionInfo.cbcId}")
 
-    val submissionUrl = s"${config.enrolmentStoreProxyUrl}/enrolment-store/enrolments/$serviceEnrolmentPattern/groups"
+    val submissionUrl = url"${config.enrolmentStoreProxyUrl}/enrolment-store/enrolments/$serviceEnrolmentPattern/groups"
 
     http
-      .GET[HttpResponse](
-        submissionUrl
-      )(rds = readRaw, hc = hc, ec = ec)
+      .get(submissionUrl)
+      .execute[HttpResponse]
       .map {
         case response if response.status == NO_CONTENT => false
         case response if is2xx(response.status) =>
