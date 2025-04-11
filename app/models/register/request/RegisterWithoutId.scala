@@ -93,10 +93,6 @@ object RequestCommon {
   }
 }
 
-/** Missing Fields:
-  * isAGroup: Boolean
-  * isAnAgent: Boolean
-  */
 case class RequestDetails(
   organisation: NoIdOrganisation,
   address: Address,
