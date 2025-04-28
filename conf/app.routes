@@ -10,8 +10,8 @@ GET         /language/:lang                                 controllers.Language
 
 GET         /refresh-session                                controllers.KeepAliveController.keepAlive
 
-GET         /check-your-answers                             controllers.CheckYourAnswersController.onPageLoad()
-POST         /check-your-answers                            controllers.CheckYourAnswersController.onSubmit()
+GET         /check-answers                                  controllers.CheckYourAnswersController.onPageLoad()
+POST        /check-answers                                  controllers.CheckYourAnswersController.onSubmit()
 
 GET         /register/without-id/trading-name               controllers.WhatIsTradingNameController.onPageLoad(mode: Mode = NormalMode)
 POST        /register/without-id/trading-name               controllers.WhatIsTradingNameController.onSubmit(mode: Mode = NormalMode)
