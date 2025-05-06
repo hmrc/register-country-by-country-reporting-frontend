@@ -25,7 +25,7 @@ import org.scalacheck.{Arbitrary, Gen}
 trait ModelGenerators {
 
   def nonEmptyString: Gen[String] =
-    arbitrary[String] suchThat (_.nonEmpty)
+    Gen.nonEmptyListOf(Gen.alphaChar).map(_.mkString)
 
   implicit lazy val arbitraryCountry: Arbitrary[Country] =
     Arbitrary {
