@@ -23,7 +23,7 @@ import org.scalacheck.{Gen, Shrink}
 import utils.RegexConstants
 import wolfendale.scalacheck.regexp.RegexpGen
 
-trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators with RegexConstants {
+trait Generators extends UserAnswersGenerator with PageGenerators with UserAnswersEntryGenerators with RegexConstants {
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
 
@@ -113,13 +113,9 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     )
 
   def nonBooleans: Gen[String] =
-    arbitrary[String]
-      .suchThat(_.nonEmpty)
+    nonEmptyString
       .suchThat(_ != "true")
       .suchThat(_ != "false")
-
-  def nonEmptyString: Gen[String] =
-    arbitrary[String] suchThat (_.nonEmpty)
 
   def stringsWithMaxLength(maxLength: Int): Gen[String] =
     for {
