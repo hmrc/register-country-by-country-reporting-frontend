@@ -24,21 +24,24 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  def nonEmptyString: Gen[String] =
+    Gen.nonEmptyListOf(Gen.alphaChar).map(_.mkString)
+
   implicit lazy val arbitraryCountry: Arbitrary[Country] =
     Arbitrary {
       for {
         state <- Gen.oneOf(Seq("Valid", "Invalid"))
         code  <- Gen.pick(2, 'A' to 'Z')
-        name  <- arbitrary[String]
+        name  <- nonEmptyString
       } yield Country(state, code.mkString, name)
     }
 
   implicit lazy val arbitraryBusinessWithoutIdAddress: Arbitrary[Address] =
     Arbitrary {
       for {
-        addressLine1 <- arbitrary[String]
+        addressLine1 <- nonEmptyString
         addressLine2 <- arbitrary[Option[String]]
-        addressLine3 <- arbitrary[String]
+        addressLine3 <- nonEmptyString
         addressLine4 <- arbitrary[Option[String]]
         postCode     <- arbitrary[Option[String]]
         country      <- arbitrary[Country]
@@ -53,7 +56,7 @@ trait ModelGenerators {
   implicit val arbitraryOrganisationDetails: Arbitrary[OrganisationDetails] =
     Arbitrary {
       for {
-        name <- arbitrary[String]
+        name <- nonEmptyString
       } yield OrganisationDetails(organisationName = name)
     }
 
@@ -61,17 +64,17 @@ trait ModelGenerators {
     Arbitrary {
       for {
         orgDetails <- arbitrary[OrganisationDetails]
-        email      <- arbitrary[String]
-        phone      <- Gen.option(arbitrary[String])
-        mobile     <- Gen.option(arbitrary[String])
+        email      <- nonEmptyString
+        phone      <- Gen.option(nonEmptyString)
+        mobile     <- Gen.option(nonEmptyString)
       } yield ContactInformation(orgDetails, email, phone, mobile)
     }
 
   implicit val arbitraryRequestDetail: Arbitrary[RequestDetail] = Arbitrary {
     for {
-      idType           <- arbitrary[String]
-      idNumber         <- arbitrary[String]
-      tradingName      <- arbitrary[String]
+      idType           <- nonEmptyString
+      idNumber         <- nonEmptyString
+      tradingName      <- nonEmptyString
       isGBUser         <- arbitrary[Boolean]
       primaryContact   <- arbitrary[ContactInformation]
       secondaryContact <- Gen.option(arbitrary[ContactInformation])
@@ -88,8 +91,8 @@ trait ModelGenerators {
   implicit val arbitraryRequestCommonForSubscription: Arbitrary[RequestCommonForSubscription] =
     Arbitrary {
       for {
-        receiptDate        <- arbitrary[String]
-        acknowledgementRef <- arbitrary[String]
+        receiptDate        <- nonEmptyString
+        acknowledgementRef <- nonEmptyString
       } yield RequestCommonForSubscription(
         regime = "CBC",
         conversationID = None,
@@ -112,14 +115,14 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryUniqueTaxpayerReference: Arbitrary[UniqueTaxpayerReference] = Arbitrary {
     for {
-      utr <- arbitrary[String]
+      utr <- nonEmptyString
     } yield UniqueTaxpayerReference(utr)
   }
 
   implicit val arbitraryEmailRequest: Arbitrary[EmailRequest] = Arbitrary {
     for {
       to          <- arbitrary[List[String]]
-      id          <- arbitrary[String]
+      id          <- nonEmptyString
       contactName <- arbitrary[Map[String, String]]
 
     } yield EmailRequest(to, id, contactName)
