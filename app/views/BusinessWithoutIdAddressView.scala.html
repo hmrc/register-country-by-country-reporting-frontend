@@ -91,8 +91,7 @@
                 label = LabelViewModel(messages("businessWithoutIdAddress.country")),
                 items = countries
             )
-                    .withAttribute("autocomplete" -> "country-name")
-                    .asAccessibleAutocomplete(Some(
+            .asAccessibleAutocomplete(Some(
                 AccessibleAutocomplete(
                     defaultValue = Some(""),
                     showAllValues = true,
