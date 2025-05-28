@@ -39,6 +39,7 @@
                 field = form("value"),
                 label = LabelViewModel(messages("secondContactPhone.heading", contactName)).asPageHeading()
             )
+            .asTelephone()
             .withHint(HintViewModel(HtmlContent(Html(messages("secondContactPhone.hint")))))
             .withWidth(Fixed20)
         )
