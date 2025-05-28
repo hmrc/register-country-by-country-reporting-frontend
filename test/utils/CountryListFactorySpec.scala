@@ -102,7 +102,7 @@ class CountryListFactorySpec extends SpecBase {
       val result = factory.countrySelectList(selectedValue, countries)
 
       result mustBe Seq(
-        SelectItem(None, ""),
+        SelectItem(Some(""), "Select a country", false),
         SelectItem(Some("VG"), "British Virgin Islands", false),
         SelectItem(Some("VN"), "Vietnam", true),
         SelectItem(Some("VI"), "United States Virgin Islands", false)
