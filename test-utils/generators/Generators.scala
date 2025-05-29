@@ -58,7 +58,6 @@ trait Generators extends UserAnswersGenerator with PageGenerators with UserAnswe
       unit   <- Gen.listOfN(2, Gen.alphaChar).map(_.mkString)
     } yield s"$area$district$subDistrict$space$sector$unit"
 
-
   def validPhoneNumber(ln: Int): Gen[String] = for {
     length <- Gen.chooseNum(1, ln - 1)
     chars  <- listOfN(length, Gen.chooseNum(0, 9))
