@@ -6,9 +6,13 @@
   border-color: #d4351c;
 }
 
-.autocomplete__wrapper {
-  width: 66.66%!important;
+// Constrain the input so it sits with the other address inputs
+@media (min-width: 40.0625em){
+  .autocomplete__wrapper {
+    width: 66.66%!important;
+  }
 }
+
 .autocomplete__dropdown-arrow-down {
   z-index: 0;
   pointer-events: none;

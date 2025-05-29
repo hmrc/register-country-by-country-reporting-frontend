@@ -69,6 +69,7 @@ class BusinessWithoutIdAddressControllerSpec extends SpecBase {
         contentAsString(result) mustEqual view(form, countryListFactory.countrySelectList(form.data, testCountryList), NormalMode)(request,
                                                                                                                                    messages(application)
         ).toString
+        contentAsString(result) must include("Select a country")
       }
     }
 

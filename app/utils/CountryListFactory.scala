@@ -27,21 +27,16 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class CountryListFactory @Inject() (environment: Environment, appConfig: FrontendAppConfig) {
 
-  def uk: Country = Country("valid", "GB", "United Kingdom")
-
   lazy val countryList: Option[Seq[Country]] = getCountryList
 
   private def getCountryList: Option[Seq[Country]] = environment.resourceAsStream(appConfig.countryCodeJson) map Json.parse map {
     _.as[Seq[Country]].sortWith(
-      (country, country2) => country.description < country2.description
+      (country, country2) => country.description.toLowerCase < country2.description.toLowerCase
     )
   }
 
-  def getDescriptionFromCode(code: String): Option[String] = countryList map {
-    _.filter(
-      (p: Country) => p.code == code
-    ).head.description
-  }
+  def getDescriptionFromCode(code: String): Option[String] =
+    countryList.flatMap(_.find(_.code == code).map(_.description))
 
   lazy val countryListWithoutGB: Option[Seq[Country]] = countryList.map {
     _.filter(
@@ -59,6 +54,6 @@ class CountryListFactory @Inject() (environment: Environment, appConfig: Fronten
       country =>
         SelectItem(Some(country.code), country.description, containsCountry(country))
     }
-    SelectItem(None, "") +: countryJsonList
+    SelectItem(Some(""), "Select a country", selected = false) +: countryJsonList
   }
 }
