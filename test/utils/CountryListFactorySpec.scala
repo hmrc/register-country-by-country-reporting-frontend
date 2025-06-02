@@ -101,11 +101,28 @@ class CountryListFactorySpec extends SpecBase {
 
       val result = factory.countrySelectList(selectedValue, countries)
 
-      result mustBe Seq(
+      val expected = Seq(
         SelectItem(Some(""), "Select a country", false),
-        SelectItem(Some("VG"), "British Virgin Islands", false),
-        SelectItem(Some("VN"), "Vietnam", true),
-        SelectItem(Some("VI"), "United States Virgin Islands", false)
+        SelectItem(Some("VG"), "British Virgin Islands", false, false, Map("data-text" -> "British Virgin Islands")),
+        SelectItem(Some("VI"), "United States Virgin Islands", false, false, Map("data-text" -> "United States Virgin Islands")),
+        SelectItem(Some("VN"), "Vietnam", true, false, Map("data-text" -> "Vietnam"))
+      )
+
+      result mustBe expected
+    }
+
+    "must return the correct selected country when there are alternative names" in {
+      val countries = Seq(
+        Country("valid", "AB", "Country_1"),
+        Country("valid", "AB", "Country_1", Some("Country_1_2")),
+        Country("valid", "BC", "Country_2", Some("Country_2"))
+      )
+      val selectedCountry = Map("country" -> "Country_1_2")
+
+      factory.countrySelectList(selectedCountry, countries) must contain theSameElementsAs Seq(
+        SelectItem(value = Some(""), text = "Select a country"),
+        SelectItem(value = Some("AB"), text = "Country_1", selected = false, attributes = Map("data-text" -> "Country_1:Country_1_2")),
+        SelectItem(value = Some("BC"), text = "Country_2", selected = false, attributes = Map("data-text" -> "Country_2"))
       )
     }
 
