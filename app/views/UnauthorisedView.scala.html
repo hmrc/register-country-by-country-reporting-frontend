@@ -14,8 +14,14 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
+
+
 @this(
-    layout: templates.Layout
+    layout: templates.Layout,
+    link: components.Link,
+    paragraph: components.Paragraph,
+    appConfig: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -27,5 +33,8 @@
 
     <h1 class="govuk-heading-l">@messages("unauthorised.heading")</h1>
 
-    <p class="govuk-body">@messages("unauthorised.guidance")</p>
+    <p class="govuk-body">@link(controllers.routes.IndexController.onPageLoad.url, "unauthorised.back")</p>
+
+    @paragraph(Html(messages("unauthorised.link" , link(s"mailto:aeoi.enquiries@hmrc.gov.uk", "enquiries.email"))))
+
 }

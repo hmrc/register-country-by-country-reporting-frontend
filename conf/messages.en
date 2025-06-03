@@ -56,8 +56,12 @@ signedOut.heading = For your security, we signed you out
 signedOut.guidance = We did not save your answers.
 signedOut.backToCBCLink = Sign in again to use the service
 
-unauthorised.title = You can’t access this service with this account
-unauthorised.heading = You can’t access this service with this account
+unauthorised.title = You can’t access this page
+unauthorised.heading = You can’t access this page
+unauthorised.back = Back to send a country-by-country report
+unauthorised.link = You can email {0} if you need support with using this service.
+unauthorised.linkLocation = mailto:aeoi.enquiries@hmrc.gov.uk
+
 
 doYouHaveUTR.title = Do you have a UK Unique Taxpayer Reference (UTR)?
 doYouHaveUTR.checkYourAnswersLabel =  Do you have a Unique Taxpayer Reference?
