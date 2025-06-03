@@ -16,6 +16,11 @@
 
 @this()
 
-@(headingContent: String, size: String = "l")
+@(headingContent: String, size: String = "l", level: String = "h1")
 
-<h1 class="govuk-heading-@size wrappable" >@headingContent</h1>
+@{
+    level match {
+        case "h1" => Html(s"""<h1 class="govuk-heading-$size wrappable">$headingContent</h1>""")
+        case "h2" => Html(s"""<h2 class="govuk-heading-$size wrappable">$headingContent</h2>""")
+    }
+}

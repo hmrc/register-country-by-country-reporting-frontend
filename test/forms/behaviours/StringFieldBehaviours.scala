@@ -58,10 +58,25 @@ trait StringFieldBehaviours extends FieldBehaviours with RegexConstants {
       result.errors mustEqual Seq(requiredError)
     }
 
-  def fieldWithFixedLengthNumeric(form: Form[_], fieldName: String, length: Int, lengthError: FormError): Unit =
-    s"must not bind strings that are not $length characters" in {
+  def stringsNotOfFixedLengthsNumeric(validLengths: Set[Int]): Gen[String] =
+    Gen
+      .choose(1, 50)
+      .suchThat(
+        len => !validLengths.contains(len)
+      )
+      .flatMap(
+        len => Gen.listOfN(len, Gen.numChar).map(_.mkString)
+      )
 
-      forAll(stringsNotOfFixedLengthNumeric(length) -> "longString") {
+  def fieldWithFixedLengthsNumeric(
+    form: Form[_],
+    fieldName: String,
+    acceptedLengths: Set[Int],
+    lengthError: FormError
+  ): Unit =
+    s"must not bind strings that are not ${acceptedLengths.mkString(" or ")} characters long" in {
+
+      forAll(stringsNotOfFixedLengthsNumeric(acceptedLengths) -> "invalidString") {
         string =>
           val result = form.bind(Map(fieldName -> string)).apply(fieldName)
           result.errors mustEqual Seq(lengthError)

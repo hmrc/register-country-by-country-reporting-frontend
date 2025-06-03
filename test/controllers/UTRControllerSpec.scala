@@ -35,17 +35,14 @@ class UTRControllerSpec extends SpecBase {
   lazy val utrRouteSubmit                 = routes.UTRController.onSubmit(NormalMode).url
   val formProvider                        = new UTRFormProvider()
   val form: Form[UniqueTaxpayerReference] = formProvider("Self Assessment")
-  val caTaxType                           = "Corporation Tax"
-  val saTaxType                           = "Self Assessment"
+  val caTaxType                           = "corporation"
+  val saTaxType                           = "partnership"
 
   "UTR Controller" - {
 
     "must return OK and the correct view for a GET when businessType is Limited Company" in {
 
-      val userAnswers: UserAnswers = UserAnswers(userAnswersId)
-        .set(BusinessTypePage, LimitedCompany)
-        .success
-        .value
+      val userAnswers: UserAnswers = UserAnswers(userAnswersId).withPage(BusinessTypePage, LimitedCompany)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -64,9 +61,7 @@ class UTRControllerSpec extends SpecBase {
     "must return OK and the correct view for a GET when businessType is Partnership" in {
 
       val userAnswers: UserAnswers = UserAnswers(userAnswersId)
-        .set(BusinessTypePage, Partnership)
-        .success
-        .value
+        .withPage(BusinessTypePage, Partnership)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -85,12 +80,8 @@ class UTRControllerSpec extends SpecBase {
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = UserAnswers(userAnswersId)
-        .set(BusinessTypePage, Partnership)
-        .success
-        .value
-        .set(UTRPage, utr)
-        .success
-        .value
+        .withPage(BusinessTypePage, Partnership)
+        .withPage(UTRPage, utr)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -109,9 +100,7 @@ class UTRControllerSpec extends SpecBase {
     "must redirect to the next page when valid data is submitted" in {
 
       val userAnswers = UserAnswers(userAnswersId)
-        .set(BusinessTypePage, LimitedCompany)
-        .success
-        .value
+        .withPage(BusinessTypePage, LimitedCompany)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -132,9 +121,7 @@ class UTRControllerSpec extends SpecBase {
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers: UserAnswers = UserAnswers(userAnswersId)
-        .set(BusinessTypePage, LimitedCompany)
-        .success
-        .value
+        .withPage(BusinessTypePage, LimitedCompany)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 

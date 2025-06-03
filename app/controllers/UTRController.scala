@@ -22,7 +22,7 @@ import models.BusinessType.{LimitedCompany, UnincorporatedAssociation}
 import models.{Mode, UserAnswers}
 import navigation.CBCRNavigator
 import pages.{BusinessTypePage, UTRPage}
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -73,9 +73,9 @@ class UTRController @Inject() (
         )
   }
 
-  private def getTaxType(userAnswers: UserAnswers)(implicit messages: Messages): String =
+  private def getTaxType(userAnswers: UserAnswers): String =
     userAnswers.get(BusinessTypePage) match {
-      case Some(LimitedCompany) | Some(UnincorporatedAssociation) => messages("utr.corporationTax")
-      case _                                                      => messages("utr.selfAssessment")
+      case Some(LimitedCompany) | Some(UnincorporatedAssociation) => "corporation"
+      case _                                                      => "partnership"
     }
 }

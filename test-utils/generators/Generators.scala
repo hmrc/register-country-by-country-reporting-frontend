@@ -87,8 +87,10 @@ trait Generators extends UserAnswersGenerator with PageGenerators with UserAnswe
     alphaStr suchThat (_.size > 0)
 
   def validUtr: Gen[String] = for {
-    chars <- listOfN(10, Gen.oneOf(List(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)))
-  } yield chars.mkString
+    prefix      <- Gen.oneOf("K", "k", "")
+    totalLength <- Gen.oneOf(10, 13)
+    digits      <- Gen.listOfN(totalLength, Gen.numChar)
+  } yield prefix + digits.mkString
 
   def decimals: Gen[String] =
     arbitrary[BigDecimal]
