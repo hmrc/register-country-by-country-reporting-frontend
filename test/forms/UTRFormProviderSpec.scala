@@ -22,10 +22,10 @@ import play.api.data.{Form, FormError}
 
 class UTRFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "utr.error.required"
-  val invalidKey  = "utr.error.invalid"
-  val lengthKey   = "utr.error.length"
-  val maxLength   = 10
+  val requiredKey               = "utr.error.required"
+  val invalidKey                = "utr.error.invalid"
+  val lengthKey                 = "utr.error.length"
+  val acceptedLengths: Set[Int] = Set(10, 13)
 
   val form: Form[UniqueTaxpayerReference] = new UTRFormProvider().apply("Self Assessment")
 
@@ -39,10 +39,10 @@ class UTRFormProviderSpec extends StringFieldBehaviours {
       validUtr
     )
 
-    behave like fieldWithFixedLengthNumeric(
+    behave like fieldWithFixedLengthsNumeric(
       form,
       fieldName,
-      maxLength,
+      acceptedLengths,
       lengthError = FormError(fieldName, lengthKey, Seq("Self Assessment"))
     )
 
@@ -50,6 +50,19 @@ class UTRFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey, Seq("Self Assessment"))
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey, Seq("Self Assessment"))
+    )
+
+    behave like fieldWithInvalidData(
+      form,
+      fieldName,
+      "jjdjdj£%^&kfkf",
+      FormError(fieldName, invalidKey, Seq("Self Assessment"))
     )
   }
 }
