@@ -120,3 +120,39 @@ function upTo(el, tagName) {
 
   return null;
 }
+
+var countrySelect = document.querySelector('select#country');
+if (countrySelect !== null) {
+    var options = countrySelect.querySelectorAll("option");
+    for (var i = 0; i < options.length; i++) {
+        var option = options[i];
+        var dataText = option.getAttribute('data-text');
+        if (dataText) {
+            option.text = dataText;
+        }
+    }
+    setTimeout(function(){
+        HMRCAccessibleAutocomplete.enhanceSelectElement({
+            defaultValue: '',
+            selectElement: countrySelect,
+            showAllValues: true,
+            autoSelect: false,
+            templates: {
+                suggestion: function (suggestion) {
+                    if (suggestion) {
+                        return suggestion.split(':')[0];
+                    }
+                    return suggestion;
+                },
+                inputValue: function (suggestion) {
+                    if (suggestion) {
+                        return suggestion.split(':')[0];
+                    }
+                    return suggestion;
+                }
+            }
+        });
+
+        updateAccessibleAutocompleteStyling(countrySelect);
+    }, 100)
+}
