@@ -248,12 +248,17 @@ secondContactEmail.change.hidden = Change second contact email address
 registrationConfirmation.title = Registration successful
 registrationConfirmation.heading = Registration successful
 registrationConfirmation.text = Your CBC ID
-registrationConfirmation.p1 = You will need to provide your country-by-country (CBC) ID in every file you send to HMRC. You may make a note of your CBC ID, however, it will be in the confirmation email we will send you.
-registrationConfirmation.subheading = What happens next
-registrationConfirmation.p2 = We will send you an email to confirm you have registered.
+registrationConfirmation.p1 = We will send you an email to confirm you have registered. This will also include your CBC ID.
+registrationConfirmation.subheading.1 = What happens next
+registrationConfirmation.p2 = You will need to provide your CBC ID in every file you send to HMRC.
 registrationConfirmation.p3 = You can now {0}.
-registrationConfirmation.p3.link = send CBC reports
-registrationConfirmation.p4.link = What did you think of this service? (opens in new tab)
+registrationConfirmation.p3.link =  send a country-by-country report.
+
+registrationConfirmation.subheading.2 = Before you go
+registrationConfirmation.p4 = Your feedback helps us make our service better.
+registrationConfirmation.p5.link = Take a short survey
+registrationConfirmation.p5 = {0} to share your feedback on this service.
+
 
 unauthorisedIndividual.title = You’re unable to use this service
 unauthorisedIndividual.heading = You’re unable to use this service

@@ -21,7 +21,9 @@
         appConfig: FrontendAppConfig,
         govukPanel: GovukPanel,
         link: components.Link,
-        govukButton: GovukButton
+        govukButton: GovukButton,
+        heading: components.Heading,
+        paragraph: components.Paragraph
 )
 
 @(subscriptionID: String)(implicit request: Request[_], messages: Messages)
@@ -38,15 +40,13 @@
         )
     ))
 
-    <h2 class="govuk-heading-m">@messages("registrationConfirmation.subheading")</h2>
+    <h2 class="govuk-heading-m">@messages("registrationConfirmation.subheading.1")</h2>
+    @paragraph(Html(messages("registrationConfirmation.p1")))
+    @paragraph(Html(messages("registrationConfirmation.p2")))
+    @paragraph(Html(messages("registrationConfirmation.p3", link(appConfig.countryByCountryReportingFrontendUrl, "registrationConfirmation.p3.link"))))
 
-    <p class="govuk-body">@messages("registrationConfirmation.p2")</p>
-
-    <p class="govuk-body">@messages("registrationConfirmation.p1")</p>
-
-
-    <p class="govuk-body">@Html(messages("registrationConfirmation.p3", link(appConfig.countryByCountryReportingFrontendUrl, "registrationConfirmation.p3.link")))</p>
-
-    <p class="govuk-body govuk-!-display-none-print">@link("#", "registrationConfirmation.p4.link", openInNewWindow = true)</p>
+    <h2 class="govuk-heading-m">@messages("registrationConfirmation.subheading.2")</h2>
+    @paragraph(Html(messages("registrationConfirmation.p4")))
+    @paragraph(Html(messages("registrationConfirmation.p5", link(appConfig.feedbackSurveyUrl, "registrationConfirmation.p5.link"))))
 
 }

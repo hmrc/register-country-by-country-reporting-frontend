@@ -55,8 +55,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
     .get[String]("microservice.services.tax-enrolments.url1")}"
   val taxEnrolmentsUrl2: String = s"${configuration.get[String]("microservice.services.tax-enrolments.url2")}"
 
-  private val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
-  val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/register-for-country-by-country-reporting"
+  private val feedbackSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
+  val feedbackSurveyUrl: String             = s"$feedbackSurveyBaseUrl/feedback-survey/register-for-country-by-country-reporting/beta"
 
   val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("features.welsh-translation")
