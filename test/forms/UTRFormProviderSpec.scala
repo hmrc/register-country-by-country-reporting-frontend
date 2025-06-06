@@ -24,7 +24,7 @@ class UTRFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey               = "utr.error.required"
   val invalidKey                = "utr.error.invalid"
-  val lengthKey                 = "utr.error.length"
+  val charKey                   = "utr.error.char"
   val acceptedLengths: Set[Int] = Set(10, 13)
 
   val form: Form[UniqueTaxpayerReference] = new UTRFormProvider().apply("Self Assessment")
@@ -43,7 +43,7 @@ class UTRFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       acceptedLengths,
-      lengthError = FormError(fieldName, lengthKey, Seq("Self Assessment"))
+      lengthError = FormError(fieldName, invalidKey, Seq("Self Assessment"))
     )
 
     behave like fieldWithNonEmptyWhitespace(
@@ -62,7 +62,7 @@ class UTRFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       "jjdjdj£%^&kfkf",
-      FormError(fieldName, invalidKey, Seq("Self Assessment"))
+      FormError(fieldName, charKey, Seq("Self Assessment"))
     )
   }
 }
