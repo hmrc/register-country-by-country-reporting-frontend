@@ -180,7 +180,7 @@ utr.link.partnership = Get more help to find your UTR (opens in new tab)
 utr.hint = Your UTR can be 10 or 13 digits long.
 utr.checkYourAnswersLabel = What is your Unique Taxpayer Reference?
 utr.error.required = Enter your Unique Taxpayer Reference
-utr.error.length = 	Unique Taxpayer Reference must only include numbers 0 to 9
+utr.error.char = 	Unique Taxpayer Reference must only include numbers 0 to 9
 utr.error.invalid = Enter the Unique Taxpayer Reference in the right format
 utr.change.hidden = Change UTR
 
