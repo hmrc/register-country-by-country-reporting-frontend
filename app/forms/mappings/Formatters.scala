@@ -201,7 +201,7 @@ trait Formatters extends Transforms {
 
   protected def validatedUtrFormatter(requiredKey: String,
                                       invalidKey: String,
-                                      lengthKey: String,
+                                      charKey: String,
                                       regex: String,
                                       msgArg: String = "",
                                       acceptedLengths: Seq[Int] = Seq(10, 13)
@@ -215,8 +215,8 @@ trait Formatters extends Transforms {
         val trimmedUtr = data.get(key).map(_.replaceAll("[kK\\s]", ""))
         trimmedUtr match {
           case None | Some("")                                => Left(Seq(formatError(key, requiredKey, msgArg)))
-          case Some(s) if !s.matches(regex)                   => Left(Seq(formatError(key, invalidKey, msgArg)))
-          case Some(s) if !acceptedLengths.contains(s.length) => Left(Seq(formatError(key, lengthKey, msgArg)))
+          case Some(s) if !s.matches(regex)                   => Left(Seq(formatError(key, charKey, msgArg)))
+          case Some(s) if !acceptedLengths.contains(s.length) => Left(Seq(formatError(key, invalidKey, msgArg)))
           case Some(s)                                        => Right(s)
         }
       }

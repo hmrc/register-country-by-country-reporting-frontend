@@ -73,6 +73,6 @@ trait Mappings extends Formatters with Constraints {
   ): FieldMapping[Option[String]] =
     of(optionalPostcodeFormatter(requiredKey, lengthKey, invalidKey, regex, countryFieldName))
 
-  protected def validatedUTR(requiredKey: String, invalidKey: String, lengthKey: String, regex: String, msgArg: String = ""): FieldMapping[String] =
-    of(validatedUtrFormatter(requiredKey, invalidKey, lengthKey, regex, msgArg))
+  protected def validatedUTR(requiredKey: String, invalidKey: String, charKey: String, regex: String, msgArg: String = ""): FieldMapping[String] =
+    of(validatedUtrFormatter(requiredKey, invalidKey, charKey, regex, msgArg))
 }
