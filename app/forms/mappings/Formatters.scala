@@ -16,9 +16,9 @@
 
 package forms.mappings
 
+import models.Enumerable
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import models.Enumerable
 
 import scala.util.control.Exception.nonFatalCatch
 
@@ -199,20 +199,25 @@ trait Formatters extends Transforms {
         baseFormatter.unbind(key, value.toString)
     }
 
-  protected def validatedUtrFormatter(requiredKey: String, invalidKey: String, lengthKey: String, regex: String, msgArg: String = ""): Formatter[String] =
+  protected def validatedUtrFormatter(requiredKey: String,
+                                      invalidKey: String,
+                                      charKey: String,
+                                      regex: String,
+                                      msgArg: String = "",
+                                      acceptedLengths: Seq[Int] = Seq(10, 13)
+  ): Formatter[String] =
     new Formatter[String] {
 
       def formatError(key: String, errorKey: String, msgArg: String): FormError =
         if (msgArg.isEmpty) FormError(key, errorKey) else FormError(key, errorKey, Seq(msgArg))
 
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
-        val fixedLength = 10
-        val trimmedUtr  = data.get(key).map(_.replaceAll("\\s", ""))
+        val trimmedUtr = data.get(key).map(_.replaceAll("[kK\\s]", ""))
         trimmedUtr match {
-          case None | Some("")                    => Left(Seq(formatError(key, requiredKey, msgArg)))
-          case Some(s) if !s.matches(regex)       => Left(Seq(formatError(key, invalidKey, msgArg)))
-          case Some(s) if s.length != fixedLength => Left(Seq(formatError(key, lengthKey, msgArg)))
-          case Some(s)                            => Right(s)
+          case None | Some("")                                => Left(Seq(formatError(key, requiredKey, msgArg)))
+          case Some(s) if !s.matches(regex)                   => Left(Seq(formatError(key, charKey, msgArg)))
+          case Some(s) if !acceptedLengths.contains(s.length) => Left(Seq(formatError(key, invalidKey, msgArg)))
+          case Some(s)                                        => Right(s)
         }
       }
 

@@ -35,15 +35,14 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
     case _                                         => s"$feedbackLink&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
   }
 
-  val loginUrl: String                         = configuration.get[String]("urls.login")
-  val loginContinueUrl: String                 = configuration.get[String]("urls.loginContinue")
-  val signOutUrl: String                       = configuration.get[String]("urls.signOut")
-  lazy val lostUTRUrl: String                  = configuration.get[String]("urls.lostUTR")
-  lazy val corporationTaxEnquiriesLink: String = configuration.get[String]("urls.corporationTaxEnquiries")
-  lazy val selfAssessmentEnquiriesLink: String = configuration.get[String]("urls.selfAssessmentEnquiries")
-  lazy val businessTaxAccountLink: String      = configuration.get[String]("urls.btaLogin")
-  lazy val emailEnquiries: String              = configuration.get[String]("urls.emailEnquiries")
-  lazy val findCompanyName: String             = configuration.get[String]("urls.findCompanyName")
+  val loginUrl: String                    = configuration.get[String]("urls.login")
+  val loginContinueUrl: String            = configuration.get[String]("urls.loginContinue")
+  val signOutUrl: String                  = configuration.get[String]("urls.signOut")
+  lazy val corporationTaxUTRUrl: String   = configuration.get[String]("urls.corporationTaxUTR")
+  lazy val lostUTRUrl: String             = configuration.get[String]("urls.findUTR")
+  lazy val businessTaxAccountLink: String = configuration.get[String]("urls.btaLogin")
+  lazy val emailEnquiries: String         = configuration.get[String]("urls.emailEnquiries")
+  lazy val findCompanyName: String        = configuration.get[String]("urls.findCompanyName")
 
   lazy val registerCountryByCountryUrl: String =
     s"${configuration.get[Service]("microservice.services.register-country-by-country").baseUrl}${configuration.get[String]("microservice.services.register-country-by-country.startUrl")}"

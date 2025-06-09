@@ -166,16 +166,25 @@ contactName.error.length = The name must be 35 characters or less
 contactName.checkYourAnswersLabel = First contact name
 contactName.change.hidden = Change first contact name
 
-utr.title = What is your {0} Unique Taxpayer Reference?
-utr.heading = What is your {0} Unique Taxpayer Reference?
-utr.p1 = You can {0}.
-utr.p1.link = find a lost UTR
-utr.hint = This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about {0}. It may be called ‘reference’, ‘UTR’ or ‘official use’.
+utr.title.corporation = What is your Corporation Tax Unique Taxpayer Reference?
+utr.title.partnership = What is your Partnership Unique Taxpayer Reference?
+utr.heading.corporation = Your Corporation Tax Unique Taxpayer Reference? (UTR)
+utr.heading.partnership = Your Partnership Tax Unique Taxpayer Reference? (UTR)
+utr.subheading.corporation = What is your Corporation Tax UTR?
+utr.subheading.partnership = What is your Partnership UTR?
+utr.p1.corporation = It will be on tax returns and other letters about Corporation Tax. It might be called ‘reference’, ‘UTR’ or ‘official use’.
+utr.p1.partnership = You can find it in your Business Tax Account, the HMRC app or on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
+utr.link.corporation = Ask for a copy of your Corporation Tax UTR (opens in new tab)
+utr.link.partnership = Get more help to find your UTR (opens in new tab)
+
+utr.hint = Your UTR can be 10 or 13 digits long.
 utr.checkYourAnswersLabel = What is your Unique Taxpayer Reference?
-utr.error.required = Enter your {0} Unique Taxpayer Reference
-utr.error.length = {0} Unique Taxpayer Reference must be 10 numbers
-utr.error.invalid = {0} Unique Taxpayer Reference must only include numbers 0 to 9
+utr.error.required = Enter your Unique Taxpayer Reference
+utr.error.char = 	Unique Taxpayer Reference must only include numbers 0 to 9
+utr.error.invalid = Enter the Unique Taxpayer Reference in the right format
 utr.change.hidden = Change UTR
+
+utr.p1.link = find a lost UTR
 utr.selfAssessment = Self Assessment
 utr.corporationTax = Corporation Tax
 
