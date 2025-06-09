@@ -261,7 +261,7 @@ registrationConfirmation.p1 = We will send you an email to confirm you have regi
 registrationConfirmation.subheading.1 = What happens next
 registrationConfirmation.p2 = You will need to provide your CBC ID in every file you send to HMRC.
 registrationConfirmation.p3 = You can now {0}.
-registrationConfirmation.p3.link =  send a country-by-country report.
+registrationConfirmation.p3.link =  send a country-by-country report
 
 registrationConfirmation.subheading.2 = Before you go
 registrationConfirmation.p4 = Your feedback helps us make our service better.
