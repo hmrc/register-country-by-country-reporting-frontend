@@ -73,7 +73,7 @@ class BusinessWithoutIdAddressController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, countryListFactory.countrySelectList(form.data, countries), mode))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, countryListFactory.countrySelectList(formWithErrors.data, countries), mode))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessWithoutIdAddressPage, value))
