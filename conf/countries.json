@@ -263,6 +263,7 @@
   {"code": "VE", "state":  "valid", "description": "Venezuela"},
   {"code": "VG", "state":  "valid", "description": "British Virgin Islands"},
   {"code": "VI", "state":  "valid", "description": "United States Virgin Islands"},
+  {"code": "UM", "state":  "valid", "description": "United States Virgin Islands", "alternativeName": "US Virgin Islands"},
   {"code": "VN", "state":  "valid", "description": "Vietnam"},
   {"code": "VU", "state":  "valid", "description": "Vanuatu"},
   {"code": "WF", "state":  "valid", "description": "Wallis and Futuna Islands"},
