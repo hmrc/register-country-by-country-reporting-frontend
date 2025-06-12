@@ -39,7 +39,7 @@
         }
 
         @heading(messages("doYouHaveUTR.heading"))
-        @para(link(appConfig.lostUTRUrl, "doYouHaveUTR.p1.link"))
+        @para(link(appConfig.lostUTRUrl, "doYouHaveUTR.p1.link", openInNewWindow = true))
 
         @govukRadios(
             RadiosViewModel.yesNo(
