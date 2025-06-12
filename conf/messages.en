@@ -59,14 +59,12 @@ signedOut.backToCBCLink = Sign in again to use the service
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-doYouHaveUTR.title = Do you have a UK Unique Taxpayer Reference (UTR)?
+doYouHaveUTR.title = Do you have a Unique Taxpayer Reference (UTR)?
 doYouHaveUTR.checkYourAnswersLabel =  Do you have a Unique Taxpayer Reference?
 doYouHaveUTR.change.hidden = Change if you have a Unique Taxpayer Reference
-doYouHaveUTR.heading = Do you have a UK Unique Taxpayer Reference (UTR)?
-doYouHaveUTR.p1 = You can {0}.
-doYouHaveUTR.p1.link = find a lost UTR
-doYouHaveUTR.hint =  This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Corporation Tax and Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
-doYouHaveUTR.error.required = Select yes if you have a UTR
+doYouHaveUTR.heading = Do you have a Unique Taxpayer Reference (UTR)?
+doYouHaveUTR.p1.link = Find your UTR (opens in new tab)
+doYouHaveUTR.error.required = Select yes if you have a Unique Taxpayer Reference
 
 businessType.title = What type of business do you have?
 businessType.heading = What type of business do you have?
