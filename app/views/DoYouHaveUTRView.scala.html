@@ -23,6 +23,8 @@
     govukRadios: GovukRadios,
     govukButton: GovukButton,
     link: components.Link,
+    heading: components.Heading,
+    para: components.Paragraph,
     appConfig: FrontendAppConfig
 )
 
@@ -36,14 +38,14 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-l">@messages("doYouHaveUTR.heading")</h1>
-        <p class="govuk-body">@Html(messages("doYouHaveUTR.p1" , link(appConfig.lostUTRUrl, "doYouHaveUTR.p1.link")))</p>
+        @heading(messages("doYouHaveUTR.heading"))
+        @para(link(appConfig.lostUTRUrl, "doYouHaveUTR.p1.link", openInNewWindow = true))
 
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
                 legend = LegendViewModel(messages("doYouHaveUTR.heading")).withCssClass("govuk-visually-hidden")
-            ).withHint(HintViewModel(Text(messages("doYouHaveUTR.hint"))))
+            )
         )
 
         @govukButton(
