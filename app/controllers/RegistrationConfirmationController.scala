@@ -50,7 +50,7 @@ class RegistrationConfirmationController @Inject() (
                   Ok(view(subscriptionId.value))
               }
           }
-        case _ => Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
+        case _ => Future.successful(Redirect(routes.InformationSentController.onPageLoad()))
       }
   }
 }

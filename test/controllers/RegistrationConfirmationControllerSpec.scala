@@ -87,7 +87,7 @@ class RegistrationConfirmationControllerSpec extends SpecBase with BeforeAndAfte
         application.injector.instanceOf[RegistrationConfirmationView]
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.MissingInformationController.onPageLoad().url
+        redirectLocation(result).value mustEqual routes.InformationSentController.onPageLoad().url
 
       }
     }
