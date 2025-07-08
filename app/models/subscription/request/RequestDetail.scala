@@ -22,13 +22,10 @@ case class RequestDetail(
   IDType: String,
   IDNumber: String,
   tradingName: Option[String],
-  /** tradingName will be populated as Organisation Name, while creating the subscription, The name which was matched in RegisterwithID response */
   isGBUser: Boolean,
   primaryContact: ContactInformation,
   secondaryContact: Option[ContactInformation]
-) {
-  require(tradingName.map(_.nonEmpty) == Option(true), "TradingName is null or empty")
-}
+)
 
 object RequestDetail {
   implicit def format: OFormat[RequestDetail] = Json.format[RequestDetail]

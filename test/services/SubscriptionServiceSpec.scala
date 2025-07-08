@@ -55,33 +55,21 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
       val responseCreateSubscription: Future[Option[SubscriptionID]] = Future.successful(Some(subscriptionID))
       val safeId                                                     = SafeId("CBC12345678")
       when(mockSubscriptionConnector.readSubscription(any())(any(), any())).thenReturn(Future.successful(None))
-      when(mockSubscriptionConnector.createSubscription(any())(any(), any())).thenReturn(responseCreateSubscription)
+      when(mockSubscriptionConnector.createSubscription(any(), any())(any(), any())).thenReturn(responseCreateSubscription)
 
       val userAnswers = UserAnswers("")
-        .set(DoYouHaveUTRPage, false)
-        .success
-        .value
-        .set(ContactNamePage, "TestName")
-        .success
-        .value
-        .set(ContactEmailPage, "test@gmail.com")
-        .success
-        .value
-        .set(ContactPhonePage, "000000000")
-        .success
-        .value
-        .set(DoYouHaveSecondContactPage, false)
-        .success
-        .value
-        .set(RegistrationInfoPage, RegistrationInfo(SafeId("x"), "Company", AddressResponse("", None, None, None, None, "GB")))
-        .success
-        .value
+        .withPage(DoYouHaveUTRPage, false)
+        .withPage(ContactNamePage, "TestName")
+        .withPage(ContactEmailPage, "test@gmail.com")
+        .withPage(ContactPhonePage, "000000000")
+        .withPage(DoYouHaveSecondContactPage, false)
+        .withPage(RegistrationInfoPage, RegistrationInfo(SafeId("x"), "Company", AddressResponse("", None, None, None, None, "GB")))
 
       val result = service.checkAndCreateSubscription(safeId, userAnswers)
       result.futureValue mustBe Right(SubscriptionID("id"))
 
       verify(mockSubscriptionConnector, times(1)).readSubscription(any())(any(), any())
-      verify(mockSubscriptionConnector, times(1)).createSubscription(any())(any(), any())
+      verify(mockSubscriptionConnector, times(1)).createSubscription(any(), any())(any(), any())
     }
 
     "must return 'SubscriptionID' when there is already a subscription exists" in {
@@ -99,7 +87,7 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
       val safeId                                                     = SafeId("CBC12345678")
 
       when(mockSubscriptionConnector.readSubscription(any())(any(), any())).thenReturn(Future.successful(None))
-      when(mockSubscriptionConnector.createSubscription(any())(any(), any())).thenReturn(responseCreateSubscription)
+      when(mockSubscriptionConnector.createSubscription(any(), any())(any(), any())).thenReturn(responseCreateSubscription)
 
       val result = service.checkAndCreateSubscription(safeId, UserAnswers("id"))
 
@@ -109,22 +97,15 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
     "must return SubscriptionCreateInformationMissingError when it fails to create subscription" in {
       val safeId = SafeId("CBC12345678")
       val userAnswers = UserAnswers("id")
-        .set(DoYouHaveUTRPage, false)
-        .success
-        .value
-        .set(ContactNamePage, "TestName")
-        .success
-        .value
-        .set(ContactEmailPage, "test@gmail.com")
-        .success
-        .value
-        .set(ContactPhonePage, "000000000")
-        .success
-        .value
+        .withPage(DoYouHaveUTRPage, false)
+        .withPage(ContactNamePage, "TestName")
+        .withPage(ContactEmailPage, "test@gmail.com")
+        .withPage(ContactPhonePage, "000000000")
+
       val responseCreateSubscription: Future[Option[SubscriptionID]] = Future.successful(None)
 
       when(mockSubscriptionConnector.readSubscription(any())(any(), any())).thenReturn(Future.successful(None))
-      when(mockSubscriptionConnector.createSubscription(any())(any(), any())).thenReturn(responseCreateSubscription)
+      when(mockSubscriptionConnector.createSubscription(any(), any())(any(), any())).thenReturn(responseCreateSubscription)
 
       val result = service.checkAndCreateSubscription(safeId, userAnswers)
 
@@ -135,25 +116,16 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
     "must return SubscriptionCreateInformationMissingError haveSecondContactPhone page not found when it fails to create subscription" in {
       val safeId = SafeId("CBC12345678")
       val userAnswers = UserAnswers("id")
-        .set(DoYouHaveUTRPage, false)
-        .success
-        .value
-        .set(ContactNamePage, "TestName")
-        .success
-        .value
-        .set(ContactEmailPage, "test@gmail.com")
-        .success
-        .value
-        .set(ContactPhonePage, "000000000")
-        .success
-        .value
-        .set(DoYouHaveSecondContactPage, true)
-        .success
-        .value
+        .withPage(DoYouHaveUTRPage, false)
+        .withPage(ContactNamePage, "TestName")
+        .withPage(ContactEmailPage, "test@gmail.com")
+        .withPage(ContactPhonePage, "000000000")
+        .withPage(DoYouHaveSecondContactPage, true)
+
       val responseCreateSubscription: Future[Option[SubscriptionID]] = Future.successful(None)
 
       when(mockSubscriptionConnector.readSubscription(any())(any(), any())).thenReturn(Future.successful(None))
-      when(mockSubscriptionConnector.createSubscription(any())(any(), any())).thenReturn(responseCreateSubscription)
+      when(mockSubscriptionConnector.createSubscription(any(), any())(any(), any())).thenReturn(responseCreateSubscription)
 
       val result = service.checkAndCreateSubscription(safeId, userAnswers)
 
@@ -164,28 +136,17 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
     "must return error when it fails to create subscription" in {
       val safeId = SafeId("CBC12345678")
       val userAnswers = UserAnswers("id")
-        .set(DoYouHaveUTRPage, false)
-        .success
-        .value
-        .set(ContactNamePage, "TestName")
-        .success
-        .value
-        .set(ContactEmailPage, "test@gmail.com")
-        .success
-        .value
-        .set(ContactPhonePage, "000000000")
-        .success
-        .value
-        .set(DoYouHaveSecondContactPage, false)
-        .success
-        .value
-        .set(RegistrationInfoPage, RegistrationInfo(SafeId("x"), "Company", AddressResponse("", None, None, None, None, "GB")))
-        .success
-        .value
+        .withPage(DoYouHaveUTRPage, false)
+        .withPage(ContactNamePage, "TestName")
+        .withPage(ContactEmailPage, "test@gmail.com")
+        .withPage(ContactPhonePage, "000000000")
+        .withPage(DoYouHaveSecondContactPage, false)
+        .withPage(RegistrationInfoPage, RegistrationInfo(SafeId("x"), "Company", AddressResponse("", None, None, None, None, "GB")))
+
       val responseCreateSubscription: Future[Option[SubscriptionID]] = Future.successful(None)
 
       when(mockSubscriptionConnector.readSubscription(any())(any(), any())).thenReturn(Future.successful(None))
-      when(mockSubscriptionConnector.createSubscription(any())(any(), any())).thenReturn(responseCreateSubscription)
+      when(mockSubscriptionConnector.createSubscription(any(), any())(any(), any())).thenReturn(responseCreateSubscription)
 
       val result = service.checkAndCreateSubscription(safeId, userAnswers)
 
