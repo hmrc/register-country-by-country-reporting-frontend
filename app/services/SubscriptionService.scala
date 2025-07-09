@@ -19,7 +19,9 @@ package services
 import connectors.SubscriptionConnector
 import models.subscription.request.{CreateSubscriptionForCBCRequest, SubscriptionRequest}
 import models.{ApiError, SafeId, SubscriptionCreateError, SubscriptionID, UserAnswers}
+import pages.{BusinessWithoutIDNamePage, RegistrationInfoPage}
 import uk.gov.hmrc.http.HeaderCarrier
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -28,13 +30,17 @@ class SubscriptionService @Inject() (val subscriptionConnector: SubscriptionConn
   def checkAndCreateSubscription(safeID: SafeId, userAnswers: UserAnswers)(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext
-  ): Future[Either[ApiError, SubscriptionID]] =
+  ): Future[Either[ApiError, SubscriptionID]] = {
+    val businessName = userAnswers
+      .get(BusinessWithoutIDNamePage)
+      .orElse(userAnswers.get(RegistrationInfoPage).map(_.name))
+      .getOrElse("Business name missing")
     getDisplaySubscriptionId(safeID) flatMap {
       case Some(subscriptionID) => Future.successful(Right(subscriptionID))
       case _ =>
         SubscriptionRequest.createSubscriptionRequest(safeID, userAnswers) match {
           case Right(subscriptionRequest) =>
-            subscriptionConnector.createSubscription(CreateSubscriptionForCBCRequest(subscriptionRequest)) map {
+            subscriptionConnector.createSubscription(CreateSubscriptionForCBCRequest(subscriptionRequest), businessName) map {
               case Some(subscriptionID) =>
                 Right(subscriptionID)
               case None => Left(SubscriptionCreateError)
@@ -42,6 +48,7 @@ class SubscriptionService @Inject() (val subscriptionConnector: SubscriptionConn
           case Left(value) => Future.successful(Left(value))
         }
     }
+  }
 
   def getDisplaySubscriptionId(safeId: SafeId)(implicit
     hc: HeaderCarrier,

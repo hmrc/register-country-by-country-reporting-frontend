@@ -22,8 +22,8 @@ import models.subscription.response.{CreateSubscriptionResponse, DisplaySubscrip
 import models.{SafeId, SubscriptionID}
 import play.api.Logging
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.HttpErrorFunctions.is2xx
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
@@ -56,13 +56,15 @@ class SubscriptionConnector @Inject() (val config: FrontendAppConfig, val http: 
   }
 
   def createSubscription(
-    createSubscriptionForCBCRequest: CreateSubscriptionForCBCRequest
+    createSubscriptionForCBCRequest: CreateSubscriptionForCBCRequest,
+    businessName: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SubscriptionID]] = {
 
     val submissionUrl = url"${config.registerCountryByCountryUrl}/subscription/create-subscription"
     http
       .post(submissionUrl)
       .withBody(Json.toJson(createSubscriptionForCBCRequest))
+      .setHeader("X-Business-Name" -> businessName)
       .execute[HttpResponse]
       .map {
         case response if is2xx(response.status) =>

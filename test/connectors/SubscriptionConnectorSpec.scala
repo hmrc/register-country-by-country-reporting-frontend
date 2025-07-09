@@ -17,7 +17,7 @@
 package connectors
 
 import base.{SpecBase, WireMockServerHandler}
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalTo, post, urlEqualTo}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import generators.Generators
 import models.subscription.request.CreateSubscriptionForCBCRequest
@@ -43,6 +43,7 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with
   private val subscriptionUrl               = "/register-country-by-country-reporting/subscription"
   private val errorCodes: Gen[Int]          = Gen.oneOf(Seq(400, 404, 403, 500, 501, 502, 503, 504))
   private val safeId                        = SafeId("safeId")
+  private val businessName                  = "Some Business Name"
 
   "SubscriptionConnector" - {
     "readSubscription" - {
@@ -130,7 +131,7 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with
 
         stubPostResponse(s"/create-subscription", OK, subscriptionResponse)
 
-        val result: Future[Option[SubscriptionID]] = connector.createSubscription(createSubscriptionRequest)
+        val result: Future[Option[SubscriptionID]] = connector.createSubscription(createSubscriptionRequest, businessName)
         result.futureValue.value mustBe expectedResponse
       }
 
@@ -149,7 +150,7 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with
 
         stubPostResponse(s"/create-subscription", OK, subscriptionResponse)
 
-        val result = connector.createSubscription(createSubscriptionRequest)
+        val result = connector.createSubscription(createSubscriptionRequest, businessName)
         result.futureValue mustBe None
       }
 
@@ -169,8 +170,39 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with
 
         stubPostResponse(s"/create-subscription", errorCode, subscriptionErrorResponse)
 
-        val result = connector.createSubscription(createSubscriptionRequest)
+        val result = connector.createSubscription(createSubscriptionRequest, businessName)
         result.futureValue mustBe None
+      }
+
+      "must include X-Business-Name header in the request" in {
+        val expectedResponse = SubscriptionID("XACBC0000123456")
+
+        val subscriptionResponse: String =
+          s"""
+             |{
+             | "createSubscriptionForCBCResponse": {
+             |   "responseCommon": {
+             |     "status": "OK",
+             |     "processingDate": "1000-01-01T00:00:00Z"
+             |   },
+             |   "responseDetail": {
+             |     "subscriptionID": "XACBC0000123456"
+             |   }
+             | }
+             |}""".stripMargin
+
+        server.stubFor(
+          post(urlEqualTo(s"$subscriptionUrl/create-subscription"))
+            .withHeader("X-Business-Name", equalTo(businessName))
+            .willReturn(
+              aResponse()
+                .withStatus(OK)
+                .withBody(subscriptionResponse)
+            )
+        )
+
+        val result = connector.createSubscription(createSubscriptionRequest, businessName)
+        result.futureValue.value mustBe expectedResponse
       }
     }
   }
