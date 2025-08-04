@@ -25,9 +25,9 @@ import javax.inject.{Inject, Singleton}
 
 // @formatter:off
 @Singleton
-class CBCRNavigator @Inject()() extends Navigator {
+class CBCRNavigator @Inject() extends Navigator {
 
-  override val normalRoutes: Page => UserAnswers => Call = {
+  override val normalRoutes: PartialFunction[Page, UserAnswers => Call] = {
     case IsRegisteredAddressInUkPage => ua =>
       yesNoPage(
         ua,
@@ -80,7 +80,7 @@ class CBCRNavigator @Inject()() extends Navigator {
     case SecondContactPhonePage => _ => routes.CheckYourAnswersController.onPageLoad()
   }
 
-  override val checkRouteMap: Page => UserAnswers => Call = {
+  override val checkRouteMap: PartialFunction[Page, UserAnswers => Call] = {
     case IsRegisteredAddressInUkPage => ua =>
       yesNoPage(
         ua,
@@ -146,8 +146,6 @@ class CBCRNavigator @Inject()() extends Navigator {
       routes.SecondContactPhoneController.onPageLoad(CheckMode),
       routes.CheckYourAnswersController.onPageLoad()
     )
-    case SecondContactPhonePage => _ => routes.CheckYourAnswersController.onPageLoad()
-    case _  => _ => controllers.routes.CheckYourAnswersController.onPageLoad()
   }
 
   def yesNoPage(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call =
