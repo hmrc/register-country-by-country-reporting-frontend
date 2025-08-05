@@ -16,30 +16,30 @@
 
 package navigation
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.Call
 import controllers.routes
 import pages._
 import models._
 import play.api.libs.json.Reads
 
-@Singleton
-class Navigator @Inject() () {
+class Navigator {
 
-  val normalRoutes: Page => UserAnswers => Call = {
-    case _ => _ => routes.IndexController.onPageLoad
-  }
+  val normalRoutes: PartialFunction[Page, UserAnswers => Call] = PartialFunction.empty
 
-  val checkRouteMap: Page => UserAnswers => Call = {
-    case _ => _ => routes.CheckYourAnswersController.onPageLoad()
-  }
+  val checkRouteMap: PartialFunction[Page, UserAnswers => Call] = PartialFunction.empty
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
+  private def checkRoutes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = mode match {
     case NormalMode =>
-      normalRoutes(page)(userAnswers)
+      normalRoutes orElse {
+        case _ => _ => routes.IndexController.onPageLoad
+      }
     case CheckMode =>
-      checkRouteMap(page)(userAnswers)
+      checkRouteMap orElse {
+        case _ => _ => routes.CheckYourAnswersController.onPageLoad()
+      }
   }
+
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = checkRoutes(mode)(page)(userAnswers)
 
   def checkNextPageForValueThenRoute[A](mode: Mode, ua: UserAnswers, page: QuestionPage[A], call: Call)(implicit rds: Reads[A]): Call =
     if (
