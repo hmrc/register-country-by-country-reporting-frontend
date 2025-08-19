@@ -18,7 +18,7 @@
     layout: templates.Layout
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(emailLink: String)(implicit request: Request[_], messages: Messages)
 
 @layout(
     pageTitle = titleNoForm(messages("unauthorised.title")),
@@ -27,5 +27,5 @@
 
     <h1 class="govuk-heading-l">@messages("unauthorised.heading")</h1>
 
-    <p class="govuk-body">@messages("unauthorised.guidance")</p>
+    <p class="govuk-body">@messages("unauthorised.email", emailLink)</p>
 }
