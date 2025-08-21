@@ -56,8 +56,10 @@ signedOut.heading = For your security, we signed you out
 signedOut.guidance = We did not save your answers.
 signedOut.backToCBCLink = Sign in again to use the service
 
-unauthorised.title = You can’t access this service with this account
-unauthorised.heading = You can’t access this service with this account
+unauthorised.title = You cannot access this page
+unauthorised.heading = You cannot access this page
+unauthorised.email = You can email your HMRC Customer Compliance Manager or {0} if you have any questions about this service.
+unauthorised.guidance = Refer to the country-by-country guidance
 
 doYouHaveUTR.title = Do you have a Unique Taxpayer Reference (UTR)?
 doYouHaveUTR.checkYourAnswersLabel =  Do you have a Unique Taxpayer Reference?
@@ -297,7 +299,7 @@ businessNotIdentified.limitedCompany.p4.link = search the Companies House regist
 businessNotIdentified.partnership.p4 = If your business is registered with Companies House, you can
 businessNotIdentified.partnership.p4.link = search the register for your company name (opens in new tab)
 businessNotIdentified.subheading3 = Contact HMRC to help us find your business
-businessNotIdentified.p5 = If you have checked and entered your UTR and business name again and we still cannot find your business, then email
+businessNotIdentified.p5 = If you have checked and entered your UTR and business name again and we still cannot find your business, then email your HMRC Customer Compliance Manager or
 businessNotIdentified.p5b = for help.
 businessNotIdentified.button = Try again
 
@@ -305,14 +307,14 @@ preRegistered.title = Your organisation is already registered to use this servic
 preRegistered.heading = Your organisation is already registered to use this service
 preRegistered.withOutID.information = You can access the service using the Government Gateway details that were used to register for country-by-country reporting.
 preRegistered.withOutID.GGLink = Sign in using Government Gateway
-preRegistered.help = You can email {0} if you’re having problems accessing the service.
-preRegistered.help.linkLocation = mailto:aeoi.enquiries@hmrc.gov.uk
+preRegistered.help = You can email your HMRC Customer Compliance Manager or {0} if you’re having problems accessing the service.
+preRegistered.help.linkLocation = mailto:msb.countrybycountryreportingmailbox@hmrc.gov.uk
 preRegistered.withID.information = You will need to contact your administrator to give you access via the ‘Manage account’ settings within their business tax account.
 
 thereIsAProblem.title = Sorry, there is a problem with the service
 thereIsAProblem.heading = Sorry, there is a problem with the service
 thereIsAProblem.p1 = Try again later.
-thereIsAProblem.help = You can email {0} if you need to contact someone about your country-by-country reporting.
+thereIsAProblem.help = You can email your HMRC Customer Compliance Manager or {0} if you need to contact someone about your country-by-country reporting.
 
 unauthorisedStandardUser.title = You’re unable to use this service
 unauthorisedStandardUser.heading = You’re unable to use this service
@@ -333,7 +335,7 @@ pageNotFound.title = Page not found
 pageNotFound.heading = Page not found
 pageNotFound.p1 = If you typed the web address, check it is correct.
 pageNotFound.p2 = If you pasted the web address, check you copied the entire address.
-pageNotFound.link = You can email {0} if you have any questions about this service.
+pageNotFound.link = You can email your HMRC Customer Compliance Manager or {0} if you have any questions about this service.
 
 yourContactDetails.title = Setting up contact details
 yourContactDetails.heading = Setting up contact details
@@ -365,5 +367,5 @@ unableToChangeBusiness.p2 = If you want to register a different organisation for
 unableToChangeBusiness.p3 = You have signed in with a Government Gateway user ID that is linked to different business details.
 unableToChangeBusiness.link = sign in with the Government Gateway user ID for the organisation you wish to register
 
-enquiries.email = aeoi.enquiries@hmrc.gov.uk
+enquiries.email = msb.countrybycountryreportingmailbox@hmrc.gov.uk
 
