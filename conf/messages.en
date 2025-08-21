@@ -366,5 +366,5 @@ unableToChangeBusiness.p2 = If you want to register a different organisation for
 unableToChangeBusiness.p3 = You have signed in with a Government Gateway user ID that is linked to different business details.
 unableToChangeBusiness.link = sign in with the Government Gateway user ID for the organisation you wish to register
 
-enquiries.email = aeoi.enquiries@hmrc.gov.uk
+enquiries.email = msb.countrybycountryreportingmailbox@hmrc.gov.uk
 
