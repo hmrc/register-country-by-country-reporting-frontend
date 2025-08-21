@@ -15,7 +15,9 @@
  *@
 
 @this(
-    layout: templates.Layout
+    layout: templates.Layout,
+    paragraph: components.Paragraph,
+    link: components.Link
 )
 
 @(emailLink: String)(implicit request: Request[_], messages: Messages)
@@ -27,5 +29,7 @@
 
     <h1 class="govuk-heading-l">@messages("unauthorised.heading")</h1>
 
-    <p class="govuk-body">@messages("unauthorised.email", emailLink)</p>
+    @paragraph(Html(messages("unauthorised.email" , link(s"mailto:$emailLink", "enquiries.email"))))
+
+    @paragraph(Html(messages("unauthorised.guidance")))
 }
