@@ -59,7 +59,7 @@ signedOut.backToCBCLink = Sign in again to use the service
 unauthorised.title = You cannot access this page
 unauthorised.heading = You cannot access this page
 unauthorised.email = You can email your HMRC Customer Compliance Manager or {0} if you have any questions about this service.
-unauthorised.guidance = Refer to the country-by-country-reporting guidance
+unauthorised.guidance = Refer to the country-by-country reporting guidance
 
 doYouHaveUTR.title = Do you have a Unique Taxpayer Reference (UTR)?
 doYouHaveUTR.checkYourAnswersLabel =  Do you have a Unique Taxpayer Reference?
