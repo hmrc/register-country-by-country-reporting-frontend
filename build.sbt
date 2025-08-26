@@ -15,7 +15,7 @@ lazy val root = (project in file("."))
   .settings(ThisBuild / useSuperShell := false)
   .settings(
     ThisBuild / scalafmtOnCompile := true,
-    name         := appName,
+    name                          := appName,
     RoutesKeys.routesImport ++= Seq(
       "models._",
       "uk.gov.hmrc.play.bootstrap.binders.RedirectUrl"

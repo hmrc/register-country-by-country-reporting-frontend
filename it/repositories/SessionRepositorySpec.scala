@@ -21,7 +21,7 @@ import java.util.Base64
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SessionRepositorySpec
-  extends AnyFreeSpec
+    extends AnyFreeSpec
     with Matchers
     with DefaultPlayMongoRepositorySupport[UserAnswers]
     with ScalaFutures
@@ -29,7 +29,7 @@ class SessionRepositorySpec
     with OptionValues
     with MockitoSugar {
 
-  private val instant = Instant.now.truncatedTo(ChronoUnit.MILLIS)
+  private val instant          = Instant.now.truncatedTo(ChronoUnit.MILLIS)
   private val stubClock: Clock = Clock.fixed(instant, ZoneId.systemDefault)
 
   private val userAnswers = UserAnswers("id", Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
@@ -46,10 +46,10 @@ class SessionRepositorySpec
 
   implicit val crypto: Encrypter with Decrypter = new CryptoProvider(Configuration("crypto.key" -> randomAesKey)).get()
 
-  protected override val repository = new SessionRepository(
+  override protected val repository = new SessionRepository(
     mongoComponent = mongoComponent,
-    appConfig      = mockAppConfig,
-    clock          = stubClock
+    appConfig = mockAppConfig,
+    clock = stubClock
   )
 
   ".set" - {
@@ -68,16 +68,17 @@ class SessionRepositorySpec
     "must encrypt the data" in {
       repository.set(userAnswers).futureValue
 
-      val raw = mongoComponent.database.getCollection("user-answers")
-                  .find(Filters.equal("_id", userAnswers.id))
-                  .headOption()
-                  .futureValue
+      val raw = mongoComponent.database
+        .getCollection("user-answers")
+        .find(Filters.equal("_id", userAnswers.id))
+        .headOption()
+        .futureValue
 
       raw match {
         case None => fail("db record not found")
         case Some(ua) =>
-          val id = ua.get("_id").head.asString.getValue
-          val rawData = ua.get("data").get.asString.getValue
+          val id            = ua.get("_id").head.asString.getValue
+          val rawData       = ua.get("data").get.asString.getValue
           val decryptedData = crypto.decrypt(Crypted(rawData)).value
 
           id mustBe userAnswers.id
