@@ -1,3 +1,5 @@
+package connectors
+
 /*
  * Copyright 2024 HM Revenue & Customs
  *
@@ -13,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package connectors
 
 import base.{SpecBase, WireMockServerHandler}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, urlEqualTo}

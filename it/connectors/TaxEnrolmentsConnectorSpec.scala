@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-package connectors
-
 import base.{SpecBase, WireMockServerHandler}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, put, urlEqualTo}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
