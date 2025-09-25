@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package connectors
 
-import base.{SpecBase, WireMockServerHandler}
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalTo, post, urlEqualTo}
+import base.SpecBase
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, anyUrl, equalTo, post, postRequestedFor, urlEqualTo, urlPathMatching}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import generators.Generators
 import models.subscription.request.CreateSubscriptionForCBCRequest
@@ -27,11 +27,12 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.Application
 import play.api.http.Status.OK
 import play.api.inject.guice.GuiceApplicationBuilder
+import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with ScalaCheckPropertyChecks with Generators {
+class SubscriptionConnectorSpec extends SpecBase with WireMockHelper with ScalaCheckPropertyChecks with Generators {
 
   override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
@@ -64,7 +65,7 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with
              | }
              |}""".stripMargin
 
-        stubPostResponse(s"/read-subscription/${safeId.value}", OK, subscriptionResponse)
+        stubPostResponse(s"$subscriptionUrl/read-subscription/${safeId.value}", OK, subscriptionResponse)
 
         val result: Future[Option[SubscriptionID]] = connector.readSubscription(safeId)
         result.futureValue.value mustBe expectedResponse
@@ -83,7 +84,7 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with
              | }
              |}""".stripMargin
 
-        stubPostResponse(s"/read-subscription/${safeId.value}", OK, subscriptionResponse)
+        stubPostResponse(s"$subscriptionUrl/read-subscription/${safeId.value}", OK, subscriptionResponse)
 
         val result = connector.readSubscription(safeId)
         result.futureValue mustBe None
@@ -103,7 +104,7 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with
              |  }
              |""".stripMargin
 
-        stubPostResponse(s"/read-subscription/${safeId.value}", errorCode, subscriptionErrorResponse)
+        stubPostResponse(s"$subscriptionUrl/read-subscription/${safeId.value}", errorCode, subscriptionErrorResponse)
 
         val result = connector.readSubscription(safeId)
         result.futureValue mustBe None
@@ -129,7 +130,7 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with
              |  }
              |} }""".stripMargin
 
-        stubPostResponse(s"/create-subscription", OK, subscriptionResponse)
+        stubPostResponse(s"$subscriptionUrl/create-subscription", OK, subscriptionResponse)
 
         val result: Future[Option[SubscriptionID]] = connector.createSubscription(createSubscriptionRequest, businessName)
         result.futureValue.value mustBe expectedResponse
@@ -148,7 +149,7 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with
              |  }
              |} }""".stripMargin
 
-        stubPostResponse(s"/create-subscription", OK, subscriptionResponse)
+        stubPostResponse(s"$subscriptionUrl/create-subscription", OK, subscriptionResponse)
 
         val result = connector.createSubscription(createSubscriptionRequest, businessName)
         result.futureValue mustBe None
@@ -168,7 +169,7 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with
              |  }
              |""".stripMargin
 
-        stubPostResponse(s"/create-subscription", errorCode, subscriptionErrorResponse)
+        stubPostResponse(s"$subscriptionUrl/create-subscription", errorCode, subscriptionErrorResponse)
 
         val result = connector.createSubscription(createSubscriptionRequest, businessName)
         result.futureValue mustBe None
@@ -206,15 +207,5 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockServerHandler with
       }
     }
   }
-
-  private def stubPostResponse(expectedEndpoint: String, expectedStatus: Int, expectedBody: String): StubMapping =
-    server.stubFor(
-      post(urlEqualTo(s"$subscriptionUrl$expectedEndpoint"))
-        .willReturn(
-          aResponse()
-            .withStatus(expectedStatus)
-            .withBody(expectedBody)
-        )
-    )
 
 }

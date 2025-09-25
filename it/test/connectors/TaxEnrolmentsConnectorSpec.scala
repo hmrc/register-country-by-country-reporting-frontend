@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,18 @@
 
 package connectors
 
-import base.{SpecBase, WireMockServerHandler}
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, put, urlEqualTo}
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import base.SpecBase
 import generators.Generators
-import models.{SubscriptionInfo, Verifier}
+import models.SubscriptionInfo
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.Application
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NO_CONTENT}
 import play.api.inject.guice.GuiceApplicationBuilder
+import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockServerHandler with Generators with ScalaCheckPropertyChecks {
+class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockHelper with Generators with ScalaCheckPropertyChecks {
 
   override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
@@ -47,7 +46,7 @@ class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockServerHandler wit
           (safeID, subID, utr) =>
             val enrolmentInfo = SubscriptionInfo(safeID = safeID, utr = Some(utr), cbcId = subID)
 
-            stubResponseForPutRequest("/tax-enrolments/service/HMRC-CBC-ORG/enrolment", NO_CONTENT)
+            stubPutResponse("/tax-enrolments/service/HMRC-CBC-ORG/enrolment", NO_CONTENT)
 
             val result = connector.createEnrolment(enrolmentInfo)
             result.futureValue mustBe Some(NO_CONTENT)
@@ -58,7 +57,7 @@ class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockServerHandler wit
         forAll(validSafeID, validSubscriptionID, validUtr) {
           (safeID, subID, utr) =>
             val enrolmentInfo = SubscriptionInfo(safeID = safeID, utr = Some(utr), cbcId = subID)
-            stubResponseForPutRequest("/tax-enrolments/service/HMRC-CBC-ORG/enrolment", BAD_REQUEST)
+            stubPutResponse("/tax-enrolments/service/HMRC-CBC-ORG/enrolment", BAD_REQUEST)
             val result = connector.createEnrolment(enrolmentInfo)
             result.futureValue mustBe None
         }
@@ -68,7 +67,7 @@ class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockServerHandler wit
         forAll(validSafeID, validSubscriptionID, validUtr) {
           (safeID, subID, utr) =>
             val enrolmentInfo = SubscriptionInfo(safeID = safeID, utr = Some(utr), cbcId = subID)
-            stubResponseForPutRequest("/tax-enrolments/service/HMRC-CBC-ORG/enrolment", INTERNAL_SERVER_ERROR)
+            stubPutResponse("/tax-enrolments/service/HMRC-CBC-ORG/enrolment", INTERNAL_SERVER_ERROR)
             val result = connector.createEnrolment(enrolmentInfo)
             result.futureValue mustBe None
         }
@@ -102,13 +101,4 @@ class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockServerHandler wit
       }
     }
   }
-
-  private def stubResponseForPutRequest(expectedUrl: String, expectedStatus: Int): StubMapping =
-    server.stubFor(
-      put(urlEqualTo(expectedUrl))
-        .willReturn(
-          aResponse()
-            .withStatus(expectedStatus)
-        )
-    )
 }

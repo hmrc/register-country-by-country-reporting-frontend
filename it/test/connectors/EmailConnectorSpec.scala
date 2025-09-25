@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,7 @@
 
 package connectors
 
-import base.{SpecBase, WireMockServerHandler}
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, urlEqualTo}
-import com.github.tomakehurst.wiremock.http.Fault
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import base.SpecBase
 import generators.Generators
 import models.email.EmailRequest
 import org.scalacheck.Arbitrary.arbitrary
@@ -27,8 +24,9 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.Application
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
 import play.api.inject.guice.GuiceApplicationBuilder
+import utils.WireMockHelper
 
-class EmailConnectorSpec extends SpecBase with WireMockServerHandler with Generators with ScalaCheckPropertyChecks {
+class EmailConnectorSpec extends SpecBase with WireMockHelper with Generators with ScalaCheckPropertyChecks {
 
   override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
@@ -43,7 +41,7 @@ class EmailConnectorSpec extends SpecBase with WireMockServerHandler with Genera
 
       forAll(arbitrary[EmailRequest]) {
         emailRequest =>
-          stubResponse(s"/hmrc/email", OK)
+          stubPostResponse(s"/hmrc/email", OK)
 
           val result = connector.sendEmail(emailRequest)
           result.futureValue.status mustBe OK
@@ -54,7 +52,7 @@ class EmailConnectorSpec extends SpecBase with WireMockServerHandler with Genera
 
       forAll(arbitrary[EmailRequest]) {
         emailRequest =>
-          stubResponse(s"/hmrc/email", BAD_REQUEST)
+          stubPostResponse(s"/hmrc/email", BAD_REQUEST)
 
           val result = connector.sendEmail(emailRequest)
           result.futureValue.status mustBe BAD_REQUEST
@@ -65,7 +63,7 @@ class EmailConnectorSpec extends SpecBase with WireMockServerHandler with Genera
 
       forAll(arbitrary[EmailRequest]) {
         emailRequest =>
-          stubResponse(s"/hmrc/email", NOT_FOUND)
+          stubPostResponse(s"/hmrc/email", NOT_FOUND)
 
           val result = connector.sendEmail(emailRequest)
           result.futureValue.status mustBe NOT_FOUND
@@ -85,21 +83,4 @@ class EmailConnectorSpec extends SpecBase with WireMockServerHandler with Genera
 
   }
 
-  private def stubResponse(expectedUrl: String, expectedStatus: Int): StubMapping =
-    server.stubFor(
-      post(urlEqualTo(expectedUrl))
-        .willReturn(
-          aResponse()
-            .withStatus(expectedStatus)
-        )
-    )
-
-  private def stubFailure(expectedUrl: String): StubMapping =
-    server.stubFor(
-      post(urlEqualTo(expectedUrl))
-        .willReturn(
-          aResponse()
-            .withFault(Fault.CONNECTION_RESET_BY_PEER)
-        )
-    )
 }
