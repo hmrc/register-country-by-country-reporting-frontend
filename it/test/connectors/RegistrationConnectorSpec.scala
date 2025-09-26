@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,7 @@
 
 package connectors
 
-import base.{SpecBase, WireMockServerHandler}
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, urlEqualTo}
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import base.SpecBase
 import models.register.request._
 import models.register.response.RegisterWithIDResponse
 import models.register.response.details.{AddressResponse, OrganisationResponse}
@@ -28,10 +26,11 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.Application
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.inject.guice.GuiceApplicationBuilder
+import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class RegistrationConnectorSpec extends SpecBase with WireMockServerHandler with ScalaCheckPropertyChecks with JsonFixture {
+class RegistrationConnectorSpec extends SpecBase with WireMockHelper with ScalaCheckPropertyChecks with JsonFixture {
 
   override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
@@ -73,14 +72,14 @@ class RegistrationConnectorSpec extends SpecBase with WireMockServerHandler with
           AddressResponse("addressLine1", Some("addressLine2"), Some("addressLine3"), Some("addressLine4"), Some("AA1 1AA"), "GB")
         )
 
-        stubResponse(s"$registrationUrl/utr", OK, businessWithIdJsonResponse)
+        stubPostResponse(s"$registrationUrl/utr", OK, businessWithIdJsonResponse)
 
         val result = connector.registerWithID(registrationWithOrganisationIDPayload)
         result.futureValue mustBe Right(expectedResponse)
       }
 
       "must return 'InternalServerError' when safeId is missing in the businessWithIdResponse" in {
-        stubResponse(s"$registrationUrl/utr", OK, businessWithIdMissingSafeIdJson)
+        stubPostResponse(s"$registrationUrl/utr", OK, businessWithIdMissingSafeIdJson)
 
         val result = connector.registerWithID(registrationWithOrganisationIDPayload)
         result.futureValue mustBe Left(InternalServerError)
@@ -88,14 +87,14 @@ class RegistrationConnectorSpec extends SpecBase with WireMockServerHandler with
 
       "must return 'InternalServerError' when EIS returns Http status other than NOT_FOUND and OK status" in {
         val errorStatus: Int = errorCodes.sample.value
-        stubResponse(s"$registrationUrl/utr", errorStatus, businessWithIdMissingSafeIdJson)
+        stubPostResponse(s"$registrationUrl/utr", errorStatus, businessWithIdMissingSafeIdJson)
 
         val result = connector.registerWithID(registrationWithOrganisationIDPayload)
         result.futureValue mustBe Left(InternalServerError)
       }
 
       "must return 'NotFoundError' when EIS returns NOT_FOUND status" in {
-        stubResponse(s"$registrationUrl/utr", NOT_FOUND, businessWithIdMissingSafeIdJson)
+        stubPostResponse(s"$registrationUrl/utr", NOT_FOUND, businessWithIdMissingSafeIdJson)
 
         val result = connector.registerWithID(registrationWithOrganisationIDPayload)
         result.futureValue mustBe Left(NotFoundError)
@@ -106,14 +105,14 @@ class RegistrationConnectorSpec extends SpecBase with WireMockServerHandler with
 
       "must return 'SafeId' for the valid input request" in {
 
-        stubResponse(s"$registrationUrl/noId", OK, businessWithoutIdJsonResponse)
+        stubPostResponse(s"$registrationUrl/noId", OK, businessWithoutIdJsonResponse)
 
         val result = connector.registerWithoutID(registrationWithoutIDPayload)
         result.futureValue mustBe Right(Some(SafeId("XE0000123456789")))
       }
 
       "must return 'None' when safeId is missing in the businessWithIdResponse" in {
-        stubResponse(s"$registrationUrl/noId", OK, businessWithoutIdMissingSafeIdJson)
+        stubPostResponse(s"$registrationUrl/noId", OK, businessWithoutIdMissingSafeIdJson)
 
         val result = connector.registerWithoutID(registrationWithoutIDPayload)
         result.futureValue mustBe Right(None)
@@ -121,7 +120,7 @@ class RegistrationConnectorSpec extends SpecBase with WireMockServerHandler with
 
       "must return 'None' when EIS returns Error status" in {
         val errorStatus: Int = errorCodes.sample.value
-        stubResponse(s"$registrationUrl/noId", errorStatus, businessWithoutIdJsonResponse)
+        stubPostResponse(s"$registrationUrl/noId", errorStatus, businessWithoutIdJsonResponse)
 
         val result = connector.registerWithoutID(registrationWithoutIDPayload)
         result.futureValue mustBe Left(InternalServerError)
@@ -129,16 +128,6 @@ class RegistrationConnectorSpec extends SpecBase with WireMockServerHandler with
 
     }
   }
-
-  private def stubResponse(expectedEndpoint: String, expectedStatus: Int, expectedBody: String): StubMapping =
-    server.stubFor(
-      post(urlEqualTo(s"$expectedEndpoint"))
-        .willReturn(
-          aResponse()
-            .withStatus(expectedStatus)
-            .withBody(expectedBody)
-        )
-    )
 
 }
 
