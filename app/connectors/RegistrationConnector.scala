@@ -45,7 +45,7 @@ class RegistrationConnector @Inject() (val config: FrontendAppConfig, val http: 
         }
       case response if response.status == NOT_FOUND => Left(NotFoundError)
       case errorStatus =>
-        logger.warn(s"RegisterWithID call failed with Status ${errorStatus.status}")
+        logger.error(s"RegisterWithID call failed with Status ${errorStatus.status}")
         Left(InternalServerError)
     }
 
@@ -54,7 +54,7 @@ class RegistrationConnector @Inject() (val config: FrontendAppConfig, val http: 
       case response if is2xx(response.status) =>
         Right(response.json.asOpt[RegisterWithoutIDResponse].map(_.safeId))
       case errorResponse =>
-        logger.warn(s"RegisterWithoutID call failed with Status ${errorResponse.status}")
+        logger.error(s"RegisterWithoutID call failed with Status ${errorResponse.status}")
         Left(InternalServerError)
     }
 }

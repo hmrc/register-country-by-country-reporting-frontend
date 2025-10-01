@@ -50,7 +50,7 @@ class SubscriptionConnector @Inject() (val config: FrontendAppConfig, val http: 
       }
       .recover {
         case e: Exception =>
-          logger.warn(s"Error message ${e.getMessage} has been thrown when display subscription was called")
+          logger.error(s"Error message ${e.getMessage} has been thrown when display subscription was called", e)
           None
       }
   }
@@ -75,7 +75,7 @@ class SubscriptionConnector @Inject() (val config: FrontendAppConfig, val http: 
       }
       .recover {
         case e: Exception =>
-          logger.warn(s"Error message ${e.getMessage} has been thrown when create subscription was called")
+          logger.error(s"Error message ${e.getMessage} has been thrown when create subscription was called", e)
           None
       }
   }
