@@ -61,7 +61,7 @@ class EnrolmentStoreProxyConnector @Inject() (val config: FrontendAppConfig, val
                 }
             )
         case response =>
-          logger.warn(s"Enrolment response not formed. ${response.status} response status")
+          logger.error(s"Enrolment response not formed. ${response.status} response status")
           throw new IllegalStateException()
       }
 
