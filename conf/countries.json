@@ -200,7 +200,7 @@
   {"code": "PM", "state":  "valid", "description": "St Pierre and Miquelon", "alternativeName": "Saint Pierre and Miquelon"},
   {"code": "PN", "state":  "valid", "description": "Pitcairn, Henderson, Ducie and Oeno Islands"},
   {"code": "PR", "state":  "valid", "description": "Puerto Rico"},
-  {"code": "PS", "state":  "valid", "description": "Occupied Palestinian Territories"},
+  {"code": "PS", "state":  "valid", "description": "State of Palestine"},
   {"code": "PT", "state":  "valid", "description": "Portugal"},
   {"code": "PW", "state":  "valid", "description": "Palau"},
   {"code": "PY", "state":  "valid", "description": "Paraguay"},
