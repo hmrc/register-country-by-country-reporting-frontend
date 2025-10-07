@@ -45,4 +45,12 @@ trait AuthStubs { this: Suite =>
         |  }
          """.stripMargin
 
+  def authOKResponseWithoutEnrolment(affinity: String = "Organisation") =
+    s"""|  {
+        |    "internalId": "$testAuthInternalId",
+        |    "affinityGroup": "$affinity",
+        |    "allEnrolments" : []
+        |  }
+         """.stripMargin
+
 }

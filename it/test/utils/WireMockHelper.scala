@@ -60,8 +60,13 @@ trait WireMockHelper extends BeforeAndAfterAll with BeforeAndAfterEach with Auth
     super.afterAll()
   }
 
-  def stubAuthorised(appaId: String): Unit =
-    stubPost(authUrl, OK, authRequest, authOKResponse(appaId))
+  def stubAuthorised(appId: Option[String]): Unit = {
+    val responseBody = appId match {
+      case Some(value) => authOKResponse(value)
+      case None        => authOKResponseWithoutEnrolment()
+    }
+    stubPost(authUrl, OK, authRequest, responseBody)
+  }
 
   def stubAuthorisedIndividual(appaId: String): Unit =
     stubPost(authUrl, OK, authRequest, authOKResponse(appaId, "Individual"))
