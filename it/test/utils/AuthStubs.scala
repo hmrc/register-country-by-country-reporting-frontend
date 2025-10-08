@@ -21,6 +21,7 @@ import org.scalatest.Suite
 trait AuthStubs { this: Suite =>
 
   val authUrl            = "/auth/authorise"
+  val ggSignInUrl        = "/auth-login-stub/gg-sign-in.*"
   val testAuthInternalId = "internalId"
 
   val authRequest =
@@ -52,5 +53,7 @@ trait AuthStubs { this: Suite =>
         |    "allEnrolments" : []
         |  }
          """.stripMargin
+
+  def ggSignInSuccess() = "gg-sign-in"
 
 }

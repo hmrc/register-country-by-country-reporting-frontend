@@ -36,8 +36,9 @@ trait ISpecBase extends GuiceOneServerPerSuite with DefaultPlayMongoRepositorySu
 
   def config: Map[String, Any] = Map(
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
-    "microservice.services.auth.host"                   -> WireMockConstants.stubHost,
-    "microservice.services.auth.port"                   -> WireMockConstants.stubPort.toString,
+    "urls.login"                                        -> s"$mockServerUrl/auth-login-stub/gg-sign-in",
+    "microservice.services.auth.host"                   -> wireMockHost,
+    "microservice.services.auth.port"                   -> wireMockPort.toString,
     "mongodb.uri"                                       -> mongoUri
   )
 

@@ -76,6 +76,7 @@ class BusinessHaveDifferentNameControllerISpec extends PlaySpec with ISpecBase {
   }
   "POST / BusinessHaveDifferentNameController.onSubmit" must {
     "should submit form" in {
+      stubGGSignIn()
       stubAuthorised(appId = None)
 
       repository.set(UserAnswers("internalId"))
@@ -92,6 +93,7 @@ class BusinessHaveDifferentNameControllerISpec extends PlaySpec with ISpecBase {
     }
 
     "redirect to login when there is no active session" in {
+      stubGGSignIn()
 
       val response = await(
         buildClient(Some("/register/without-id/have-trading-name"))
