@@ -26,7 +26,6 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
 import play.api.http.Status.{OK, UNAUTHORIZED}
 import play.api.libs.json.Json
-import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 
 object WireMockConstants {
   val stubPort = 11111
@@ -60,8 +59,18 @@ trait WireMockHelper extends BeforeAndAfterAll with BeforeAndAfterEach with Auth
     super.afterAll()
   }
 
-  def stubAuthorised(appaId: String): Unit =
-    stubPost(authUrl, OK, authRequest, authOKResponse(appaId))
+  def stubGGSignIn(): Unit =
+    server.stubFor(
+      WireMock.get(urlPathMatching(ggSignInUrl)).willReturn(aResponse().withStatus(OK).withBody(ggSignInSuccess()))
+    )
+
+  def stubAuthorised(appId: Option[String]): Unit = {
+    val responseBody = appId match {
+      case Some(value) => authOKResponse(value)
+      case None        => authOKResponseWithoutEnrolment()
+    }
+    stubPost(authUrl, OK, authRequest, responseBody)
+  }
 
   def stubAuthorisedIndividual(appaId: String): Unit =
     stubPost(authUrl, OK, authRequest, authOKResponse(appaId, "Individual"))
