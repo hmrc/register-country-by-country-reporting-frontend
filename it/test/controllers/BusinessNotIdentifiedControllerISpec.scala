@@ -18,31 +18,25 @@ package controllers
 
 import models.BusinessType.LimitedCompany
 import models.UserAnswers
-import org.scalatestplus.play.PlaySpec
 import pages.BusinessTypePage
 import play.api.http.Status._
-import play.api.libs.ws.{DefaultWSCookie, WSClient}
-import play.api.mvc.{Session, SessionCookieBaker}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import utils.ISpecBase;
+import utils.ISpecBehaviours;
 
-class BusinessNotIdentifiedControllerISpec extends PlaySpec with ISpecBase {
-
-  lazy val wsClient: WSClient = app.injector.instanceOf[WSClient]
-  val session                 = Session(Map("authToken" -> "abc123"))
-  val sessionCookieBaker      = app.injector.instanceOf[SessionCookieBaker]
-  val sessionCookie           = sessionCookieBaker.encodeAsCookie(session)
-  val wsSessionCookie         = DefaultWSCookie(sessionCookie.name, sessionCookie.value)
+class BusinessNotIdentifiedControllerISpec extends ISpecBehaviours {
 
   private val userAnswers = UserAnswers("internalId").set(BusinessTypePage, LimitedCompany).get
+  val pageUrl             = Some("/register/problem/business-not-identified")
   "GET / BusinessNotIdentifiedController.onPageLoad" must {
+    behave like standardOnPageLoad(pageUrl)
+
     "should load page" in {
       stubAuthorised(appId = None)
 
       repository.set(userAnswers)
 
       val response = await(
-        buildClient(Some("/register/problem/business-not-identified"))
+        buildClient(pageUrl)
           .withFollowRedirects(false)
           .addCookies(wsSessionCookie)
           .get()
@@ -50,31 +44,6 @@ class BusinessNotIdentifiedControllerISpec extends PlaySpec with ISpecBase {
 
       response.status mustBe OK
       response.body must include("The details you entered did not match our records")
-    }
-
-    "redirect to login when there is no active session" in {
-      val response = await(
-        buildClient(Some("/register/problem/business-not-identified"))
-          .withFollowRedirects(false)
-          .get()
-      )
-
-      response.status mustBe SEE_OTHER
-      response.header("Location").value must include("gg-sign-in")
-    }
-
-    "redirect to /individual-sign-in-problem" in {
-      stubAuthorisedIndividual("cbc12345")
-      val response = await(
-        buildClient(Some("/register/problem/business-not-identified"))
-          .withFollowRedirects(false)
-          .addCookies(wsSessionCookie)
-          .get()
-      )
-
-      response.status mustBe SEE_OTHER
-      response.header("Location").value must include("register/problem/individual-sign-in-problem")
-      verifyPost(authUrl)
     }
   }
 }

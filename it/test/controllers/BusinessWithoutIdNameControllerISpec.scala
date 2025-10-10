@@ -21,16 +21,19 @@ import play.api.http.Status._
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import utils.ISpecBehaviours;
 
-class BusinessHaveDifferentNameControllerISpec extends ISpecBehaviours {
+class BusinessWithoutIdNameControllerISpec extends ISpecBehaviours {
 
-  private val pageUrl = Some("/register/without-id/have-trading-name")
-  "GET / BusinessHaveDifferentNameController.onPageLoad" must {
+  private val userAnswers = UserAnswers("internalId")
+  private val pageUrl     = Some("/register/without-id/business-name")
+
+  "GET / BusinessWithoutIdAddressController.onPageLoad" must {
+
     behave like standardOnPageLoad(pageUrl)
 
     "should load page" in {
       stubAuthorised(appId = None)
 
-      repository.set(UserAnswers("internalId"))
+      repository.set(userAnswers)
 
       val response = await(
         buildClient(pageUrl)
@@ -40,18 +43,18 @@ class BusinessHaveDifferentNameControllerISpec extends ISpecBehaviours {
       )
 
       response.status mustBe OK
-      response.body must include("Does your business trade under a different name?")
+      response.body must include("What is the name of your business?")
     }
   }
-  "POST / BusinessHaveDifferentNameController.onSubmit" must {
-    val requestBody = Map("value" -> Seq("false"))
+  "POST / BusinessWithoutIdAddressController.onSubmit" must {
+    val requestBody = Map("value" -> Seq("businessName"))
 
     behave like standardOnSubmit(pageUrl, requestBody)
 
     "should submit form" in {
       stubAuthorised(appId = None)
 
-      repository.set(UserAnswers("internalId"))
+      repository.set(userAnswers)
 
       val response = await(
         buildClient(pageUrl)
@@ -62,8 +65,7 @@ class BusinessHaveDifferentNameControllerISpec extends ISpecBehaviours {
       )
 
       response.status mustBe SEE_OTHER
-      response.header("Location").value must
-        include("/register/without-id/address")
+      response.header("Location").value must include("/register/without-id/have-trading-name")
     }
   }
 }

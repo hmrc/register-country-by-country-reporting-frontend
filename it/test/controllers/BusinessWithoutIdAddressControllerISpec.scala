@@ -17,30 +17,25 @@
 package controllers
 
 import models.UserAnswers
-import org.scalatestplus.play.PlaySpec
 import play.api.http.Status._
-import play.api.libs.ws.{DefaultWSCookie, WSClient}
-import play.api.mvc.{Session, SessionCookieBaker}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import utils.ISpecBase;
+import utils.ISpecBehaviours;
 
-class BusinessWithoutIdAddressControllerISpec extends PlaySpec with ISpecBase {
-
-  lazy val wsClient: WSClient = app.injector.instanceOf[WSClient]
-  val session                 = Session(Map("authToken" -> "abc123"))
-  val sessionCookieBaker      = app.injector.instanceOf[SessionCookieBaker]
-  val sessionCookie           = sessionCookieBaker.encodeAsCookie(session)
-  val wsSessionCookie         = DefaultWSCookie(sessionCookie.name, sessionCookie.value)
+class BusinessWithoutIdAddressControllerISpec extends ISpecBehaviours {
 
   private val userAnswers = UserAnswers("internalId")
+  private val pageUrl     = Some("/register/without-id/address")
+
   "GET / BusinessWithoutIdAddressController.onPageLoad" must {
+    behave like standardOnPageLoad(pageUrl)
+
     "should load page" in {
       stubAuthorised(appId = None)
 
       repository.set(userAnswers)
 
       val response = await(
-        buildClient(Some("/register/without-id/address"))
+        buildClient(pageUrl)
           .withFollowRedirects(false)
           .addCookies(wsSessionCookie)
           .get()
@@ -49,34 +44,9 @@ class BusinessWithoutIdAddressControllerISpec extends PlaySpec with ISpecBase {
       response.status mustBe OK
       response.body must include("What is the main address of your business?")
     }
-
-    "redirect to login when there is no active session" in {
-      val response = await(
-        buildClient(Some("/register/without-id/address"))
-          .withFollowRedirects(false)
-          .get()
-      )
-
-      response.status mustBe SEE_OTHER
-      response.header("Location").value must include("gg-sign-in")
-    }
-
-    "redirect to /individual-sign-in-problem" in {
-      stubAuthorisedIndividual("cbc12345")
-      val response = await(
-        buildClient(Some("/register/without-id/address"))
-          .withFollowRedirects(false)
-          .addCookies(wsSessionCookie)
-          .get()
-      )
-
-      response.status mustBe SEE_OTHER
-      response.header("Location").value must include("register/problem/individual-sign-in-problem")
-      verifyPost(authUrl)
-    }
   }
   "POST / BusinessWithoutIdAddressController.onSubmit" must {
-    val formData = Map(
+    val requestBody = Map(
       "addressLine1" -> Seq("testAddressLine1"),
       "addressLine2" -> List(),
       "addressLine3" -> List("testCity"),
@@ -85,51 +55,23 @@ class BusinessWithoutIdAddressControllerISpec extends PlaySpec with ISpecBase {
       "country"      -> List("AF")
     )
 
+    behave like standardOnSubmit(pageUrl, requestBody)
+
     "should submit form" in {
-      stubGGSignIn()
       stubAuthorised(appId = None)
 
       repository.set(userAnswers)
 
       val response = await(
-        buildClient(Some("/register/without-id/address"))
+        buildClient(pageUrl)
           .addCookies(wsSessionCookie)
           .addHttpHeaders("Csrf-Token" -> "nocheck")
-          .withFollowRedirects(true)
-          .post(formData)
+          .withFollowRedirects(false)
+          .post(requestBody)
       )
 
-      response.status mustBe OK
-    }
-
-    "redirect to login when there is no active session" in {
-      stubGGSignIn()
-
-      val response = await(
-        buildClient(Some("/register/without-id/address"))
-          .addHttpHeaders("Csrf-Token" -> "nocheck")
-          .withFollowRedirects(true)
-          .post(formData)
-      )
-
-      response.status mustBe OK
-      response.body must include("gg-sign-in")
-    }
-
-    "redirect to /individual-sign-in-problem" in {
-
-      stubAuthorisedIndividual("cbc12345")
-
-      val response = await(
-        buildClient(Some("/register/without-id/address"))
-          .addHttpHeaders("Csrf-Token" -> "nocheck")
-          .withFollowRedirects(true)
-          .addCookies(wsSessionCookie)
-          .post(formData)
-      )
-
-      response.status mustBe OK
-      response.body must include("You’ve signed in as an individual. Only organisations can send reports.")
+      response.status mustBe SEE_OTHER
+      response.header("Location").value must include("/register-to-send-a-country-by-country-report/register/your-contact-details")
     }
   }
 }

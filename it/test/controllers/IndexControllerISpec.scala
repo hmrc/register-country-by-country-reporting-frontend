@@ -32,6 +32,7 @@ class IndexControllerISpec extends PlaySpec with ISpecBase {
   val wsSessionCookie         = DefaultWSCookie(sessionCookie.name, sessionCookie.value)
 
   "GET / IndexController.onPageLoad" must {
+
     "redirect to cbc reporting when the user is automatched" in {
       stubAuthorised(Some("cbc12345"))
 

@@ -42,8 +42,8 @@ trait ISpecBehaviours extends PlaySpec with ISpecBase {
           .get()
       )
 
-      val loc = response.header("Location").value
       response.status mustBe SEE_OTHER
+      val loc = response.header("Location").value
       loc must include("/send-a-country-by-country-report")
       verifyPost(authUrl)
     }
@@ -71,6 +71,54 @@ trait ISpecBehaviours extends PlaySpec with ISpecBase {
       response.status mustBe SEE_OTHER
       response.header("Location").value must include("register/problem/individual-sign-in-problem")
       verifyPost(authUrl)
+    }
+  }
+
+  def standardOnSubmit(pageUrl: Option[String], requestBody: Map[String, Seq[String]]): Unit = {
+
+    "redirect to cbc reporting when the user is automatched" in {
+      stubAuthorised(Some("cbc12345"))
+
+      val response = await(
+        buildClient(pageUrl)
+          .addHttpHeaders("Csrf-Token" -> "nocheck")
+          .addCookies(wsSessionCookie)
+          .withFollowRedirects(false)
+          .post(requestBody)
+      )
+
+      response.status mustBe SEE_OTHER
+      val loc = response.header("Location").value
+      loc must include("/send-a-country-by-country-report")
+      verifyPost(authUrl)
+    }
+
+    "redirect to login when there is no active session" in {
+      val response = await(
+        buildClient(pageUrl)
+          .addHttpHeaders("Csrf-Token" -> "nocheck")
+          .withFollowRedirects(false)
+          .post(requestBody)
+      )
+
+      response.status mustBe SEE_OTHER
+      response.header("Location").value must include("gg-sign-in")
+    }
+
+    "redirect to /individual-sign-in-problem" in {
+
+      stubAuthorisedIndividual("cbc12345")
+
+      val response = await(
+        buildClient(pageUrl)
+          .addHttpHeaders("Csrf-Token" -> "nocheck")
+          .withFollowRedirects(false)
+          .addCookies(wsSessionCookie)
+          .post(requestBody)
+      )
+
+      response.status mustBe SEE_OTHER
+      response.header("Location").value must include("register/problem/individual-sign-in-problem")
     }
   }
 

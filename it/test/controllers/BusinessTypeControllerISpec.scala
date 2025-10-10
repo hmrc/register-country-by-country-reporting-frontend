@@ -16,33 +16,25 @@
 
 package controllers
 
-import models.BusinessType.LimitedCompany
 import models.UserAnswers
-import org.scalatestplus.play.PlaySpec
-import pages.BusinessTypePage
 import play.api.http.Status._
-import play.api.libs.ws.{DefaultWSCookie, WSClient}
-import play.api.mvc.{Session, SessionCookieBaker}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import utils.ISpecBase;
+import utils.ISpecBehaviours;
 
-class BusinessTypeControllerISpec extends PlaySpec with ISpecBase {
-
-  lazy val wsClient: WSClient = app.injector.instanceOf[WSClient]
-  val session                 = Session(Map("authToken" -> "abc123"))
-  val sessionCookieBaker      = app.injector.instanceOf[SessionCookieBaker]
-  val sessionCookie           = sessionCookieBaker.encodeAsCookie(session)
-  val wsSessionCookie         = DefaultWSCookie(sessionCookie.name, sessionCookie.value)
+class BusinessTypeControllerISpec extends ISpecBehaviours {
 
   private val userAnswers = UserAnswers("internalId")
+  private val pageUrl     = Some("/register/business-type")
   "GET / BusinessTypeController.onPageLoad" must {
+    behave like standardOnPageLoad(pageUrl)
+
     "should load page" in {
       stubAuthorised(appId = None)
 
       repository.set(userAnswers)
 
       val response = await(
-        buildClient(Some("/register/business-type"))
+        buildClient(pageUrl)
           .withFollowRedirects(false)
           .addCookies(wsSessionCookie)
           .get()
@@ -51,78 +43,29 @@ class BusinessTypeControllerISpec extends PlaySpec with ISpecBase {
       response.status mustBe OK
       response.body must include("What type of business do you have?")
     }
-
-    "redirect to login when there is no active session" in {
-      val response = await(
-        buildClient(Some("/register/business-type"))
-          .withFollowRedirects(false)
-          .get()
-      )
-
-      response.status mustBe SEE_OTHER
-      response.header("Location").value must include("gg-sign-in")
-    }
-
-    "redirect to /individual-sign-in-problem" in {
-      stubAuthorisedIndividual("cbc12345")
-      val response = await(
-        buildClient(Some("/register/business-type"))
-          .withFollowRedirects(false)
-          .addCookies(wsSessionCookie)
-          .get()
-      )
-
-      response.status mustBe SEE_OTHER
-      response.header("Location").value must include("register/problem/individual-sign-in-problem")
-      verifyPost(authUrl)
-    }
   }
   "POST / BusinessHaveDifferentNameController.onSubmit" must {
+    val requestBody = Map("value" -> Seq("limited"))
+
+    behave like standardOnSubmit(pageUrl, requestBody)
+
     "should submit form" in {
-      stubGGSignIn()
       stubAuthorised(appId = None)
 
       repository.set(userAnswers)
 
       val response = await(
-        buildClient(Some("/register/business-type"))
+        buildClient(pageUrl)
           .addCookies(wsSessionCookie)
           .addHttpHeaders("Csrf-Token" -> "nocheck")
-          .withFollowRedirects(true)
-          .post(Map("value" -> Seq("limited")))
+          .withFollowRedirects(false)
+          .post(requestBody)
       )
 
-      response.status mustBe OK
+      response.status mustBe SEE_OTHER
+      response.header("Location").value must
+        include("/register/utr")
     }
 
-    "redirect to login when there is no active session" in {
-      stubGGSignIn()
-
-      val response = await(
-        buildClient(Some("/register/business-type"))
-          .addHttpHeaders("Csrf-Token" -> "nocheck")
-          .withFollowRedirects(true)
-          .post(Map("value" -> Seq("limited")))
-      )
-
-      response.status mustBe OK
-      response.body must include("gg-sign-in")
-    }
-
-    "redirect to /individual-sign-in-problem" in {
-
-      stubAuthorisedIndividual("cbc12345")
-
-      val response = await(
-        buildClient(Some("/register/business-type"))
-          .addHttpHeaders("Csrf-Token" -> "nocheck")
-          .withFollowRedirects(true)
-          .addCookies(wsSessionCookie)
-          .post(Map("value" -> Seq("limited")))
-      )
-
-      response.status mustBe OK
-      response.body must include("You’ve signed in as an individual. Only organisations can send reports.")
-    }
   }
 }
