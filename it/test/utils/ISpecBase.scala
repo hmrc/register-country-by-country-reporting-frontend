@@ -23,11 +23,14 @@ import org.scalatest.time.{Seconds, Span}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.libs.ws.{WSClient, WSRequest}
 import play.api.test.FakeRequest
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
+
+import java.time.{Clock, Instant, ZoneId}
 
 trait ISpecBase extends GuiceOneServerPerSuite with DefaultPlayMongoRepositorySupport[UserAnswers] with ScalaFutures with WireMockHelper with Generators {
 
@@ -57,5 +60,8 @@ trait ISpecBase extends GuiceOneServerPerSuite with DefaultPlayMongoRepositorySu
   override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(config)
     .build()
+
+  implicit val fixedClock: Clock    = Clock.fixed(Instant.now(), ZoneId.of("UTC"))
+  def emptyUserAnswers: UserAnswers = UserAnswers("testid", Json.obj(), Instant.now(fixedClock))
 
 }
