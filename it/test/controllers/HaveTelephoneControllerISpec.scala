@@ -18,13 +18,15 @@ package controllers
 
 import utils.ISpecBehaviours
 
-class YourContactDetailsControllerISpec extends ISpecBehaviours {
-  private val pageUrl = Some("/register/your-contact-details")
+class HaveTelephoneControllerISpec extends ISpecBehaviours {
 
-  "YourContactDetailsController" must {
+  val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("true"))
+  val pageUrl: Option[String] = Some("/register/have-phone")
 
+  "HaveTelephoneController" must {
     behave like standardOnPageLoad(pageUrl)
 
+    behave like standardOnSubmit(pageUrl, requestBody)
   }
 
 }

@@ -18,13 +18,12 @@ package controllers
 
 import utils.ISpecBehaviours
 
-class YourContactDetailsControllerISpec extends ISpecBehaviours {
-  private val pageUrl = Some("/register/your-contact-details")
+class PreRegisteredControllerISpec extends ISpecBehaviours {
 
-  "YourContactDetailsController" must {
+  val pageUrl: Option[String] = Some("/problem/unauthorised")
 
+  "PreRegisteredController" must {
     behave like standardOnPageLoad(pageUrl)
-
   }
 
 }
