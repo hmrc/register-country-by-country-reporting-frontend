@@ -30,9 +30,23 @@ trait ISpecBehaviours extends PlaySpec with ISpecBase {
   val sessionCookie: Cookie                  = sessionCookieBaker.encodeAsCookie(session)
   val wsSessionCookie: DefaultWSCookie       = DefaultWSCookie(sessionCookie.name, sessionCookie.value)
 
+  def problemPageOnPageLoad(pageUrl: Option[String]): Unit =
+    "should load page" in {
+      stubAuthorised(appId = None)
+
+      val response = await(
+        buildClient(pageUrl)
+          .withFollowRedirects(false)
+          .addCookies(wsSessionCookie)
+          .get()
+      )
+
+      response.status mustBe OK
+    }
+
   def standardOnPageLoad(pageUrl: Option[String]): Unit = {
 
-    "redirect to cbc reporting when the user is automatched" in {
+    "redirect to cbc reporting when the user is automatched for GET" in {
       stubAuthorised(Some("cbc12345"))
 
       val response = await(
@@ -48,7 +62,7 @@ trait ISpecBehaviours extends PlaySpec with ISpecBase {
       verifyPost(authUrl)
     }
 
-    "redirect to login when there is no active session" in {
+    "redirect to login when there is no active session for GET" in {
       val response = await(
         buildClient(pageUrl)
           .withFollowRedirects(false)
@@ -59,7 +73,7 @@ trait ISpecBehaviours extends PlaySpec with ISpecBase {
       response.header("Location").value must include("gg-sign-in")
     }
 
-    "redirect to /individual-sign-in-problem" in {
+    "redirect to /individual-sign-in-problem for GET" in {
       stubAuthorisedIndividual("cbc12345")
       val response = await(
         buildClient(pageUrl)
@@ -76,7 +90,7 @@ trait ISpecBehaviours extends PlaySpec with ISpecBase {
 
   def standardOnSubmit(pageUrl: Option[String], requestBody: Map[String, Seq[String]]): Unit = {
 
-    "redirect to cbc reporting when the user is automatched" in {
+    "redirect to cbc reporting when the user is automatched for POST" in {
       stubAuthorised(Some("cbc12345"))
 
       val response = await(
@@ -93,7 +107,7 @@ trait ISpecBehaviours extends PlaySpec with ISpecBase {
       verifyPost(authUrl)
     }
 
-    "redirect to login when there is no active session" in {
+    "redirect to login when there is no active session for POST" in {
       val response = await(
         buildClient(pageUrl)
           .addHttpHeaders("Csrf-Token" -> "nocheck")
@@ -105,7 +119,7 @@ trait ISpecBehaviours extends PlaySpec with ISpecBase {
       response.header("Location").value must include("gg-sign-in")
     }
 
-    "redirect to /individual-sign-in-problem" in {
+    "redirect to /individual-sign-in-problem for POST" in {
 
       stubAuthorisedIndividual("cbc12345")
 

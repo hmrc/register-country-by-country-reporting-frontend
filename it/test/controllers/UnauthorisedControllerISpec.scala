@@ -23,7 +23,7 @@ class UnauthorisedControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String] = Some("/problem/unauthorised")
 
   "GET / UnauthorisedController.onPageLoad" must {
-    behave like standardOnPageLoad(pageUrl)
+    behave like problemPageOnPageLoad(pageUrl)
   }
 
 }

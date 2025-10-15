@@ -21,7 +21,7 @@ import utils.ISpecBehaviours;
 class UTRControllerISpec extends ISpecBehaviours {
 
   val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("true"))
-  val pageUrl: Option[String] = Some("/register/have-utr")
+  val pageUrl: Option[String]               = Some("/register/have-utr")
 
   "UTRController" must {
     behave like standardOnPageLoad(pageUrl)

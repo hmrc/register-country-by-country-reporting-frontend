@@ -20,7 +20,7 @@ import utils.ISpecBehaviours;
 
 class SecondContactPhoneControllerISpec extends ISpecBehaviours {
 
-  val pageUrl: Option[String] = Some("/register/second-contact-phone")
+  val pageUrl: Option[String]               = Some("/register/second-contact-phone")
   val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("testContactPhone"))
 
   "SecondContactPhoneController" must {

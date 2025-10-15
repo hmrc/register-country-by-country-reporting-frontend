@@ -23,7 +23,7 @@ class ThereIsAProblemControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String] = Some("/register/problem/there-is-a-problem")
 
   "GET / ThereIsAProblemController.onPageLoad" must {
-    behave like standardOnPageLoad(pageUrl)
+    behave like problemPageOnPageLoad(pageUrl)
   }
 
 }

@@ -20,7 +20,7 @@ import utils.ISpecBehaviours;
 
 class WhatIsTradingNameControllerISpec extends ISpecBehaviours {
 
-  val pageUrl: Option[String] = Some("/register/without-id/trading-name")
+  val pageUrl: Option[String]               = Some("/register/without-id/trading-name")
   val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("testTradingName"))
 
   "WhatIsTradingNameController" must {
