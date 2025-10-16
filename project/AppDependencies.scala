@@ -5,6 +5,7 @@ object AppDependencies {
   private val bootstrapVersion = "9.19.0"
   private val hmrcMongoVersion = "2.10.0"
 
+
   val compile: Seq[ModuleID] = Seq[ModuleID](
     play.sbt.PlayImport.ws,
     "uk.gov.hmrc"       %% "play-frontend-hmrc-play-30"            % "12.17.0",
