@@ -25,6 +25,7 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSClient, WSRequest}
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
@@ -34,8 +35,15 @@ import java.time.{Clock, Instant, ZoneId}
 
 trait ISpecBase extends GuiceOneServerPerSuite with DefaultPlayMongoRepositorySupport[UserAnswers] with ScalaFutures with WireMockHelper with Generators {
 
-  lazy val repository: SessionRepository = app.injector.instanceOf[SessionRepository]
-  implicit val hc: HeaderCarrier         = HeaderCarrier()
+  override lazy val app: Application = new GuiceApplicationBuilder()
+    .configure(config)
+    .build()
+  implicit override val patienceConfig: PatienceConfig = PatienceConfig(scaled(Span(20, Seconds)))
+  lazy val repository: SessionRepository               = app.injector.instanceOf[SessionRepository]
+  implicit val hc: HeaderCarrier                       = HeaderCarrier()
+  implicit val fixedClock: Clock                       = Clock.fixed(Instant.now(), ZoneId.of("UTC"))
+
+  def emptyUserAnswers: UserAnswers = UserAnswers("testid", Json.obj(), Instant.now(fixedClock))
 
   def config: Map[String, Any] = Map(
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
@@ -52,16 +60,7 @@ trait ISpecBase extends GuiceOneServerPerSuite with DefaultPlayMongoRepositorySu
     app.injector.instanceOf[WSClient].url(url)
   }
 
-  def buildFakeRequest() =
+  def buildFakeRequest(): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest("GET", s"http://localhost:$port/register-to-send-a-country-by-country-report").withSession("authToken" -> "my-token")
-
-  implicit override val patienceConfig: PatienceConfig = PatienceConfig(scaled(Span(20, Seconds)))
-
-  override lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(config)
-    .build()
-
-  implicit val fixedClock: Clock    = Clock.fixed(Instant.now(), ZoneId.of("UTC"))
-  def emptyUserAnswers: UserAnswers = UserAnswers("testid", Json.obj(), Instant.now(fixedClock))
 
 }

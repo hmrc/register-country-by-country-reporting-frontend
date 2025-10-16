@@ -21,7 +21,7 @@ import utils.ISpecBehaviours
 class ContactPhoneControllerISpec extends ISpecBehaviours {
 
   val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("testNumber"))
-  val pageUrl: Option[String] = Some("/register/phone")
+  val pageUrl: Option[String]               = Some("/register/phone")
 
   "ContactPhoneController" must {
     behave like standardOnPageLoad(pageUrl)

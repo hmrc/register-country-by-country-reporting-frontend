@@ -21,7 +21,7 @@ import utils.ISpecBehaviours
 class ContactEmailControllerISpec extends ISpecBehaviours {
 
   val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("test@email.co.uk"))
-  val pageUrl: Option[String] = Some("/register/email")
+  val pageUrl: Option[String]               = Some("/register/email")
 
   "ContactEmailController" must {
     behave like standardOnPageLoad(pageUrl)

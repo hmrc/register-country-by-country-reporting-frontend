@@ -21,7 +21,7 @@ import utils.ISpecBehaviours
 class IsThisYourBusinessControllerISpec extends ISpecBehaviours {
 
   val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("true"))
-  val pageUrl: Option[String] = Some("/register/is-this-your-business")
+  val pageUrl: Option[String]               = Some("/register/is-this-your-business")
 
   "IsThisYourBusinessController" must {
     behave like standardOnPageLoad(pageUrl)
