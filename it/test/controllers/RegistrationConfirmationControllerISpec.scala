@@ -16,6 +16,10 @@
 
 package controllers
 
+import models.{SubscriptionID, UserAnswers}
+import pages.SubscriptionIDPage
+import play.api.http.Status.OK
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import utils.ISpecBehaviours
 
 class RegistrationConfirmationControllerISpec extends ISpecBehaviours {
@@ -23,7 +27,24 @@ class RegistrationConfirmationControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String] = Some("/register/confirm-registration")
 
   "RegistrationConfirmationController" must {
-    behave like standardOnPageLoad(pageUrl)
+
+    "should load page" in {
+      stubAuthorised(appId = None)
+
+      val subscriptionID = SubscriptionID("xxx200")
+      val answers        = UserAnswers("internalId").set(SubscriptionIDPage, subscriptionID).get
+      repository.set(answers)
+
+      val response = await(
+        buildClient(pageUrl)
+          .withFollowRedirects(false)
+          .addCookies(wsSessionCookie)
+          .get()
+      )
+
+      response.status mustBe OK
+      response.body must include("Registration successful")
+    }
   }
 
 }

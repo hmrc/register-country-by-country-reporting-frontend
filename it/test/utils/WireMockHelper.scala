@@ -26,6 +26,9 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
 import play.api.http.Status.{OK, UNAUTHORIZED}
 import play.api.libs.json.Json
+import utils.EnrolmentProxyStubs.{getEnrolments, OK_Response}
+import utils.RegisterationCBCStubs.{noID, readSubscription, OK_NoID_Response, OK_ReadSubscription_Response}
+import utils.TaxEnrolmentsStubs.createEnrolment
 
 object WireMockConstants {
   val stubPort = 11111
@@ -59,10 +62,17 @@ trait WireMockHelper extends BeforeAndAfterAll with BeforeAndAfterEach with Auth
     super.afterAll()
   }
 
-  def stubGGSignIn(): Unit =
-    server.stubFor(
-      WireMock.get(urlPathMatching(ggSignInUrl)).willReturn(aResponse().withStatus(OK).withBody(ggSignInSuccess()))
-    )
+  def stubEnrolmentGetEnrolment(): Unit =
+    stubGet(getEnrolments, OK, OK_Response)
+
+  def stubCreateEnrolment(): Unit =
+    stubPutResponse(createEnrolment, OK)
+
+  def stubRegisterCBC(): Unit =
+    stubPostWithoutBody(noID, OK, OK_NoID_Response)
+
+  def stubRegisterationReadSubscription(): Unit =
+    stubPostWithoutBody(readSubscription, OK, OK_ReadSubscription_Response)
 
   def stubAuthorised(appId: Option[String]): Unit = {
     val responseBody = appId match {
@@ -173,6 +183,13 @@ trait WireMockHelper extends BeforeAndAfterAll with BeforeAndAfterEach with Auth
       WireMock
         .post(urlEqualTo(stripToPath(url)))
         .withRequestBody(new EqualToJsonPattern(requestBody, true, false))
+        .willReturn(aResponse().withStatus(status).withBody(returnBody))
+    )
+
+  def stubPostWithoutBody(url: String, status: Int, returnBody: String): Unit =
+    server.stubFor(
+      WireMock
+        .post(urlEqualTo(stripToPath(url)))
         .willReturn(aResponse().withStatus(status).withBody(returnBody))
     )
 

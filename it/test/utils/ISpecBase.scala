@@ -21,7 +21,7 @@ import models.UserAnswers
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Seconds, Span}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.Application
+import play.api.{Application, Logging}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSClient, WSRequest}
@@ -33,23 +33,34 @@ import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import java.time.{Clock, Instant, ZoneId}
 
-trait ISpecBase extends GuiceOneServerPerSuite with DefaultPlayMongoRepositorySupport[UserAnswers] with ScalaFutures with WireMockHelper with Generators {
+trait ISpecBase
+    extends GuiceOneServerPerSuite
+    with DefaultPlayMongoRepositorySupport[UserAnswers]
+    with ScalaFutures
+    with WireMockHelper
+    with Generators
+    with Logging {
+
+  implicit override val patienceConfig: PatienceConfig = PatienceConfig(scaled(Span(20, Seconds)))
+  implicit val fixedClock: Clock                       = Clock.fixed(Instant.now(), ZoneId.of("UTC"))
+  lazy val repository: SessionRepository               = app.injector.instanceOf[SessionRepository]
 
   override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(config)
     .build()
-  implicit override val patienceConfig: PatienceConfig = PatienceConfig(scaled(Span(20, Seconds)))
-  lazy val repository: SessionRepository               = app.injector.instanceOf[SessionRepository]
-  implicit val hc: HeaderCarrier                       = HeaderCarrier()
-  implicit val fixedClock: Clock                       = Clock.fixed(Instant.now(), ZoneId.of("UTC"))
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   def emptyUserAnswers: UserAnswers = UserAnswers("testid", Json.obj(), Instant.now(fixedClock))
 
   def config: Map[String, Any] = Map(
-    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
-    "microservice.services.auth.host"                   -> wireMockHost,
-    "microservice.services.auth.port"                   -> wireMockPort.toString,
-    "mongodb.uri"                                       -> mongoUri
+//    "logger.root"                                            -> "INFO",
+//    "logger.controllers"                                     -> "DEBUG",
+    "play.filters.csrf.header.bypassHeaders.Csrf-Token"      -> "nocheck",
+    "microservice.services.auth.port"                        -> wireMockPort.toString,
+    "microservice.services.register-country-by-country.port" -> wireMockPort.toString,
+    "microservice.services.enrolment-store-proxy.port"       -> wireMockPort.toString,
+    "microservice.services.tax-enrolments.port"              -> wireMockPort.toString,
+    "mongodb.uri"                                            -> mongoUri
   )
 
   def buildClient(path: Option[String] = None): WSRequest = {
