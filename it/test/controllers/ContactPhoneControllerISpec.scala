@@ -20,11 +20,13 @@ import utils.ISpecBehaviours
 
 class ContactPhoneControllerISpec extends ISpecBehaviours {
 
-  val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("testNumber"))
+  val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("1234567890"))
   val pageUrl: Option[String]               = Some("/register/phone")
 
   "ContactPhoneController" must {
-    behave like standardOnPageLoad(pageUrl)
+    behave like pageLoads(pageUrl)
+
+    behave like standardOnPageLoadRedirects(pageUrl)
 
     behave like standardOnSubmit(pageUrl, requestBody)
   }

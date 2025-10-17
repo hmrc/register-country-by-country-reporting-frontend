@@ -22,8 +22,9 @@ class YourContactDetailsControllerISpec extends ISpecBehaviours {
   private val pageUrl = Some("/register/your-contact-details")
 
   "YourContactDetailsController" must {
+    behave like pageLoads(pageUrl)
 
-    behave like standardOnPageLoad(pageUrl)
+    behave like standardOnPageLoadRedirects(pageUrl)
 
   }
 

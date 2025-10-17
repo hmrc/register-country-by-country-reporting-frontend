@@ -23,7 +23,9 @@ class UnableToChangeBusinessControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String] = Some("/register/problem/unable-to-change-business")
 
   "GET / UnableToChangeBusinessController.onPageLoad" must {
-    behave like standardOnPageLoad(pageUrl)
+    behave like pageLoads(pageUrl)
+
+    behave like standardOnPageLoadRedirects(pageUrl)
   }
 
 }

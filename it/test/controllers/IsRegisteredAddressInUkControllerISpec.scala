@@ -24,7 +24,9 @@ class IsRegisteredAddressInUkControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String]               = Some("/register/registered-address-in-uk")
 
   "IsRegisteredAddressInUkController" must {
-    behave like standardOnPageLoad(pageUrl)
+    behave like pageLoads(pageUrl)
+
+    behave like standardOnPageLoadRedirects(pageUrl)
 
     behave like standardOnSubmit(pageUrl, requestBody)
   }

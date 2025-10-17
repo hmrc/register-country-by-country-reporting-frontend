@@ -24,7 +24,9 @@ class HaveTelephoneControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String]               = Some("/register/have-phone")
 
   "HaveTelephoneController" must {
-    behave like standardOnPageLoad(pageUrl)
+    behave like pageLoads(pageUrl)
+
+    behave like standardOnPageLoadRedirects(pageUrl)
 
     behave like standardOnSubmit(pageUrl, requestBody)
   }

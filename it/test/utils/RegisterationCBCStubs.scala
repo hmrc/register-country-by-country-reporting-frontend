@@ -22,6 +22,7 @@ object RegisterationCBCStubs {
   val registerUrl      = "/registration"
   val subscriptionUrl  = "/subscription"
   val noID             = s"$cbcReg$registerUrl/noId"
+  val registerWithUtr  = s"$cbcReg$registerUrl/utr"
   val readSubscription = s"$cbcReg$subscriptionUrl/read-subscription/XE0000123456789"
 
   val OK_NoID_Response = """
@@ -39,6 +40,39 @@ object RegisterationCBCStubs {
       |"SAFEID": "XE0000123456789",
       |"ARN": "ZARN1234567"
       |}}}""".stripMargin
+
+  val OK_withUtr_Response =
+    """{
+      | "registerWithIDResponse": {
+      |  "responseDetail": {
+      |   "SAFEID": "XE0000123456789",
+      |   "ARN": "QARN6587851",
+      |   "isEditable": true,
+      |   "isAnAgent": false,
+      |   "isAnIndividual": false,
+      |   "organisation": {
+      |    "organisationName": "Org Name",
+      |    "isAGroup": true,
+      |    "organisationType": "LLP",
+      |    "code": "0002"
+      |   },
+      |   "address": {
+      |    "addressLine1": "addressLine1",
+      |    "addressLine2": "addressLine2",
+      |    "addressLine3": "addressLine3",
+      |    "addressLine4": "addressLine4",
+      |    "postalCode": "AA1 1AA",
+      |    "countryCode": "GB"
+      |   },
+      |   "contactDetails": {
+      |     "phoneNumber": "020947376",
+      |     "mobileNumber": "07634527721",
+      |     "faxNumber": "02073648933",
+      |     "emailAddress": "test@email.com"
+      |   }
+      |  }
+      | }
+      |}""".stripMargin
 
   val OK_ReadSubscription_Response =
     """

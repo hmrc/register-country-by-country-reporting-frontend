@@ -16,6 +16,10 @@
 
 package controllers
 
+import models.UserAnswers
+import pages.ContactNamePage
+import play.api.http.Status.OK
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import utils.ISpecBehaviours
 
 class DoYouHaveSecondContactControllerISpec extends ISpecBehaviours {
@@ -24,7 +28,23 @@ class DoYouHaveSecondContactControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String]               = Some("/register/have-second-contact")
 
   "DoYouHaveSecondContactController" must {
-    behave like standardOnPageLoad(pageUrl)
+    "load relative page" in {
+      stubAuthorised(appId = None)
+      val userAnswers = UserAnswers("internalId").withPage(ContactNamePage, "testName")
+
+      repository.set(userAnswers)
+
+      val response = await(
+        buildClient(pageUrl)
+          .withFollowRedirects(false)
+          .addCookies(wsSessionCookie)
+          .get()
+      )
+
+      response.status mustBe OK
+
+    }
+    behave like standardOnPageLoadRedirects(pageUrl)
 
     behave like standardOnSubmit(pageUrl, requestBody)
   }

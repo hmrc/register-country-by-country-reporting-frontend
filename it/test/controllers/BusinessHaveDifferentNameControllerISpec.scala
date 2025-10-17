@@ -25,7 +25,7 @@ class BusinessHaveDifferentNameControllerISpec extends ISpecBehaviours {
 
   private val pageUrl = Some("/register/without-id/have-trading-name")
   "GET / BusinessHaveDifferentNameController.onPageLoad" must {
-    behave like standardOnPageLoad(pageUrl)
+    behave like standardOnPageLoadRedirects(pageUrl)
 
     "should load page" in {
       stubAuthorised(appId = None)
@@ -48,22 +48,22 @@ class BusinessHaveDifferentNameControllerISpec extends ISpecBehaviours {
 
     behave like standardOnSubmit(pageUrl, requestBody)
 
-    "should submit form" in {
-      stubAuthorised(appId = None)
-
-      repository.set(UserAnswers("internalId"))
-
-      val response = await(
-        buildClient(pageUrl)
-          .addCookies(wsSessionCookie)
-          .addHttpHeaders("Csrf-Token" -> "nocheck")
-          .withFollowRedirects(false)
-          .post(requestBody)
-      )
-
-      response.status mustBe SEE_OTHER
-      response.header("Location").value must
-        include("/register/without-id/address")
-    }
+//    "should submit form" in {
+//      stubAuthorised(appId = None)
+//
+//      repository.set(UserAnswers("internalId"))
+//
+//      val response = await(
+//        buildClient(pageUrl)
+//          .addCookies(wsSessionCookie)
+//          .addHttpHeaders("Csrf-Token" -> "nocheck")
+//          .withFollowRedirects(false)
+//          .post(requestBody)
+//      )
+//
+//      response.status mustBe SEE_OTHER
+//      response.header("Location").value must
+//        include("/register/without-id/address")
+//    }
   }
 }

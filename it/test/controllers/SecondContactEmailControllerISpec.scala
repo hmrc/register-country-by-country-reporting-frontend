@@ -24,7 +24,9 @@ class SecondContactEmailControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String]               = Some("/register/second-contact-email")
 
   "SecondContactEmailController" must {
-    behave like standardOnPageLoad(pageUrl)
+    behave like pageLoads(pageUrl)
+
+    behave like standardOnPageLoadRedirects(pageUrl)
 
     behave like standardOnSubmit(pageUrl, requestBody)
   }

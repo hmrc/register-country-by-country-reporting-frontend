@@ -24,7 +24,9 @@ class WhatIsTradingNameControllerISpec extends ISpecBehaviours {
   val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("testTradingName"))
 
   "WhatIsTradingNameController" must {
-    behave like standardOnPageLoad(pageUrl)
+    behave like pageLoads(pageUrl)
+
+    behave like standardOnPageLoadRedirects(pageUrl)
 
     behave like standardOnSubmit(pageUrl, requestBody)
   }

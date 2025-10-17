@@ -23,7 +23,9 @@ class MissingInformationControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String] = Some("/register/some-information-is-missing")
 
   "MissingInformationController" must {
-    behave like standardOnPageLoad(pageUrl)
+    behave like pageLoads(pageUrl)
+
+    behave like standardOnPageLoadRedirects(pageUrl)
   }
 
 }

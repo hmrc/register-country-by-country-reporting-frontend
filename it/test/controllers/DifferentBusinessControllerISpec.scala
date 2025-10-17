@@ -23,7 +23,9 @@ class DifferentBusinessControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String] = Some("/register/problem/different-business")
 
   "DifferentBusinessController" must {
-    behave like standardOnPageLoad(pageUrl)
+    behave like pageLoads(pageUrl)
+
+    behave like standardOnPageLoadRedirects(pageUrl)
   }
 
 }

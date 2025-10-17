@@ -42,7 +42,7 @@ class CheckYourAnswersControllerISpec extends ISpecBehaviours {
 
   "GET / CheckYourAnswersController.onPageLoad" must {
 
-    behave like standardOnPageLoad(pageUrl)
+    behave like standardOnPageLoadRedirects(pageUrl)
 
     "should load page" in {
       stubAuthorised(appId = None)
@@ -84,9 +84,9 @@ class CheckYourAnswersControllerISpec extends ISpecBehaviours {
 
     behave like standardOnSubmit(pageUrl, requestBody)
 
-    "should submit form" in {
+    "should submit registration" in {
       stubAuthorised(appId = None)
-      stubRegisterCBC()
+      stubRegisterCBCnoId()
       stubRegisterationReadSubscription()
       stubEnrolmentGetEnrolment()
       stubCreateEnrolment()

@@ -16,6 +16,11 @@
 
 package controllers
 
+import models.BusinessType.LimitedCompany
+import models.{UniqueTaxpayerReference, UserAnswers}
+import pages.{BusinessNamePage, BusinessTypePage, UTRPage}
+import play.api.http.Status.OK
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import utils.ISpecBehaviours
 
 class IsThisYourBusinessControllerISpec extends ISpecBehaviours {
@@ -24,9 +29,30 @@ class IsThisYourBusinessControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String]               = Some("/register/is-this-your-business")
 
   "IsThisYourBusinessController" must {
-    behave like standardOnPageLoad(pageUrl)
+    val ua: UserAnswers = UserAnswers("internalId")
+      .withPage(BusinessTypePage, LimitedCompany)
+      .withPage(UTRPage, UniqueTaxpayerReference("testUtr"))
+      .withPage(BusinessNamePage, "Business Name")
+
+    "load relative page" in {
+      stubAuthorised(appId = None)
+      stubRegisterCBCwithUtr()
+      await(repository.set(ua))
+
+      val response = await(
+        buildClient(pageUrl)
+          .withFollowRedirects(false)
+          .addCookies(wsSessionCookie)
+          .get()
+      )
+      val loc = response.header("Location").getOrElse("NO REDIRECT")
+      if (loc != "NO REDIRECT") loc must include("/send-a-country-by-country-report")
+      response.status mustBe OK
+
+    }
+
+    behave like standardOnPageLoadRedirects(pageUrl)
 
     behave like standardOnSubmit(pageUrl, requestBody)
   }
-
 }

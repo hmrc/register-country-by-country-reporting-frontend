@@ -16,15 +16,17 @@
 
 package controllers
 
-import utils.ISpecBehaviours;
+import utils.ISpecBehaviours
 
 class SecondContactPhoneControllerISpec extends ISpecBehaviours {
 
   val pageUrl: Option[String]               = Some("/register/second-contact-phone")
-  val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("testContactPhone"))
+  val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("-1234567890"))
 
   "SecondContactPhoneController" must {
-    behave like standardOnPageLoad(pageUrl)
+    behave like pageLoads(pageUrl)
+
+    behave like standardOnPageLoadRedirects(pageUrl)
 
     behave like standardOnSubmit(pageUrl, requestBody)
   }

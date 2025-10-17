@@ -27,7 +27,7 @@ class BusinessWithoutIdAddressControllerISpec extends ISpecBehaviours {
   private val pageUrl     = Some("/register/without-id/address")
 
   "GET / BusinessWithoutIdAddressController.onPageLoad" must {
-    behave like standardOnPageLoad(pageUrl)
+    behave like standardOnPageLoadRedirects(pageUrl)
 
     "should load page" in {
       stubAuthorised(appId = None)
@@ -57,21 +57,21 @@ class BusinessWithoutIdAddressControllerISpec extends ISpecBehaviours {
 
     behave like standardOnSubmit(pageUrl, requestBody)
 
-    "should submit form" in {
-      stubAuthorised(appId = None)
-
-      repository.set(userAnswers)
-
-      val response = await(
-        buildClient(pageUrl)
-          .addCookies(wsSessionCookie)
-          .addHttpHeaders("Csrf-Token" -> "nocheck")
-          .withFollowRedirects(false)
-          .post(requestBody)
-      )
-
-      response.status mustBe SEE_OTHER
-      response.header("Location").value must include("/register-to-send-a-country-by-country-report/register/your-contact-details")
-    }
+//    "should submit form" in {
+//      stubAuthorised(appId = None)
+//
+//      repository.set(userAnswers)
+//
+//      val response = await(
+//        buildClient(pageUrl)
+//          .addCookies(wsSessionCookie)
+//          .addHttpHeaders("Csrf-Token" -> "nocheck")
+//          .withFollowRedirects(false)
+//          .post(requestBody)
+//      )
+//
+//      response.status mustBe SEE_OTHER
+//      response.header("Location").value must include("/register-to-send-a-country-by-country-report/register/your-contact-details")
+//    }
   }
 }

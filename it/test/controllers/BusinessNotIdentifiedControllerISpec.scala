@@ -28,7 +28,7 @@ class BusinessNotIdentifiedControllerISpec extends ISpecBehaviours {
   private val userAnswers = UserAnswers("internalId").set(BusinessTypePage, LimitedCompany).get
   val pageUrl             = Some("/register/problem/business-not-identified")
   "GET / BusinessNotIdentifiedController.onPageLoad" must {
-    behave like standardOnPageLoad(pageUrl)
+    behave like standardOnPageLoadRedirects(pageUrl)
 
     "should load page" in {
       stubAuthorised(appId = None)

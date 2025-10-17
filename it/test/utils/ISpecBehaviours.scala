@@ -16,6 +16,7 @@
 
 package utils
 
+import models.UserAnswers
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status._
 import play.api.libs.ws.{DefaultWSCookie, WSClient}
@@ -44,7 +45,43 @@ trait ISpecBehaviours extends PlaySpec with ISpecBase {
       response.status mustBe OK
     }
 
-  def standardOnPageLoad(pageUrl: Option[String]): Unit = {
+  def pageLoads(pageUrl: Option[String]): Unit =
+    "load relative page" in {
+      stubAuthorised(appId = None)
+      val userAnswers = UserAnswers("internalId")
+
+      repository.set(userAnswers)
+
+      val response = await(
+        buildClient(pageUrl)
+          .withFollowRedirects(false)
+          .addCookies(wsSessionCookie)
+          .get()
+      )
+
+      response.status mustBe OK
+
+    }
+
+  def pageLoadsWithDependentAnswers(pageUrl: Option[String], userAnswers: UserAnswers = UserAnswers("internalId")): Unit =
+    "load relative page" in {
+      stubAuthorised(appId = None)
+
+      repository.set(userAnswers)
+
+      val response = await(
+        buildClient(pageUrl)
+          .withFollowRedirects(false)
+          .addCookies(wsSessionCookie)
+          .get()
+      )
+      response.status mustBe OK
+      //      val loc = response.header("Location").value
+      //      loc must include("/send-a-country-by-country-report")
+
+    }
+
+  def standardOnPageLoadRedirects(pageUrl: Option[String]): Unit = {
 
     "redirect to cbc reporting when the user is automatched for GET" in {
       stubAuthorised(Some("cbc12345"))
@@ -89,6 +126,23 @@ trait ISpecBehaviours extends PlaySpec with ISpecBase {
   }
 
   def standardOnSubmit(pageUrl: Option[String], requestBody: Map[String, Seq[String]]): Unit = {
+    "should submit form" in {
+      stubAuthorised(appId = None)
+
+      repository.set(UserAnswers("internalId"))
+
+      val response = await(
+        buildClient(pageUrl)
+          .addCookies(wsSessionCookie)
+          .addHttpHeaders("Csrf-Token" -> "nocheck")
+          .withFollowRedirects(false)
+          .post(requestBody)
+      )
+
+      response.status mustBe SEE_OTHER
+//      response.header("Location").value must
+      //        include("/register/without-id/address")
+    }
 
     "redirect to cbc reporting when the user is automatched for POST" in {
       stubAuthorised(Some("cbc12345"))

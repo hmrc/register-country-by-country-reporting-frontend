@@ -27,7 +27,7 @@ import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
 import play.api.http.Status.{OK, UNAUTHORIZED}
 import play.api.libs.json.Json
 import utils.EnrolmentProxyStubs.{getEnrolments, OK_Response}
-import utils.RegisterationCBCStubs.{noID, readSubscription, OK_NoID_Response, OK_ReadSubscription_Response}
+import utils.RegisterationCBCStubs._
 import utils.TaxEnrolmentsStubs.createEnrolment
 
 object WireMockConstants {
@@ -68,8 +68,11 @@ trait WireMockHelper extends BeforeAndAfterAll with BeforeAndAfterEach with Auth
   def stubCreateEnrolment(): Unit =
     stubPutResponse(createEnrolment, OK)
 
-  def stubRegisterCBC(): Unit =
+  def stubRegisterCBCnoId(): Unit =
     stubPostWithoutBody(noID, OK, OK_NoID_Response)
+
+  def stubRegisterCBCwithUtr(): Unit =
+    stubPostWithoutBody(registerWithUtr, OK, OK_withUtr_Response)
 
   def stubRegisterationReadSubscription(): Unit =
     stubPostWithoutBody(readSubscription, OK, OK_ReadSubscription_Response)

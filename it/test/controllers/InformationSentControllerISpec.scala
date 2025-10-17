@@ -23,7 +23,9 @@ class InformationSentControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String] = Some("/register/problem/information-sent")
 
   "GET / UnauthorisedController.onPageLoad" must {
-    behave like standardOnPageLoad(pageUrl)
+    behave like pageLoads(pageUrl)
+
+    behave like standardOnPageLoadRedirects(pageUrl)
   }
 
 }

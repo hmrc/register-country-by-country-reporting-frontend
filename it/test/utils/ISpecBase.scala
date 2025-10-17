@@ -23,10 +23,11 @@ import org.scalatest.time.{Seconds, Span}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.{Application, Logging}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, Writes}
 import play.api.libs.ws.{WSClient, WSRequest}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+import queries.Settable
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
@@ -50,7 +51,7 @@ trait ISpecBase
     .build()
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  def emptyUserAnswers: UserAnswers = UserAnswers("testid", Json.obj(), Instant.now(fixedClock))
+  def emptyUserAnswers: UserAnswers = UserAnswers("internalId", Json.obj(), Instant.now(fixedClock))
 
   def config: Map[String, Any] = Map(
 //    "logger.root"                                            -> "INFO",
@@ -74,4 +75,10 @@ trait ISpecBase
   def buildFakeRequest(): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest("GET", s"http://localhost:$port/register-to-send-a-country-by-country-report").withSession("authToken" -> "my-token")
 
+  implicit class UserAnswersExtension(userAnswers: UserAnswers) {
+
+    def withPage[T](page: Settable[T], value: T)(implicit writes: Writes[T]): UserAnswers =
+      userAnswers.set(page, value).success.value
+
+  }
 }
