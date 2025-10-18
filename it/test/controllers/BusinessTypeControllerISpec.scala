@@ -17,55 +17,21 @@
 package controllers
 
 import models.UserAnswers
-import play.api.http.Status._
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import utils.ISpecBehaviours;
+import utils.ISpecBehaviours
 
 class BusinessTypeControllerISpec extends ISpecBehaviours {
 
-  private val userAnswers = UserAnswers("internalId")
-  private val pageUrl     = Some("/register/business-type")
+  private val pageUrl = Some("/register/business-type")
   "GET / BusinessTypeController.onPageLoad" must {
+    behave like pageLoads(pageUrl, "businessType.title")
+
     behave like standardOnPageLoadRedirects(pageUrl)
-
-    "should load page" in {
-      stubAuthorised(appId = None)
-
-      repository.set(userAnswers)
-
-      val response = await(
-        buildClient(pageUrl)
-          .withFollowRedirects(false)
-          .addCookies(wsSessionCookie)
-          .get()
-      )
-
-      response.status mustBe OK
-      response.body must include("What type of business do you have?")
-    }
   }
-  "POST / BusinessHaveDifferentNameController.onSubmit" must {
+  "POST / BusinessTypeController.onSubmit" must {
     val requestBody = Map("value" -> Seq("limited"))
 
     behave like standardOnSubmit(pageUrl, requestBody)
 
-//    "should submit form" in {
-//      stubAuthorised(appId = None)
-//
-//      repository.set(userAnswers)
-//
-//      val response = await(
-//        buildClient(pageUrl)
-//          .addCookies(wsSessionCookie)
-//          .addHttpHeaders("Csrf-Token" -> "nocheck")
-//          .withFollowRedirects(false)
-//          .post(requestBody)
-//      )
-//
-//      response.status mustBe SEE_OTHER
-//      response.header("Location").value must
-//        include("/register/utr")
-//    }
-
+    behave like pageSubmits(pageUrl, requestBody, "/register/utr")
   }
 }

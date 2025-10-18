@@ -24,11 +24,14 @@ class DoYouHaveUTRControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String]               = Some("/register/have-utr")
 
   "DoYouHaveUTRController" must {
-    behave like pageLoads(pageUrl)
+    behave like pageLoads(pageUrl, "doYouHaveUTR.title")
 
     behave like standardOnPageLoadRedirects(pageUrl)
 
     behave like standardOnSubmit(pageUrl, requestBody)
+
+    behave like pageSubmits(pageUrl, requestBody, "/register/business-type")
+
   }
 
 }

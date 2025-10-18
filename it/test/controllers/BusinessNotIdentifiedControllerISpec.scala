@@ -19,31 +19,15 @@ package controllers
 import models.BusinessType.LimitedCompany
 import models.UserAnswers
 import pages.BusinessTypePage
-import play.api.http.Status._
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import utils.ISpecBehaviours;
+import utils.ISpecBehaviours
 
 class BusinessNotIdentifiedControllerISpec extends ISpecBehaviours {
 
   private val userAnswers = UserAnswers("internalId").set(BusinessTypePage, LimitedCompany).get
   val pageUrl             = Some("/register/problem/business-not-identified")
   "GET / BusinessNotIdentifiedController.onPageLoad" must {
+    behave like pageLoads(pageUrl, "businessNotIdentified.title", userAnswers)
+
     behave like standardOnPageLoadRedirects(pageUrl)
-
-    "should load page" in {
-      stubAuthorised(appId = None)
-
-      repository.set(userAnswers)
-
-      val response = await(
-        buildClient(pageUrl)
-          .withFollowRedirects(false)
-          .addCookies(wsSessionCookie)
-          .get()
-      )
-
-      response.status mustBe OK
-      response.body must include("The details you entered did not match our records")
-    }
   }
 }

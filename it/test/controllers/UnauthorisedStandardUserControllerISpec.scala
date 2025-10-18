@@ -16,14 +16,14 @@
 
 package controllers
 
-import utils.ISpecBehaviours;
+import utils.ISpecBehaviours
 
 class UnauthorisedStandardUserControllerISpec extends ISpecBehaviours {
 
   val pageUrl: Option[String] = Some("/register/problem/sign-in-problem")
 
   "GET / UnauthorisedStandardUserController.onPageLoad" must {
-    behave like problemPageOnPageLoad(pageUrl)
+    behave like pageLoads(pageUrl, "unauthorisedStandardUser.title")
   }
 
 }

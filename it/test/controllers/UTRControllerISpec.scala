@@ -16,7 +16,7 @@
 
 package controllers
 
-import utils.ISpecBehaviours;
+import utils.ISpecBehaviours
 
 class UTRControllerISpec extends ISpecBehaviours {
 
@@ -24,11 +24,13 @@ class UTRControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String]               = Some("/register/have-utr")
 
   "UTRController" must {
-    behave like pageLoads(pageUrl)
+    behave like pageLoads(pageUrl, "doYouHaveUTR.title")
 
     behave like standardOnPageLoadRedirects(pageUrl)
 
     behave like standardOnSubmit(pageUrl, requestBody)
+
+    behave like pageSubmits(pageUrl, requestBody, "/register/business-type")
   }
 
 }

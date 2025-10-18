@@ -16,14 +16,39 @@
 
 package controllers
 
+import models.UserAnswers
+import play.api.http.Status.OK
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import utils.ISpecBehaviours
 
 class PreRegisteredControllerISpec extends ISpecBehaviours {
 
-  val pageUrl: Option[String] = Some("/problem/unauthorised")
+  "load without utr page" in {
+    stubAuthorised(appId = None)
 
-  "PreRegisteredController" must {
-    behave like problemPageOnPageLoad(pageUrl)
+    await(repository.set(UserAnswers("internalId")))
+
+    val response = await(
+      buildClient(Some("/register/problem/organisation-without-utr-pre-registered"))
+        .addCookies(wsSessionCookie)
+        .get()
+    )
+    response.status mustBe OK
+    response.body must include(messages("preRegistered.title"))
+
   }
+  "load with-utr page" in {
+    stubAuthorised(appId = None)
 
+    await(repository.set(UserAnswers("internalId")))
+
+    val response = await(
+      buildClient(Some("/register/problem/organisation-with-utr-pre-registered"))
+        .addCookies(wsSessionCookie)
+        .get()
+    )
+    response.status mustBe OK
+    response.body must include(messages("preRegistered.title"))
+
+  }
 }

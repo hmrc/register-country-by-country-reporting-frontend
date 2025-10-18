@@ -16,14 +16,14 @@
 
 package controllers
 
-import utils.ISpecBehaviours;
+import utils.ISpecBehaviours
 
 class ThereIsAProblemControllerISpec extends ISpecBehaviours {
 
   val pageUrl: Option[String] = Some("/register/problem/there-is-a-problem")
 
   "GET / ThereIsAProblemController.onPageLoad" must {
-    behave like problemPageOnPageLoad(pageUrl)
+    behave like pageLoads(pageUrl, "thereIsAProblem.title")
   }
 
 }

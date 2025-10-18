@@ -16,7 +16,7 @@
 
 package controllers
 
-import utils.ISpecBehaviours;
+import utils.ISpecBehaviours
 
 class SecondContactNameControllerISpec extends ISpecBehaviours {
 
@@ -24,11 +24,13 @@ class SecondContactNameControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String]               = Some("/register/second-contact-name")
 
   "SecondContactNameController" must {
-    behave like pageLoads(pageUrl)
+    behave like pageLoads(pageUrl, "secondContactName.title")
 
     behave like standardOnPageLoadRedirects(pageUrl)
 
     behave like standardOnSubmit(pageUrl, requestBody)
+
+    behave like pageSubmits(pageUrl, requestBody, "/register/second-contact-email")
   }
 
 }

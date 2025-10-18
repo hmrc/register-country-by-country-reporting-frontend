@@ -16,14 +16,14 @@
 
 package controllers
 
-import utils.ISpecBehaviours;
+import utils.ISpecBehaviours
 
 class UnauthorisedControllerISpec extends ISpecBehaviours {
 
   val pageUrl: Option[String] = Some("/problem/unauthorised")
 
   "GET / UnauthorisedController.onPageLoad" must {
-    behave like problemPageOnPageLoad(pageUrl)
+    behave like pageLoads(pageUrl, "unauthorised.title")
   }
 
 }

@@ -16,54 +16,20 @@
 
 package controllers
 
-import models.UserAnswers
-import play.api.http.Status._
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import utils.ISpecBehaviours;
+import utils.ISpecBehaviours
 
 class BusinessHaveDifferentNameControllerISpec extends ISpecBehaviours {
 
   private val pageUrl = Some("/register/without-id/have-trading-name")
   "GET / BusinessHaveDifferentNameController.onPageLoad" must {
+    behave like pageLoads(pageUrl, "businessHaveDifferentName.title")
+
     behave like standardOnPageLoadRedirects(pageUrl)
-
-    "should load page" in {
-      stubAuthorised(appId = None)
-
-      repository.set(UserAnswers("internalId"))
-
-      val response = await(
-        buildClient(pageUrl)
-          .withFollowRedirects(false)
-          .addCookies(wsSessionCookie)
-          .get()
-      )
-
-      response.status mustBe OK
-      response.body must include("Does your business trade under a different name?")
-    }
   }
   "POST / BusinessHaveDifferentNameController.onSubmit" must {
     val requestBody = Map("value" -> Seq("false"))
-
     behave like standardOnSubmit(pageUrl, requestBody)
 
-//    "should submit form" in {
-//      stubAuthorised(appId = None)
-//
-//      repository.set(UserAnswers("internalId"))
-//
-//      val response = await(
-//        buildClient(pageUrl)
-//          .addCookies(wsSessionCookie)
-//          .addHttpHeaders("Csrf-Token" -> "nocheck")
-//          .withFollowRedirects(false)
-//          .post(requestBody)
-//      )
-//
-//      response.status mustBe SEE_OTHER
-//      response.header("Location").value must
-//        include("/register/without-id/address")
-//    }
+    behave like pageSubmits(pageUrl, requestBody, "/register/without-id/address")
   }
 }

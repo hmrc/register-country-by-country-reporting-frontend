@@ -20,65 +20,36 @@ import models.UserAnswers
 import pages._
 import play.api.http.Status._
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import utils.ISpecBehaviours;
+import utils.ISpecBehaviours
 
 class CheckYourAnswersControllerISpec extends ISpecBehaviours {
 
-  private val getUserAnswers = UserAnswers("internalId")
-    .set(IsRegisteredAddressInUkPage, false)
-    .get
-    .set(DoYouHaveUTRPage, false)
-    .get
-    .set(ContactNamePage, "testFirstName")
-    .get
-    .set(ContactEmailPage, "testEmail@test.com")
-    .get
-    .set(HaveTelephonePage, false)
-    .get
-    .set(DoYouHaveSecondContactPage, false)
-    .get
+  private val getUserAnswers: UserAnswers = UserAnswers("internalId")
+    .withPage(IsRegisteredAddressInUkPage, false)
+    .withPage(DoYouHaveUTRPage, false)
+    .withPage(ContactNamePage, "testFirstName")
+    .withPage(ContactEmailPage, "testEmail@test.com")
+    .withPage(HaveTelephonePage, false)
+    .withPage(DoYouHaveSecondContactPage, false)
 
   private val pageUrl = Some("/check-answers")
 
   "GET / CheckYourAnswersController.onPageLoad" must {
+    behave like pageLoads(pageUrl, "checkYourAnswers.title", getUserAnswers)
 
     behave like standardOnPageLoadRedirects(pageUrl)
-
-    "should load page" in {
-      stubAuthorised(appId = None)
-
-      repository.set(getUserAnswers)
-
-      val response = await(
-        buildClient(pageUrl)
-          .withFollowRedirects(false)
-          .addCookies(wsSessionCookie)
-          .get()
-      )
-
-      response.status mustBe OK
-      response.body must include("Check your details before you register")
-    }
   }
   "POST / BusinessWithoutIdAddressController.onSubmit" must {
     val address = arbitraryBusinessWithoutIdAddress.arbitrary.sample.get
-    val userAnswers = UserAnswers("internalId")
-      .set(BusinessWithoutIDNamePage, "testBusiness")
-      .get
-      .set(BusinessWithoutIdAddressPage, address)
-      .get
-      .set(IsRegisteredAddressInUkPage, false)
-      .get
-      .set(DoYouHaveUTRPage, false)
-      .get
-      .set(ContactNamePage, "testFirstName")
-      .get
-      .set(ContactEmailPage, "testEmail@test.com")
-      .get
-      .set(HaveTelephonePage, false)
-      .get
-      .set(DoYouHaveSecondContactPage, false)
-      .get
+    val userAnswers: UserAnswers = UserAnswers("internalId")
+      .withPage(BusinessWithoutIDNamePage, "testBusiness")
+      .withPage(BusinessWithoutIdAddressPage, address)
+      .withPage(IsRegisteredAddressInUkPage, false)
+      .withPage(DoYouHaveUTRPage, false)
+      .withPage(ContactNamePage, "testFirstName")
+      .withPage(ContactEmailPage, "testEmail@test.com")
+      .withPage(HaveTelephonePage, false)
+      .withPage(DoYouHaveSecondContactPage, false)
 
     val requestBody = Map("value" -> Seq("businessName"))
 

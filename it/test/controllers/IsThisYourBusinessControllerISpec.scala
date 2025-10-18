@@ -29,29 +29,31 @@ class IsThisYourBusinessControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String]               = Some("/register/is-this-your-business")
 
   "IsThisYourBusinessController" must {
-    val ua: UserAnswers = UserAnswers("internalId")
-      .withPage(BusinessTypePage, LimitedCompany)
-      .withPage(UTRPage, UniqueTaxpayerReference("testUtr"))
-      .withPage(BusinessNamePage, "Business Name")
 
     "load relative page" in {
       stubAuthorised(appId = None)
       stubRegisterCBCwithUtr()
+
+      val ua: UserAnswers = UserAnswers("internalId")
+        .withPage(BusinessTypePage, LimitedCompany)
+        .withPage(UTRPage, UniqueTaxpayerReference("testUtr"))
+        .withPage(BusinessNamePage, "Business Name")
+
       await(repository.set(ua))
 
       val response = await(
         buildClient(pageUrl)
-          .withFollowRedirects(false)
           .addCookies(wsSessionCookie)
           .get()
       )
-      val loc = response.header("Location").getOrElse("NO REDIRECT")
-      if (loc != "NO REDIRECT") loc must include("/send-a-country-by-country-report")
       response.status mustBe OK
+      response.body must include(messages("isThisYourBusiness.title"))
 
     }
 
     behave like standardOnPageLoadRedirects(pageUrl)
+
+    behave like pageSubmits(pageUrl, requestBody, "/register-to-send-a-country-by-country-report/register/your-contact-details")
 
     behave like standardOnSubmit(pageUrl, requestBody)
   }

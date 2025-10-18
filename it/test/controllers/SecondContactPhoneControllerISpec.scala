@@ -24,11 +24,13 @@ class SecondContactPhoneControllerISpec extends ISpecBehaviours {
   val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("-1234567890"))
 
   "SecondContactPhoneController" must {
-    behave like pageLoads(pageUrl)
+    behave like pageLoads(pageUrl, "secondContactPhone.title")
 
     behave like standardOnPageLoadRedirects(pageUrl)
 
     behave like standardOnSubmit(pageUrl, requestBody)
+
+    behave like pageSubmits(pageUrl, requestBody, "/register-to-send-a-country-by-country-report/check-answers")
   }
 
 }

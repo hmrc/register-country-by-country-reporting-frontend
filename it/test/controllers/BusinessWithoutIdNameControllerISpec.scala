@@ -16,56 +16,23 @@
 
 package controllers
 
-import models.UserAnswers
-import play.api.http.Status._
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import utils.ISpecBehaviours;
+import utils.ISpecBehaviours
 
 class BusinessWithoutIdNameControllerISpec extends ISpecBehaviours {
 
-  private val userAnswers = UserAnswers("internalId")
-  private val pageUrl     = Some("/register/without-id/business-name")
+  private val pageUrl = Some("/register/without-id/business-name")
 
   "GET / BusinessWithoutIdAddressController.onPageLoad" must {
+    behave like pageLoads(pageUrl, "businessWithoutIDName.title")
 
     behave like standardOnPageLoadRedirects(pageUrl)
 
-    "should load page" in {
-      stubAuthorised(appId = None)
-
-      repository.set(userAnswers)
-
-      val response = await(
-        buildClient(pageUrl)
-          .withFollowRedirects(false)
-          .addCookies(wsSessionCookie)
-          .get()
-      )
-
-      response.status mustBe OK
-      response.body must include("What is the name of your business?")
-    }
   }
   "POST / BusinessWithoutIdAddressController.onSubmit" must {
     val requestBody = Map("value" -> Seq("businessName"))
 
     behave like standardOnSubmit(pageUrl, requestBody)
 
-//    "should submit form" in {
-//      stubAuthorised(appId = None)
-//
-//      repository.set(userAnswers)
-//
-//      val response = await(
-//        buildClient(pageUrl)
-//          .addCookies(wsSessionCookie)
-//          .addHttpHeaders("Csrf-Token" -> "nocheck")
-//          .withFollowRedirects(false)
-//          .post(requestBody)
-//      )
-//
-//      response.status mustBe SEE_OTHER
-//      response.header("Location").value must include("/register/without-id/have-trading-name")
-//    }
+    behave like pageSubmits(pageUrl, requestBody, "/register/without-id/have-trading-name")
   }
 }

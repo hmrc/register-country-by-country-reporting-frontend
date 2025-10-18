@@ -19,6 +19,7 @@ package utils
 import models.UserAnswers
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status._
+import play.api.i18n.{Lang, Messages, MessagesApi, MessagesImpl}
 import play.api.libs.ws.{DefaultWSCookie, WSClient}
 import play.api.mvc.{Cookie, Session, SessionCookieBaker}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
@@ -30,54 +31,22 @@ trait ISpecBehaviours extends PlaySpec with ISpecBase {
   val sessionCookieBaker: SessionCookieBaker = app.injector.instanceOf[SessionCookieBaker]
   val sessionCookie: Cookie                  = sessionCookieBaker.encodeAsCookie(session)
   val wsSessionCookie: DefaultWSCookie       = DefaultWSCookie(sessionCookie.name, sessionCookie.value)
+  implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  implicit lazy val messages: Messages       = MessagesImpl(Lang.defaultLang, messagesApi)
 
-  def problemPageOnPageLoad(pageUrl: Option[String]): Unit =
-    "should load page" in {
-      stubAuthorised(appId = None)
-
-      val response = await(
-        buildClient(pageUrl)
-          .withFollowRedirects(false)
-          .addCookies(wsSessionCookie)
-          .get()
-      )
-
-      response.status mustBe OK
-    }
-
-  def pageLoads(pageUrl: Option[String]): Unit =
-    "load relative page" in {
-      stubAuthorised(appId = None)
-      val userAnswers = UserAnswers("internalId")
-
-      repository.set(userAnswers)
-
-      val response = await(
-        buildClient(pageUrl)
-          .withFollowRedirects(false)
-          .addCookies(wsSessionCookie)
-          .get()
-      )
-
-      response.status mustBe OK
-
-    }
-
-  def pageLoadsWithDependentAnswers(pageUrl: Option[String], userAnswers: UserAnswers = UserAnswers("internalId")): Unit =
+  def pageLoads(pageUrl: Option[String], pageTitle: String = "", userAnswers: UserAnswers = UserAnswers("internalId")): Unit =
     "load relative page" in {
       stubAuthorised(appId = None)
 
-      repository.set(userAnswers)
+      await(repository.set(userAnswers))
 
       val response = await(
         buildClient(pageUrl)
-          .withFollowRedirects(false)
           .addCookies(wsSessionCookie)
           .get()
       )
       response.status mustBe OK
-      //      val loc = response.header("Location").value
-      //      loc must include("/send-a-country-by-country-report")
+      response.body must include(messages(pageTitle))
 
     }
 
@@ -125,11 +94,11 @@ trait ISpecBehaviours extends PlaySpec with ISpecBase {
     }
   }
 
-  def standardOnSubmit(pageUrl: Option[String], requestBody: Map[String, Seq[String]]): Unit = {
+  def pageSubmits(pageUrl: Option[String], requestBody: Map[String, Seq[String]], redirectLocation: String): Unit =
     "should submit form" in {
       stubAuthorised(appId = None)
 
-      repository.set(UserAnswers("internalId"))
+      await(repository.set(UserAnswers("internalId")))
 
       val response = await(
         buildClient(pageUrl)
@@ -140,9 +109,11 @@ trait ISpecBehaviours extends PlaySpec with ISpecBase {
       )
 
       response.status mustBe SEE_OTHER
-//      response.header("Location").value must
-      //        include("/register/without-id/address")
+      response.header("Location").value must
+        include(redirectLocation)
     }
+
+  def standardOnSubmit(pageUrl: Option[String], requestBody: Map[String, Seq[String]]): Unit = {
 
     "redirect to cbc reporting when the user is automatched for POST" in {
       stubAuthorised(Some("cbc12345"))

@@ -24,11 +24,14 @@ class ContactPhoneControllerISpec extends ISpecBehaviours {
   val pageUrl: Option[String]               = Some("/register/phone")
 
   "ContactPhoneController" must {
-    behave like pageLoads(pageUrl)
+    behave like pageLoads(pageUrl, "contactPhone.title")
 
     behave like standardOnPageLoadRedirects(pageUrl)
 
     behave like standardOnSubmit(pageUrl, requestBody)
+
+    behave like pageSubmits(pageUrl, requestBody, "/register/have-second-contact")
+
   }
 
 }

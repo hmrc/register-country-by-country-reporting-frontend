@@ -16,7 +16,7 @@
 
 package controllers
 
-import utils.ISpecBehaviours;
+import utils.ISpecBehaviours
 
 class WhatIsTradingNameControllerISpec extends ISpecBehaviours {
 
@@ -24,11 +24,13 @@ class WhatIsTradingNameControllerISpec extends ISpecBehaviours {
   val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("testTradingName"))
 
   "WhatIsTradingNameController" must {
-    behave like pageLoads(pageUrl)
+    behave like pageLoads(pageUrl, "whatIsTradingName.title")
 
     behave like standardOnPageLoadRedirects(pageUrl)
 
     behave like standardOnSubmit(pageUrl, requestBody)
+
+    behave like pageSubmits(pageUrl, requestBody, "/register/without-id/address")
   }
 
 }
