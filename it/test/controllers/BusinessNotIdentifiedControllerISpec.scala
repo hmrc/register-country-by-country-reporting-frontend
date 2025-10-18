@@ -16,13 +16,18 @@
 
 package controllers
 
+import models.BusinessType.LimitedCompany
+import models.UserAnswers
+import pages.BusinessTypePage
 import utils.ISpecBehaviours
 
-class IndexControllerISpec extends ISpecBehaviours {
+class BusinessNotIdentifiedControllerISpec extends ISpecBehaviours {
 
-  val pageUrl: Option[String] = Some("/")
-  "GET / IndexController.onPageLoad" must {
+  private val userAnswers = UserAnswers("internalId").set(BusinessTypePage, LimitedCompany).get
+  val pageUrl             = Some("/register/problem/business-not-identified")
+  "GET / BusinessNotIdentifiedController.onPageLoad" must {
+    behave like pageLoads(pageUrl, "businessNotIdentified.title", userAnswers)
+
     behave like standardOnPageLoadRedirects(pageUrl)
   }
-
 }

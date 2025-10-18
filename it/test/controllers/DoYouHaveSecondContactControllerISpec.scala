@@ -16,13 +16,25 @@
 
 package controllers
 
+import models.UserAnswers
+import pages.ContactNamePage
 import utils.ISpecBehaviours
 
-class IndexControllerISpec extends ISpecBehaviours {
+class DoYouHaveSecondContactControllerISpec extends ISpecBehaviours {
 
-  val pageUrl: Option[String] = Some("/")
-  "GET / IndexController.onPageLoad" must {
+  val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("true"))
+  val pageUrl: Option[String]               = Some("/register/have-second-contact")
+
+  "DoYouHaveSecondContactController" must {
+    val userAnswers = UserAnswers("internalId").withPage(ContactNamePage, "testName")
+    behave like pageLoads(pageUrl, "doYouHaveSecondContact.title", userAnswers)
+
     behave like standardOnPageLoadRedirects(pageUrl)
+
+    behave like standardOnSubmit(pageUrl, requestBody)
+
+    behave like pageSubmits(pageUrl, requestBody, "/register/some-information-is-missing")
+
   }
 
 }

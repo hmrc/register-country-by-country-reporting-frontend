@@ -18,11 +18,19 @@ package controllers
 
 import utils.ISpecBehaviours
 
-class IndexControllerISpec extends ISpecBehaviours {
+class IsRegisteredAddressInUkControllerISpec extends ISpecBehaviours {
 
-  val pageUrl: Option[String] = Some("/")
-  "GET / IndexController.onPageLoad" must {
+  val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("true"))
+  val pageUrl: Option[String]               = Some("/register/registered-address-in-uk")
+
+  "IsRegisteredAddressInUkController" must {
+    behave like pageLoads(pageUrl, "isRegisteredAddressInUk.title")
+
     behave like standardOnPageLoadRedirects(pageUrl)
+
+    behave like standardOnSubmit(pageUrl, requestBody)
+
+    behave like pageSubmits(pageUrl, requestBody, "/register/business-type")
   }
 
 }

@@ -18,11 +18,14 @@ package controllers
 
 import utils.ISpecBehaviours
 
-class IndexControllerISpec extends ISpecBehaviours {
+class YourContactDetailsControllerISpec extends ISpecBehaviours {
+  private val pageUrl = Some("/register/your-contact-details")
 
-  val pageUrl: Option[String] = Some("/")
-  "GET / IndexController.onPageLoad" must {
+  "YourContactDetailsController" must {
+    behave like pageLoads(pageUrl, "yourContactDetails.title")
+
     behave like standardOnPageLoadRedirects(pageUrl)
+
   }
 
 }

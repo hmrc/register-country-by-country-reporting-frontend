@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package utils
 
-import utils.ISpecBehaviours
+object TaxEnrolmentsStubs {
 
-class IndexControllerISpec extends ISpecBehaviours {
-
-  val pageUrl: Option[String] = Some("/")
-  "GET / IndexController.onPageLoad" must {
-    behave like standardOnPageLoadRedirects(pageUrl)
-  }
+  val enrolmentUrl    = "/tax-enrolments/service"
+  val createEnrolment = s"$enrolmentUrl/HMRC-CBC-NONUK-ORG/enrolment"
 
 }

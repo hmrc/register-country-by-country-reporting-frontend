@@ -18,11 +18,19 @@ package controllers
 
 import utils.ISpecBehaviours
 
-class IndexControllerISpec extends ISpecBehaviours {
+class WhatIsTradingNameControllerISpec extends ISpecBehaviours {
 
-  val pageUrl: Option[String] = Some("/")
-  "GET / IndexController.onPageLoad" must {
+  val pageUrl: Option[String]               = Some("/register/without-id/trading-name")
+  val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("testTradingName"))
+
+  "WhatIsTradingNameController" must {
+    behave like pageLoads(pageUrl, "whatIsTradingName.title")
+
     behave like standardOnPageLoadRedirects(pageUrl)
+
+    behave like standardOnSubmit(pageUrl, requestBody)
+
+    behave like pageSubmits(pageUrl, requestBody, "/register/without-id/address")
   }
 
 }

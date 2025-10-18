@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package utils
 
-import utils.ISpecBehaviours
+object EnrolmentProxyStubs {
 
-class IndexControllerISpec extends ISpecBehaviours {
-
-  val pageUrl: Option[String] = Some("/")
-  "GET / IndexController.onPageLoad" must {
-    behave like standardOnPageLoadRedirects(pageUrl)
-  }
+  val enrolmentProxyUrl = "/enrolment-store-proxy"
+  val getEnrolments     = s"$enrolmentProxyUrl/enrolment-store/enrolments/HMRC-CBC-NONUK-ORG~cbcId~id/groups"
+  val OK_Response       = """{"groupids": {}}""".stripMargin
 
 }

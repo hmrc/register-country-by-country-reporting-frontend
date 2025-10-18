@@ -21,6 +21,7 @@ import org.scalatest.Suite
 trait AuthStubs { this: Suite =>
 
   val authUrl            = "/auth/authorise"
+  val ggSignInUrl        = "/auth-login-stub/gg-sign-in.*"
   val testAuthInternalId = "internalId"
 
   val authRequest =
@@ -44,5 +45,15 @@ trait AuthStubs { this: Suite =>
         |    } ]
         |  }
          """.stripMargin
+
+  def authOKResponseWithoutEnrolment(affinity: String = "Organisation") =
+    s"""|  {
+        |    "internalId": "$testAuthInternalId",
+        |    "affinityGroup": "$affinity",
+        |    "allEnrolments" : []
+        |  }
+         """.stripMargin
+
+  def ggSignInSuccess() = "gg-sign-in"
 
 }

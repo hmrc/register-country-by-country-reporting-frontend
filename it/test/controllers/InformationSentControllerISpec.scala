@@ -18,10 +18,13 @@ package controllers
 
 import utils.ISpecBehaviours
 
-class IndexControllerISpec extends ISpecBehaviours {
+class InformationSentControllerISpec extends ISpecBehaviours {
 
-  val pageUrl: Option[String] = Some("/")
-  "GET / IndexController.onPageLoad" must {
+  val pageUrl: Option[String] = Some("/register/problem/information-sent")
+
+  "GET / UnauthorisedController.onPageLoad" must {
+    behave like pageLoads(pageUrl, "informationSent.title")
+
     behave like standardOnPageLoadRedirects(pageUrl)
   }
 

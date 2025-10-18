@@ -18,10 +18,13 @@ package controllers
 
 import utils.ISpecBehaviours
 
-class IndexControllerISpec extends ISpecBehaviours {
+class UnableToChangeBusinessControllerISpec extends ISpecBehaviours {
 
-  val pageUrl: Option[String] = Some("/")
-  "GET / IndexController.onPageLoad" must {
+  val pageUrl: Option[String] = Some("/register/problem/unable-to-change-business")
+
+  "GET / UnableToChangeBusinessController.onPageLoad" must {
+    behave like pageLoads(pageUrl, "unableToChangeBusiness.title")
+
     behave like standardOnPageLoadRedirects(pageUrl)
   }
 

@@ -18,11 +18,20 @@ package controllers
 
 import utils.ISpecBehaviours
 
-class IndexControllerISpec extends ISpecBehaviours {
+class ContactEmailControllerISpec extends ISpecBehaviours {
 
-  val pageUrl: Option[String] = Some("/")
-  "GET / IndexController.onPageLoad" must {
+  val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("test@email.co.uk"))
+  val pageUrl: Option[String]               = Some("/register/email")
+
+  "ContactEmailController" must {
+    behave like pageLoads(pageUrl, "contactEmail.title")
+
     behave like standardOnPageLoadRedirects(pageUrl)
+
+    behave like standardOnSubmit(pageUrl, requestBody)
+
+    behave like pageSubmits(pageUrl, requestBody, "/register/have-phone")
+
   }
 
 }

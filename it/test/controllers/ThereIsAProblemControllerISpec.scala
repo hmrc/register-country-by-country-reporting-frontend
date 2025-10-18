@@ -18,11 +18,12 @@ package controllers
 
 import utils.ISpecBehaviours
 
-class IndexControllerISpec extends ISpecBehaviours {
+class ThereIsAProblemControllerISpec extends ISpecBehaviours {
 
-  val pageUrl: Option[String] = Some("/")
-  "GET / IndexController.onPageLoad" must {
-    behave like standardOnPageLoadRedirects(pageUrl)
+  val pageUrl: Option[String] = Some("/register/problem/there-is-a-problem")
+
+  "GET / ThereIsAProblemController.onPageLoad" must {
+    behave like pageLoads(pageUrl, "thereIsAProblem.title")
   }
 
 }

@@ -18,11 +18,21 @@ package controllers
 
 import utils.ISpecBehaviours
 
-class IndexControllerISpec extends ISpecBehaviours {
+class BusinessWithoutIdNameControllerISpec extends ISpecBehaviours {
 
-  val pageUrl: Option[String] = Some("/")
-  "GET / IndexController.onPageLoad" must {
+  private val pageUrl = Some("/register/without-id/business-name")
+
+  "GET / BusinessWithoutIdAddressController.onPageLoad" must {
+    behave like pageLoads(pageUrl, "businessWithoutIDName.title")
+
     behave like standardOnPageLoadRedirects(pageUrl)
-  }
 
+  }
+  "POST / BusinessWithoutIdAddressController.onSubmit" must {
+    val requestBody = Map("value" -> Seq("businessName"))
+
+    behave like standardOnSubmit(pageUrl, requestBody)
+
+    behave like pageSubmits(pageUrl, requestBody, "/register/without-id/have-trading-name")
+  }
 }
