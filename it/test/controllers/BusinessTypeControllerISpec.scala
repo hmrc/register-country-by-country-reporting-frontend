@@ -16,7 +16,6 @@
 
 package controllers
 
-import models.UserAnswers
 import utils.ISpecBehaviours
 
 class BusinessTypeControllerISpec extends ISpecBehaviours {
