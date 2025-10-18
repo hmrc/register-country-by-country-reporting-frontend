@@ -62,7 +62,7 @@ class CheckYourAnswersControllerISpec extends ISpecBehaviours {
       stubEnrolmentGetEnrolment()
       stubCreateEnrolment()
 
-      repository.set(userAnswers)
+      await(repository.set(userAnswers))
 
       val response = await(
         buildClient(pageUrl)
