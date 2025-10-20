@@ -18,8 +18,6 @@ package controllers
 
 import controllers.actions._
 import forms.ContactNameFormProvider
-
-import javax.inject.Inject
 import models.Mode
 import navigation.CBCRNavigator
 import pages.ContactNamePage
@@ -30,13 +28,16 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ContactNameView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ContactNameController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: CBCRNavigator,
-  standardActionSets: StandardActionSets,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  requireData: DataRequiredAction,
   formProvider: ContactNameFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: ContactNameView
@@ -46,7 +47,7 @@ class ContactNameController @Inject() (
 
   val form: Form[String] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(ContactNamePage) match {
         case None        => form
@@ -56,7 +57,7 @@ class ContactNameController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       form
         .bindFromRequest()
