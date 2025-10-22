@@ -18,11 +18,19 @@ package controllers
 
 import utils.ISpecBehaviours
 
-class IndexControllerISpec extends ISpecBehaviours {
+class SecondContactPhoneControllerISpec extends ISpecBehaviours {
 
-  val pageUrl: Option[String] = Some("/")
-  "GET / IndexController.onPageLoad" must {
+  val pageUrl: Option[String]               = Some("/register/second-contact-phone")
+  val requestBody: Map[String, Seq[String]] = Map("value" -> Seq("-1234567890"))
+
+  "SecondContactPhoneController" must {
+    behave like pageLoads(pageUrl, "secondContactPhone.title")
+
     behave like standardOnPageLoadRedirects(pageUrl)
+
+    behave like standardOnSubmit(pageUrl, requestBody)
+
+    behave like pageSubmits(pageUrl, requestBody, "/register-to-send-a-country-by-country-report/check-answers")
   }
 
 }

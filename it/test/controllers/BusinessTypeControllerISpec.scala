@@ -18,11 +18,19 @@ package controllers
 
 import utils.ISpecBehaviours
 
-class IndexControllerISpec extends ISpecBehaviours {
+class BusinessTypeControllerISpec extends ISpecBehaviours {
 
-  val pageUrl: Option[String] = Some("/")
-  "GET / IndexController.onPageLoad" must {
+  private val pageUrl = Some("/register/business-type")
+  "GET / BusinessTypeController.onPageLoad" must {
+    behave like pageLoads(pageUrl, "businessType.title")
+
     behave like standardOnPageLoadRedirects(pageUrl)
   }
+  "POST / BusinessTypeController.onSubmit" must {
+    val requestBody = Map("value" -> Seq("limited"))
 
+    behave like standardOnSubmit(pageUrl, requestBody)
+
+    behave like pageSubmits(pageUrl, requestBody, "/register/utr")
+  }
 }

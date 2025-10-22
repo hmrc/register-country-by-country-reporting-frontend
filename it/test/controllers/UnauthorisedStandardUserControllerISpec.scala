@@ -18,11 +18,12 @@ package controllers
 
 import utils.ISpecBehaviours
 
-class IndexControllerISpec extends ISpecBehaviours {
+class UnauthorisedStandardUserControllerISpec extends ISpecBehaviours {
 
-  val pageUrl: Option[String] = Some("/")
-  "GET / IndexController.onPageLoad" must {
-    behave like standardOnPageLoadRedirects(pageUrl)
+  val pageUrl: Option[String] = Some("/register/problem/sign-in-problem")
+
+  "GET / UnauthorisedStandardUserController.onPageLoad" must {
+    behave like pageLoads(pageUrl, "unauthorisedStandardUser.title")
   }
 
 }

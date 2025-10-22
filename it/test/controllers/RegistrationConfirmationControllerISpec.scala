@@ -16,13 +16,20 @@
 
 package controllers
 
+import models.{SubscriptionID, UserAnswers}
+import pages.SubscriptionIDPage
 import utils.ISpecBehaviours
 
-class IndexControllerISpec extends ISpecBehaviours {
+class RegistrationConfirmationControllerISpec extends ISpecBehaviours {
 
-  val pageUrl: Option[String] = Some("/")
-  "GET / IndexController.onPageLoad" must {
-    behave like standardOnPageLoadRedirects(pageUrl)
+  val pageUrl: Option[String] = Some("/register/confirm-registration")
+
+  "RegistrationConfirmationController" must {
+    val subscriptionID = SubscriptionID("xxx200")
+    val answers        = UserAnswers("internalId").set(SubscriptionIDPage, subscriptionID).get
+
+    behave like pageLoads(pageUrl, "registrationConfirmation.title", answers)
+
   }
 
 }

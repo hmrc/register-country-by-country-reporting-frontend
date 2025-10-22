@@ -26,7 +26,9 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
 import play.api.http.Status.{OK, UNAUTHORIZED}
 import play.api.libs.json.Json
-import uk.gov.hmrc.auth.core.AffinityGroup.Individual
+import utils.EnrolmentProxyStubs.{getEnrolments, OK_Response}
+import utils.RegisterationCBCStubs._
+import utils.TaxEnrolmentsStubs.createEnrolment
 
 object WireMockConstants {
   val stubPort = 11111
@@ -60,8 +62,28 @@ trait WireMockHelper extends BeforeAndAfterAll with BeforeAndAfterEach with Auth
     super.afterAll()
   }
 
-  def stubAuthorised(appaId: String): Unit =
-    stubPost(authUrl, OK, authRequest, authOKResponse(appaId))
+  def stubEnrolmentGetEnrolment(): Unit =
+    stubGet(getEnrolments, OK, OK_Response)
+
+  def stubCreateEnrolment(): Unit =
+    stubPutResponse(createEnrolment, OK)
+
+  def stubRegisterCBCnoId(): Unit =
+    stubPostWithoutBody(noID, OK, OK_NoID_Response)
+
+  def stubRegisterCBCwithUtr(): Unit =
+    stubPostWithoutBody(registerWithUtr, OK, OK_withUtr_Response)
+
+  def stubRegisterationReadSubscription(): Unit =
+    stubPostWithoutBody(readSubscription, OK, OK_ReadSubscription_Response)
+
+  def stubAuthorised(appId: Option[String]): Unit = {
+    val responseBody = appId match {
+      case Some(value) => authOKResponse(value)
+      case None        => authOKResponseWithoutEnrolment()
+    }
+    stubPost(authUrl, OK, authRequest, responseBody)
+  }
 
   def stubAuthorisedIndividual(appaId: String): Unit =
     stubPost(authUrl, OK, authRequest, authOKResponse(appaId, "Individual"))
@@ -164,6 +186,13 @@ trait WireMockHelper extends BeforeAndAfterAll with BeforeAndAfterEach with Auth
       WireMock
         .post(urlEqualTo(stripToPath(url)))
         .withRequestBody(new EqualToJsonPattern(requestBody, true, false))
+        .willReturn(aResponse().withStatus(status).withBody(returnBody))
+    )
+
+  def stubPostWithoutBody(url: String, status: Int, returnBody: String): Unit =
+    server.stubFor(
+      WireMock
+        .post(urlEqualTo(stripToPath(url)))
         .willReturn(aResponse().withStatus(status).withBody(returnBody))
     )
 
