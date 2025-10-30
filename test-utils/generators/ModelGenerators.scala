@@ -17,8 +17,10 @@
 package generators
 
 import models.email.EmailRequest
+import models.matching.RegistrationInfo
+import models.register.response.details.AddressResponse
 import models.subscription.request._
-import models.{Address, BusinessType, Country, UniqueTaxpayerReference}
+import models.{Address, BusinessType, Country, SafeId, UniqueTaxpayerReference}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -126,5 +128,32 @@ trait ModelGenerators {
       contactName <- arbitrary[Map[String, String]]
 
     } yield EmailRequest(to, id, contactName)
+  }
+
+  implicit lazy val arbitrarySafeId: Arbitrary[SafeId] = Arbitrary {
+    for {
+      value <- nonEmptyString
+    } yield SafeId(value)
+  }
+
+  implicit lazy val arbitraryAddressResponse: Arbitrary[AddressResponse] =
+    Arbitrary {
+      for {
+        addressLine1 <- nonEmptyString
+        addressLine2 <- arbitrary[Option[String]]
+        addressLine3 <- arbitrary[Option[String]]
+        addressLine4 <- arbitrary[Option[String]]
+        postCode     <- arbitrary[Option[String]]
+        countryCode  <- Gen.numStr
+      } yield AddressResponse(addressLine1, addressLine2, addressLine3, addressLine4, postCode, countryCode)
+    }
+
+  implicit val arbitraryRegistrationInfo: Arbitrary[RegistrationInfo] = Arbitrary {
+    for {
+      safeId  <- arbitrarySafeId.arbitrary
+      name    <- nonEmptyString
+      address <- arbitraryAddressResponse.arbitrary
+
+    } yield RegistrationInfo(safeId, name, address)
   }
 }

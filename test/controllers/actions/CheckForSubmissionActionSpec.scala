@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes
 import models.requests.DataRequest
 import org.scalatest.EitherValues
-import pages.ContactNamePage
+import pages.{ContactNamePage, RegistrationInfoPage}
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.Result
 import play.api.test.FakeRequest
@@ -52,11 +52,22 @@ class CheckForSubmissionActionSpec extends SpecBase with EitherValues {
 
     "when userAnswers is not empty" - {
 
-      "must allow the user to continue" in {
+      "must redirect To SomeInformationMissing Page when Registration Information missing" in {
 
         val action = new Harness
 
-        val userAnswers = emptyUserAnswers.set(ContactNamePage, "Name").success.value
+        val userAnswers = emptyUserAnswers.withPage(ContactNamePage, "test user")
+        val result      = action.callRefine(DataRequest(FakeRequest(), "id", userAnswers)).map(_.left.value)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustEqual routes.MissingInformationController.onPageLoad().url
+      }
+
+      "must allow the user to continue when RegistrationInfo available" in {
+
+        val action = new Harness
+
+        val userAnswers = emptyUserAnswers.withPage(RegistrationInfoPage, arbitraryRegistrationInfo.arbitrary.sample.get)
         val result      = action.callRefine(DataRequest(FakeRequest(), "id", userAnswers)).futureValue
 
         result.isRight mustBe true

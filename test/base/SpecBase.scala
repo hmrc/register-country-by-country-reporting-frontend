@@ -17,6 +17,7 @@
 package base
 
 import controllers.actions._
+import generators.Generators
 import models.{UUIDGen, UUIDGenImpl, UniqueTaxpayerReference, UserAnswers}
 import navigation.{CBCRNavigator, FakeCBCRNavigator}
 import org.mockito.MockitoSugar
@@ -47,7 +48,8 @@ trait SpecBase
     with OptionValues
     with ScalaFutures
     with BeforeAndAfterEach
-    with IntegrationPatience {
+    with IntegrationPatience
+    with Generators {
 
   val userAnswersId: String        = "id"
   val utr: UniqueTaxpayerReference = UniqueTaxpayerReference("1234567890")
