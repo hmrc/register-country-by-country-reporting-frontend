@@ -35,9 +35,7 @@ class ContactNameController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: CBCRNavigator,
-  identify: IdentifierAction,
-  getData: DataRetrievalAction,
-  requireData: DataRequiredAction,
+  standardActionSets: StandardActionSets,
   formProvider: ContactNameFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: ContactNameView
@@ -47,7 +45,7 @@ class ContactNameController @Inject() (
 
   val form: Form[String] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
       val preparedForm = request.userAnswers.get(ContactNamePage) match {
         case None        => form
@@ -57,7 +55,7 @@ class ContactNameController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
     implicit request =>
       form
         .bindFromRequest()
