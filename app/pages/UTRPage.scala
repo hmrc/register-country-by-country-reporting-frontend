@@ -16,12 +16,17 @@
 
 package pages
 
-import models.UniqueTaxpayerReference
+import models.{UniqueTaxpayerReference, UserAnswers}
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object UTRPage extends QuestionPage[UniqueTaxpayerReference] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "utr"
+
+  override def cleanup(value: Option[UniqueTaxpayerReference], userAnswers: UserAnswers): Try[UserAnswers] =
+    List(IsThisYourBusinessPage, RegistrationInfoPage).foldLeft(Try(userAnswers))(Page.removePage)
 }

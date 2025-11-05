@@ -19,7 +19,6 @@ package controllers.actions
 import controllers.routes
 import models.UserAnswers
 import models.requests.DataRequest
-import pages.RegistrationInfoPage
 import play.api.libs.json.Json
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
@@ -39,13 +38,10 @@ class CheckForSubmissionActionImpl @Inject() (implicit val executionContext: Exe
       Future.successful(Right(request))
     }
 
-  private def isRegistrationInformationMissing(userAnswers: UserAnswers) =
-    userAnswers.get(RegistrationInfoPage) match {
-      case Some(_) => false
-      case None =>
-        val validator = RegistrationInformationValidator(userAnswers)
-        validator.isInformationMissing
-    }
+  private def isRegistrationInformationMissing(userAnswers: UserAnswers) = {
+    val validator = RegistrationInformationValidator(userAnswers)
+    validator.isInformationMissing
+  }
 }
 
 trait CheckForSubmissionAction extends ActionRefiner[DataRequest, DataRequest]

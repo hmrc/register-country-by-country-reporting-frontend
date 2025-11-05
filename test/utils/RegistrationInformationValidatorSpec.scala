@@ -23,166 +23,286 @@ import pages._
 class RegistrationInformationValidatorSpec extends SpecBase {
 
   "isInformationMissing" - {
+    "for NonRegisteredUserFlow" - {
 
-    val address        = arbitraryBusinessWithoutIdAddress.arbitrary.sample.get
-    val maxPhoneNumber = 24
+      val address        = arbitraryBusinessWithoutIdAddress.arbitrary.sample.get
+      val maxPhoneNumber = 24
 
-    "must return BusinessWithoutIDName if all mandatory values are not available" in {
-      RegistrationInformationValidator(emptyUserAnswers).isInformationMissing shouldBe true
+      "must return BusinessWithoutIDName if all mandatory values are not available" in {
+        RegistrationInformationValidator(emptyUserAnswers).isInformationMissing shouldBe true
+      }
+
+      "must return BusinessWithoutIdAddress if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers.withPage(BusinessWithoutIDNamePage, "test business")
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
+
+      "must return BusinessHaveDifferentName if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(BusinessWithoutIDNamePage, "test business")
+          .withPage(BusinessWithoutIdAddressPage, address)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
+
+      "must return WhatIsTradingName if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(BusinessWithoutIDNamePage, "test business")
+          .withPage(BusinessWithoutIdAddressPage, address)
+          .withPage(BusinessHaveDifferentNamePage, true)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
+
+      "must return PrimaryContactName if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(BusinessWithoutIDNamePage, "test business")
+          .withPage(BusinessWithoutIdAddressPage, address)
+          .withPage(BusinessHaveDifferentNamePage, false)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
+
+      "must return PrimaryContactEmail if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(BusinessWithoutIDNamePage, "test business")
+          .withPage(BusinessWithoutIdAddressPage, address)
+          .withPage(BusinessHaveDifferentNamePage, false)
+          .withPage(ContactNamePage, "test user")
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
+
+      "must return HaveTelephonePage if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(BusinessWithoutIDNamePage, "test business")
+          .withPage(BusinessWithoutIdAddressPage, address)
+          .withPage(BusinessHaveDifferentNamePage, false)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
+
+      "must return PrimaryContactNumber if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(BusinessWithoutIDNamePage, "test business")
+          .withPage(BusinessWithoutIdAddressPage, address)
+          .withPage(BusinessHaveDifferentNamePage, false)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, true)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
+
+      "must return DoYouHaveSecondContactPage if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(BusinessWithoutIDNamePage, "test business")
+          .withPage(BusinessWithoutIdAddressPage, address)
+          .withPage(BusinessHaveDifferentNamePage, false)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, false)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
+
+      "must return SecondContactName if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(BusinessWithoutIDNamePage, "test business")
+          .withPage(BusinessWithoutIdAddressPage, address)
+          .withPage(BusinessHaveDifferentNamePage, false)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, false)
+          .withPage(DoYouHaveSecondContactPage, true)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
+
+      "must return SecondContactEmail if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(BusinessWithoutIDNamePage, "test business")
+          .withPage(BusinessWithoutIdAddressPage, address)
+          .withPage(BusinessHaveDifferentNamePage, false)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, false)
+          .withPage(DoYouHaveSecondContactPage, true)
+          .withPage(SecondContactNamePage, "Test Second contact name")
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
+
+      "must return SecondContactHavePhone if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(BusinessWithoutIDNamePage, "test business")
+          .withPage(BusinessWithoutIdAddressPage, address)
+          .withPage(BusinessHaveDifferentNamePage, false)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, false)
+          .withPage(DoYouHaveSecondContactPage, true)
+          .withPage(SecondContactNamePage, "Test Second contact name")
+          .withPage(SecondContactEmailPage, "Test2@test.com")
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
+
+      "must return SecondContactPhonePage if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(BusinessWithoutIDNamePage, "test business")
+          .withPage(BusinessWithoutIdAddressPage, address)
+          .withPage(BusinessHaveDifferentNamePage, false)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, false)
+          .withPage(DoYouHaveSecondContactPage, true)
+          .withPage(SecondContactNamePage, "Test Second contact name")
+          .withPage(SecondContactEmailPage, "Test2@test.com")
+          .withPage(SecondContactHavePhonePage, true)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
+
+      "must return false if all values are available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(BusinessWithoutIDNamePage, "test business")
+          .withPage(BusinessWithoutIdAddressPage, address)
+          .withPage(BusinessHaveDifferentNamePage, true)
+          .withPage(WhatIsTradingNamePage, "testTradingName")
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, true)
+          .withPage(ContactPhonePage, validPhoneNumber(maxPhoneNumber).sample.get)
+          .withPage(DoYouHaveSecondContactPage, true)
+          .withPage(SecondContactNamePage, "Test Second contact name")
+          .withPage(SecondContactEmailPage, "Test2@test.com")
+          .withPage(SecondContactHavePhonePage, true)
+          .withPage(SecondContactPhonePage, validPhoneNumber(maxPhoneNumber).sample.get)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe false
+      }
+
+      "must return false if all mandatory values are available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(BusinessWithoutIDNamePage, "test business")
+          .withPage(BusinessWithoutIdAddressPage, address)
+          .withPage(BusinessHaveDifferentNamePage, false)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, false)
+          .withPage(DoYouHaveSecondContactPage, false)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe false
+      }
+
     }
 
-    "must return BusinessWithoutIdAddress if all mandatory values are not available" in {
-      val userAnswers = emptyUserAnswers.withPage(BusinessWithoutIDNamePage, "test business")
-      RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
-    }
+    "for RegisteredUserFlow" - {
 
-    "must return BusinessHaveDifferentName if all mandatory values are not available" in {
-      val userAnswers = emptyUserAnswers
-        .withPage(BusinessWithoutIDNamePage, "test business")
-        .withPage(BusinessWithoutIdAddressPage, address)
-      RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
-    }
+      val registrationInfo = arbitraryRegistrationInfo.arbitrary.sample.get
+      val maxPhoneNumber   = 24
 
-    "must return WhatIsTradingName if all mandatory values are not available" in {
-      val userAnswers = emptyUserAnswers
-        .withPage(BusinessWithoutIDNamePage, "test business")
-        .withPage(BusinessWithoutIdAddressPage, address)
-        .withPage(BusinessHaveDifferentNamePage, true)
-      RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
-    }
+      "must return PrimaryContactName if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(RegistrationInfoPage, registrationInfo)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
 
-    "must return PrimaryContactName if all mandatory values are not available" in {
-      val userAnswers = emptyUserAnswers
-        .withPage(BusinessWithoutIDNamePage, "test business")
-        .withPage(BusinessWithoutIdAddressPage, address)
-        .withPage(BusinessHaveDifferentNamePage, false)
-      RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
-    }
+      "must return PrimaryContactEmail if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(RegistrationInfoPage, registrationInfo)
+          .withPage(ContactNamePage, "test user")
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
 
-    "must return PrimaryContactEmail if all mandatory values are not available" in {
-      val userAnswers = emptyUserAnswers
-        .withPage(BusinessWithoutIDNamePage, "test business")
-        .withPage(BusinessWithoutIdAddressPage, address)
-        .withPage(BusinessHaveDifferentNamePage, false)
-        .withPage(ContactNamePage, "test user")
-      RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
-    }
+      "must return HaveTelephonePage if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(RegistrationInfoPage, registrationInfo)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
 
-    "must return HaveTelephonePage if all mandatory values are not available" in {
-      val userAnswers = emptyUserAnswers
-        .withPage(BusinessWithoutIDNamePage, "test business")
-        .withPage(BusinessWithoutIdAddressPage, address)
-        .withPage(BusinessHaveDifferentNamePage, false)
-        .withPage(ContactNamePage, "test user")
-        .withPage(ContactEmailPage, "test@test.com")
-      RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
-    }
+      "must return PrimaryContactNumber if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(RegistrationInfoPage, registrationInfo)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, true)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
 
-    "must return PrimaryContactNumber if all mandatory values are not available" in {
-      val userAnswers = emptyUserAnswers
-        .withPage(BusinessWithoutIDNamePage, "test business")
-        .withPage(BusinessWithoutIdAddressPage, address)
-        .withPage(BusinessHaveDifferentNamePage, false)
-        .withPage(ContactNamePage, "test user")
-        .withPage(ContactEmailPage, "test@test.com")
-        .withPage(HaveTelephonePage, true)
-      RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
-    }
+      "must return DoYouHaveSecondContactPage if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(RegistrationInfoPage, registrationInfo)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, false)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
 
-    "must return DoYouHaveSecondContactPage if all mandatory values are not available" in {
-      val userAnswers = emptyUserAnswers
-        .withPage(BusinessWithoutIDNamePage, "test business")
-        .withPage(BusinessWithoutIdAddressPage, address)
-        .withPage(BusinessHaveDifferentNamePage, false)
-        .withPage(ContactNamePage, "test user")
-        .withPage(ContactEmailPage, "test@test.com")
-        .withPage(HaveTelephonePage, false)
-      RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
-    }
+      "must return SecondContactName if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(RegistrationInfoPage, registrationInfo)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, false)
+          .withPage(DoYouHaveSecondContactPage, true)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
 
-    "must return SecondContactName if all mandatory values are not available" in {
-      val userAnswers = emptyUserAnswers
-        .withPage(BusinessWithoutIDNamePage, "test business")
-        .withPage(BusinessWithoutIdAddressPage, address)
-        .withPage(BusinessHaveDifferentNamePage, false)
-        .withPage(ContactNamePage, "test user")
-        .withPage(ContactEmailPage, "test@test.com")
-        .withPage(HaveTelephonePage, false)
-        .withPage(DoYouHaveSecondContactPage, true)
-      RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
-    }
+      "must return SecondContactEmail if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(RegistrationInfoPage, registrationInfo)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, false)
+          .withPage(DoYouHaveSecondContactPage, true)
+          .withPage(SecondContactNamePage, "Test Second contact name")
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
 
-    "must return SecondContactEmail if all mandatory values are not available" in {
-      val userAnswers = emptyUserAnswers
-        .withPage(BusinessWithoutIDNamePage, "test business")
-        .withPage(BusinessWithoutIdAddressPage, address)
-        .withPage(BusinessHaveDifferentNamePage, false)
-        .withPage(ContactNamePage, "test user")
-        .withPage(ContactEmailPage, "test@test.com")
-        .withPage(HaveTelephonePage, false)
-        .withPage(DoYouHaveSecondContactPage, true)
-        .withPage(SecondContactNamePage, "Test Second contact name")
-      RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
-    }
+      "must return SecondContactHavePhone if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(RegistrationInfoPage, registrationInfo)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, false)
+          .withPage(DoYouHaveSecondContactPage, true)
+          .withPage(SecondContactNamePage, "Test Second contact name")
+          .withPage(SecondContactEmailPage, "Test2@test.com")
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
 
-    "must return SecondContactHavePhone if all mandatory values are not available" in {
-      val userAnswers = emptyUserAnswers
-        .withPage(BusinessWithoutIDNamePage, "test business")
-        .withPage(BusinessWithoutIdAddressPage, address)
-        .withPage(BusinessHaveDifferentNamePage, false)
-        .withPage(ContactNamePage, "test user")
-        .withPage(ContactEmailPage, "test@test.com")
-        .withPage(HaveTelephonePage, false)
-        .withPage(DoYouHaveSecondContactPage, true)
-        .withPage(SecondContactNamePage, "Test Second contact name")
-        .withPage(SecondContactEmailPage, "Test2@test.com")
-      RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
-    }
+      "must return SecondContactPhonePage if all mandatory values are not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(RegistrationInfoPage, registrationInfo)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, false)
+          .withPage(DoYouHaveSecondContactPage, true)
+          .withPage(SecondContactNamePage, "Test Second contact name")
+          .withPage(SecondContactEmailPage, "Test2@test.com")
+          .withPage(SecondContactHavePhonePage, true)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
 
-    "must return SecondContactPhonePage if all mandatory values are not available" in {
-      val userAnswers = emptyUserAnswers
-        .withPage(BusinessWithoutIDNamePage, "test business")
-        .withPage(BusinessWithoutIdAddressPage, address)
-        .withPage(BusinessHaveDifferentNamePage, false)
-        .withPage(ContactNamePage, "test user")
-        .withPage(ContactEmailPage, "test@test.com")
-        .withPage(HaveTelephonePage, false)
-        .withPage(DoYouHaveSecondContactPage, true)
-        .withPage(SecondContactNamePage, "Test Second contact name")
-        .withPage(SecondContactEmailPage, "Test2@test.com")
-        .withPage(SecondContactHavePhonePage, true)
-      RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
-    }
+      "must return false if all values are available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(RegistrationInfoPage, registrationInfo)
+          .withPage(WhatIsTradingNamePage, "testTradingName")
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, true)
+          .withPage(ContactPhonePage, validPhoneNumber(maxPhoneNumber).sample.get)
+          .withPage(DoYouHaveSecondContactPage, true)
+          .withPage(SecondContactNamePage, "Test Second contact name")
+          .withPage(SecondContactEmailPage, "Test2@test.com")
+          .withPage(SecondContactHavePhonePage, true)
+          .withPage(SecondContactPhonePage, validPhoneNumber(maxPhoneNumber).sample.get)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe false
+      }
 
-    "must return false if all values are available" in {
-      val userAnswers = emptyUserAnswers
-        .withPage(BusinessWithoutIDNamePage, "test business")
-        .withPage(BusinessWithoutIdAddressPage, address)
-        .withPage(BusinessHaveDifferentNamePage, true)
-        .withPage(WhatIsTradingNamePage, "testTradingName")
-        .withPage(ContactNamePage, "test user")
-        .withPage(ContactEmailPage, "test@test.com")
-        .withPage(HaveTelephonePage, true)
-        .withPage(ContactPhonePage, validPhoneNumber(maxPhoneNumber).sample.get)
-        .withPage(DoYouHaveSecondContactPage, true)
-        .withPage(SecondContactNamePage, "Test Second contact name")
-        .withPage(SecondContactEmailPage, "Test2@test.com")
-        .withPage(SecondContactHavePhonePage, true)
-        .withPage(SecondContactPhonePage, validPhoneNumber(maxPhoneNumber).sample.get)
-      RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe false
-    }
+      "must return false if all mandatory values are available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(RegistrationInfoPage, registrationInfo)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, false)
+          .withPage(DoYouHaveSecondContactPage, false)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe false
+      }
 
-    "must return false if all mandatory values are available" in {
-      val userAnswers = emptyUserAnswers
-        .withPage(BusinessWithoutIDNamePage, "test business")
-        .withPage(BusinessWithoutIdAddressPage, address)
-        .withPage(BusinessHaveDifferentNamePage, false)
-        .withPage(ContactNamePage, "test user")
-        .withPage(ContactEmailPage, "test@test.com")
-        .withPage(HaveTelephonePage, false)
-        .withPage(DoYouHaveSecondContactPage, false)
-      RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe false
     }
-
   }
 }

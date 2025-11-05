@@ -68,12 +68,18 @@ class RegistrationInformationValidator(userAnswers: UserAnswers) {
       case _           => Seq(BusinessHaveDifferentNamePage)
     }
 
-  private def checkRegistrationInformation: Seq[Page] =
+  private def checkRegistrationInformationForWithoutIDFlow: Seq[Page] =
     checkBusinessWithoutIDName ++ checkBusinessWithoutIdAddress ++
-      checkHaveDifferentName ++ checkPrimaryContactDetails ++
-      checkSecondaryContactDetails
+      checkHaveDifferentName ++ checkContactDetails
 
-  def isInformationMissing: Boolean = checkRegistrationInformation.nonEmpty
+  private def checkContactDetails: Seq[Page] = checkPrimaryContactDetails ++
+    checkSecondaryContactDetails
+
+  def isInformationMissing: Boolean =
+    userAnswers.get(RegistrationInfoPage) match {
+      case Some(_) => checkContactDetails.nonEmpty
+      case None    => checkRegistrationInformationForWithoutIDFlow.nonEmpty
+    }
 }
 
 object RegistrationInformationValidator {
