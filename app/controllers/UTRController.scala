@@ -66,10 +66,14 @@ class UTRController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, taxType))),
           value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(UTRPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(UTRPage, mode, updatedAnswers))
+            if (request.userAnswers.hasNewValue(UTRPage, value)) {
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(UTRPage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(UTRPage, mode, updatedAnswers))
+            } else {
+              Future.successful(Redirect(navigator.nextPage(UTRPage, mode, request.userAnswers)))
+            }
         )
   }
 
