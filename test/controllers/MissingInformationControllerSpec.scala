@@ -37,7 +37,7 @@ class MissingInformationControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[MissingInformationView]
 
-        val continueUrl: String = routes.DoYouHaveUTRController.onPageLoad(NormalMode).url
+        val continueUrl: String = routes.IndexController.onPageLoad.url
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual view(continueUrl)(request, messages(application)).toString

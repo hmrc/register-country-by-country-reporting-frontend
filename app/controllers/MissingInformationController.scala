@@ -35,7 +35,7 @@ class MissingInformationController @Inject() (
 
   def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() {
     implicit request =>
-      val continueUrl = routes.DoYouHaveUTRController.onPageLoad(NormalMode).url
+      val continueUrl = routes.IndexController.onPageLoad.url
       Ok(view(continueUrl))
 
   }
