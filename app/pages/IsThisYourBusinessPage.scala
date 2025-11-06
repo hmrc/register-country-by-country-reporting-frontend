@@ -16,11 +16,20 @@
 
 package pages
 
+import models.{UniqueTaxpayerReference, UserAnswers}
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object IsThisYourBusinessPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "isThisYourBusiness"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case Some(false) => List(RegistrationInfoPage).foldLeft(Try(userAnswers))(Page.removePage)
+    case _           => super.cleanup(value, userAnswers)
+  }
+
 }

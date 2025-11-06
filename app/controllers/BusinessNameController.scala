@@ -69,10 +69,14 @@ class BusinessNameController @Inject() (
               .fold(
                 formWithErrors => Future.successful(BadRequest(view(formWithErrors, businessType, mode))),
                 value =>
-                  for {
-                    updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessNamePage, value))
-                    _              <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(navigator.nextPage(BusinessNamePage, mode, updatedAnswers))
+                  if (request.userAnswers.hasNewValue(BusinessNamePage, value)) {
+                    for {
+                      updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessNamePage, value))
+                      _              <- sessionRepository.set(updatedAnswers)
+                    } yield Redirect(navigator.nextPage(BusinessNamePage, mode, updatedAnswers))
+                  } else {
+                    Future.successful(Redirect(navigator.nextPage(BusinessNamePage, mode, request.userAnswers)))
+                  }
               )
         }
         .getOrElse(Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad())))
