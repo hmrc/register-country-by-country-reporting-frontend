@@ -90,9 +90,6 @@ class BusinessNameControllerSpec extends SpecBase {
 
       val userAnswers = emptyUserAnswers
         .withPage(BusinessTypePage, LimitedCompany)
-        .set(BusinessTypePage, LimitedCompany)
-        .success
-        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -114,7 +111,6 @@ class BusinessNameControllerSpec extends SpecBase {
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val userAnswers = emptyUserAnswers
-        .withPage(BusinessTypePage, LimitedCompany)
         .withPage(BusinessTypePage, LimitedCompany)
         .withPage(BusinessNamePage, "answer")
 
