@@ -277,9 +277,37 @@ class RegistrationInformationValidatorSpec extends SpecBase {
         RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
       }
 
+      "must return IsThisBusinessPage when Page value is not available" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(RegistrationInfoPage, registrationInfo)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, false)
+          .withPage(DoYouHaveSecondContactPage, true)
+          .withPage(SecondContactNamePage, "Test Second contact name")
+          .withPage(SecondContactEmailPage, "Test2@test.com")
+          .withPage(SecondContactHavePhonePage, false)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
+
+      "must return IsThisBusinessPage when Page value is false" in {
+        val userAnswers = emptyUserAnswers
+          .withPage(RegistrationInfoPage, registrationInfo)
+          .withPage(IsThisYourBusinessPage, false)
+          .withPage(ContactNamePage, "test user")
+          .withPage(ContactEmailPage, "test@test.com")
+          .withPage(HaveTelephonePage, false)
+          .withPage(DoYouHaveSecondContactPage, true)
+          .withPage(SecondContactNamePage, "Test Second contact name")
+          .withPage(SecondContactEmailPage, "Test2@test.com")
+          .withPage(SecondContactHavePhonePage, false)
+        RegistrationInformationValidator(userAnswers).isInformationMissing shouldBe true
+      }
+
       "must return false if all values are available" in {
         val userAnswers = emptyUserAnswers
           .withPage(RegistrationInfoPage, registrationInfo)
+          .withPage(IsThisYourBusinessPage, true)
           .withPage(WhatIsTradingNamePage, "testTradingName")
           .withPage(ContactNamePage, "test user")
           .withPage(ContactEmailPage, "test@test.com")
@@ -296,6 +324,7 @@ class RegistrationInformationValidatorSpec extends SpecBase {
       "must return false if all mandatory values are available" in {
         val userAnswers = emptyUserAnswers
           .withPage(RegistrationInfoPage, registrationInfo)
+          .withPage(IsThisYourBusinessPage, true)
           .withPage(ContactNamePage, "test user")
           .withPage(ContactEmailPage, "test@test.com")
           .withPage(HaveTelephonePage, false)

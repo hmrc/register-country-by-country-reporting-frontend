@@ -28,6 +28,7 @@ import pages.{
   ContactNamePage,
   DoYouHaveSecondContactPage,
   HaveTelephonePage,
+  IsThisYourBusinessPage,
   RegistrationInfoPage
 }
 import play.api.http.Status.SEE_OTHER
@@ -90,6 +91,7 @@ class CheckForSubmissionActionSpec extends SpecBase with EitherValues {
 
         val userAnswers = emptyUserAnswers
           .withPage(RegistrationInfoPage, arbitraryRegistrationInfo.arbitrary.sample.get)
+          .withPage(IsThisYourBusinessPage, true)
           .withPage(ContactNamePage, "test user")
           .withPage(ContactEmailPage, "test@test.com")
           .withPage(HaveTelephonePage, false)
