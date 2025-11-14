@@ -44,8 +44,8 @@ class AuthActionSpec extends SpecBase {
   }
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
-  val bodyParsers: BodyParsers.Default = app.injector.instanceOf[BodyParsers.Default]
-  val appConfig: FrontendAppConfig     = app.injector.instanceOf[FrontendAppConfig]
+  val bodyParsers: BodyParsers.Default = mock[BodyParsers.Default]
+  val appConfig: FrontendAppConfig     = mock[FrontendAppConfig]
 
   type AuthRetrievals = Option[String] ~ Enrolments ~ Option[AffinityGroup] ~ Option[CredentialRole]
 
@@ -208,7 +208,7 @@ class AuthActionSpec extends SpecBase {
 
       "must redirect the user to unauthorised standard user page when Assistant" in {
         val mockAuthConnector: AuthConnector = mock[AuthConnector]
-        val emptyEnrolments: Enrolment       = Enrolment(key = "")
+        val emptyEnrolments: Enrolment       = Enrolment(key = "test")
 
         val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(emptyEnrolments)) ~ None ~ Some(Assistant)
         when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(retrieval)

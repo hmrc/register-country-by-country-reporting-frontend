@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 import utils.CountryListFactory
 import views.html.BusinessWithoutIdAddressView
 
@@ -33,20 +34,20 @@ import scala.concurrent.Future
 
 class BusinessWithoutIdAddressControllerSpec extends SpecBase {
 
-  val testCountryList     = Seq(Country("valid", "GG", "Guernsey"))
-  val formProvider        = new BusinessWithoutIdAddressFormProvider()
-  val form: Form[Address] = formProvider(testCountryList)
-  val address: Address    = Address("value 1", Some("value 2"), "value 3", Some("value 4"), Some("XX9 9XX"), Country("valid", "GG", "Guernsey"))
+  val testCountryList: Seq[Country] = Seq(Country("valid", "GG", "Guernsey"))
+  val formProvider                  = new BusinessWithoutIdAddressFormProvider()
+  val form: Form[Address]           = formProvider(testCountryList)
+  val address: Address              = Address("value 1", Some("value 2"), "value 3", Some("value 4"), Some("XX9 9XX"), Country("valid", "GG", "Guernsey"))
 
-  val mockAppConfig = mock[FrontendAppConfig]
+  val mockAppConfig: FrontendAppConfig           = mock[FrontendAppConfig]
+  val mockCountryListFactory: CountryListFactory = mock[CountryListFactory]
 
-  val countryListFactory = new CountryListFactory(app.environment, mockAppConfig) {
-    override lazy val countryList: Option[Seq[Country]] = Some(testCountryList)
-  }
+  when(mockCountryListFactory.countryList).thenReturn(Some(testCountryList))
+  when(mockCountryListFactory.countryListWithoutGB).thenReturn(Some(testCountryList))
+  when(mockCountryListFactory.countrySelectList(any(), any())).thenReturn(Seq(SelectItem(Some(""), "Select a country", selected = false)))
+  lazy val businessWithoutIdAddressRoute: String = routes.BusinessWithoutIdAddressController.onPageLoad(NormalMode).url
 
-  lazy val businessWithoutIdAddressRoute = routes.BusinessWithoutIdAddressController.onPageLoad(NormalMode).url
-
-  val userAnswers = UserAnswers(userAnswersId).set(BusinessWithoutIdAddressPage, address).success.value
+  val userAnswers: UserAnswers = UserAnswers(userAnswersId).set(BusinessWithoutIdAddressPage, address).success.value
 
   "BusinessWithoutIdAddress Controller" - {
 
@@ -54,7 +55,7 @@ class BusinessWithoutIdAddressControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(
-          bind[CountryListFactory].to(countryListFactory)
+          bind[CountryListFactory].to(mockCountryListFactory)
         )
         .build()
 
@@ -66,8 +67,8 @@ class BusinessWithoutIdAddressControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, countryListFactory.countrySelectList(form.data, testCountryList), NormalMode)(request,
-                                                                                                                                   messages(application)
+        contentAsString(result) mustEqual view(form, mockCountryListFactory.countrySelectList(form.data, testCountryList), NormalMode)(request,
+                                                                                                                                       messages(application)
         ).toString
         contentAsString(result) must include("Select a country")
       }
@@ -77,7 +78,7 @@ class BusinessWithoutIdAddressControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(
-          bind[CountryListFactory].to(countryListFactory)
+          bind[CountryListFactory].to(mockCountryListFactory)
         )
         .build()
 
@@ -89,7 +90,7 @@ class BusinessWithoutIdAddressControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(address), countryListFactory.countrySelectList(form.data, testCountryList), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill(address), mockCountryListFactory.countrySelectList(form.data, testCountryList), NormalMode)(
           request,
           messages(application)
         ).toString
@@ -125,7 +126,7 @@ class BusinessWithoutIdAddressControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(
-          bind[CountryListFactory].to(countryListFactory)
+          bind[CountryListFactory].to(mockCountryListFactory)
         )
         .build()
 
@@ -141,8 +142,9 @@ class BusinessWithoutIdAddressControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, countryListFactory.countrySelectList(form.data, testCountryList), NormalMode)(request,
-                                                                                                                                        messages(application)
+        contentAsString(result) mustEqual view(boundForm, mockCountryListFactory.countrySelectList(form.data, testCountryList), NormalMode)(
+          request,
+          messages(application)
         ).toString
       }
     }

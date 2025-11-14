@@ -47,9 +47,10 @@ trait ISpecBase
   implicit val fixedClock: Clock                       = Clock.fixed(Instant.now(), ZoneId.of("UTC"))
   lazy val repository: SessionRepository               = app.injector.instanceOf[SessionRepository]
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(config)
-    .build()
+  override def fakeApplication(): Application =
+    new GuiceApplicationBuilder()
+      .configure(config)
+      .build()
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   def emptyUserAnswers: UserAnswers = UserAnswers("internalId", Json.obj(), Instant.now(fixedClock))

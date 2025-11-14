@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import config.FrontendAppConfig
 import connectors.EmailConnector
 import generators.Generators
 import models.SubscriptionID
@@ -30,6 +31,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HttpResponse
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class EmailServiceSpec extends SpecBase with BeforeAndAfterEach with Generators with ScalaCheckPropertyChecks {
@@ -40,14 +42,15 @@ class EmailServiceSpec extends SpecBase with BeforeAndAfterEach with Generators 
     )
 
   private val mockEmailConnector: EmailConnector = mock[EmailConnector]
+  private val mockAppConfig: FrontendAppConfig   = mock[FrontendAppConfig]
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
+  override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .overrides(
       bind[EmailConnector].toInstance(mockEmailConnector)
     )
     .build()
 
-  val emailService: EmailService = app.injector.instanceOf[EmailService]
+  val mockEmailService: EmailService = new EmailService(mockEmailConnector, mockAppConfig)
 
   val subscriptionID: SubscriptionID = SubscriptionID("XACBC0000123456")
 
@@ -64,7 +67,7 @@ class EmailServiceSpec extends SpecBase with BeforeAndAfterEach with Generators 
         .success
         .value
 
-      val result = emailService.sendEmail(userAnswers, SubscriptionID("Id"))
+      val result = mockEmailService.sendEmail(userAnswers, SubscriptionID("Id"))
 
       result.futureValue.value mustBe ACCEPTED
 
@@ -77,7 +80,7 @@ class EmailServiceSpec extends SpecBase with BeforeAndAfterEach with Generators 
 
       val userAnswers = emptyUserAnswers.set(ContactEmailPage, "test@gmail.com").success.value
 
-      val result = emailService.sendEmail(userAnswers, SubscriptionID("Id"))
+      val result = mockEmailService.sendEmail(userAnswers, SubscriptionID("Id"))
 
       result.futureValue.value mustBe INTERNAL_SERVER_ERROR
       verify(mockEmailConnector, times(1)).sendEmail(any())(any())

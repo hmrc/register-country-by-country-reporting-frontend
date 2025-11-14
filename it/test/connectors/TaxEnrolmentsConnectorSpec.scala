@@ -29,13 +29,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockHelper with Generators with ScalaCheckPropertyChecks {
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
+  override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .configure(
       conf = "microservice.services.tax-enrolments.port" -> server.port()
     )
     .build()
 
-  lazy val connector: TaxEnrolmentsConnector = app.injector.instanceOf[TaxEnrolmentsConnector]
+  def connector: TaxEnrolmentsConnector = app.injector.instanceOf[TaxEnrolmentsConnector]
 
   "TaxEnrolmentsConnector" - {
 

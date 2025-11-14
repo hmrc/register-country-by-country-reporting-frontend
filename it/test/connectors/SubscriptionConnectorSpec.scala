@@ -33,17 +33,17 @@ import scala.concurrent.Future
 
 class SubscriptionConnectorSpec extends SpecBase with WireMockHelper with ScalaCheckPropertyChecks with Generators {
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
+  override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .configure(
       conf = "microservice.services.register-country-by-country.port" -> server.port()
     )
     .build()
 
-  lazy val connector: SubscriptionConnector = app.injector.instanceOf[SubscriptionConnector]
-  private val subscriptionUrl               = "/register-country-by-country-reporting/subscription"
-  private val errorCodes: Gen[Int]          = Gen.oneOf(Seq(400, 404, 403, 500, 501, 502, 503, 504))
-  private val safeId                        = SafeId("safeId")
-  private val businessName                  = "Some Business Name"
+  def connector: SubscriptionConnector = app.injector.instanceOf[SubscriptionConnector]
+  private val subscriptionUrl          = "/register-country-by-country-reporting/subscription"
+  private val errorCodes: Gen[Int]     = Gen.oneOf(Seq(400, 404, 403, 500, 501, 502, 503, 504))
+  private val safeId                   = SafeId("safeId")
+  private val businessName             = "Some Business Name"
 
   "SubscriptionConnector" - {
     "readSubscription" - {

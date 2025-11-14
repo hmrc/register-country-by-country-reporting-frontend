@@ -32,15 +32,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class RegistrationConnectorSpec extends SpecBase with WireMockHelper with ScalaCheckPropertyChecks with JsonFixture {
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
+  override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .configure(
       conf = "microservice.services.register-country-by-country.port" -> server.port()
     )
     .build()
 
-  lazy val connector: RegistrationConnector = app.injector.instanceOf[RegistrationConnector]
-  private val registrationUrl               = "/register-country-by-country-reporting/registration"
-  private val errorCodes: Gen[Int]          = Gen.oneOf(Seq(400, 403, 500, 501, 502, 503, 504))
+  def connector: RegistrationConnector = app.injector.instanceOf[RegistrationConnector]
+  private val registrationUrl          = "/register-country-by-country-reporting/registration"
+  private val errorCodes: Gen[Int]     = Gen.oneOf(Seq(400, 403, 500, 501, 502, 503, 504))
 
   private val requestCommon: RequestCommon =
     RequestCommon("2016-08-16T15:55:30Z", "CBC", "ec031b045855445e96f98a569ds56cd2", Some(Seq(RequestParameter("REGIME", "CBC"))))
