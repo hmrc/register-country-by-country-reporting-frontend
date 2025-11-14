@@ -28,13 +28,13 @@ import utils.WireMockHelper
 
 class EmailConnectorSpec extends SpecBase with WireMockHelper with Generators with ScalaCheckPropertyChecks {
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
+  override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .configure(
       conf = "microservice.services.email.port" -> server.port()
     )
     .build()
 
-  lazy val connector: EmailConnector = app.injector.instanceOf[EmailConnector]
+  def connector: EmailConnector = app.injector.instanceOf[EmailConnector]
 
   "EmailConnector" - {
     "must return status as OK for valid email submission" in {

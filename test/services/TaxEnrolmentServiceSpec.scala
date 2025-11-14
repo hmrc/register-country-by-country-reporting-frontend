@@ -34,9 +34,9 @@ class TaxEnrolmentServiceSpec extends SpecBase {
   val mockTaxEnrolmentsConnector       = mock[TaxEnrolmentsConnector]
   val mockEnrolmentStoreProxyConnector = mock[EnrolmentStoreProxyConnector]
 
-  val service: TaxEnrolmentService = app.injector.instanceOf[TaxEnrolmentService]
+  val service: TaxEnrolmentService = new TaxEnrolmentService(mockTaxEnrolmentsConnector, mockEnrolmentStoreProxyConnector)
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
+  override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .overrides(
       bind[TaxEnrolmentsConnector].toInstance(mockTaxEnrolmentsConnector)
     )

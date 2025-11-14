@@ -36,7 +36,7 @@ class RegistrationConfirmationControllerSpec extends SpecBase with BeforeAndAfte
 
   private val mockEmailService: EmailService = mock[EmailService]
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
+  override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .overrides(
       inject.bind[EmailService].toInstance(mockEmailService)
     )

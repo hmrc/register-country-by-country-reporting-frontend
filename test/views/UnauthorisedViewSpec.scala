@@ -19,7 +19,6 @@ package views
 import base.SpecBase
 import config.FrontendAppConfig
 import org.jsoup.Jsoup
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Lang, Messages}
 import play.api.mvc.{AnyContent, MessagesControllerComponents}
 import play.api.test.{FakeRequest, Injecting}
@@ -27,17 +26,17 @@ import play.twirl.api.HtmlFormat
 import utils.ViewHelper
 import views.html.UnauthorisedView
 
-class UnauthorisedViewSpec extends SpecBase with GuiceOneAppPerSuite with Injecting with ViewHelper {
-
-  val view1: UnauthorisedView                                           = app.injector.instanceOf[UnauthorisedView]
-  val frontendAppConfig: FrontendAppConfig                              = app.injector.instanceOf[FrontendAppConfig]
-  val messagesControllerComponentsForView: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
+class UnauthorisedViewSpec extends SpecBase with Injecting with ViewHelper {
 
   implicit private val request: FakeRequest[AnyContent] = FakeRequest()
-  implicit private val messages: Messages               = messagesControllerComponentsForView.messagesApi.preferred(Seq(Lang("en")))
 
   "UnauthorisedView" - {
     "should render page components" in {
+      val view1: UnauthorisedView                                           = inject[UnauthorisedView]
+      val frontendAppConfig: FrontendAppConfig                              = inject[FrontendAppConfig]
+      val messagesControllerComponentsForView: MessagesControllerComponents = inject[MessagesControllerComponents]
+      implicit val messages: Messages                                       = messagesControllerComponentsForView.messagesApi.preferred(Seq(Lang("en")))
+
       val renderedHtml: HtmlFormat.Appendable =
         view1(frontendAppConfig.emailEnquiries)
       lazy val doc = Jsoup.parse(renderedHtml.body)

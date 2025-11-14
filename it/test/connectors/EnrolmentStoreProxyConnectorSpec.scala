@@ -48,16 +48,16 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class EnrolmentStoreProxyConnectorSpec extends SpecBase with WireMockHelper with Generators with ScalaCheckPropertyChecks {
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
+  override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .configure(
       conf = "microservice.services.enrolment-store-proxy.port" -> server.port()
     )
     .build()
 
-  lazy val connector: EnrolmentStoreProxyConnector = app.injector.instanceOf[EnrolmentStoreProxyConnector]
-  val enrolmentStoreProxyUrl                       = "/enrolment-store-proxy/enrolment-store/enrolments"
-  val enrolmentStoreProxy200Url                    = "/enrolment-store-proxy/enrolment-store/enrolments/HMRC-CBC-ORG~cbcId~xxx200~UTR~111111200/groups"
-  val enrolmentStoreProxy204Url                    = "/enrolment-store-proxy/enrolment-store/enrolments/HMRC-CBC-ORG~cbcId~xxx204~UTR~111111204/groups"
+  def connector: EnrolmentStoreProxyConnector = app.injector.instanceOf[EnrolmentStoreProxyConnector]
+  val enrolmentStoreProxyUrl                  = "/enrolment-store-proxy/enrolment-store/enrolments"
+  val enrolmentStoreProxy200Url               = "/enrolment-store-proxy/enrolment-store/enrolments/HMRC-CBC-ORG~cbcId~xxx200~UTR~111111200/groups"
+  val enrolmentStoreProxy204Url               = "/enrolment-store-proxy/enrolment-store/enrolments/HMRC-CBC-ORG~cbcId~xxx204~UTR~111111204/groups"
 
   val enrolmentStoreProxyResponseJson: String =
     """{

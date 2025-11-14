@@ -19,7 +19,7 @@ package services
 import base.SpecBase
 import connectors.RegistrationConnector
 import models.requests.DataRequest
-import models.{Address, ApiError, Country, MandatoryInformationMissingError, RegistrationWithoutIdInformationMissingError, SafeId, UserAnswers}
+import models.{Address, ApiError, Country, RegistrationWithoutIdInformationMissingError, SafeId, UUIDGen, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{Mockito, MockitoSugar}
 import pages._
@@ -28,25 +28,34 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContent
 
-import java.time.LocalDate
+import java.time.{Clock, LocalDate}
+import java.util.UUID
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RegisterWithoutIdServiceSpec extends SpecBase with MockitoSugar {
 
   val mockRegistrationConnector: RegistrationConnector = mock[RegistrationConnector]
+  val mockUuidGen: UUIDGen                             = mock[UUIDGen]
+  implicit val implicitUuidGen: UUIDGen                = mockUuidGen
+  implicit val implicitClock: Clock                    = fixedClock
 
-  val service: RegisterWithoutIdService = app.injector.instanceOf[RegisterWithoutIdService]
+  val service: RegisterWithoutIdService = new RegisterWithoutIdService(mockRegistrationConnector, mockUuidGen, fixedClock)
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
+  override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .overrides(
-      bind[RegistrationConnector].toInstance(mockRegistrationConnector)
+      bind[RegistrationConnector].toInstance(mockRegistrationConnector),
+      bind[UUIDGen].toInstance(mockUuidGen)
     )
     .build()
 
   override def beforeEach(): Unit = {
     Mockito.reset(
-      mockRegistrationConnector
+      mockRegistrationConnector,
+      mockUuidGen
     )
+    when(mockUuidGen.randomUUID())
+      .thenReturn(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"))
     super.beforeEach()
   }
 
@@ -55,7 +64,6 @@ class RegisterWithoutIdServiceSpec extends SpecBase with MockitoSugar {
   val address: Address = Address("line 1", Some("line 2"), "line 3", Some("line 4"), Some(""), Country.GB)
 
   "RegisterWithoutIdService" - {
-
     "sendBusinessRegistration" - {
       "must return matching information when safeId can be recovered" in {
         val address = Address("", None, "", None, None, Country("valid", "GB", "United Kingdom"))

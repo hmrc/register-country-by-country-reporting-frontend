@@ -36,9 +36,9 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
 
   val mockSubscriptionConnector: SubscriptionConnector = mock[SubscriptionConnector]
 
-  val service: SubscriptionService = app.injector.instanceOf[SubscriptionService]
+  val service: SubscriptionService = new SubscriptionService(mockSubscriptionConnector)
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
+  override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .overrides(
       bind[SubscriptionConnector].toInstance(mockSubscriptionConnector)
     )

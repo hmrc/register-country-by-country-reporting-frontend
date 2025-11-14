@@ -83,7 +83,11 @@ object RequestCommon {
   implicit val requestCommonFormats: OFormat[RequestCommon] = Json.format[RequestCommon]
 
   def apply(regime: String)(implicit uuidGenerator: UUIDGen, clock: Clock): RequestCommon = {
-    val acknRef: String = uuidGenerator.randomUUID().toString.replaceAll("-", "") //uuids are 36 and spec demands 32
+    val acknRef: String =
+      uuidGenerator
+        .randomUUID()
+        .toString
+        .replaceAll("-", "") //uuids are 36 and spec demands 32
     //Format: ISO 8601 YYYY-MM-DDTHH:mm:ssZ e.g. 2020-09-23T16:12:11Z
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
     val dateTime: String = ZonedDateTime

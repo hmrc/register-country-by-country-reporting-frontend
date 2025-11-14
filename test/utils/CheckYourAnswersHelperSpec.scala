@@ -20,15 +20,17 @@ import base.SpecBase
 import models.matching.RegistrationInfo
 import models.register.response.details.AddressResponse
 import models.{Address, Country, SafeId}
+import org.mockito.ArgumentMatchers.any
 import pages._
 import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 
 class CheckYourAnswersHelperSpec extends SpecBase {
 
   val businessAddress: Address               = Address("", None, "", None, None, Country("valid", "GB", "United Kingdom"))
   val matchedAddress: AddressResponse        = AddressResponse("", None, None, None, None, "GB")
-  implicit val messages: Messages            = messages(app)
-  val countryListFactory: CountryListFactory = app.injector.instanceOf[CountryListFactory]
+  implicit val messages: Messages            = stubMessages()
+  val countryListFactory: CountryListFactory = mock[CountryListFactory]
 
   "RowBuilder" - {
     "must Create Business section for a Business without an ID" in {
@@ -118,10 +120,11 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         .success
         .value
 
+      when(countryListFactory.getDescriptionFromCode(any[String]())).thenReturn(Some("TEST"))
+
       val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers, countryListFactory)
 
       val businessRows = checkYourAnswersHelper.businessWithIDSection
-
       businessRows.size mustBe 1
     }
     "must create first contact rows" in {
