@@ -42,39 +42,35 @@ class BusinessNameController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
-    implicit request =>
-      request.userAnswers
-        .get(BusinessTypePage)
-        .map {
-          businessType =>
-            val preparedForm = request.userAnswers.get(BusinessNamePage) match {
-              case None        => formProvider(businessType)
-              case Some(value) => formProvider(businessType).fill(value)
-            }
-
-            Ok(view(preparedForm, businessType, mode))
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() { implicit request =>
+    request.userAnswers
+      .get(BusinessTypePage)
+      .map { businessType =>
+        val preparedForm = request.userAnswers.get(BusinessNamePage) match {
+          case None        => formProvider(businessType)
+          case Some(value) => formProvider(businessType).fill(value)
         }
-        .getOrElse(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+
+        Ok(view(preparedForm, businessType, mode))
+      }
+      .getOrElse(Redirect(routes.ThereIsAProblemController.onPageLoad()))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
-    implicit request =>
-      request.userAnswers
-        .get(BusinessTypePage)
-        .map {
-          businessType =>
-            formProvider(businessType)
-              .bindFromRequest()
-              .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, businessType, mode))),
-                value =>
-                  for {
-                    updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessNamePage, value))
-                    _              <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(navigator.nextPage(BusinessNamePage, mode, updatedAnswers))
-              )
-        }
-        .getOrElse(Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad())))
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async { implicit request =>
+    request.userAnswers
+      .get(BusinessTypePage)
+      .map { businessType =>
+        formProvider(businessType)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, businessType, mode))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessNamePage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(BusinessNamePage, mode, updatedAnswers))
+          )
+      }
+      .getOrElse(Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad())))
   }
 }

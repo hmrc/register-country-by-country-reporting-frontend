@@ -17,12 +17,12 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import pages.RegistrationInfoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.{DifferentBusinessView, ThereIsAProblemView}
+import views.html.DifferentBusinessView
 
 import javax.inject.Inject
 
@@ -31,19 +31,15 @@ class DifferentBusinessController @Inject() (
   standardActionSets: StandardActionSets,
   val controllerComponents: MessagesControllerComponents,
   appConfig: FrontendAppConfig,
-  view: DifferentBusinessView,
-  errorView: ThereIsAProblemView
+  view: DifferentBusinessView
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() {
-    implicit request =>
-      val registrationInfo = request.userAnswers.get(RegistrationInfoPage)
-      val (name, address) = registrationInfo
-        .map(
-          info => (Some(info.name), Some(info.address.asList))
-        )
-        .getOrElse((None, None))
-      Ok(view(appConfig.loginUrl, name, address))
+  def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() { implicit request =>
+    val registrationInfo = request.userAnswers.get(RegistrationInfoPage)
+    val (name, address) = registrationInfo
+      .map(info => (Some(info.name), Some(info.address.asList)))
+      .getOrElse((None, None))
+    Ok(view(appConfig.loginUrl, name, address))
   }
 }

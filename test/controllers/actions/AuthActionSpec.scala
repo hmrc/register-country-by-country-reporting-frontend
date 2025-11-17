@@ -38,8 +38,8 @@ class AuthActionSpec extends SpecBase {
 
   class Harness(authAction: IdentifierAction) {
 
-    def onPageLoad(): Action[AnyContent] = authAction {
-      _ => Results.Ok
+    def onPageLoad(): Action[AnyContent] = authAction { _ =>
+      Results.Ok
     }
   }
 

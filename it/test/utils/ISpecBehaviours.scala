@@ -26,6 +26,9 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout}
 
 trait ISpecBehaviours extends PlaySpec with ISpecBase {
 
+  export play.api.libs.ws.DefaultBodyWritables._
+  export play.api.libs.ws.DefaultBodyReadables.readableAsString
+
   lazy val wsClient: WSClient                = app.injector.instanceOf[WSClient]
   val session: Session                       = Session(Map("authToken" -> "abc123"))
   val sessionCookieBaker: SessionCookieBaker = app.injector.instanceOf[SessionCookieBaker]

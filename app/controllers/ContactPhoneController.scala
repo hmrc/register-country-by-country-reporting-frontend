@@ -44,14 +44,13 @@ class ContactPhoneController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(ContactPhonePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() { implicit request =>
+    val preparedForm = request.userAnswers.get(ContactPhonePage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Ok(view(preparedForm, getContactName(request.userAnswers), mode))
+    Ok(view(preparedForm, getContactName(request.userAnswers), mode))
   }
 
   private def getContactName(userAnswers: UserAnswers)(implicit messages: Messages) =
@@ -60,17 +59,16 @@ class ContactPhoneController @Inject() (
       case _                 => messages("default.firstContact.name")
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, getContactName(request.userAnswers), mode))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ContactPhonePage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(ContactPhonePage, mode, updatedAnswers))
-        )
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, getContactName(request.userAnswers), mode))),
+        value =>
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ContactPhonePage, value))
+            _              <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(ContactPhonePage, mode, updatedAnswers))
+      )
   }
 }

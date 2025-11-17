@@ -24,9 +24,8 @@ case class SubscriptionInfo(safeID: String, utr: Option[String] = None, nonUkPos
 
   def convertToEnrolmentRequest: EnrolmentRequest = {
     val enrolmentRequest = this.utr
-      .map {
-        utr =>
-          EnrolmentRequest(identifiers = Seq(Identifier("cbcId", cbcId), Identifier("UTR", utr)), verifiers = buildVerifiers)
+      .map { utr =>
+        EnrolmentRequest(identifiers = Seq(Identifier("cbcId", cbcId), Identifier("UTR", utr)), verifiers = buildVerifiers)
       }
       .getOrElse(
         EnrolmentRequest(identifiers = Seq(Identifier("cbcId", cbcId)), verifiers = buildVerifiers)
@@ -40,9 +39,7 @@ case class SubscriptionInfo(safeID: String, utr: Option[String] = None, nonUkPos
 
   def buildOptionalVerifier(optionalInfo: Option[String], key: String): Seq[Verifier] =
     optionalInfo
-      .map(
-        info => Verifier(key, info)
-      )
+      .map(info => Verifier(key, info))
       .toSeq
 
 }

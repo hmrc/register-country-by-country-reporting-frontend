@@ -26,9 +26,7 @@ object Regime extends Enumerable.Implicits {
 
   implicit val enumerable: Enumerable[Regime] =
     Enumerable(
-      values.map(
-        v => v.toString -> v
-      ): _*
+      values.map(v => v.toString -> v): _*
     )
 
 }

@@ -74,14 +74,10 @@ trait Generators extends UserAnswersGenerator with PageGenerators with UserAnswe
   }
 
   def intsLargerThanMaxValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat (
-      x => x > Int.MaxValue
-    )
+    arbitrary[BigInt] suchThat (x => x > Int.MaxValue)
 
   def intsSmallerThanMinValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat (
-      x => x < Int.MinValue
-    )
+    arbitrary[BigInt] suchThat (x => x < Int.MinValue)
 
   def nonNumerics: Gen[String] =
     alphaStr suchThat (_.size > 0)
@@ -105,9 +101,7 @@ trait Generators extends UserAnswersGenerator with PageGenerators with UserAnswe
     arbitrary[Int] suchThat (_ > value)
 
   def intsOutsideRange(min: Int, max: Int): Gen[Int] =
-    arbitrary[Int] suchThat (
-      x => x < min || x > max
-    )
+    arbitrary[Int] suchThat (x => x < min || x > max)
 
   def nonBooleans: Gen[String] =
     nonEmptyString
@@ -148,9 +142,8 @@ trait Generators extends UserAnswersGenerator with PageGenerators with UserAnswe
     def toMillis(date: LocalDate): Long =
       date.atStartOfDay.atZone(ZoneOffset.UTC).toInstant.toEpochMilli
 
-    Gen.choose(toMillis(min), toMillis(max)).map {
-      millis =>
-        Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC).toLocalDate
+    Gen.choose(toMillis(min), toMillis(max)).map { millis =>
+      Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC).toLocalDate
     }
   }
 

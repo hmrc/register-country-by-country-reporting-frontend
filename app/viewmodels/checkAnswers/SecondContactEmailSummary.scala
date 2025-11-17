@@ -29,22 +29,21 @@ import viewmodels.implicits._
 object SecondContactEmailSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SecondContactEmailPage).map {
-      answer =>
-        SummaryListRowViewModel(
-          key = "secondContactEmail.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel(
-              content = HtmlContent(
-                s"""
+    answers.get(SecondContactEmailPage).map { answer =>
+      SummaryListRowViewModel(
+        key = "secondContactEmail.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer).toString),
+        actions = Seq(
+          ActionItemViewModel(
+            content = HtmlContent(
+              s"""
                    |<span aria-hidden="true">${messages("site.change")}</span>
                    |<span class="govuk-visually-hidden">${messages("secondContactEmail.change.hidden")}</span>
                    |""".stripMargin
-              ),
-              href = routes.SecondContactEmailController.onPageLoad(CheckMode).url
-            ).withAttribute(("id", "second-contact-email"))
-          )
+            ),
+            href = routes.SecondContactEmailController.onPageLoad(CheckMode).url
+          ).withAttribute(("id", "second-contact-email"))
         )
+      )
     }
 }

@@ -47,33 +47,31 @@ class CheckYourAnswersController @Inject() (
     with I18nSupport
     with CreateSubscriptionAndUpdateEnrolment {
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.identifiedUserWithData() andThen checkForSubmissionAction) {
-    implicit request =>
-      val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers = request.userAnswers, countryListFactory = countryListFactory)
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.identifiedUserWithData() andThen checkForSubmissionAction) { implicit request =>
+    val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers = request.userAnswers, countryListFactory = countryListFactory)
 
-      val businessList      = SummaryListViewModel(checkYourAnswersHelper.businessSection)
-      val firstContactList  = SummaryListViewModel(checkYourAnswersHelper.firstContactSection)
-      val secondContactList = SummaryListViewModel(checkYourAnswersHelper.secondContactSection)
+    val businessList      = SummaryListViewModel(checkYourAnswersHelper.businessSection)
+    val firstContactList  = SummaryListViewModel(checkYourAnswersHelper.firstContactSection)
+    val secondContactList = SummaryListViewModel(checkYourAnswersHelper.secondContactSection)
 
-      Ok(view(businessList, firstContactList, secondContactList))
+    Ok(view(businessList, firstContactList, secondContactList))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
-    implicit request =>
-      request.userAnswers.get(RegistrationInfoPage).map(_.safeId) match {
-        case Some(safeId) =>
-          createSubscription(safeId)
-        case _ =>
-          registerWithoutIdService.registerWithoutId().flatMap {
-            case Right(safeId) => createSubscription(safeId)
-            case Left(value) =>
-              logger.warn(s"Error $value")
-              value match {
-                case MandatoryInformationMissingError(_) => Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
-                case _                                   => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
-              }
-          }
-      }
+  def onSubmit(): Action[AnyContent] = standardActionSets.identifiedUserWithData().async { implicit request =>
+    request.userAnswers.get(RegistrationInfoPage).map(_.safeId) match {
+      case Some(safeId) =>
+        createSubscription(safeId)
+      case _ =>
+        registerWithoutIdService.registerWithoutId().flatMap {
+          case Right(safeId) => createSubscription(safeId)
+          case Left(value) =>
+            logger.warn(s"Error $value")
+            value match {
+              case MandatoryInformationMissingError(_) => Future.successful(Redirect(routes.MissingInformationController.onPageLoad()))
+              case _                                   => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+            }
+        }
+    }
   }
 
 }

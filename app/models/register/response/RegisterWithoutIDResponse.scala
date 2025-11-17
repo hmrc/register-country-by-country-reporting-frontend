@@ -25,9 +25,7 @@ object RegisterWithoutIDResponse {
 
   implicit val reads: Reads[RegisterWithoutIDResponse] = {
     import play.api.libs.functional.syntax._
-    (__ \ "registerWithoutIDResponse" \ "responseDetail" \ "SAFEID").read[String] fmap (
-      id => RegisterWithoutIDResponse(SafeId(id))
-    )
+    (__ \ "registerWithoutIDResponse" \ "responseDetail" \ "SAFEID").read[String] fmap (id => RegisterWithoutIDResponse(SafeId(id)))
   }
 
 }

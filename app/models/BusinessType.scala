@@ -38,19 +38,16 @@ object BusinessType extends Enumerable.Implicits {
     UnincorporatedAssociation
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"businessType.${value.toString}")),
-        value = Some(value.toString),
-        id = Some(s"value_$index")
-      )
+  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+    RadioItem(
+      content = Text(messages(s"businessType.${value.toString}")),
+      value = Some(value.toString),
+      id = Some(s"value_$index")
+    )
   }
 
   implicit val enumerable: Enumerable[BusinessType] =
     Enumerable(
-      values.map(
-        v => v.toString -> v
-      ): _*
+      values.map(v => v.toString -> v): _*
     )
 }

@@ -33,9 +33,8 @@ class YourContactDetailsController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
-    implicit request =>
-      val continueUrl = routes.ContactNameController.onPageLoad(mode).url
-      Ok(view(continueUrl))
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() { implicit request =>
+    val continueUrl = routes.ContactNameController.onPageLoad(mode).url
+    Ok(view(continueUrl))
   }
 }

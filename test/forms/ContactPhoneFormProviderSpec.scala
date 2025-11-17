@@ -39,10 +39,9 @@ class ContactPhoneFormProviderSpec extends StringFieldBehaviours {
 
     s"must not bind strings longer than $maxLength characters" in {
 
-      forAll(phoneMaxLength(maxLength) -> "longString") {
-        string =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors mustEqual Seq(FormError(fieldName, lengthKey, Seq()))
+      forAll(phoneMaxLength(maxLength) -> "longString") { string =>
+        val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+        result.errors mustEqual Seq(FormError(fieldName, lengthKey, Seq()))
       }
     }
 

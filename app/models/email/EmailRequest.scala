@@ -24,9 +24,7 @@ object EmailRequest {
   implicit val format: OFormat[EmailRequest] = Json.format[EmailRequest]
 
   def apply(emailId: String, emailTemplate: String, cbcID: String, name: Option[String]): EmailRequest = {
-    val contactName = name.fold("Registrant")(
-      name => name
-    )
+    val contactName = name.fold("Registrant")(name => name)
 
     EmailRequest(
       List(emailId),

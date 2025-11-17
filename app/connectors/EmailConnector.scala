@@ -24,6 +24,7 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
+import play.api.libs.ws.JsonBodyWritables._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,10 +33,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class EmailConnector @Inject() (val config: FrontendAppConfig, http: HttpClientV2)(implicit ex: ExecutionContext) extends Logging {
 
   def sendEmail(emailRequest: EmailRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    http.post(url"${config.sendEmailUrl}/hmrc/email").withBody(Json.toJson(emailRequest)).execute[HttpResponse] recoverWith {
-      case e: Exception =>
-        logger.error(s"EmailConnector: The email could not be sent to the EMAIL service - ${e.getMessage}", e)
-        Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "The email could not be sent to the EMAIL service"))
+    http.post(url"${config.sendEmailUrl}/hmrc/email").withBody(Json.toJson(emailRequest)).execute[HttpResponse] recoverWith { case e: Exception =>
+      logger.error(s"EmailConnector: The email could not be sent to the EMAIL service - ${e.getMessage}", e)
+      Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "The email could not be sent to the EMAIL service"))
     }
 
 }

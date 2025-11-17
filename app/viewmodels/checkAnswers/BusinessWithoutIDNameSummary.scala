@@ -29,22 +29,21 @@ import viewmodels.implicits._
 object BusinessWithoutIDNameSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(BusinessWithoutIDNamePage).map {
-      answer =>
-        SummaryListRowViewModel(
-          key = "businessWithoutIDName.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel(
-              content = HtmlContent(
-                s"""
+    answers.get(BusinessWithoutIDNamePage).map { answer =>
+      SummaryListRowViewModel(
+        key = "businessWithoutIDName.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer).toString),
+        actions = Seq(
+          ActionItemViewModel(
+            content = HtmlContent(
+              s"""
                    |<span aria-hidden="true">${messages("site.change")}</span>
                    |<span class="govuk-visually-hidden">${messages("businessWithoutIDName.change.hidden")}</span>
                    |""".stripMargin
-              ),
-              href = routes.BusinessWithoutIDNameController.onPageLoad(CheckMode).url
-            ).withAttribute(("id", "business-without-id-name"))
-          )
+            ),
+            href = routes.BusinessWithoutIDNameController.onPageLoad(CheckMode).url
+          ).withAttribute(("id", "business-without-id-name"))
         )
+      )
     }
 }

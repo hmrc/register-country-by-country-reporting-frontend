@@ -39,18 +39,15 @@ class RegistrationConfirmationController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = standardActionSets.identifiedWithoutEnrolmentCheck().async {
-    implicit request =>
-      request.userAnswers.get(SubscriptionIDPage) match {
-        case Some(subscriptionId) =>
-          emailService.sendEmail(request.userAnswers, subscriptionId) flatMap {
-            _ =>
-              sessionRepository.reset(request.userId) map {
-                _ =>
-                  Ok(view(subscriptionId.value))
-              }
+  def onPageLoad: Action[AnyContent] = standardActionSets.identifiedWithoutEnrolmentCheck().async { implicit request =>
+    request.userAnswers.get(SubscriptionIDPage) match {
+      case Some(subscriptionId) =>
+        emailService.sendEmail(request.userAnswers, subscriptionId) flatMap { _ =>
+          sessionRepository.reset(request.userId) map { _ =>
+            Ok(view(subscriptionId.value))
           }
-        case _ => Future.successful(Redirect(routes.InformationSentController.onPageLoad()))
-      }
+        }
+      case _ => Future.successful(Redirect(routes.InformationSentController.onPageLoad()))
+    }
   }
 }

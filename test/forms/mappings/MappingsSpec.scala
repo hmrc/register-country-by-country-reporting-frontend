@@ -34,9 +34,7 @@ object MappingsSpec {
 
     implicit val fooEnumerable: Enumerable[Foo] =
       Enumerable(
-        values.toSeq.map(
-          v => v.toString -> v
-        ): _*
+        values.toSeq.map(v => v.toString -> v): _*
       )
   }
 }

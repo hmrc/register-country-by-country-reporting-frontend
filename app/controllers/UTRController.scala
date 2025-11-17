@@ -43,34 +43,32 @@ class UTRController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithDependantAnswer(BusinessTypePage).async {
-    implicit request =>
-      val taxType = getTaxType(request.userAnswers)
-      val form    = formProvider(taxType)
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithDependantAnswer(BusinessTypePage).async { implicit request =>
+    val taxType = getTaxType(request.userAnswers)
+    val form    = formProvider(taxType)
 
-      val preparedForm = request.userAnswers.get(UTRPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+    val preparedForm = request.userAnswers.get(UTRPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Future.successful(Ok(view(preparedForm, mode, taxType)))
+    Future.successful(Ok(view(preparedForm, mode, taxType)))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithDependantAnswer(BusinessTypePage).async {
-    implicit request =>
-      val taxType = getTaxType(request.userAnswers)
-      val form    = formProvider(taxType)
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithDependantAnswer(BusinessTypePage).async { implicit request =>
+    val taxType = getTaxType(request.userAnswers)
+    val form    = formProvider(taxType)
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, taxType))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(UTRPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(UTRPage, mode, updatedAnswers))
-        )
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, taxType))),
+        value =>
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(UTRPage, value))
+            _              <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(UTRPage, mode, updatedAnswers))
+      )
   }
 
   private def getTaxType(userAnswers: UserAnswers): String =

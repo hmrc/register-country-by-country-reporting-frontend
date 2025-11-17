@@ -29,24 +29,23 @@ import viewmodels.implicits._
 object DoYouHaveSecondContactSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DoYouHaveSecondContactPage).map {
-      answer =>
-        val value = SummaryHelper.convertBooleanToYesNoMessage(answer)
+    answers.get(DoYouHaveSecondContactPage).map { answer =>
+      val value = SummaryHelper.convertBooleanToYesNoMessage(answer)
 
-        SummaryListRowViewModel(
-          key = "doYouHaveSecondContact.checkYourAnswersLabel",
-          value = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel(
-              content = HtmlContent(
-                s"""
+      SummaryListRowViewModel(
+        key = "doYouHaveSecondContact.checkYourAnswersLabel",
+        value = ValueViewModel(value),
+        actions = Seq(
+          ActionItemViewModel(
+            content = HtmlContent(
+              s"""
                    |<span aria-hidden="true">${messages("site.change")}</span>
                    |<span class="govuk-visually-hidden">${messages("doYouHaveSecondContact.change.hidden")}</span>
                    |""".stripMargin
-              ),
-              href = routes.DoYouHaveSecondContactController.onPageLoad(CheckMode).url
-            ).withAttribute(("id", "do-you-have-second-contact"))
-          )
+            ),
+            href = routes.DoYouHaveSecondContactController.onPageLoad(CheckMode).url
+          ).withAttribute(("id", "do-you-have-second-contact"))
         )
+      )
     }
 }

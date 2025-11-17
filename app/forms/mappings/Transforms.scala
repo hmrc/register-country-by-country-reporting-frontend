@@ -39,9 +39,7 @@ trait Transforms {
 
   protected def countryDataTransform(value: Option[String]): Option[String] =
     value
-      .map(
-        s => stripSpaces(s).toUpperCase()
-      )
+      .map(s => stripSpaces(s).toUpperCase())
       .filter(_.nonEmpty)
 
 }

@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.{IdentifierAction, StandardActionSets}
+import controllers.actions.StandardActionSets
 import models.{NormalMode, UserAnswers}
 import pages.AutoMatchedUTRPage
 import play.api.Logging
@@ -34,7 +34,6 @@ class IndexController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   sessionRepository: SessionRepository,
   clock: Clock,
-  identify: IdentifierAction,
   standardActionSets: StandardActionSets,
   errorView: ThereIsAProblemView
 )(implicit ec: ExecutionContext)
@@ -42,22 +41,21 @@ class IndexController @Inject() (
     with I18nSupport
     with Logging {
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.identifiedUserWithEnrolmentCheckAndCtUtrRetrieval().async {
-    implicit request =>
-      request.utr match {
-        case Some(utr) =>
-          val userAnswers = UserAnswers(request.userId, lastUpdated = Instant.now(clock))
-          for {
-            autoMatchedUserAnswers <- Future.fromTry(userAnswers.set(AutoMatchedUTRPage, utr))
-            result <- sessionRepository.set(autoMatchedUserAnswers) map {
-              case true =>
-                Redirect(routes.IsThisYourBusinessController.onPageLoad(NormalMode))
-              case false =>
-                logger.error(s"Failed to update user answers with autoMatchedUTR field for userId: [${request.userId}]")
-                InternalServerError(errorView())
-            }
-          } yield result
-        case None => Future.successful(Redirect(routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode)))
-      }
+  def onPageLoad(): Action[AnyContent] = standardActionSets.identifiedUserWithEnrolmentCheckAndCtUtrRetrieval().async { implicit request =>
+    request.utr match {
+      case Some(utr) =>
+        val userAnswers = UserAnswers(request.userId, lastUpdated = Instant.now(clock))
+        for {
+          autoMatchedUserAnswers <- Future.fromTry(userAnswers.set(AutoMatchedUTRPage, utr))
+          result <- sessionRepository.set(autoMatchedUserAnswers) map {
+            case true =>
+              Redirect(routes.IsThisYourBusinessController.onPageLoad(NormalMode))
+            case false =>
+              logger.error(s"Failed to update user answers with autoMatchedUTR field for userId: [${request.userId}]")
+              InternalServerError(errorView())
+          }
+        } yield result
+      case None => Future.successful(Redirect(routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode)))
+    }
   }
 }

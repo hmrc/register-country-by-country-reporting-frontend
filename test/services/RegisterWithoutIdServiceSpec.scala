@@ -21,8 +21,8 @@ import connectors.RegistrationConnector
 import models.requests.DataRequest
 import models.{Address, ApiError, Country, MandatoryInformationMissingError, RegistrationWithoutIdInformationMissingError, SafeId, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{Mockito, MockitoSugar}
-import pages._
+import org.scalatestplus.mockito.MockitoSugar
+import pages.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -44,7 +44,7 @@ class RegisterWithoutIdServiceSpec extends SpecBase with MockitoSugar {
     .build()
 
   override def beforeEach(): Unit = {
-    Mockito.reset(
+    reset(
       mockRegistrationConnector
     )
     super.beforeEach()
