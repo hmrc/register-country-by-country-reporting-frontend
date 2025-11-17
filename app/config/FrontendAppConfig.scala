@@ -60,9 +60,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
   val betaPhaseEnabled: Boolean =
     configuration.get[Boolean]("features.beta-phase")
 
-  val languageTranslationEnabled: Boolean =
-    configuration.get[Boolean]("features.welsh-translation")
-
   def languageMap: Map[String, Lang] = Map(
     "en" -> Lang("en")
   )
