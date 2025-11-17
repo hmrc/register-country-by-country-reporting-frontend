@@ -38,9 +38,9 @@
         countdown           = Some(appConfig.countdown),
         keepAliveUrl        = Some(routes.KeepAliveController.keepAlive.url),
         keepAliveButtonText = Some(messages("timeout.keepAlive")),
-        signOutUrl          = controllers.auth.routes.AuthController.signOut.url,
+        signOutUrl          = controllers.auth.routes.AuthController.signOut().url,
         signOutButtonText   = Some(messages("timeout.signOut")),
-        timeoutUrl          = Some(controllers.auth.routes.AuthController.signOutNoSurvey.url),
+        timeoutUrl          = Some(controllers.auth.routes.AuthController.signOutNoSurvey().url),
         title               = Some(messages("timeout.title")),
         message             = Some(messages("timeout.message"))
     )
@@ -64,8 +64,8 @@
 @hmrcLayout(
     pageTitle = Some(pageTitle),
     additionalHeadBlock = if(timeout) Some(timeOutDialog) else None,
-    serviceUrl = Some(routes.IndexController.onPageLoad.url),
-    signOutUrl = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut.url) else None,
+    serviceUrl = Some(routes.IndexController.onPageLoad().url),
+    signOutUrl = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut().url) else None,
     phaseBanner = Some(alphaBanner(appConfig.feedbackUrl)),
     additionalScriptsBlock = Some(additionalScripts),
     backLink = if(showBackLink) Some(BackLinkViewModel(href = "#").withCssClass("js-enabled govuk-!-display-none-print")) else None,

@@ -44,31 +44,29 @@ class BusinessTypeController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(BusinessTypePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() { implicit request =>
+    val preparedForm = request.userAnswers.get(BusinessTypePage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
-          value =>
-            if (request.userAnswers.hasNewValue(BusinessTypePage, value)) {
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessTypePage, value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(BusinessTypePage, mode, updatedAnswers))
-            } else {
-              Future.successful(Redirect(navigator.nextPage(BusinessTypePage, mode, request.userAnswers)))
-            }
-        )
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        value =>
+          if (request.userAnswers.hasNewValue(BusinessTypePage, value)) {
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessTypePage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(BusinessTypePage, mode, updatedAnswers))
+          } else {
+            Future.successful(Redirect(navigator.nextPage(BusinessTypePage, mode, request.userAnswers)))
+          }
+      )
   }
 }

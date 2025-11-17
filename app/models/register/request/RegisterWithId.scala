@@ -83,9 +83,7 @@ object RequestWithIDDetails {
         (__ \ "requiresNameMatch").read[Boolean] and
         (__ \ "isAnAgent").read[Boolean] and
         (__ \ "organisation").readNullable[WithIDOrganisation]
-    )(
-      (idType, idNumber, requiresNameMatch, isAnAgent, organisation) => RequestWithIDDetails(idType, idNumber, requiresNameMatch, isAnAgent, organisation)
-    )
+    )((idType, idNumber, requiresNameMatch, isAnAgent, organisation) => RequestWithIDDetails(idType, idNumber, requiresNameMatch, isAnAgent, organisation))
   }
 
   implicit lazy val requestWithIDDetailsWrites: OWrites[RequestWithIDDetails] = {

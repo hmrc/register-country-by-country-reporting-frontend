@@ -30,12 +30,12 @@ class Navigator {
 
   private def checkRoutes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = mode match {
     case NormalMode =>
-      normalRoutes orElse {
-        case _ => _ => routes.IndexController.onPageLoad
+      normalRoutes orElse { case _ =>
+        _ => routes.IndexController.onPageLoad()
       }
     case CheckMode =>
-      checkRouteMap orElse {
-        case _ => _ => routes.CheckYourAnswersController.onPageLoad()
+      checkRouteMap orElse { case _ =>
+        _ => routes.CheckYourAnswersController.onPageLoad()
       }
   }
 
@@ -45,9 +45,7 @@ class Navigator {
     if (
       mode.equals(CheckMode) && ua
         .get(page)
-        .fold(false)(
-          _ => true
-        )
+        .fold(false)(_ => true)
     ) {
       routes.CheckYourAnswersController.onPageLoad()
     } else {

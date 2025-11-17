@@ -24,6 +24,7 @@ import uk.gov.hmrc.http.HttpErrorFunctions.is2xx
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
+import play.api.libs.ws.JsonBodyWritables._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,9 +39,8 @@ class TaxEnrolmentsConnector @Inject() (
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Int]] = {
 
     val url = enrolmentInfo.utr
-      .map {
-        _ =>
-          s"${config.taxEnrolmentsUrl1}HMRC-CBC-ORG${config.taxEnrolmentsUrl2}"
+      .map { _ =>
+        s"${config.taxEnrolmentsUrl1}HMRC-CBC-ORG${config.taxEnrolmentsUrl2}"
       }
       .getOrElse(
         s"${config.taxEnrolmentsUrl1}HMRC-CBC-NONUK-ORG${config.taxEnrolmentsUrl2}"

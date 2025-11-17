@@ -25,8 +25,6 @@ object CreateSubscriptionResponse {
 
   implicit val reads: Reads[CreateSubscriptionResponse] = {
     import play.api.libs.functional.syntax._
-    (__ \ "createSubscriptionForCBCResponse" \ "responseDetail" \ "subscriptionID").read[SubscriptionID] fmap (
-      id => CreateSubscriptionResponse(id)
-    )
+    (__ \ "createSubscriptionForCBCResponse" \ "responseDetail" \ "subscriptionID").read[SubscriptionID] fmap (id => CreateSubscriptionResponse(id))
   }
 }

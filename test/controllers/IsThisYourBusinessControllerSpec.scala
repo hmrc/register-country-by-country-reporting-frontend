@@ -43,7 +43,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
   val form         = formProvider()
 
   lazy val isThisYourBusinessRoute    = routes.IsThisYourBusinessController.onPageLoad(NormalMode).url
-  lazy val businessNotIdentifiedRoute = routes.BusinessNotIdentifiedController.onPageLoad.url
+  lazy val businessNotIdentifiedRoute = routes.BusinessNotIdentifiedController.onPageLoad().url
   val findCompanyName                 = "https://find-and-update.company-information.service.gov.uk/"
   private val SafeIdValue             = "XE0000123456789"
   val UtrValue                        = "1234567890"

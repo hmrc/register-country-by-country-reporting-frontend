@@ -32,9 +32,8 @@ class BusinessTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
       val gen = Gen.oneOf(BusinessType.values.toSeq)
 
-      forAll(gen) {
-        businessType =>
-          JsString(businessType.toString).validate[BusinessType].asOpt.value mustEqual businessType
+      forAll(gen) { businessType =>
+        JsString(businessType.toString).validate[BusinessType].asOpt.value mustEqual businessType
       }
     }
 
@@ -42,9 +41,8 @@ class BusinessTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
       val gen = arbitrary[String] suchThat (!BusinessType.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
-          JsString(invalidValue).validate[BusinessType] mustEqual JsError("error.invalid")
+      forAll(gen) { invalidValue =>
+        JsString(invalidValue).validate[BusinessType] mustEqual JsError("error.invalid")
       }
     }
 
@@ -52,9 +50,8 @@ class BusinessTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
       val gen = Gen.oneOf(BusinessType.values.toSeq)
 
-      forAll(gen) {
-        businessType =>
-          Json.toJson(businessType) mustEqual JsString(businessType.toString)
+      forAll(gen) { businessType =>
+        Json.toJson(businessType) mustEqual JsString(businessType.toString)
       }
     }
   }

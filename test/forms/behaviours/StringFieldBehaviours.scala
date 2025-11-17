@@ -25,29 +25,26 @@ trait StringFieldBehaviours extends FieldBehaviours with RegexConstants {
   def fieldWithMaxLength(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
     s"not bind strings longer than $maxLength characters" in {
 
-      forAll(stringsLongerThan(maxLength) -> "longString") {
-        string =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors must contain only lengthError
+      forAll(stringsLongerThan(maxLength) -> "longString") { string =>
+        val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+        result.errors must contain only lengthError
       }
     }
 
   def fieldWithPostCodeRequired(form: Form[_], fieldName: String, countryCodeList: Seq[String], invalidError: FormError): Unit =
     s"must not bind when postcode is required for a country" in {
-      forAll(Gen.oneOf(countryCodeList)) {
-        country =>
-          val result = form.bind(Map("country" -> country)).apply(fieldName)
-          result.errors.head mustEqual invalidError
+      forAll(Gen.oneOf(countryCodeList)) { country =>
+        val result = form.bind(Map("country" -> country)).apply(fieldName)
+        result.errors.head mustEqual invalidError
       }
     }
 
   def fieldWithMaxLengthAlpha(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
     s"must not bind strings longer than $maxLength characters" in {
 
-      forAll(stringsLongerThanAlpha(maxLength) -> "longString") {
-        string =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors mustEqual Seq(lengthError)
+      forAll(stringsLongerThanAlpha(maxLength) -> "longString") { string =>
+        val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+        result.errors mustEqual Seq(lengthError)
       }
     }
 
@@ -61,12 +58,8 @@ trait StringFieldBehaviours extends FieldBehaviours with RegexConstants {
   def stringsNotOfFixedLengthsNumeric(validLengths: Set[Int]): Gen[String] =
     Gen
       .choose(1, 50)
-      .suchThat(
-        len => !validLengths.contains(len)
-      )
-      .flatMap(
-        len => Gen.listOfN(len, Gen.numChar).map(_.mkString)
-      )
+      .suchThat(len => !validLengths.contains(len))
+      .flatMap(len => Gen.listOfN(len, Gen.numChar).map(_.mkString))
 
   def fieldWithFixedLengthsNumeric(
     form: Form[_],
@@ -76,30 +69,27 @@ trait StringFieldBehaviours extends FieldBehaviours with RegexConstants {
   ): Unit =
     s"must not bind strings that are not ${acceptedLengths.mkString(" or ")} characters long" in {
 
-      forAll(stringsNotOfFixedLengthsNumeric(acceptedLengths) -> "invalidString") {
-        string =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors mustEqual Seq(lengthError)
+      forAll(stringsNotOfFixedLengthsNumeric(acceptedLengths) -> "invalidString") { string =>
+        val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+        result.errors mustEqual Seq(lengthError)
       }
     }
 
   def fieldWithMaxLengthEmail(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
     s"must not bind strings longer than $maxLength characters" in {
 
-      forAll(validEmailAddressToLong(maxLength) -> "longString") {
-        string =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors mustEqual Seq(lengthError)
+      forAll(validEmailAddressToLong(maxLength) -> "longString") { string =>
+        val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+        result.errors mustEqual Seq(lengthError)
       }
     }
 
   def fieldWithMaxLengthPhoneNumber(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
     s"must not bind strings longer than $maxLength characters" in {
 
-      forAll(validPhoneNumberTooLong(maxLength) -> "longString") {
-        string =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors mustEqual Seq(lengthError)
+      forAll(validPhoneNumberTooLong(maxLength) -> "longString") { string =>
+        val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+        result.errors mustEqual Seq(lengthError)
       }
     }
 

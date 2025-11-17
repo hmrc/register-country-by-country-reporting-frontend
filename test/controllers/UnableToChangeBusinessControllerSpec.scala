@@ -32,7 +32,7 @@
 
 package controllers
 
-import base.{SpecBase}
+import base.SpecBase
 import models.UserAnswers
 import models.matching.RegistrationInfo
 import models.register.response.details.AddressResponse

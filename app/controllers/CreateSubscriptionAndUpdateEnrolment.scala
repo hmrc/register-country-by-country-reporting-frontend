@@ -54,21 +54,20 @@ trait CreateSubscriptionAndUpdateEnrolment extends Logging {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(SubscriptionIDPage, subscriptionId))
       _              <- sessionRepository.set(updatedAnswers)
     } yield updatedAnswers
-  }.flatMap {
-    updatedAnswers =>
-      taxEnrolmentService.checkAndCreateEnrolment(safeId, updatedAnswers, subscriptionId) flatMap {
-        case Right(_) => Future.successful(Redirect(routes.RegistrationConfirmationController.onPageLoad()))
-        case Left(EnrolmentCreationError) =>
-          logger.warn(s"Error: EnrolmentCreationError")
-          Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
-        case Left(EnrolmentExistsError) =>
-          logger.warn(s"Error: EnrolmentExistsError")
-          if (request.userAnswers.get(RegistrationInfoPage).isDefined) {
-            Future.successful(Redirect(routes.PreRegisteredController.onPageLoad(true)))
-          } else {
-            Future.successful(Redirect(routes.PreRegisteredController.onPageLoad(false)))
-          }
-        case _ => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
-      }
+  }.flatMap { updatedAnswers =>
+    taxEnrolmentService.checkAndCreateEnrolment(safeId, updatedAnswers, subscriptionId) flatMap {
+      case Right(_) => Future.successful(Redirect(routes.RegistrationConfirmationController.onPageLoad()))
+      case Left(EnrolmentCreationError) =>
+        logger.warn(s"Error: EnrolmentCreationError")
+        Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+      case Left(EnrolmentExistsError) =>
+        logger.warn(s"Error: EnrolmentExistsError")
+        if (request.userAnswers.get(RegistrationInfoPage).isDefined) {
+          Future.successful(Redirect(routes.PreRegisteredController.onPageLoad(true)))
+        } else {
+          Future.successful(Redirect(routes.PreRegisteredController.onPageLoad(false)))
+        }
+      case _ => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+    }
   }
 }

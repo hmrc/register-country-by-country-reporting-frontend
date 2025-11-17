@@ -17,7 +17,6 @@
 package controllers
 
 import controllers.actions._
-import models.NormalMode
 
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -33,10 +32,9 @@ class MissingInformationController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() {
-    implicit request =>
-      val continueUrl = routes.IndexController.onPageLoad.url
-      Ok(view(continueUrl))
+  def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() { implicit request =>
+    val continueUrl = routes.IndexController.onPageLoad().url
+    Ok(view(continueUrl))
 
   }
 }

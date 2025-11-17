@@ -23,7 +23,5 @@ case class SubscriptionID(value: String)
 object SubscriptionID {
   implicit val reads: Reads[SubscriptionID] = __.read[String].map(SubscriptionID.apply)
 
-  implicit val writes: Writes[SubscriptionID] = Writes(
-    subscriptionID => JsString(subscriptionID.value)
-  )
+  implicit val writes: Writes[SubscriptionID] = Writes(subscriptionID => JsString(subscriptionID.value))
 }

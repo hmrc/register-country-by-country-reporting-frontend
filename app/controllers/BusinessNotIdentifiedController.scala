@@ -38,12 +38,11 @@ class BusinessNotIdentifiedController @Inject() (
     with I18nSupport
     with Logging {
 
-  def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() {
-    implicit request =>
-      val startUrl     = routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
-      val businessType = request.userAnswers.get(BusinessTypePage)
+  def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() { implicit request =>
+    val startUrl     = routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
+    val businessType = request.userAnswers.get(BusinessTypePage)
 
-      Ok(view(appConfig.findCompanyName, startUrl, businessType))
+    Ok(view(appConfig.findCompanyName, startUrl, businessType))
   }
 
 }
