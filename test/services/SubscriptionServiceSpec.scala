@@ -22,9 +22,9 @@ import models.matching.RegistrationInfo
 import models.register.response.details.AddressResponse
 import models.{SafeId, SubscriptionCreateError, SubscriptionCreateInformationMissingError, SubscriptionID, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
+import pages.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -44,10 +44,9 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
     )
     .build()
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     reset(mockSubscriptionConnector)
     super.beforeEach()
-  }
 
   "SubscriptionService" - {
     "must return 'SubscriptionID' on creating subscription" in {

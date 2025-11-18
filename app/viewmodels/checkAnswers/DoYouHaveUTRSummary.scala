@@ -29,24 +29,23 @@ import viewmodels.implicits._
 object DoYouHaveUTRSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DoYouHaveUTRPage).map {
-      answer =>
-        val value = SummaryHelper.convertBooleanToYesNoMessage(answer)
+    answers.get(DoYouHaveUTRPage).map { answer =>
+      val value = SummaryHelper.convertBooleanToYesNoMessage(answer)
 
-        SummaryListRowViewModel(
-          key = "doYouHaveUTR.checkYourAnswersLabel",
-          value = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel(
-              content = HtmlContent(
-                s"""
+      SummaryListRowViewModel(
+        key = "doYouHaveUTR.checkYourAnswersLabel",
+        value = ValueViewModel(value),
+        actions = Seq(
+          ActionItemViewModel(
+            content = HtmlContent(
+              s"""
                    |<span aria-hidden="true">${messages("site.change")}</span>
                    |<span class="govuk-visually-hidden">${messages("doYouHaveUTR.change.hidden")}</span>
                    |""".stripMargin
-              ),
-              href = routes.DoYouHaveUTRController.onPageLoad(CheckMode).url
-            ).withAttribute(("id", "do-you-have-UTR"))
-          )
+            ),
+            href = routes.DoYouHaveUTRController.onPageLoad(CheckMode).url
+          ).withAttribute(("id", "do-you-have-UTR"))
         )
+      )
     }
 }

@@ -28,24 +28,23 @@ import viewmodels.implicits._
 object IsRegisteredAddressInUkSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(IsRegisteredAddressInUkPage).map {
-      answer =>
-        val value = if (answer) "site.yes" else "site.no"
+    answers.get(IsRegisteredAddressInUkPage).map { answer =>
+      val value = if (answer) "site.yes" else "site.no"
 
-        SummaryListRowViewModel(
-          key = "isRegisteredAddressInUk.checkYourAnswersLabel",
-          value = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel(
-              content = HtmlContent(
-                s"""
+      SummaryListRowViewModel(
+        key = "isRegisteredAddressInUk.checkYourAnswersLabel",
+        value = ValueViewModel(value),
+        actions = Seq(
+          ActionItemViewModel(
+            content = HtmlContent(
+              s"""
                    |<span aria-hidden="true">${messages("site.change")}</span>
                    |<span class="govuk-visually-hidden">${messages("isRegisteredAddressInUk.change.hidden")}</span>
                    |""".stripMargin
-              ),
-              href = routes.IsRegisteredAddressInUkController.onPageLoad(CheckMode).url
-            ).withAttribute(("id", "is-registered-address-uk"))
-          )
+            ),
+            href = routes.IsRegisteredAddressInUkController.onPageLoad(CheckMode).url
+          ).withAttribute(("id", "is-registered-address-uk"))
         )
+      )
     }
 }

@@ -21,7 +21,6 @@ import models.UserAnswers
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Seconds, Span}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.i18n.I18nSupport
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{Json, Writes}
 import play.api.libs.ws.{WSClient, WSRequest}
@@ -45,7 +44,7 @@ trait ISpecBase
 
   implicit override val patienceConfig: PatienceConfig = PatienceConfig(scaled(Span(20, Seconds)))
   implicit val fixedClock: Clock                       = Clock.fixed(Instant.now(), ZoneId.of("UTC"))
-  lazy val repository: SessionRepository               = app.injector.instanceOf[SessionRepository]
+  val repository: SessionRepository                    = app.injector.instanceOf[SessionRepository]
 
   override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(config)

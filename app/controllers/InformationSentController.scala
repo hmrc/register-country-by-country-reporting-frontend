@@ -31,8 +31,7 @@ class InformationSentController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() {
-    implicit request =>
-      Ok(view())
+  def onPageLoad: Action[AnyContent] = standardActionSets.identifiedUserWithData() { implicit request =>
+    Ok(view())
   }
 }

@@ -45,31 +45,29 @@ class DoYouHaveUTRController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    standardActionSets.identifiedUserWithInitializedData() {
-      implicit request =>
-        val preparedForm = request.userAnswers.get(DoYouHaveUTRPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
+    standardActionSets.identifiedUserWithInitializedData() { implicit request =>
+      val preparedForm = request.userAnswers.get(DoYouHaveUTRPage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
 
-        Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode))
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithInitializedData().async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
-          value =>
-            if (request.userAnswers.hasNewValue(DoYouHaveUTRPage, value)) {
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(DoYouHaveUTRPage, value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(DoYouHaveUTRPage, mode, updatedAnswers))
-            } else {
-              Future.successful(Redirect(navigator.nextPage(DoYouHaveUTRPage, mode, request.userAnswers)))
-            }
-        )
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithInitializedData().async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        value =>
+          if (request.userAnswers.hasNewValue(DoYouHaveUTRPage, value)) {
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DoYouHaveUTRPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(DoYouHaveUTRPage, mode, updatedAnswers))
+          } else {
+            Future.successful(Redirect(navigator.nextPage(DoYouHaveUTRPage, mode, request.userAnswers)))
+          }
+      )
   }
 }

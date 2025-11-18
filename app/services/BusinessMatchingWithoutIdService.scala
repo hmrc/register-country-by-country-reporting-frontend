@@ -17,7 +17,7 @@
 package services
 
 import connectors.RegistrationConnector
-import models.register.request.{ContactDetails, RegisterWithoutId, Address => RegistrationAddress}
+import models.register.request.{Address => RegistrationAddress, ContactDetails, RegisterWithoutId}
 import models.requests.DataRequest
 import models.{Address, ApiError, MandatoryInformationMissingError, SafeId, UUIDGen}
 import pages._

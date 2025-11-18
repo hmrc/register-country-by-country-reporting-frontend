@@ -34,9 +34,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryListFactory: Count
       case _                            => Seq.empty[SummaryListRow]
     }
 
-  def tradingNameSummary: Option[SummaryListRow] = userAnswers.get(BusinessHaveDifferentNamePage) flatMap (
-    _ => WhatIsTradingNameSummary.row(userAnswers)
-  )
+  def tradingNameSummary: Option[SummaryListRow] = userAnswers.get(BusinessHaveDifferentNamePage) flatMap (_ => WhatIsTradingNameSummary.row(userAnswers))
 
   def businessWithoutIDSection: Seq[SummaryListRow] = Seq(
     IsRegisteredAddressInUkSummary.row(userAnswers),
@@ -49,15 +47,11 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryListFactory: Count
   def businessWithIDSection: Seq[SummaryListRow] =
     Seq(YourBusinessSummary.row(userAnswers, countryListFactory)).flatten
 
-  def contactPhoneSummary: Option[SummaryListRow] = userAnswers.get(HaveTelephonePage) flatMap (
-    _ => ContactPhoneSummary.row(userAnswers)
-  )
+  def contactPhoneSummary: Option[SummaryListRow] = userAnswers.get(HaveTelephonePage) flatMap (_ => ContactPhoneSummary.row(userAnswers))
 
   def firstContactSection: Seq[SummaryListRow] = Seq(ContactNameSummary.row(userAnswers), ContactEmailSummary.row(userAnswers), contactPhoneSummary).flatten
 
-  def secondContactPhoneSummary: Option[SummaryListRow] = userAnswers.get(HaveTelephonePage) flatMap (
-    _ => SecondContactPhoneSummary.row(userAnswers)
-  )
+  def secondContactPhoneSummary: Option[SummaryListRow] = userAnswers.get(HaveTelephonePage) flatMap (_ => SecondContactPhoneSummary.row(userAnswers))
 
   def secondContactSection: Seq[SummaryListRow] = userAnswers.get(DoYouHaveSecondContactPage) match {
     case Some(true) =>

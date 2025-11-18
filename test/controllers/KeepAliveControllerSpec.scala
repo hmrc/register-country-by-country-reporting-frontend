@@ -68,7 +68,7 @@ class KeepAliveControllerSpec extends SpecBase {
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          verify(mockSessionRepository, never).keepAlive(any())
+          verify(mockSessionRepository, never()).keepAlive(any())
         }
       }
     }

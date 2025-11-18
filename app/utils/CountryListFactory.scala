@@ -32,42 +32,33 @@ class CountryListFactory @Inject() (environment: Environment, appConfig: Fronten
   private def getCountryList: Option[Seq[Country]] =
     environment.resourceAsStream(appConfig.countryCodeJson) map Json.parse map {
       _.as[Seq[Country]]
-        .map(
-          country => if (country.alternativeName.isEmpty) country.copy(alternativeName = Option(country.description)) else country
-        )
-        .sortWith(
-          (country, country2) => country.description.toLowerCase < country2.description.toLowerCase
-        )
+        .map(country => if (country.alternativeName.isEmpty) country.copy(alternativeName = Option(country.description)) else country)
+        .sortWith((country, country2) => country.description.toLowerCase < country2.description.toLowerCase)
     }
 
   def getDescriptionFromCode(code: String): Option[String] =
     countryList.flatMap(_.find(_.code == code).map(_.description))
 
   lazy val countryListWithoutGB: Option[Seq[Country]] = countryList.map {
-    _.filter(
-      x => x.code != "GB"
-    )
+    _.filter(x => x.code != "GB")
   }
 
   def countrySelectList(value: Map[String, String], countries: Seq[Country]): Seq[SelectItem] = {
     val countryJsonList = countries
       .groupBy(_.code)
-      .map {
-        case (_, countries) =>
-          val country = countries.head
-          val names = countries
-            .flatMap(
-              c => List(Some(c.description), c.alternativeName)
-            )
-            .flatten
-            .distinct
-          val isSelected = value.get("country").contains(country.code)
-          SelectItem(
-            Some(country.code),
-            country.description,
-            isSelected,
-            attributes = Map("data-text" -> (if (isSelected) country.description else names.mkString(":")))
-          )
+      .map { case (_, countries) =>
+        val country = countries.head
+        val names = countries
+          .flatMap(c => List(Some(c.description), c.alternativeName))
+          .flatten
+          .distinct
+        val isSelected = value.get("country").contains(country.code)
+        SelectItem(
+          Some(country.code),
+          country.description,
+          isSelected,
+          attributes = Map("data-text" -> (if (isSelected) country.description else names.mkString(":")))
+        )
       }
       .toSeq
       .sortBy(_.text)

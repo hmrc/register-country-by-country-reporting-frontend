@@ -43,23 +43,21 @@ class UTRController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithDependantAnswer(BusinessTypePage).async {
-    implicit request =>
-      val taxType = getTaxType(request.userAnswers)
-      val form    = formProvider(taxType)
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithDependantAnswer(BusinessTypePage).async { implicit request =>
+    val taxType = getTaxType(request.userAnswers)
+    val form    = formProvider(taxType)
 
-      val preparedForm = request.userAnswers.get(UTRPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+    val preparedForm = request.userAnswers.get(UTRPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Future.successful(Ok(view(preparedForm, mode, taxType)))
+    Future.successful(Ok(view(preparedForm, mode, taxType)))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithDependantAnswer(BusinessTypePage).async {
-    implicit request =>
-      val taxType = getTaxType(request.userAnswers)
-      val form    = formProvider(taxType)
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithDependantAnswer(BusinessTypePage).async { implicit request =>
+    val taxType = getTaxType(request.userAnswers)
+    val form    = formProvider(taxType)
 
       form
         .bindFromRequest()

@@ -39,44 +39,40 @@ class EmailConnectorSpec extends SpecBase with WireMockHelper with Generators wi
   "EmailConnector" - {
     "must return status as OK for valid email submission" in {
 
-      forAll(arbitrary[EmailRequest]) {
-        emailRequest =>
-          stubPostResponse(s"/hmrc/email", OK)
+      forAll(arbitrary[EmailRequest]) { emailRequest =>
+        stubPostResponse(s"/hmrc/email", OK)
 
-          val result = connector.sendEmail(emailRequest)
-          result.futureValue.status mustBe OK
+        val result = connector.sendEmail(emailRequest)
+        result.futureValue.status mustBe OK
       }
     }
 
     "must return status as BAD_REQUEST for invalid email submission" in {
 
-      forAll(arbitrary[EmailRequest]) {
-        emailRequest =>
-          stubPostResponse(s"/hmrc/email", BAD_REQUEST)
+      forAll(arbitrary[EmailRequest]) { emailRequest =>
+        stubPostResponse(s"/hmrc/email", BAD_REQUEST)
 
-          val result = connector.sendEmail(emailRequest)
-          result.futureValue.status mustBe BAD_REQUEST
+        val result = connector.sendEmail(emailRequest)
+        result.futureValue.status mustBe BAD_REQUEST
       }
     }
 
     "must return status as NOT_FOUND for invalid email submission" in {
 
-      forAll(arbitrary[EmailRequest]) {
-        emailRequest =>
-          stubPostResponse(s"/hmrc/email", NOT_FOUND)
+      forAll(arbitrary[EmailRequest]) { emailRequest =>
+        stubPostResponse(s"/hmrc/email", NOT_FOUND)
 
-          val result = connector.sendEmail(emailRequest)
-          result.futureValue.status mustBe NOT_FOUND
+        val result = connector.sendEmail(emailRequest)
+        result.futureValue.status mustBe NOT_FOUND
       }
     }
 
     "must return status as Internal Server Error when a fault occurs" in {
 
-      forAll(arbitrary[EmailRequest]) {
-        emailRequest =>
-          stubFailure(s"/hmrc/email")
-          val result = connector.sendEmail(emailRequest)
-          result.futureValue.status mustBe INTERNAL_SERVER_ERROR
+      forAll(arbitrary[EmailRequest]) { emailRequest =>
+        stubFailure(s"/hmrc/email")
+        val result = connector.sendEmail(emailRequest)
+        result.futureValue.status mustBe INTERNAL_SERVER_ERROR
 
       }
     }

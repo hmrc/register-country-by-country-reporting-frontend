@@ -23,12 +23,11 @@ case class Identifier(key: String, value: String)
 object Identifier {
   implicit val format: OFormat[Identifier] = Json.format[Identifier]
 
-  implicit lazy val writes: OWrites[Identifier] = OWrites[Identifier] {
-    identifier =>
-      Json.obj(
-        "key"   -> identifier.key,
-        "value" -> identifier.value
-      )
+  implicit lazy val writes: OWrites[Identifier] = OWrites[Identifier] { identifier =>
+    Json.obj(
+      "key"   -> identifier.key,
+      "value" -> identifier.value
+    )
   }
 }
 
@@ -37,12 +36,11 @@ case class Verifier(key: String, value: String)
 object Verifier {
   implicit val format: OFormat[Verifier] = Json.format[Verifier]
 
-  implicit lazy val writes: OWrites[Verifier] = OWrites[Verifier] {
-    verifier =>
-      Json.obj(
-        "key"   -> verifier.key,
-        "value" -> verifier.value
-      )
+  implicit lazy val writes: OWrites[Verifier] = OWrites[Verifier] { verifier =>
+    Json.obj(
+      "key"   -> verifier.key,
+      "value" -> verifier.value
+    )
   }
 }
 
@@ -51,11 +49,10 @@ case class EnrolmentRequest(identifiers: Seq[Identifier], verifiers: Seq[Verifie
 object EnrolmentRequest {
   implicit val format: OFormat[EnrolmentRequest] = Json.format[EnrolmentRequest]
 
-  implicit lazy val writes: OWrites[EnrolmentRequest] = OWrites[EnrolmentRequest] {
-    enrolmentRequest =>
-      Json.obj(
-        "identifiers" -> enrolmentRequest.identifiers,
-        "verifiers"   -> enrolmentRequest.verifiers
-      )
+  implicit lazy val writes: OWrites[EnrolmentRequest] = OWrites[EnrolmentRequest] { enrolmentRequest =>
+    Json.obj(
+      "identifiers" -> enrolmentRequest.identifiers,
+      "verifiers"   -> enrolmentRequest.verifiers
+    )
   }
 }

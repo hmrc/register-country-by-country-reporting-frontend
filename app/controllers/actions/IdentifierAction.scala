@@ -52,10 +52,7 @@ class AuthenticatedIdentifierAction @Inject() (
 
     authorised()
       .retrieve(Retrievals.internalId and Retrievals.allEnrolments and affinityGroup and credentialRole) {
-        case _ ~ enrolments ~ _ ~ Some(Assistant)
-            if enrolments.enrolments.exists(
-              enrolment => validKeys.contains(enrolment.key)
-            ) =>
+        case _ ~ enrolments ~ _ ~ Some(Assistant) if enrolments.enrolments.exists(enrolment => validKeys.contains(enrolment.key)) =>
           Future.successful(Redirect(config.countryByCountryReportingFrontendUrl))
         case _ ~ _ ~ Some(Agent) ~ _ =>
           Future.successful(Redirect(config.countryByCountryReportingFrontendUrl))

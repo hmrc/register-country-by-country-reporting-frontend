@@ -44,15 +44,9 @@ object YourBusinessSummary {
             val value = Html(s"""
                   <p>$businessName</p>
                   <p class=$paragraphClass>${address.addressLine1}</p>
-                  ${address.addressLine2.fold("")(
-              address => s"<p class=$paragraphClass>$address</p>"
-            )}
-                  ${address.addressLine3.fold("")(
-              address => s"<p class=$paragraphClass>$address</p>"
-            )}
-                  ${address.addressLine4.fold("")(
-              address => s"<p class=$paragraphClass>$address</p>"
-            )}
+                  ${address.addressLine2.fold("")(address => s"<p class=$paragraphClass>$address</p>")}
+                  ${address.addressLine3.fold("")(address => s"<p class=$paragraphClass>$address</p>")}
+                  ${address.addressLine4.fold("")(address => s"<p class=$paragraphClass>$address</p>")}
                  <p class=$paragraphClass>${address.postCodeFormatter(address.postalCode).getOrElse("")}</p>
                  ${if (address.countryCode.toUpperCase != "GB") s"<p $paragraphClass>$countryDescription</p>" else ""}
                   """)

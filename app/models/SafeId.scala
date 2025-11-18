@@ -24,7 +24,5 @@ object SafeId {
 
   implicit val reads: Reads[SafeId] = __.read[String].map(SafeId.apply)
 
-  implicit val writes: Writes[SafeId] = Writes(
-    safeId => JsString(safeId.value)
-  )
+  implicit val writes: Writes[SafeId] = Writes(safeId => JsString(safeId.value))
 }

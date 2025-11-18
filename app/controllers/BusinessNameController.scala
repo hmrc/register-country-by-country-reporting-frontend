@@ -62,8 +62,7 @@ class BusinessNameController @Inject() (
     implicit request =>
       request.userAnswers
         .get(BusinessTypePage)
-        .map {
-          businessType =>
+        .map { businessType =>
             formProvider(businessType)
               .bindFromRequest()
               .fold(

@@ -19,7 +19,7 @@ package forms
 import forms.mappings.Mappings
 import models.{Address, Country}
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import utils.RegexConstants
 
 import javax.inject.Inject
@@ -64,6 +64,6 @@ class BusinessWithoutIdAddressFormProvider @Inject() extends Mappings with Regex
       "country" -> text("businessWithoutIdAddress.error.country.required")
         .verifying("businessWithoutIdAddress.error.country.required", value => countryList.exists(_.code == value))
         .transform[Country](value => countryList.find(_.code == value).get, _.code)
-    )(Address.apply)(Address.unapply)
+    )(Address.apply)(a => Some(a.addressLine1, a.addressLine2, a.addressLine3, a.addressLine4, a.postCode, a.country))
   )
 }

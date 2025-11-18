@@ -48,41 +48,39 @@ class BusinessWithoutIdAddressController @Inject() (
 
   val countriesList: Option[Seq[Country]] = countryListFactory.countryListWithoutGB
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() {
-    implicit request =>
-      countriesList match {
-        case Some(countries) =>
-          val form = formProvider(countries)
-          val preparedForm = request.userAnswers.get(BusinessWithoutIdAddressPage) match {
-            case None        => form
-            case Some(value) => form.fill(value)
-          }
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData() { implicit request =>
+    countriesList match {
+      case Some(countries) =>
+        val form = formProvider(countries)
+        val preparedForm = request.userAnswers.get(BusinessWithoutIdAddressPage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-          Ok(view(preparedForm, countryListFactory.countrySelectList(form.data, countries), mode))
-        case None =>
-          logger.error("Could not retrieve countries list from JSON file.")
-          Redirect(routes.ThereIsAProblemController.onPageLoad())
-      }
+        Ok(view(preparedForm, countryListFactory.countrySelectList(form.data, countries), mode))
+      case None =>
+        logger.error("Could not retrieve countries list from JSON file.")
+        Redirect(routes.ThereIsAProblemController.onPageLoad())
+    }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async {
-    implicit request =>
-      countriesList match {
-        case Some(countries) =>
-          val form = formProvider(countries)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, countryListFactory.countrySelectList(formWithErrors.data, countries), mode))),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessWithoutIdAddressPage, value))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(BusinessWithoutIdAddressPage, mode, updatedAnswers))
-            )
-        case None =>
-          logger.error("Could not retrieve countries list from JSON file.")
-          Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
-      }
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async { implicit request =>
+    countriesList match {
+      case Some(countries) =>
+        val form = formProvider(countries)
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, countryListFactory.countrySelectList(formWithErrors.data, countries), mode))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessWithoutIdAddressPage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(BusinessWithoutIdAddressPage, mode, updatedAnswers))
+          )
+      case None =>
+        logger.error("Could not retrieve countries list from JSON file.")
+        Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+    }
   }
 }

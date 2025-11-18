@@ -51,7 +51,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
     s"${configuration.get[Service]("microservice.services.enrolment-store-proxy").baseUrl}${configuration.get[String]("microservice.services.enrolment-store-proxy.startUrl")}"
 
   val taxEnrolmentsUrl1: String = s"${configuration.get[Service]("microservice.services.tax-enrolments").baseUrl}${configuration
-    .get[String]("microservice.services.tax-enrolments.url1")}"
+      .get[String]("microservice.services.tax-enrolments.url1")}"
   val taxEnrolmentsUrl2: String = s"${configuration.get[String]("microservice.services.tax-enrolments.url2")}"
 
   private val feedbackSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
@@ -69,7 +69,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
   val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 
-  val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
+  val cacheTtl: Long = configuration.get[Long]("mongodb.timeToLiveInSeconds")
 
   val enrolmentKey: String      = configuration.get[String](s"keys.enrolmentKey.cbcr")
   val nonUkEnrolmentKey: String = configuration.get[String](s"keys.enrolmentKey.cbcrNonUk")

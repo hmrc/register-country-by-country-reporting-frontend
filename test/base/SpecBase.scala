@@ -20,11 +20,11 @@ import controllers.actions._
 import generators.Generators
 import models.{UUIDGen, UUIDGenImpl, UniqueTaxpayerReference, UserAnswers}
 import navigation.{CBCRNavigator, FakeCBCRNavigator}
-import org.mockito.MockitoSugar
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{BeforeAndAfterEach, OptionValues, TryValues}
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
@@ -50,6 +50,8 @@ trait SpecBase
     with BeforeAndAfterEach
     with IntegrationPatience
     with Generators {
+
+  export org.mockito.Mockito.{never, reset, times, verify, when}
 
   val userAnswersId: String        = "id"
   val utr: UniqueTaxpayerReference = UniqueTaxpayerReference("1234567890")

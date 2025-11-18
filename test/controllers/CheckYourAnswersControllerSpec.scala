@@ -191,7 +191,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
   }
   "must return OK  and the confirmation view onSubmit for register without id" in {
 
-    //val userAnswers = emptyUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
+    // val userAnswers = emptyUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
     val userAnswers = UserAnswers("")
       .set(DoYouHaveUTRPage, false)
       .success

@@ -62,16 +62,13 @@ class SessionRepository @Inject() (
         update = Updates.set("lastUpdated", Instant.now(clock))
       )
       .toFuture()
-      .map(
-        _ => true
-      )
+      .map(_ => true)
 
   def get(id: String): Future[Option[UserAnswers]] =
-    keepAlive(id).flatMap {
-      _ =>
-        collection
-          .find(byId(id))
-          .headOption()
+    keepAlive(id).flatMap { _ =>
+      collection
+        .find(byId(id))
+        .headOption()
     }
 
   def set(answers: UserAnswers): Future[Boolean] = {
@@ -85,21 +82,15 @@ class SessionRepository @Inject() (
         options = ReplaceOptions().upsert(true)
       )
       .toFuture()
-      .map(
-        _ => true
-      )
+      .map(_ => true)
   }
 
   def clear(id: String): Future[Boolean] =
     collection
       .deleteOne(byId(id))
       .toFuture()
-      .map(
-        _ => true
-      )
+      .map(_ => true)
 
   def reset(id: String): Future[Boolean] =
-    clear(id).flatMap(
-      _ => set(UserAnswers(id))
-    )
+    clear(id).flatMap(_ => set(UserAnswers(id)))
 }

@@ -36,9 +36,8 @@ class EnrolmentStoreProxyConnector @Inject() (val config: FrontendAppConfig, val
   ): Future[Boolean] = {
 
     val serviceEnrolmentPattern = subscriptionInfo.utr
-      .map {
-        utr =>
-          s"HMRC-CBC-ORG~cbcId~${subscriptionInfo.cbcId}~UTR~$utr"
+      .map { utr =>
+        s"HMRC-CBC-ORG~cbcId~${subscriptionInfo.cbcId}~UTR~$utr"
       }
       .getOrElse(s"HMRC-CBC-NONUK-ORG~cbcId~${subscriptionInfo.cbcId}")
 
@@ -52,13 +51,12 @@ class EnrolmentStoreProxyConnector @Inject() (val config: FrontendAppConfig, val
         case response if is2xx(response.status) =>
           response.json
             .asOpt[GroupIds]
-            .exists(
-              groupIds =>
-                if (groupIds.principalGroupIds.nonEmpty) {
-                  true
-                } else {
-                  false
-                }
+            .exists(groupIds =>
+              if (groupIds.principalGroupIds.nonEmpty) {
+                true
+              } else {
+                false
+              }
             )
         case response =>
           logger.error(s"Enrolment response not formed. ${response.status} response status")
