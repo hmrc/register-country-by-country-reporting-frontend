@@ -28,7 +28,7 @@ import views.html.IsRegisteredAddressInUkView
 
 class PhaseBannerSpec extends SpecBase with Injecting with ViewHelper {
 
-  val form = new IsRegisteredAddressInUkFormProvider() //first page in service
+  val form = new IsRegisteredAddressInUkFormProvider() // first page in service
 
   "PhaseBannerSpec" - {
 

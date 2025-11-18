@@ -41,7 +41,7 @@ trait ViewHelper {
 
   def elementText(page: Document, selector: String): String =
     page.select(selector).text()
-    
+
   def getPhaseBannerTag(page: Document): String =
     page.body.select(".govuk-phase-banner__content__tag").text()
 }
