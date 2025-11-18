@@ -59,20 +59,20 @@ class UTRController @Inject() (
     val taxType = getTaxType(request.userAnswers)
     val form    = formProvider(taxType)
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, taxType))),
-          value =>
-            if (request.userAnswers.hasNewValue(UTRPage, value)) {
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(UTRPage, value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(UTRPage, mode, updatedAnswers))
-            } else {
-              Future.successful(Redirect(navigator.nextPage(UTRPage, mode, request.userAnswers)))
-            }
-        )
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, taxType))),
+        value =>
+          if (request.userAnswers.hasNewValue(UTRPage, value)) {
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(UTRPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(UTRPage, mode, updatedAnswers))
+          } else {
+            Future.successful(Redirect(navigator.nextPage(UTRPage, mode, request.userAnswers)))
+          }
+      )
   }
 
   private def getTaxType(userAnswers: UserAnswers): String =

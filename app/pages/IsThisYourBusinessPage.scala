@@ -16,7 +16,7 @@
 
 package pages
 
-import models.{UniqueTaxpayerReference, UserAnswers}
+import models.UserAnswers
 import play.api.libs.json.JsPath
 
 import scala.util.Try

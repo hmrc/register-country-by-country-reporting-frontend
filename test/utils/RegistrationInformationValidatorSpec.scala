@@ -17,8 +17,8 @@
 package utils
 
 import base.SpecBase
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
+import org.scalatest.matchers.should.Matchers.shouldBe
 
 class RegistrationInformationValidatorSpec extends SpecBase {
 

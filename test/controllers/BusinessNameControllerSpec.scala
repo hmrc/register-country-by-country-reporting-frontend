@@ -35,9 +35,9 @@ class BusinessNameControllerSpec extends SpecBase {
 
   lazy val businessNameRoute = routes.BusinessNameController.onPageLoad(NormalMode).url
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(mockSessionRepository)
-    super.beforeEach
+    super.beforeEach()
   }
 
   "BusinessName Controller" - {

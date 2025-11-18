@@ -38,9 +38,9 @@ class UTRControllerSpec extends SpecBase {
   val caTaxType                           = "corporation"
   val saTaxType                           = "partnership"
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(mockSessionRepository)
-    super.beforeEach
+    super.beforeEach()
   }
 
   "UTR Controller" - {
