@@ -74,20 +74,59 @@ class RegistrationInformationValidator(userAnswers: UserAnswers) {
       case _          => Seq(IsThisYourBusinessPage)
     }
 
+  private def checkRegistrationInfo: Seq[Page] =
+    userAnswers.get(RegistrationInfoPage) match {
+      case Some(_) => Seq.empty
+      case _       => Seq(RegistrationInfoPage)
+    }
+
+  private def checkBusinessType: Seq[Page] =
+    userAnswers.get(BusinessTypePage) match {
+      case Some(_) => Seq.empty
+      case _       => Seq(BusinessTypePage)
+    }
+  private def checkUTR: Seq[Page] =
+    userAnswers.get(UTRPage) match {
+      case Some(_) => Seq.empty
+      case _       => Seq(UTRPage)
+    }
+
+  private def checkBusinessName: Seq[Page] =
+    userAnswers.get(BusinessNamePage) match {
+      case Some(_) => Seq.empty
+      case _       => Seq(BusinessNamePage)
+    }
+
   private def checkRegistrationInformationForWithoutIDFlow: Seq[Page] =
     checkBusinessWithoutIDName ++ checkBusinessWithoutIdAddress ++
       checkHaveDifferentName ++ checkContactDetails
 
   private def checkRegistrationInformationForWithIDFlow: Seq[Page] =
-    checkIsThisYourBusiness ++ checkContactDetails
+    checkIsThisYourBusiness ++ checkRegistrationInfo ++ checkContactDetails
 
   private def checkContactDetails: Seq[Page] = checkPrimaryContactDetails ++
     checkSecondaryContactDetails
 
-  def isInformationMissing: Boolean =
-    userAnswers.get(RegistrationInfoPage) match {
-      case Some(_) => checkRegistrationInformationForWithIDFlow.nonEmpty
-      case None    => checkRegistrationInformationForWithoutIDFlow.nonEmpty
+  private def checkPreRequiredDataRegisterWithID = checkBusinessType ++ checkUTR ++ checkBusinessName
+
+  def isInformationMissing: Seq[Page] =
+    userAnswers.get(AutoMatchedUTRPage) match {
+      case Some(_) => checkRegistrationInformationForWithIDFlow
+      case None    => checkIsRegisteredAddressInUkFlow
+    }
+
+  private def checkIsRegisteredAddressInUkFlow =
+    userAnswers.get(IsRegisteredAddressInUkPage) match {
+      case Some(true)  => checkPreRequiredDataRegisterWithID ++ checkRegistrationInformationForWithIDFlow
+      case Some(false) => checkHaveUTRFlow
+      case None        => Seq(IsRegisteredAddressInUkPage)
+    }
+
+  private def checkHaveUTRFlow: Seq[Page] =
+    userAnswers.get(DoYouHaveUTRPage) match {
+      case Some(true)  => checkPreRequiredDataRegisterWithID ++ checkRegistrationInformationForWithIDFlow
+      case Some(false) => checkRegistrationInformationForWithoutIDFlow
+      case _           => Seq(DoYouHaveUTRPage)
     }
 }
 
