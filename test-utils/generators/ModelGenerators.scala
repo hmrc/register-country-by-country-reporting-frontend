@@ -38,6 +38,9 @@ trait ModelGenerators {
       } yield Country(state, code.mkString, name)
     }
 
+  implicit lazy val arbitraryPostCode: Gen[Option[String]] =
+    Gen.option(Gen.stringOfN(6, Gen.alphaNumChar))
+
   implicit lazy val arbitraryBusinessWithoutIdAddress: Arbitrary[Address] =
     Arbitrary {
       for {
@@ -45,7 +48,7 @@ trait ModelGenerators {
         addressLine2 <- arbitrary[Option[String]]
         addressLine3 <- nonEmptyString
         addressLine4 <- arbitrary[Option[String]]
-        postCode     <- arbitrary[Option[String]]
+        postCode     <- arbitraryPostCode
         country      <- arbitrary[Country]
       } yield Address(addressLine1, addressLine2, addressLine3, addressLine4, postCode, country)
     }
@@ -143,7 +146,7 @@ trait ModelGenerators {
         addressLine2 <- arbitrary[Option[String]]
         addressLine3 <- arbitrary[Option[String]]
         addressLine4 <- arbitrary[Option[String]]
-        postCode     <- arbitrary[Option[String]]
+        postCode     <- arbitraryPostCode
         countryCode  <- Gen.numStr
       } yield AddressResponse(addressLine1, addressLine2, addressLine3, addressLine4, postCode, countryCode)
     }
