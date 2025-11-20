@@ -21,20 +21,23 @@ import controllers.routes
 import models.requests.DataRequest
 import org.scalatest.EitherValues
 import pages.{
+  AutoMatchedUTRPage,
   BusinessHaveDifferentNamePage,
   BusinessWithoutIDNamePage,
   BusinessWithoutIdAddressPage,
   ContactEmailPage,
   ContactNamePage,
   DoYouHaveSecondContactPage,
+  DoYouHaveUTRPage,
   HaveTelephonePage,
+  IsRegisteredAddressInUkPage,
   IsThisYourBusinessPage,
   RegistrationInfoPage
 }
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.Result
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -90,6 +93,7 @@ class CheckForSubmissionActionSpec extends SpecBase with EitherValues {
         val action = new Harness
 
         val userAnswers = emptyUserAnswers
+          .withPage(AutoMatchedUTRPage, utr)
           .withPage(RegistrationInfoPage, arbitraryRegistrationInfo.arbitrary.sample.get)
           .withPage(IsThisYourBusinessPage, true)
           .withPage(ContactNamePage, "test user")
@@ -107,6 +111,8 @@ class CheckForSubmissionActionSpec extends SpecBase with EitherValues {
         val action  = new Harness
 
         val userAnswers = emptyUserAnswers
+          .withPage(IsRegisteredAddressInUkPage, false)
+          .withPage(DoYouHaveUTRPage, false)
           .withPage(BusinessWithoutIDNamePage, "test business")
           .withPage(BusinessWithoutIdAddressPage, address)
           .withPage(BusinessHaveDifferentNamePage, false)
