@@ -16,7 +16,8 @@
 
 package base
 
-import controllers.actions.*
+import controllers.actions._
+import generators.Generators
 import models.{UUIDGen, UUIDGenImpl, UniqueTaxpayerReference, UserAnswers}
 import navigation.{CBCRNavigator, FakeCBCRNavigator}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -47,7 +48,8 @@ trait SpecBase
     with OptionValues
     with ScalaFutures
     with BeforeAndAfterEach
-    with IntegrationPatience {
+    with IntegrationPatience
+    with Generators {
 
   export org.mockito.Mockito.{never, reset, times, verify, when}
 
