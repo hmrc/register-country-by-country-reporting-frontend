@@ -35,6 +35,11 @@ class BusinessNameControllerSpec extends SpecBase {
 
   lazy val businessNameRoute = routes.BusinessNameController.onPageLoad(NormalMode).url
 
+  override def beforeEach(): Unit = {
+    reset(mockSessionRepository)
+    super.beforeEach()
+  }
+
   "BusinessName Controller" - {
 
     "must return OK and the correct view for a GET" in {
@@ -83,7 +88,8 @@ class BusinessNameControllerSpec extends SpecBase {
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers.set(BusinessTypePage, LimitedCompany).success.value
+      val userAnswers = emptyUserAnswers
+        .withPage(BusinessTypePage, LimitedCompany)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -96,6 +102,30 @@ class BusinessNameControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual onwardRoute.url
+        verify(mockSessionRepository, times(1)).set(any())
+      }
+    }
+
+    "must redirect to the next page when valid same data is submitted" in {
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val userAnswers = emptyUserAnswers
+        .withPage(BusinessTypePage, LimitedCompany)
+        .withPage(BusinessNamePage, "answer")
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, businessNameRoute)
+            .withFormUrlEncodedBody(("value", "answer"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
+        verify(mockSessionRepository, times(0)).set(any())
       }
     }
 

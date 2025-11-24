@@ -17,10 +17,12 @@
 package controllers.actions
 
 import controllers.routes
+import models.UserAnswers
 import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
+import utils.RegistrationInformationValidator
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,9 +32,16 @@ class CheckForSubmissionActionImpl @Inject() (implicit val executionContext: Exe
   override protected def refine[A](request: DataRequest[A]): Future[Either[Result, DataRequest[A]]] =
     if (request.userAnswers.data == Json.obj()) {
       Future.successful(Left(Redirect(routes.InformationSentController.onPageLoad())))
+    } else if (isRegistrationInformationMissing(request.userAnswers).nonEmpty) {
+      Future.successful(Left(Redirect(routes.MissingInformationController.onPageLoad())))
     } else {
       Future.successful(Right(request))
     }
+
+  private def isRegistrationInformationMissing(userAnswers: UserAnswers) = {
+    val validator = RegistrationInformationValidator(userAnswers)
+    validator.isInformationMissing
+  }
 }
 
 trait CheckForSubmissionAction extends ActionRefiner[DataRequest, DataRequest]

@@ -21,7 +21,7 @@ import forms.UTRFormProvider
 import models.BusinessType.{LimitedCompany, Partnership}
 import models.{NormalMode, UniqueTaxpayerReference, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import pages.{BusinessTypePage, UTRPage}
+import pages.{BusinessTypePage, RegistrationInfoPage, UTRPage}
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -37,6 +37,11 @@ class UTRControllerSpec extends SpecBase {
   val form: Form[UniqueTaxpayerReference] = formProvider("Self Assessment")
   val caTaxType                           = "corporation"
   val saTaxType                           = "partnership"
+
+  override def beforeEach(): Unit = {
+    reset(mockSessionRepository)
+    super.beforeEach()
+  }
 
   "UTR Controller" - {
 
@@ -97,10 +102,11 @@ class UTRControllerSpec extends SpecBase {
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when valid New data is submitted" in {
 
       val userAnswers = UserAnswers(userAnswersId)
         .withPage(BusinessTypePage, LimitedCompany)
+        .withPage(RegistrationInfoPage, arbitraryRegistrationInfo.arbitrary.sample.get)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -115,6 +121,30 @@ class UTRControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual onwardRoute.url
+      }
+    }
+
+    "must redirect to the next page when same data is submitted" in {
+
+      val userAnswers = UserAnswers(userAnswersId)
+        .withPage(BusinessTypePage, LimitedCompany)
+        .withPage(RegistrationInfoPage, arbitraryRegistrationInfo.arbitrary.sample.get)
+        .withPage(UTRPage, utr)
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, utrRouteSubmit)
+            .withFormUrlEncodedBody(("value", utr.uniqueTaxPayerReference))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
+        verify(mockSessionRepository, times(0)).set(any())
       }
     }
 
