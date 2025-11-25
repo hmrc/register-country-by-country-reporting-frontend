@@ -23,8 +23,8 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.govuk.summarylist.*
+import viewmodels.implicits.*
 
 object WhatIsTradingNameSummary {
 
@@ -35,7 +35,7 @@ object WhatIsTradingNameSummary {
     Some(
       SummaryListRowViewModel(
         key = "whatIsTradingName.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlFormat.escape(value).toString),
+        value = ValueViewModel(s"""$value"""),
         actions = Seq(
           ActionItemViewModel(
             content = HtmlContent(
