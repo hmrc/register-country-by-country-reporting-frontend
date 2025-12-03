@@ -14,10 +14,13 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
+
 @this(
     layout: templates.Layout,
     paragraph: components.Paragraph,
-    link: components.Link
+    link: components.Link,
+    config: FrontendAppConfig
 )
 
 @(emailLink: String)(implicit request: Request[_], messages: Messages)
@@ -33,5 +36,5 @@
 
     @* TODO - Add guidance link here for DAC6-3896 *@
 
-    @paragraph(link("#", "unauthorised.guidance"))
+    @paragraph(link(config.cbcGuidanceUrl, "unauthorised.guidance"))
 }
