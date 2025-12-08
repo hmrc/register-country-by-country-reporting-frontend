@@ -34,5 +34,5 @@
 
     @paragraph(Html(messages("unauthorised.email" , link(s"mailto:$emailLink", "enquiries.email"))))
 
-    @paragraph(link(config.cbcGuidanceUrl, "unauthorised.guidance"))
+    @paragraph(link(config.cbcGuidanceUrl, "unauthorised.guidance", Some("guidance_link")))
 }
