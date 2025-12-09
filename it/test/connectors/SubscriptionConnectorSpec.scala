@@ -24,7 +24,7 @@ import models.{SafeId, SubscriptionID}
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.Application
-import play.api.http.Status.OK
+import play.api.http.Status.{OK, REQUEST_TIMEOUT}
 import play.api.inject.guice.GuiceApplicationBuilder
 import utils.WireMockHelper
 
@@ -108,6 +108,14 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockHelper with ScalaC
         val result = connector.readSubscription(safeId)
         result.futureValue mustBe None
       }
+
+      "must return None when read subscription fails with request timeout" in {
+
+        stubPostResponse(s"$subscriptionUrl/read-subscription/${safeId.value}", REQUEST_TIMEOUT)
+
+        val result = connector.readSubscription(safeId)
+        result.futureValue mustBe None
+      }
     }
 
     "createSubscription" - {
@@ -169,6 +177,14 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockHelper with ScalaC
              |""".stripMargin
 
         stubPostResponse(s"$subscriptionUrl/create-subscription", errorCode, subscriptionErrorResponse)
+
+        val result = connector.createSubscription(createSubscriptionRequest, businessName)
+        result.futureValue mustBe None
+      }
+
+      "must return None when create subscription fails with Request Timeout" in {
+
+        stubPostResponse(s"$subscriptionUrl/create-subscription", REQUEST_TIMEOUT)
 
         val result = connector.createSubscription(createSubscriptionRequest, businessName)
         result.futureValue mustBe None

@@ -17,14 +17,14 @@
 package connectors
 
 import base.SpecBase
-import models.register.request._
+import models.register.request.*
 import models.register.response.RegisterWithIDResponse
 import models.register.response.details.{AddressResponse, OrganisationResponse}
 import models.{InternalServerError, NotFoundError, SafeId}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.Application
-import play.api.http.Status.{NOT_FOUND, OK}
+import play.api.http.Status.{NOT_FOUND, OK, REQUEST_TIMEOUT}
 import play.api.inject.guice.GuiceApplicationBuilder
 import utils.WireMockHelper
 
@@ -99,6 +99,13 @@ class RegistrationConnectorSpec extends SpecBase with WireMockHelper with ScalaC
         val result = connector.registerWithID(registrationWithOrganisationIDPayload)
         result.futureValue mustBe Left(NotFoundError)
       }
+
+      "must return Internal Server Error when EIS returns REQUEST_TIMEOUT status" in {
+        stubPostResponse(s"$registrationUrl/utr", REQUEST_TIMEOUT)
+
+        val result = connector.registerWithID(registrationWithOrganisationIDPayload)
+        result.futureValue mustBe Left(InternalServerError)
+      }
     }
 
     "registerWithoutId" - {
@@ -121,6 +128,13 @@ class RegistrationConnectorSpec extends SpecBase with WireMockHelper with ScalaC
       "must return 'None' when EIS returns Error status" in {
         val errorStatus: Int = errorCodes.sample.value
         stubPostResponse(s"$registrationUrl/noId", errorStatus, businessWithoutIdJsonResponse)
+
+        val result = connector.registerWithoutID(registrationWithoutIDPayload)
+        result.futureValue mustBe Left(InternalServerError)
+      }
+
+      "must return Internal Server Error when EIS returns REQUEST_TIMEOUT status" in {
+        stubPostResponse(s"$registrationUrl/noId", REQUEST_TIMEOUT)
 
         val result = connector.registerWithoutID(registrationWithoutIDPayload)
         result.futureValue mustBe Left(InternalServerError)
