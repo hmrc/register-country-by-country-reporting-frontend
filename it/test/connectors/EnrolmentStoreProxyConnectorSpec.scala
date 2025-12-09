@@ -39,7 +39,7 @@ import generators.Generators
 import models.{SubscriptionID, SubscriptionInfo}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.Application
-import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
+import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK, REQUEST_TIMEOUT}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import utils.WireMockHelper
@@ -114,6 +114,14 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase with WireMockHelper with
         stubResponse(enrolmentStoreProxy204Url, NOT_FOUND, "")
         intercept[IllegalStateException](await(connector.enrolmentExists(enrolmentInfo)))
 
+      }
+
+      "return 408 and a enrolmentStatus response when request timeout" in {
+        val subscriptionID = SubscriptionID("xxx404")
+        val utr            = Some("111111204")
+        val enrolmentInfo  = SubscriptionInfo(safeID = "safeId", utr = utr, None, cbcId = subscriptionID.value)
+        stubResponse(enrolmentStoreProxy204Url, REQUEST_TIMEOUT, "")
+        intercept[IllegalStateException](await(connector.enrolmentExists(enrolmentInfo)))
       }
 
     }

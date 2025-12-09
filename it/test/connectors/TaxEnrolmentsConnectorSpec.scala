@@ -21,7 +21,7 @@ import generators.Generators
 import models.SubscriptionInfo
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.Application
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NO_CONTENT}
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NO_CONTENT, REQUEST_TIMEOUT}
 import play.api.inject.guice.GuiceApplicationBuilder
 import utils.WireMockHelper
 
@@ -65,6 +65,15 @@ class TaxEnrolmentsConnectorSpec extends SpecBase with WireMockHelper with Gener
         forAll(validSafeID, validSubscriptionID, validUtr) { (safeID, subID, utr) =>
           val enrolmentInfo = SubscriptionInfo(safeID = safeID, utr = Some(utr), cbcId = subID)
           stubPutResponse("/tax-enrolments/service/HMRC-CBC-ORG/enrolment", INTERNAL_SERVER_ERROR)
+          val result = connector.createEnrolment(enrolmentInfo)
+          result.futureValue mustBe None
+        }
+      }
+
+      "must return status Request Timeout Error" in {
+        forAll(validSafeID, validSubscriptionID, validUtr) { (safeID, subID, utr) =>
+          val enrolmentInfo = SubscriptionInfo(safeID = safeID, utr = Some(utr), cbcId = subID)
+          stubPutResponse("/tax-enrolments/service/HMRC-CBC-ORG/enrolment", REQUEST_TIMEOUT)
           val result = connector.createEnrolment(enrolmentInfo)
           result.futureValue mustBe None
         }
