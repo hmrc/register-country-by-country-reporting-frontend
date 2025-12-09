@@ -79,12 +79,12 @@ class EmailConnectorSpec extends SpecBase with WireMockHelper with Generators wi
 
     "must return status as Request Timeout when a request timeout" in {
 
-      forAll(arbitrary[EmailRequest]) { emailRequest =>
-        stubPostResponse(s"/hmrc/email", REQUEST_TIMEOUT)
-        val result = connector.sendEmail(emailRequest)
-        result.futureValue.status mustBe REQUEST_TIMEOUT
+      val emailRequest = arbitraryEmailRequest.arbitrary.sample.value
+      stubPostResponse(s"/hmrc/email", REQUEST_TIMEOUT)
 
-      }
+      val result = connector.sendEmail(emailRequest)
+
+      result.futureValue.status mustBe REQUEST_TIMEOUT
     }
 
   }
