@@ -22,7 +22,7 @@ import models.email.EmailRequest
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.Application
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, REQUEST_TIMEOUT}
 import play.api.inject.guice.GuiceApplicationBuilder
 import utils.WireMockHelper
 
@@ -75,6 +75,16 @@ class EmailConnectorSpec extends SpecBase with WireMockHelper with Generators wi
         result.futureValue.status mustBe INTERNAL_SERVER_ERROR
 
       }
+    }
+
+    "must return status as Request Timeout when a request timeout" in {
+
+      val emailRequest = arbitraryEmailRequest.arbitrary.sample.value
+      stubPostResponse(s"/hmrc/email", REQUEST_TIMEOUT)
+
+      val result = connector.sendEmail(emailRequest)
+
+      result.futureValue.status mustBe REQUEST_TIMEOUT
     }
 
   }
