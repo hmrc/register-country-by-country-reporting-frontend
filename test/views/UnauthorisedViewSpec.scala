@@ -35,20 +35,22 @@ class UnauthorisedViewSpec extends SpecBase with GuiceOneAppPerSuite with Inject
 
   implicit private val request: FakeRequest[AnyContent] = FakeRequest()
   implicit private val messages: Messages               = messagesControllerComponentsForView.messagesApi.preferred(Seq(Lang("en")))
+  private val renderedHtml: HtmlFormat.Appendable =
+    view1(frontendAppConfig.emailEnquiries)
+  private lazy val doc = Jsoup.parse(renderedHtml.body)
 
   "UnauthorisedView" - {
     "should render page components" in {
-      val renderedHtml: HtmlFormat.Appendable =
-        view1(frontendAppConfig.emailEnquiries)
-      lazy val doc = Jsoup.parse(renderedHtml.body)
 
       getWindowTitle(doc) must include("You cannot access this page")
       getPageHeading(doc) mustEqual "You cannot access this page"
       getAllParagraph(doc).text() must include(
         "You can email your HMRC Customer Compliance Manager or msb.countrybycountryreportingmailbox@hmrc.gov.uk if you need support with using the service."
       )
-      val linkElements = doc.select(".govuk-link")
-      linkElements.select(":contains(Refer to the country-by-country reporting guidance)").attr("href") mustEqual "#"
+    }
+    "should have guidance link" in {
+      val elem = doc.getElementById("guidance_link")
+      elem.attr("href") mustEqual "https://www.gov.uk/guidance/send-a-country-by-country-report#how-to-create-your-report"
     }
   }
 
