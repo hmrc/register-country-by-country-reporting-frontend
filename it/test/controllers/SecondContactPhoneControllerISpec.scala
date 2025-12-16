@@ -30,7 +30,7 @@ class SecondContactPhoneControllerISpec extends ISpecBehaviours {
 
     behave like standardOnSubmit(pageUrl, requestBody)
 
-    behave like pageSubmits(pageUrl, requestBody, "/register-to-send-a-country-by-country-report/check-answers")
+    behave like pageSubmits(pageUrl, requestBody, "/register-to-send-a-country-by-country-report/register/check-answers")
   }
 
 }
