@@ -35,7 +35,7 @@ class CheckYourAnswersControllerISpec extends ISpecBehaviours {
     .withPage(HaveTelephonePage, false)
     .withPage(DoYouHaveSecondContactPage, false)
 
-  private val pageUrl = Some("/check-answers")
+  private val pageUrl = Some("/register/check-answers")
 
   "GET / CheckYourAnswersController.onPageLoad" must {
     behave like pageLoads(pageUrl, "checkYourAnswers.title", getUserAnswers)
