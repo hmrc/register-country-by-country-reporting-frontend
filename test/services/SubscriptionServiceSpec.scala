@@ -20,8 +20,9 @@ import base.SpecBase
 import connectors.SubscriptionConnector
 import models.matching.RegistrationInfo
 import models.register.response.details.AddressResponse
-import models.{SafeId, SubscriptionCreateError, SubscriptionCreateInformationMissingError, SubscriptionID, UserAnswers}
-import org.mockito.ArgumentMatchers.any
+import models.subscription.request.CreateSubscriptionForCBCRequest
+import models.{Address, Country, SafeId, SubscriptionCreateError, SubscriptionCreateInformationMissingError, SubscriptionID, UserAnswers}
+import org.mockito.ArgumentMatchers.{any, argThat}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.*
@@ -49,7 +50,7 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
     super.beforeEach()
 
   "SubscriptionService" - {
-    "must return 'SubscriptionID' on creating subscription" in {
+    "must return 'SubscriptionID' on creating subscription for BusinessID" in {
       val subscriptionID                                             = SubscriptionID("id")
       val responseCreateSubscription: Future[Option[SubscriptionID]] = Future.successful(Some(subscriptionID))
       val safeId                                                     = SafeId("CBC12345678")
@@ -62,13 +63,42 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
         .withPage(ContactEmailPage, "test@gmail.com")
         .withPage(ContactPhonePage, "000000000")
         .withPage(DoYouHaveSecondContactPage, false)
-        .withPage(RegistrationInfoPage, RegistrationInfo(SafeId("x"), "Company", AddressResponse("", None, None, None, None, "GB")))
+        .withPage(RegistrationInfoPage, RegistrationInfo(SafeId("x"), "TestCompany", AddressResponse("", None, None, None, None, "GB")))
 
       val result = service.checkAndCreateSubscription(safeId, userAnswers)
       result.futureValue mustBe Right(SubscriptionID("id"))
 
       verify(mockSubscriptionConnector, times(1)).readSubscription(any())(any(), any())
-      verify(mockSubscriptionConnector, times(1)).createSubscription(any(), any())(any(), any())
+      verify(mockSubscriptionConnector, times(1)).createSubscription(
+        argThat[CreateSubscriptionForCBCRequest](_.createSubscriptionForCBCRequest.requestDetail.primaryContact.organisation.organisationName == "TestCompany"),
+        any()
+      )(any(), any())
+    }
+
+    "must return 'SubscriptionID' on creating subscription for BusinessWithoutID" in {
+      val subscriptionID                                             = SubscriptionID("id")
+      val responseCreateSubscription: Future[Option[SubscriptionID]] = Future.successful(Some(subscriptionID))
+      val safeId                                                     = SafeId("CBC12345678")
+      when(mockSubscriptionConnector.readSubscription(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionConnector.createSubscription(any(), any())(any(), any())).thenReturn(responseCreateSubscription)
+
+      val userAnswers = UserAnswers("")
+        .withPage(DoYouHaveUTRPage, false)
+        .withPage(ContactNamePage, "TestName")
+        .withPage(ContactEmailPage, "test@gmail.com")
+        .withPage(ContactPhonePage, "000000000")
+        .withPage(DoYouHaveSecondContactPage, false)
+        .withPage(BusinessWithoutIDNamePage, "TestCompany")
+        .withPage(BusinessWithoutIdAddressPage, Address("test address line 1", None, "test city", None, None, Country("TestCountry", "TR", "test")))
+
+      val result = service.checkAndCreateSubscription(safeId, userAnswers)
+      result.futureValue mustBe Right(SubscriptionID("id"))
+
+      verify(mockSubscriptionConnector, times(1)).readSubscription(any())(any(), any())
+      verify(mockSubscriptionConnector, times(1)).createSubscription(
+        argThat[CreateSubscriptionForCBCRequest](_.createSubscriptionForCBCRequest.requestDetail.primaryContact.organisation.organisationName == "TestCompany"),
+        any()
+      )(any(), any())
     }
 
     "must return 'SubscriptionID' when there is already a subscription exists" in {
@@ -97,6 +127,7 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
       val safeId = SafeId("CBC12345678")
       val userAnswers = UserAnswers("id")
         .withPage(DoYouHaveUTRPage, false)
+        .withPage(BusinessWithoutIDNamePage, "testOrganisationName")
         .withPage(ContactNamePage, "TestName")
         .withPage(ContactEmailPage, "test@gmail.com")
         .withPage(ContactPhonePage, "000000000")
@@ -116,6 +147,7 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
       val safeId = SafeId("CBC12345678")
       val userAnswers = UserAnswers("id")
         .withPage(DoYouHaveUTRPage, false)
+        .withPage(BusinessWithoutIDNamePage, "testOrganisationName")
         .withPage(ContactNamePage, "TestName")
         .withPage(ContactEmailPage, "test@gmail.com")
         .withPage(ContactPhonePage, "000000000")
