@@ -35,13 +35,17 @@ object SubscriptionRequest {
       case Some(pc) =>
         getSecondaryContactInformation(userAnswers) match {
           case Right(sc) =>
+            val businessName = userAnswers
+              .get(WhatIsTradingNamePage)
+              .orElse(userAnswers.get(BusinessWithoutIDNamePage))
+              .orElse(userAnswers.get(RegistrationInfoPage).map(_.name))
             Right(
               SubscriptionRequest(
                 createRequestCommonForSubscription(),
                 RequestDetail(
                   IDType = idType,
                   IDNumber = safeId.value,
-                  tradingName = userAnswers.get(WhatIsTradingNamePage),
+                  tradingName = businessName,
                   isGBUser = isGBUser(userAnswers: UserAnswers),
                   primaryContact = pc,
                   secondaryContact = sc
