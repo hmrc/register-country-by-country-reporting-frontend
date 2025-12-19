@@ -35,13 +35,17 @@ object SubscriptionRequest {
       case Some(pc) =>
         getSecondaryContactInformation(userAnswers) match {
           case Right(sc) =>
+            val businessName = userAnswers
+              .get(WhatIsTradingNamePage)
+              .orElse(userAnswers.get(BusinessWithoutIDNamePage))
+              .orElse(userAnswers.get(RegistrationInfoPage).map(_.name))
             Right(
               SubscriptionRequest(
                 createRequestCommonForSubscription(),
                 RequestDetail(
                   IDType = idType,
                   IDNumber = safeId.value,
-                  tradingName = userAnswers.get(WhatIsTradingNamePage),
+                  tradingName = businessName,
                   isGBUser = isGBUser(userAnswers: UserAnswers),
                   primaryContact = pc,
                   secondaryContact = sc
@@ -55,11 +59,8 @@ object SubscriptionRequest {
 
   def getPrimaryContactInformation(userAnswers: UserAnswers): Option[ContactInformation] =
     for {
-      businessEmail <- userAnswers.get(ContactEmailPage)
-      businessContactInfo <- userAnswers
-        .get(BusinessWithoutIDNamePage)
-        .orElse(userAnswers.get(RegistrationInfoPage).map(_.name))
-        .map(OrganisationDetails(_))
+      businessEmail       <- userAnswers.get(ContactEmailPage)
+      businessContactInfo <- userAnswers.get(ContactNamePage).map(OrganisationDetails(_))
     } yield ContactInformation(organisation = businessContactInfo, email = businessEmail, phone = userAnswers.get(ContactPhonePage), mobile = None)
 
   def getSecondaryContactInformation(userAnswers: UserAnswers): Either[ApiError, Option[ContactInformation]] = {
