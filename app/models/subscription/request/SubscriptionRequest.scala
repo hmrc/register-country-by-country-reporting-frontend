@@ -55,11 +55,8 @@ object SubscriptionRequest {
 
   def getPrimaryContactInformation(userAnswers: UserAnswers): Option[ContactInformation] =
     for {
-      businessEmail <- userAnswers.get(ContactEmailPage)
-      businessContactInfo <- userAnswers
-        .get(BusinessWithoutIDNamePage)
-        .orElse(userAnswers.get(RegistrationInfoPage).map(_.name))
-        .map(OrganisationDetails(_))
+      businessEmail       <- userAnswers.get(ContactEmailPage)
+      businessContactInfo <- userAnswers.get(ContactNamePage).map(OrganisationDetails(_))
     } yield ContactInformation(organisation = businessContactInfo, email = businessEmail, phone = userAnswers.get(ContactPhonePage), mobile = None)
 
   def getSecondaryContactInformation(userAnswers: UserAnswers): Either[ApiError, Option[ContactInformation]] = {
