@@ -85,6 +85,7 @@ businessName.hint.limited = This is the registered name on your incorporation ce
 businessName.checkYourAnswersLabel.limited = What is the registered name of your business?
 businessName.error.required.limited = Enter the registered name of your business
 businessName.error.length.limited = Registered name of your business must be 105 characters or less
+businessName.error.invalid = Business name must only include valid characters
 businessName.change.hidden.limited = Change what is the registered name of your business?
 
 businessName.title.limitedPartnership = What is the registered name of your business?
@@ -115,6 +116,7 @@ businessWithoutIDName.title = What is the name of your business?
 businessWithoutIDName.heading = What is the name of your business?
 businessWithoutIDName.checkYourAnswersLabel = Business name
 businessWithoutIDName.error.required = Enter the name of your business
+businessWithoutIDName.error.invalid = Business name must only include valid characters
 businessWithoutIDName.error.length = Business name must be 105 characters or less
 businessWithoutIDName.change.hidden = Change business name
 
