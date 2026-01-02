@@ -85,7 +85,7 @@ businessName.hint.limited = This is the registered name on your incorporation ce
 businessName.checkYourAnswersLabel.limited = What is the registered name of your business?
 businessName.error.required.limited = Enter the registered name of your business
 businessName.error.length.limited = Registered name of your business must be 105 characters or less
-businessName.error.invalid = Business name must only include valid characters
+businessName.error.invalid.limited = Business name must only include letters a to z, numbers 0 to 9 and special characters such as hyphens, spaces and apostrophes
 businessName.change.hidden.limited = Change what is the registered name of your business?
 
 businessName.title.limitedPartnership = What is the registered name of your business?
@@ -94,6 +94,7 @@ businessName.hint.limitedPartnership = This is the registered name on your incor
 businessName.checkYourAnswersLabel.limitedPartnership = What is the registered name of your business?
 businessName.error.required.limitedPartnership = Enter the registered name of your business
 businessName.error.length.limitedPartnership = Registered name of your business must be 105 characters or less
+businessName.error.invalid.limitedPartnership = Partnership name must only include letters a to z, numbers 0 to 9 and special characters such as hyphens, spaces and apostrophes
 businessName.change.hidden.limitedPartnership = Change what is the registered name of your business?
 
 businessName.title.partnership = What is the partnership name?
@@ -110,13 +111,14 @@ businessName.hint.unincorporatedAssociation = This is the name on your governing
 businessName.checkYourAnswersLabel.unincorporatedAssociation = What is the name of your organisation?
 businessName.error.required.unincorporatedAssociation = Enter the name of your organisation
 businessName.error.length.unincorporatedAssociation = Organisation name must be 105 characters of less
+businessName.error.invalid.unincorporatedAssociation = Organisation name must only include letters a to z, numbers 0 to 9 and special characters such as hyphens, spaces and apostrophes
 businessName.change.hidden.unincorporatedAssociation = Change what is the name of your organisation?
 
 businessWithoutIDName.title = What is the name of your business?
 businessWithoutIDName.heading = What is the name of your business?
 businessWithoutIDName.checkYourAnswersLabel = Business name
 businessWithoutIDName.error.required = Enter the name of your business
-businessWithoutIDName.error.invalid = Business name must only include valid characters
+businessWithoutIDName.error.invalid = Business name must only include letters a to z, numbers 0 to 9 and special characters such as hyphens, spaces and apostrophes
 businessWithoutIDName.error.length = Business name must be 105 characters or less
 businessWithoutIDName.change.hidden = Change business name
 

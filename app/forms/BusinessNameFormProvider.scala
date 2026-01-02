@@ -41,7 +41,7 @@ class BusinessNameFormProvider @Inject() extends Mappings with RegexConstants {
       if (value.length > maxLength) {
         Invalid(ValidationError(s"businessName.error.length.$key"))
       } else if (!value.matches(businessNameRegex)) {
-        Invalid(ValidationError("businessName.error.invalid"))
+        Invalid(ValidationError(s"businessName.error.invalid.$key"))
       } else {
         Valid
       }
