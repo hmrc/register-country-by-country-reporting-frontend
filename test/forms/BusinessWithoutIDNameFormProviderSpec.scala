@@ -31,6 +31,12 @@ class BusinessWithoutIDNameFormProviderSpec extends StringFieldBehaviours {
 
   ".value" - {
 
+    "normalises curly apostrophes to straight ones" in {
+      val result = form.bind(Map("value" -> "‘apostrophes’"))
+      result.errors mustBe empty
+      result.value.value mustBe "'apostrophes'"
+    }
+
     val fieldName = "value"
 
     behave like fieldThatBindsValidDataWithoutInvalidError(

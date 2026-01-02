@@ -31,7 +31,9 @@ class BusinessWithoutIDNameFormProvider @Inject() extends Mappings with RegexCon
   def apply(): Form[String] =
     Form(
       mapping(
-        "value" -> text("businessWithoutIDName.error.required").verifying(businessNameWithoutIdConstraint)
+        "value" -> text("businessWithoutIDName.error.required")
+          .transform(normalise, identity)
+          .verifying(businessNameWithoutIdConstraint)
       )(identity)(Some(_))
     )
 
@@ -45,5 +47,10 @@ class BusinessWithoutIDNameFormProvider @Inject() extends Mappings with RegexCon
         Valid
       }
     }
+
+  private def normalise(input: String): String =
+    input
+      .replace('\u2019', '\'')
+      .replace('\u2018', '\'')
 
 }

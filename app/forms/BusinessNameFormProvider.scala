@@ -32,7 +32,9 @@ class BusinessNameFormProvider @Inject() extends Mappings with RegexConstants {
   def apply(key: BusinessType): Form[String] =
     Form(
       mapping(
-        "value" -> text(s"businessName.error.required.$key").verifying(businessNameConstraint(key))
+        "value" -> text(s"businessName.error.required.$key")
+          .transform(normalise, identity)
+          .verifying(businessNameConstraint(key))
       )(identity)(Some(_))
     )
 
@@ -46,5 +48,10 @@ class BusinessNameFormProvider @Inject() extends Mappings with RegexConstants {
         Valid
       }
     }
+
+  private def normalise(input: String): String =
+    input
+      .replace('\u2019', '\'')
+      .replace('\u2018', '\'')
 
 }
