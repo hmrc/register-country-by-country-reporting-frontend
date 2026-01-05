@@ -52,5 +52,6 @@ class BusinessWithoutIDNameFormProvider @Inject() extends Mappings with RegexCon
     input
       .replace('\u2019', '\'')
       .replace('\u2018', '\'')
-
+      .replace('\u201C', '\"')
+      .replace('\u201D', '\"')
 }

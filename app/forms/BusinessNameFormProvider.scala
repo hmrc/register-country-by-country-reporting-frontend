@@ -53,5 +53,7 @@ class BusinessNameFormProvider @Inject() extends Mappings with RegexConstants {
     input
       .replace('\u2019', '\'')
       .replace('\u2018', '\'')
+      .replace('\u201C', '\"')
+      .replace('\u201D', '\"')
 
 }
