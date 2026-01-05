@@ -45,7 +45,7 @@ class AuthControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = route(application, request).value
 
-        val expectedRedirectUrl = s"${appConfig.signOutUrl}"
+        val expectedRedirectUrl = s"${appConfig.signOutFeedbackUrl}"
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl

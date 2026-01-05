@@ -30,7 +30,7 @@ class AuthController @Inject() (
     with I18nSupport {
 
   def signOut(): Action[AnyContent] = Action {
-    Redirect(config.signOutUrl).withNewSession
+    Redirect(config.signOutFeedbackUrl).withNewSession
   }
 
   def signOutNoSurvey(): Action[AnyContent] = Action {

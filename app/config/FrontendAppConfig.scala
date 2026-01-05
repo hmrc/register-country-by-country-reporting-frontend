@@ -37,7 +37,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
 
   val loginUrl: String                    = configuration.get[String]("urls.login")
   val loginContinueUrl: String            = configuration.get[String]("urls.loginContinue")
-  val signOutUrl: String                  = configuration.get[String]("urls.signOut")
+  val signOutFeedbackUrl: String          = configuration.get[String]("urls.signOut")
   lazy val corporationTaxUTRUrl: String   = configuration.get[String]("urls.corporationTaxUTR")
   lazy val lostUTRUrl: String             = configuration.get[String]("urls.findUTR")
   lazy val businessTaxAccountLink: String = configuration.get[String]("urls.btaLogin")
