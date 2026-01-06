@@ -17,23 +17,35 @@
 package controllers.auth
 
 import config.FrontendAppConfig
-import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import controllers.actions.IdentifierAction
+import play.api.mvc.*
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class AuthController @Inject() (
   val controllerComponents: MessagesControllerComponents,
-  config: FrontendAppConfig
-) extends FrontendBaseController
-    with I18nSupport {
+  config: FrontendAppConfig,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction
+)(using ec: ExecutionContext)
+    extends FrontendBaseController {
 
-  def signOut(): Action[AnyContent] = Action {
-    Redirect(config.signOutFeedbackUrl).withNewSession
+  def signOut(): Action[AnyContent] = identify.async { implicit request =>
+    sessionRepository
+      .clear(request.userId)
+      .map { _ =>
+        Redirect(config.signOutFeedbackUrl).withNewSession
+      }
   }
 
-  def signOutNoSurvey(): Action[AnyContent] = Action {
-    Redirect(routes.SignedOutController.onPageLoad()).withNewSession
+  def signOutNoSurvey(): Action[AnyContent] = identify.async { implicit request =>
+    sessionRepository
+      .clear(request.userId)
+      .map { _ =>
+        Redirect(controllers.auth.routes.SignedOutController.onPageLoad().url).withNewSession
+      }
   }
 }
