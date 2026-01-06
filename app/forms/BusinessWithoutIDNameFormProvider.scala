@@ -16,19 +16,42 @@
 
 package forms
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
+import play.api.data.Forms.mapping
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
+import utils.RegexConstants
 
-class BusinessWithoutIDNameFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
+
+class BusinessWithoutIDNameFormProvider @Inject() extends Mappings with RegexConstants {
+
+  private val maxLength = 105
 
   def apply(): Form[String] =
     Form(
-      "value" -> validatedTextMaxLength(
-        "businessWithoutIDName.error.required",
-        "businessWithoutIDName.error.length",
-        105
-      )
+      mapping(
+        "value" -> text("businessWithoutIDName.error.required")
+          .transform(normalise, identity)
+          .verifying(businessNameWithoutIdConstraint)
+      )(identity)(Some(_))
     )
+
+  private def businessNameWithoutIdConstraint: Constraint[String] =
+    Constraint("constraint.businessName") { value =>
+      if (value.length > maxLength) {
+        Invalid(ValidationError("businessWithoutIDName.error.length"))
+      } else if (!value.matches(businessNameRegex)) {
+        Invalid(ValidationError("businessWithoutIDName.error.invalid"))
+      } else {
+        Valid
+      }
+    }
+
+  private def normalise(input: String): String =
+    input
+      .replace('\u2019', '\'')
+      .replace('\u2018', '\'')
+      .replace('\u201C', '\"')
+      .replace('\u201D', '\"')
 }

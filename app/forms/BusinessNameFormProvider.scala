@@ -16,15 +16,44 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
 import models.BusinessType
 import play.api.data.Form
+import play.api.data.Forms.mapping
+import play.api.data.validation.*
+import utils.RegexConstants
 
-class BusinessNameFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
+
+class BusinessNameFormProvider @Inject() extends Mappings with RegexConstants {
+
+  private val maxLength = 105
 
   def apply(key: BusinessType): Form[String] =
     Form(
-      "value" -> validatedTextMaxLength(s"businessName.error.required.$key", s"businessName.error.length.$key", 105)
+      mapping(
+        "value" -> text(s"businessName.error.required.$key")
+          .transform(normalise, identity)
+          .verifying(businessNameConstraint(key))
+      )(identity)(Some(_))
     )
+
+  private def businessNameConstraint(key: BusinessType): Constraint[String] =
+    Constraint("constraint.businessName") { value =>
+      if (value.length > maxLength) {
+        Invalid(ValidationError(s"businessName.error.length.$key"))
+      } else if (!value.matches(businessNameRegex)) {
+        Invalid(ValidationError(s"businessName.error.invalid.$key"))
+      } else {
+        Valid
+      }
+    }
+
+  private def normalise(input: String): String =
+    input
+      .replace('\u2019', '\'')
+      .replace('\u2018', '\'')
+      .replace('\u201C', '\"')
+      .replace('\u201D', '\"')
+
 }
