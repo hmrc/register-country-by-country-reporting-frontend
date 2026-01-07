@@ -34,9 +34,10 @@ class AuthControllerSpec extends SpecBase with BeforeAndAfterEach {
   "signOut" - {
 
     "must redirect to sign out, specifying the exit survey as the continue URL" in {
+      when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))
 
       val application =
-        applicationBuilder(None).build()
+        applicationBuilder(Some(emptyUserAnswers)).build()
 
       running(application) {
 
@@ -49,6 +50,7 @@ class AuthControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl
+        verify(mockSessionRepository, times(1)).clear(any())
       }
     }
   }
@@ -56,6 +58,7 @@ class AuthControllerSpec extends SpecBase with BeforeAndAfterEach {
   "signOutNoSurvey" - {
 
     "must redirect to SignedOut URL" in {
+      when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))
 
       val application =
         applicationBuilder(None).build()
@@ -70,6 +73,8 @@ class AuthControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl
+        verify(mockSessionRepository, times(1)).clear(any())
+
       }
     }
   }
