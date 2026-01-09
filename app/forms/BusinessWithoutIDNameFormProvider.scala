@@ -32,7 +32,6 @@ class BusinessWithoutIDNameFormProvider @Inject() extends Mappings with RegexCon
     Form(
       mapping(
         "value" -> text("businessWithoutIDName.error.required")
-          .transform(normalise, identity)
           .verifying(businessNameWithoutIdConstraint)
       )(identity)(Some(_))
     )
@@ -41,17 +40,11 @@ class BusinessWithoutIDNameFormProvider @Inject() extends Mappings with RegexCon
     Constraint("constraint.businessName") { value =>
       if (value.length > maxLength) {
         Invalid(ValidationError("businessWithoutIDName.error.length"))
-      } else if (!value.matches(businessNameRegex)) {
+      } else if (!value.matches(businessNameWithoutIDRegex)) {
         Invalid(ValidationError("businessWithoutIDName.error.invalid"))
       } else {
         Valid
       }
     }
 
-  private def normalise(input: String): String =
-    input
-      .replace('\u2019', '\'')
-      .replace('\u2018', '\'')
-      .replace('\u201C', '\"')
-      .replace('\u201D', '\"')
 }

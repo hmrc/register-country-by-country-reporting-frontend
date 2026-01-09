@@ -24,7 +24,9 @@ trait RegexConstants {
   final val utrRegex                 = "^[kK]?[0-9]+[kK]?$"
 
   final val businessNameRegex =
-    """^[a-zA-Z0-9 '¬`!"\"£$%^&*()_\-=+{};:@'~#<,>.?\\/*|\[\]]*$"""
+    """^[A-Za-z0-9 '¬`!"£$%^&*()_\-=+{};:@'~#<,>.?\\\/|\[\]]+$"""
+  final val businessNameWithoutIDRegex =
+    """^[a-zA-Z0-9- '&\\/]*$"""
 
   final val emailRegex = "^(?:[a-zA-Z0-9!#$%&*+\\/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&*+\\/=?^_`{|}~-]+)*)" +
     "@(?:[a-zA-Z0-9!#$%&*+\\/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&*+\\/=?^_`{|}~-]+)*)$"
