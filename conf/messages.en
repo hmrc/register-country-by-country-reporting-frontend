@@ -118,7 +118,7 @@ businessWithoutIDName.title = What is the name of your business?
 businessWithoutIDName.heading = What is the name of your business?
 businessWithoutIDName.checkYourAnswersLabel = Business name
 businessWithoutIDName.error.required = Enter the name of your business
-businessWithoutIDName.error.invalid = Business name must only include letters a to z, numbers 0 to 9, apostrophes, ampersands (&), hyphens, forward slashes (/) and spaces
+businessWithoutIDName.error.invalid = Business name must only include letters a to z, numbers 0 to 9, apostrophes, ampersands (&), hyphens, forward slashes (/), backslashes (\) and spaces
 businessWithoutIDName.error.length = Business name must be 105 characters or less
 businessWithoutIDName.change.hidden = Change business name
 
