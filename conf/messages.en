@@ -84,7 +84,7 @@ businessName.heading.limited = What is the registered name of your business?
 businessName.hint.limited = This is the registered name on your incorporation certificate. Enter the name in full as it appears on the certificate.
 businessName.checkYourAnswersLabel.limited = What is the registered name of your business?
 businessName.error.required.limited = Enter the registered name of your business
-businessName.error.length.limited = Registered name of your business must be 105 characters or less
+businessName.error.length.limited = Business name must be 105 characters or less
 businessName.error.invalid.limited = Business name must only include letters a to z, numbers 0 to 9 and special characters such as hyphens, spaces and apostrophes
 businessName.change.hidden.limited = Change what is the registered name of your business?
 
@@ -93,8 +93,8 @@ businessName.heading.limitedPartnership = What is the registered name of your bu
 businessName.hint.limitedPartnership = This is the registered name on your incorporation certificate. Enter the name in full as it appears on the certificate.
 businessName.checkYourAnswersLabel.limitedPartnership = What is the registered name of your business?
 businessName.error.required.limitedPartnership = Enter the registered name of your business
-businessName.error.length.limitedPartnership = Registered name of your business must be 105 characters or less
-businessName.error.invalid.limitedPartnership = Partnership name must only include letters a to z, numbers 0 to 9 and special characters such as hyphens, spaces and apostrophes
+businessName.error.length.limitedPartnership = Business name must be 105 characters or less
+businessName.error.invalid.limitedPartnership = Business name must only include letters a to z, numbers 0 to 9 and special characters such as hyphens, spaces and apostrophes
 businessName.change.hidden.limitedPartnership = Change what is the registered name of your business?
 
 businessName.title.partnership = What is the partnership name?
