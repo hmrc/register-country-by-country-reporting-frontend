@@ -35,11 +35,11 @@ class BusinessNameFormProviderSpec extends SpecBase with StringFieldBehaviours w
       (
         LimitedCompany,
         "Enter the registered name of your business",
-        "Registered name of your business must be 105 characters or less",
+        "Business name must be 105 characters or less",
         "Business name must only include letters a to z, numbers 0 to 9 and special characters such as hyphens, spaces and apostrophes"
       ),
       (
-        Partnership, // check these
+        Partnership,
         "Enter the partnership name",
         "Partnership name must be 105 characters or less",
         "Partnership name must only include letters a to z, numbers 0 to 9 and special characters such as hyphens, spaces and apostrophes"
@@ -47,7 +47,7 @@ class BusinessNameFormProviderSpec extends SpecBase with StringFieldBehaviours w
       (
         LimitedPartnership,
         "Enter the registered name of your business",
-        "Registered name of your business must be 105 characters or less",
+        "Business name must be 105 characters or less",
         "Business name must only include letters a to z, numbers 0 to 9 and special characters such as hyphens, spaces and apostrophes"
       ),
       (
