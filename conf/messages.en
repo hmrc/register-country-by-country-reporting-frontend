@@ -111,7 +111,7 @@ businessName.heading.unincorporatedAssociation = What is the name of your organi
 businessName.hint.unincorporatedAssociation = This is the name on your governing document.
 businessName.checkYourAnswersLabel.unincorporatedAssociation = What is the name of your organisation?
 businessName.error.required.unincorporatedAssociation = Enter the name of your organisation
-businessName.error.length.unincorporatedAssociation = Organisation name must be 105 characters of less
+businessName.error.length.unincorporatedAssociation = Organisation name must be 105 characters or less
 businessName.error.invalid.unincorporatedAssociation = Organisation name must only include letters a to z, numbers 0 to 9 and special characters such as hyphens, spaces and apostrophes
 businessName.change.hidden.unincorporatedAssociation = Change what is the name of your organisation?
 
