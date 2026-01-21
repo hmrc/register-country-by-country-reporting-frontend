@@ -53,7 +53,7 @@ class BusinessNameFormProviderSpec extends SpecBase with StringFieldBehaviours w
       (
         UnincorporatedAssociation,
         "Enter the name of your organisation",
-        "Organisation name must be 105 characters of less",
+        "Organisation name must be 105 characters or less",
         "Organisation name must only include letters a to z, numbers 0 to 9 and special characters such as hyphens, spaces and apostrophes"
       )
     )
