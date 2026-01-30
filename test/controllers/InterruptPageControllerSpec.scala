@@ -21,7 +21,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.InteruptPageView
 
-class InteruptPageControllerSpec extends SpecBase {
+class InterruptPageControllerSpec extends SpecBase {
 
   "InteruptPage Controller" - {
 
@@ -30,7 +30,7 @@ class InteruptPageControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.InteruptPageController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.InterruptPageController.onPageLoad().url)
 
         val result = route(application, request).value
 

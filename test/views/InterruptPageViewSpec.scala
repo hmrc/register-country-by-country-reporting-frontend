@@ -26,7 +26,7 @@ import play.twirl.api.HtmlFormat
 import utils.ViewHelper
 import views.html.{InteruptPageView, ThereIsAProblemView}
 
-class InterputPageViewSpec extends SpecBase with Injecting with ViewHelper {
+class InterruptPageViewSpec extends SpecBase with Injecting with ViewHelper {
 
   implicit private val request: FakeRequest[AnyContent] = FakeRequest()
 

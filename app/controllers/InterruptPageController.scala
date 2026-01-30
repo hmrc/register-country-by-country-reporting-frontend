@@ -23,7 +23,7 @@ import views.html.InteruptPageView
 
 import javax.inject.Inject
 
-class InteruptPageController @Inject() (
+class InterruptPageController @Inject() (
   override val messagesApi: MessagesApi,
   val controllerComponents: MessagesControllerComponents,
   view: InteruptPageView
