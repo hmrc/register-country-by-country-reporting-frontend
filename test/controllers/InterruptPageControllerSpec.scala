@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.InteruptPageView
+import views.html.InterruptPageView
 
 class InterruptPageControllerSpec extends SpecBase {
 
@@ -34,7 +34,7 @@ class InterruptPageControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[InteruptPageView]
+        val view = application.injector.instanceOf[InterruptPageView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view()(request, messages(application)).toString
