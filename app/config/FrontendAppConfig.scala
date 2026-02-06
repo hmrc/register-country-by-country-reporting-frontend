@@ -83,6 +83,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
 
   lazy val encryptionEnabled: Boolean  = configuration.get[Boolean]("mongodb.encryptionEnabled")
   lazy val emailForSession: String     = configuration.get[String]("urls.emailForSession")
-  lazy val agentServiceLink: String    = configuration.get[String]("urls.clientAuthoriseLink")
+  lazy val agentServiceLink: String    = configuration.get[String]("urls.agentServiceLink")
   lazy val clientAuthoriseLink: String = configuration.get[String]("urls.clientAuthoriseLink")
 }
