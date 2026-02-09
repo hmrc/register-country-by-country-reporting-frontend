@@ -16,12 +16,13 @@
 
 package generators
 
-import java.time.{Instant, LocalDate, ZoneOffset}
-import org.scalacheck.Arbitrary._
-import org.scalacheck.Gen._
+import org.scalacheck.Arbitrary.*
+import org.scalacheck.Gen.*
 import org.scalacheck.{Gen, Shrink}
 import utils.RegexConstants
 import wolfendale.scalacheck.regexp.RegexpGen
+
+import java.time.{Instant, LocalDate, ZoneOffset}
 
 trait Generators extends UserAnswersGenerator with PageGenerators with UserAnswersEntryGenerators with RegexConstants {
 
@@ -165,7 +166,22 @@ trait Generators extends UserAnswersGenerator with PageGenerators with UserAnswe
     chars     <- listOfN(length, arbitrary[Byte])
   } yield chars.map(math.abs(_)).mkString
 
-  def validEmailAddress: Gen[String] = RegexpGen.from(emailRegex)
+  def validEmailAddress: Gen[String] = for {
+    user   <- Gen.choose(2, 10).flatMap(n => Gen.listOfN(n, Gen.alphaNumChar)).map(_.mkString)
+    domain <- Gen.choose(2, 10).flatMap(n => Gen.listOfN(n, Gen.alphaNumChar)).map(_.mkString)
+    tld    <- Gen.oneOf("com", "org", "io", "gov", "co.uk")
+
+  } yield s"$user@$domain.$tld"
+
+  def invalidEmailAddress: Gen[String] = Gen.oneOf(
+    Gen.alphaStr,
+    Gen.alphaStr.map(_ + "@"),
+    Gen.alphaStr.map("@" + _),
+    Gen.const("john..doe@test.com"),
+    Gen.const(".leadingdot@test.co.uk"),
+    Gen.const("trailingdot.@test.com"),
+    Gen.const("emoji🚀.@test.com")
+  )
 
   def validEmailAddressToLong(maxLength: Int): Gen[String] =
     for {
