@@ -16,10 +16,13 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
 import play.api.data.Form
+import play.api.data.Forms.mapping
+import play.api.data.validation.{Constraint, Invalid, Valid}
 import utils.RegexConstants
+
+import javax.inject.Inject
 
 class ContactEmailFormProvider @Inject() extends Mappings with RegexConstants {
 
@@ -27,12 +30,23 @@ class ContactEmailFormProvider @Inject() extends Mappings with RegexConstants {
 
   def apply(): Form[String] =
     Form(
-      "value" -> validatedText(
-        "contactEmail.error.required",
-        "contactEmail.error.invalid",
-        "contactEmail.error.length",
-        emailRegex,
-        maxLength
-      )
+      mapping(
+        "value" -> text("contactEmail.error.required")
+          .verifying(contactEmailConstraint())
+      )(identity)(Some(_))
     )
+
+  private def contactEmailConstraint(): Constraint[String] =
+    Constraint("constraint.contactEmail") { value =>
+      if (value.length > maxLength) {
+        Invalid("contactEmail.error.length")
+      } else if (value.codePoints().anyMatch(_ >= 0x1f000)) { // Matches emoji codepoints
+        Invalid("contactEmail.error.invalid")
+      } else if (!value.matches(emailRegex)) {
+        Invalid("contactEmail.error.invalid")
+      } else {
+        Valid
+      }
+    }
+
 }
