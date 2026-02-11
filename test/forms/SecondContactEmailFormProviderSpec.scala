@@ -40,10 +40,10 @@ class SecondContactEmailFormProviderSpec extends StringFieldBehaviours {
       invalidKey
     )
 
-    behave like fieldWithInvalidData(
+    behave like fieldWithInvalidEmail(
       form,
       fieldName,
-      invalidString = "not a valid email",
+      invalidString = invalidEmailAddress,
       error = FormError(fieldName, invalidKey)
     )
 
