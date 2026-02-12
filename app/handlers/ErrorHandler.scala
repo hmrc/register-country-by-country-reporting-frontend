@@ -42,8 +42,9 @@ class ErrorHandler @Inject() (
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] =
     statusCode match {
-      case play.mvc.Http.Status.NOT_FOUND => notFoundTemplate(request).map(NotFound(_))
-      case _                              => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+      case play.mvc.Http.Status.IM_A_TEAPOT => Future.successful(Redirect(routes.InterruptPageController.onPageLoad()))
+      case play.mvc.Http.Status.NOT_FOUND   => notFoundTemplate(request).map(NotFound(_))
+      case _                                => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
     }
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] =

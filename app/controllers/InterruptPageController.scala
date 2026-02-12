@@ -31,6 +31,7 @@ class InterruptPageController @Inject() (
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action { implicit request =>
+    println(s"Incoming request from: ${request.remoteAddress}")
     Ok(view())
   }
 }
