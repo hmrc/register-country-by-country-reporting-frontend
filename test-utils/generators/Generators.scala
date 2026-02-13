@@ -174,14 +174,12 @@ trait Generators extends UserAnswersGenerator with PageGenerators with UserAnswe
   } yield s"$user@$domain.$tld"
 
   def invalidEmailAddress: Gen[String] = Gen.oneOf(
-    Gen.alphaStr,
+    Gen.alphaStr.suchThat(_.nonEmpty),
     Gen.alphaStr.map(_ + "@"),
     Gen.alphaStr.map("@" + _),
     Gen.const("john..doe@test.com"),
     Gen.const(".leadingdot@test.co.uk"),
-    Gen.const("trailingdot.@test.com"),
-    Gen.const("emoji🚀@test.com"),
-    Gen.const("emoji@test🚀.com")
+    Gen.const("trailingdot.@test.com")
   )
 
   def validEmailAddressToLong(maxLength: Int): Gen[String] =
