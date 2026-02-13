@@ -40,8 +40,6 @@ class ContactEmailFormProvider @Inject() extends Mappings with RegexConstants {
     Constraint("constraint.contactEmail") { value =>
       if (value.length > maxLength) {
         Invalid("contactEmail.error.length")
-      } else if (value.codePoints().anyMatch(_ >= 0x1f000)) { // Matches emoji codepoints
-        Invalid("contactEmail.error.invalid")
       } else if (!value.matches(emailRegex)) {
         Invalid("contactEmail.error.invalid")
       } else {
