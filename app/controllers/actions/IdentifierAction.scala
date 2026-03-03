@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.routes
 import models.requests.IdentifierRequest
-import pages.SecondContactNamePage
+import pages.PrivateBetaAccessCodePage
 import play.api.Logging
 import play.api.mvc.*
 import play.api.mvc.Results.*
@@ -75,11 +75,11 @@ class AuthenticatedIdentifierAction @Inject() (
 
   private def isPrivateBetaUser(userId: String): Future[Boolean] = {
     val passKey: String = config.privateBetaPassword
-    sessionRepository.get(userId).map(_.exists(_.get(SecondContactNamePage).contains(passKey)))
+    sessionRepository.get(userId).map(_.exists(_.get(PrivateBetaAccessCodePage).contains(passKey)))
   }
   private def privateBetaRouting[A](internalId: String, enrolments: Enrolments)(implicit request: Request[A], block: IdentifierRequest[A] => Future[Result]) =
     isPrivateBetaUser(internalId).flatMap {
-      case true if config.privateBetaEnabled => Future.successful(Redirect(routes.InterruptPageController.onPageLoad()))
-      case _  => block(IdentifierRequest(request, internalId, enrolments.enrolments))
+      case false if config.privateBetaEnabled => Future.successful(Redirect(routes.InterruptPageController.onPageLoad()))
+      case _                                  => block(IdentifierRequest(request, internalId, enrolments.enrolments))
     }
 }

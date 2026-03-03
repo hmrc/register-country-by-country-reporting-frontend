@@ -9,6 +9,8 @@ GET         /assets/*file                                                    con
 GET         /language/:lang                                                  controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
 GET         /refresh-session                                                 controllers.KeepAliveController.keepAlive
+GET         /register/registration-access-code                               controllers.PrivateBetaAccessCodeController.onPageLoad()
+POST        /register/registration-access-code                               controllers.PrivateBetaAccessCodeController.onSubmit()
 
 GET         /register/check-answers                                          controllers.CheckYourAnswersController.onPageLoad()
 POST        /register/check-answers                                          controllers.CheckYourAnswersController.onSubmit()
