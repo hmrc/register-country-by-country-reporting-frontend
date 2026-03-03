@@ -66,9 +66,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
   )
 
   lazy val countryCodeJson: String = configuration.get[String]("json.countries")
-
-  val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
-  val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
+  val privateBetaPassword: String  = configuration.get[String]("features.privateBetaPass")
+  val privateBetaEnabled: Boolean  = configuration.get[Boolean]("features.privateBetaEnabled")
+  val timeout: Int                 = configuration.get[Int]("timeout-dialog.timeout")
+  val countdown: Int               = configuration.get[Int]("timeout-dialog.countdown")
 
   val cacheTtl: Long = configuration.get[Long]("mongodb.timeToLiveInSeconds")
 
