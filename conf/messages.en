@@ -374,6 +374,9 @@ unableToChangeBusiness.link = sign in with the Government Gateway user ID for th
 
 enquiries.email = msb.countrybycountryreportingmailbox@hmrc.gov.uk
 
+privateBetaAccessCode.title= What is your access code for this user research session?
+privateBetaAccessCode.heading= What is your access code for this user research session?
+privateBetaAccessCode.error.required= You need to enter the access code in order to use this service.
 
 interuptPage.title = The service is temporarily unavailable
 interuptPage.heading = The service is temporarily unavailable
