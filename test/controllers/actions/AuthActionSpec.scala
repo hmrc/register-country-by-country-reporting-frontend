@@ -20,12 +20,15 @@ import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.routes
+import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
+import pages.PrivateBetaAccessCodePage
+import play.api.inject
 import play.api.mvc.{Action, AnyContent, BodyParsers, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import repositories.SessionRepository
-import uk.gov.hmrc.auth.core.AffinityGroup.Individual
+import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
 import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{~, Retrieval}
@@ -152,6 +155,78 @@ class AuthActionSpec extends SpecBase {
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result).value mustBe routes.ThereIsAProblemController.onPageLoad().url
+        }
+      }
+    }
+    "for a valid user" - {
+
+      "must successfully authenticate the user" in {
+
+        val application                     = applicationBuilder(userAnswers = None).build()
+        val validRetrievals: AuthRetrievals = Some("userId") ~ Enrolments(Set.empty) ~ Some(Organisation) ~ Some(User)
+        running(application) {
+          when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any()))
+            .thenReturn(Future.successful(validRetrievals))
+          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+          val appConfig   = application.injector.instanceOf[FrontendAppConfig]
+
+          val authAction =
+            new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, sessionRepository, bodyParsers)
+          val controller = new Harness(authAction)
+          val result     = controller.onPageLoad()(FakeRequest())
+
+          status(result) mustBe OK
+        }
+      }
+      "must redirect the user to interrupt page if private beta is on but no password has been provided" in {
+
+        val application = applicationBuilder(userAnswers = None)
+          .configure(
+            conf = "features.privateBetaEnabled" -> true
+          )
+          .build()
+        val validRetrievals: AuthRetrievals = Some("userId") ~ Enrolments(Set.empty) ~ Some(Organisation) ~ Some(User)
+        running(application) {
+          when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any()))
+            .thenReturn(Future.successful(validRetrievals))
+          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+          val appConfig   = application.injector.instanceOf[FrontendAppConfig]
+
+          val authAction =
+            new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, sessionRepository, bodyParsers)
+          val controller = new Harness(authAction)
+          val result     = controller.onPageLoad()(FakeRequest())
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.InterruptPageController.onPageLoad().url)
+        }
+      }
+    }
+
+    "the user has previously provided a valid private beta password" - {
+
+      "must successfully authenticate the user if private beta toggle is on" in {
+
+        val application = applicationBuilder()
+          .configure(
+            conf = "features.privateBetaEnabled" -> true
+          )
+          .build()
+        val validRetrievals: AuthRetrievals = Some("userId") ~ Enrolments(Set.empty) ~ Some(Organisation) ~ Some(User)
+        running(application) {
+          when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any()))
+            .thenReturn(Future.successful(validRetrievals))
+          when(mockSessionRepository.get(any()))
+            .thenReturn(Future.successful(Some(UserAnswers("userId").set(PrivateBetaAccessCodePage, "password").success.value)))
+          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+          val appConfig   = application.injector.instanceOf[FrontendAppConfig]
+
+          val authAction =
+            new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, mockSessionRepository, bodyParsers)
+          val controller = new Harness(authAction)
+          val result     = controller.onPageLoad()(FakeRequest())
+
+          status(result) mustBe OK
         }
       }
     }

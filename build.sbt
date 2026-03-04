@@ -96,6 +96,7 @@ lazy val root = (project in file("."))
     ),
     scalacOptions := scalacOptions.value.distinct
   )
+addCommandAlias("testAll", "; test ; it/test")
 
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(
   fork := true,
