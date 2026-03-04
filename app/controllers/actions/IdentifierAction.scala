@@ -75,8 +75,7 @@ class AuthenticatedIdentifierAction @Inject() (
 
   private def isPrivateBetaUser(userId: String): Future[Boolean] = {
     val passKey: String = config.privateBetaPassword
-    val s               = sessionRepository.get(userId).map(_.exists(_.get(PrivateBetaAccessCodePage).contains(passKey)))
-    s
+    sessionRepository.get(userId).map(_.exists(_.get(PrivateBetaAccessCodePage).contains(passKey)))
   }
   private def privateBetaRouting[A](internalId: String, enrolments: Enrolments)(implicit request: Request[A], block: IdentifierRequest[A] => Future[Result]) =
     isPrivateBetaUser(internalId).flatMap {
