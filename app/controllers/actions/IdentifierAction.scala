@@ -20,11 +20,13 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.routes
 import models.requests.IdentifierRequest
+import pages.PrivateBetaAccessCodePage
 import play.api.Logging
-import play.api.mvc.Results._
-import play.api.mvc._
+import play.api.mvc.*
+import play.api.mvc.Results.*
+import repositories.SessionRepository
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual}
-import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, credentialRole}
 import uk.gov.hmrc.auth.core.retrieve.~
@@ -38,6 +40,7 @@ trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with
 class AuthenticatedIdentifierAction @Inject() (
   override val authConnector: AuthConnector,
   config: FrontendAppConfig,
+  sessionRepository: SessionRepository,
   val parser: BodyParsers.Default
 )(implicit val executionContext: ExecutionContext)
     extends IdentifierAction
@@ -49,7 +52,6 @@ class AuthenticatedIdentifierAction @Inject() (
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     val validKeys: Set[String] = Set(config.enrolmentKey, config.nonUkEnrolmentKey)
-
     authorised()
       .retrieve(Retrievals.internalId and Retrievals.allEnrolments and affinityGroup and credentialRole) {
         case _ ~ enrolments ~ _ ~ Some(Assistant) if enrolments.enrolments.exists(enrolment => validKeys.contains(enrolment.key)) =>
@@ -60,8 +62,8 @@ class AuthenticatedIdentifierAction @Inject() (
           Future.successful(Redirect(routes.UnauthorisedStandardUserController.onPageLoad()))
         case _ ~ _ ~ Some(Individual) ~ _ =>
           Future.successful(Redirect(routes.UnauthorisedIndividualController.onPageLoad()))
-        case Some(internalID) ~ enrolments ~ _ ~ _ => block(IdentifierRequest(request, internalID, enrolments.enrolments))
-        case _                                     => throw new UnauthorizedException("Unable to retrieve internal Id")
+        case Some(internalId) ~ enrolments ~ _ ~ Some(User) => privateBetaRouting(internalId, enrolments)(request, block)
+        case _                                              => throw new UnauthorizedException("Unable to retrieve internal Id")
       }
       .recover {
         case _: NoActiveSession =>
@@ -70,4 +72,14 @@ class AuthenticatedIdentifierAction @Inject() (
           Redirect(controllers.routes.ThereIsAProblemController.onPageLoad())
       }
   }
+
+  private def isPrivateBetaUser(userId: String): Future[Boolean] = {
+    val passKey: String = config.privateBetaPassword
+    sessionRepository.get(userId).map(_.exists(_.get(PrivateBetaAccessCodePage).contains(passKey)))
+  }
+  private def privateBetaRouting[A](internalId: String, enrolments: Enrolments)(implicit request: Request[A], block: IdentifierRequest[A] => Future[Result]) =
+    isPrivateBetaUser(internalId).flatMap {
+      case false if config.privateBetaEnabled => Future.successful(Redirect(routes.InterruptPageController.onPageLoad()))
+      case _                                  => block(IdentifierRequest(request, internalId, enrolments.enrolments))
+    }
 }

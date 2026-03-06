@@ -34,6 +34,7 @@ trait AuthStubs { this: Suite =>
     s"""|  {
         |    "internalId": "$testAuthInternalId",
         |    "affinityGroup": "$affinity",
+        |    "credentialRole" : "User",
         |    "allEnrolments" : [ {
         |      "key" : "HMRC-CBC-ORG",
         |      "identifiers" : [ {
@@ -50,6 +51,7 @@ trait AuthStubs { this: Suite =>
     s"""|  {
         |    "internalId": "$testAuthInternalId",
         |    "affinityGroup": "$affinity",
+        |    "credentialRole" : "User",
         |    "allEnrolments" : []
         |  }
          """.stripMargin

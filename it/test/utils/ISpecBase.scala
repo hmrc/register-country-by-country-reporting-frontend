@@ -53,7 +53,7 @@ trait ISpecBase
 
   def emptyUserAnswers: UserAnswers = UserAnswers("internalId", Json.obj(), Instant.now(fixedClock))
 
-  def config: Map[String, Any] = Map(
+  def config: Map[String, String] = Map(
 //    "logger.root"                                            -> "INFO",
 //    "logger.controllers"                                     -> "DEBUG",
     "play.filters.csrf.header.bypassHeaders.Csrf-Token"      -> "nocheck",
