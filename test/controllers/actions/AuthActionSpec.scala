@@ -175,7 +175,7 @@ class AuthActionSpec extends SpecBase {
           val controller = new Harness(authAction)
           val result     = controller.onPageLoad()(FakeRequest())
 
-          status(result) mustBe OK
+          status(result) mustBe SEE_OTHER
         }
       }
       "must redirect the user to interrupt page if private beta is on but no password has been provided" in {
