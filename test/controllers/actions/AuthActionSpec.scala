@@ -162,20 +162,22 @@ class AuthActionSpec extends SpecBase {
 
       "must successfully authenticate the user" in {
 
+        val fakeConfig: FrontendAppConfig   = mock[FrontendAppConfig]
         val application                     = applicationBuilder(userAnswers = None).build()
         val validRetrievals: AuthRetrievals = Some("userId") ~ Enrolments(Set.empty) ~ Some(Organisation) ~ Some(User)
         running(application) {
           when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any()))
             .thenReturn(Future.successful(validRetrievals))
+          when(fakeConfig.privateBetaEnabled).thenReturn(false)
           val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
           val appConfig   = application.injector.instanceOf[FrontendAppConfig]
 
           val authAction =
-            new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, sessionRepository, bodyParsers)
+            new AuthenticatedIdentifierAction(mockAuthConnector, fakeConfig, sessionRepository, bodyParsers)
           val controller = new Harness(authAction)
           val result     = controller.onPageLoad()(FakeRequest())
 
-          status(result) mustBe SEE_OTHER
+          status(result) mustBe OK
         }
       }
       "must redirect the user to interrupt page if private beta is on but no password has been provided" in {
