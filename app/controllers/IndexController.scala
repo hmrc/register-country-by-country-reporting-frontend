@@ -16,9 +16,10 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions.StandardActionSets
 import models.{NormalMode, UserAnswers}
-import pages.AutoMatchedUTRPage
+import pages.{AutoMatchedUTRPage, PrivateBetaAccessCodePage}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +37,7 @@ class IndexController @Inject() (
   clock: Clock,
   standardActionSets: StandardActionSets,
   errorView: ThereIsAProblemView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -46,7 +47,8 @@ class IndexController @Inject() (
       case Some(utr) =>
         val userAnswers = UserAnswers(request.userId, lastUpdated = Instant.now(clock))
         for {
-          autoMatchedUserAnswers <- Future.fromTry(userAnswers.set(AutoMatchedUTRPage, utr))
+          savePrivateBetaPassKey <- Future.fromTry(userAnswers.set(PrivateBetaAccessCodePage, config.privateBetaPassword))
+          autoMatchedUserAnswers <- Future.fromTry(savePrivateBetaPassKey.set(AutoMatchedUTRPage, utr))
           result <- sessionRepository.set(autoMatchedUserAnswers) map {
             case true =>
               Redirect(routes.IsThisYourBusinessController.onPageLoad(NormalMode))
