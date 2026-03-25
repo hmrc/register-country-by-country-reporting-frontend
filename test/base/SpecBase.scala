@@ -16,7 +16,7 @@
 
 package base
 
-import controllers.actions._
+import controllers.actions.*
 import generators.Generators
 import models.{UUIDGen, UUIDGenImpl, UniqueTaxpayerReference, UserAnswers}
 import navigation.{CBCRNavigator, FakeCBCRNavigator}
@@ -35,6 +35,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import queries.Settable
 import repositories.SessionRepository
+import uk.gov.hmrc.auth.core.Enrolment
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.{Clock, Instant, ZoneId}
