@@ -17,7 +17,7 @@
 package models
 
 import models.BusinessType.{LimitedCompany, LimitedPartnership, Partnership, UnincorporatedAssociation}
-import pages.{BusinessTypePage, BusinessWithoutIdAddressPage, UTRPage}
+import pages.{AutoMatchedUTRPage, BusinessTypePage, BusinessWithoutIdAddressPage, UTRPage}
 import play.api.libs.json.{Json, OFormat}
 
 case class SubscriptionInfo(safeID: String, utr: Option[String] = None, nonUkPostcode: Option[String] = None, cbcId: String) {
@@ -47,13 +47,6 @@ case class SubscriptionInfo(safeID: String, utr: Option[String] = None, nonUkPos
 object SubscriptionInfo {
   implicit val format: OFormat[SubscriptionInfo] = Json.format[SubscriptionInfo]
 
-  private def getUTR(userAnswers: UserAnswers): Option[String] =
-    userAnswers.get(BusinessTypePage) match {
-      case Some(Partnership) | Some(LimitedPartnership) | Some(LimitedCompany) | Some(UnincorporatedAssociation) =>
-        userAnswers.get(UTRPage).map(_.uniqueTaxPayerReference)
-      case _ => None
-    }
-
   private def getNonUkPostCodeIfProvided(userAnswers: UserAnswers): Option[String] =
     userAnswers.get(BusinessWithoutIdAddressPage) match {
       case Some(address) => address.postCode
@@ -63,7 +56,7 @@ object SubscriptionInfo {
   def apply(userAnswers: UserAnswers, safeId: SafeId, subscriptionId: SubscriptionID): SubscriptionInfo =
     SubscriptionInfo(
       safeID = safeId.value,
-      utr = getUTR(userAnswers),
+      utr = userAnswers.get(UTRPage).map(_.uniqueTaxPayerReference).orElse(userAnswers.get(AutoMatchedUTRPage).map(_.uniqueTaxPayerReference)),
       nonUkPostcode = getNonUkPostCodeIfProvided(userAnswers),
       cbcId = subscriptionId.value
     )
