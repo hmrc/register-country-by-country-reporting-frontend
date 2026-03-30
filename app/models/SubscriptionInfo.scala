@@ -45,7 +45,7 @@ case class SubscriptionInfo(safeID: String, utr: Option[String] = None, nonUkPos
 }
 
 object SubscriptionInfo {
-  implicit val format: OFormat[SubscriptionInfo] = Json.format[SubscriptionInfo]git
+  implicit val format: OFormat[SubscriptionInfo] = Json.format[SubscriptionInfo]
 
   private def getNonUkPostCodeIfProvided(userAnswers: UserAnswers): Option[String] =
     userAnswers.get(BusinessWithoutIdAddressPage) match {
