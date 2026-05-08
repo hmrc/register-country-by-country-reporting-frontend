@@ -86,4 +86,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
   lazy val emailForSession: String     = configuration.get[String]("urls.emailForSession")
   lazy val agentServiceLink: String    = configuration.get[String]("urls.agentServiceLink")
   lazy val clientAuthoriseLink: String = configuration.get[String]("urls.clientAuthoriseLink")
+
+  lazy val showIsYourBusinessPageonSelfHealingJourney: Boolean = configuration.get[Boolean]("show-is-your-business-page.on-self-healing-journey.enabled")
 }

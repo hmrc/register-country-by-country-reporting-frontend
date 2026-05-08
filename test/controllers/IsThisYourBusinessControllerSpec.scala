@@ -18,23 +18,25 @@ package controllers
 
 import base.SpecBase
 import connectors.RegistrationConnector
+import controllers.actions.*
 import forms.IsThisYourBusinessFormProvider
+import models.*
 import models.BusinessType.LimitedCompany
 import models.IdentifierType.UTR
 import models.matching.{RegistrationInfo, RegistrationRequest}
 import models.register.request.RegisterWithID
 import models.register.response.RegisterWithIDResponse
 import models.register.response.details.{AddressResponse, OrganisationResponse}
-import models.{EnrolmentExistsError, NormalMode, NotFoundError, SafeId, SubscriptionID, UUIDGen, UniqueTaxpayerReference, UserAnswers}
-import org.mockito.ArgumentMatchers.{any, eq => mockitoEq}
-import pages.{BusinessNamePage, BusinessTypePage, IsThisYourBusinessPage, RegistrationInfoPage, UTRPage}
+import org.mockito.ArgumentMatchers.{any, eq as mockitoEq}
+import pages.*
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import repositories.SessionRepository
 import services.{BusinessMatchingWithIdService, SubscriptionService, TaxEnrolmentService}
 import views.html.{BusinessNotIdentifiedView, IsThisYourBusinessView}
 
-import java.time.Clock
 import scala.concurrent.Future
 
 class IsThisYourBusinessControllerSpec extends SpecBase {
@@ -88,6 +90,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
+        .configure("show-is-your-business-page.on-self-healing-journey.enabled" -> true)
         .overrides(
           bind[RegistrationConnector].toInstance(mockRegistrationConnector),
           bind[SubscriptionService].toInstance(mockSubscriptionService),
@@ -95,7 +98,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
         )
         .build()
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
+      // when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockRegistrationConnector.registerWithID(any())(any(), any()))
         .thenReturn(
           Future.successful(
@@ -161,9 +164,11 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
       }
     }
 
+    // todo remove  when FF is removed
     "redirect to Registration Confirmation Page for business when they are already subscribed but no enrolment created" in {
 
       val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
+        .configure("show-is-your-business-page.on-self-healing-journey.enabled" -> false)
         .overrides(
           bind[RegistrationConnector].toInstance(mockRegistrationConnector),
           bind[SubscriptionService].toInstance(mockSubscriptionService),
@@ -198,9 +203,11 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
       }
     }
 
+    // todo remove  when FF is removed
     "redirect to Registration Confirmation Page for business when they are already subscribed and have enrolment with other goverment gateway account" in {
 
       val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
+        .configure("show-is-your-business-page.on-self-healing-journey.enabled" -> false)
         .overrides(
           bind[RegistrationConnector].toInstance(mockRegistrationConnector),
           bind[SubscriptionService].toInstance(mockSubscriptionService),
@@ -336,11 +343,19 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "self-healing: must redirect to confirmation page when user answers yes and they are already subscribed and checkAndCreateEnrolment passes" in {
+      val userAnswers = baseUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
+      val application = customApplicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(
+          bind[RegistrationConnector].toInstance(mockRegistrationConnector),
+          bind[SubscriptionService].toInstance(mockSubscriptionService),
+          bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+        )
+        .build()
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
+      when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())).thenReturn(Future.successful(Right(NO_CONTENT)))
 
       running(application) {
         val request =
@@ -350,7 +365,128 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+
+        redirectLocation(result) mustBe Some(routes.RegistrationConfirmationController.onPageLoad().url)
+      }
+    }
+
+    "self-healing: must redirect to problem page when user answers yes and they are already subscribed and checkAndCreateEnrolment returns EnrolmentCreationError" in {
+      val userAnswers = baseUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
+      val application = customApplicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(
+          bind[RegistrationConnector].toInstance(mockRegistrationConnector),
+          bind[SubscriptionService].toInstance(mockSubscriptionService),
+          bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+        )
+        .build()
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
+      when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())).thenReturn(Future.successful(Left(EnrolmentCreationError)))
+
+      running(application) {
+        val request =
+          FakeRequest(POST, isThisYourBusinessRoute)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustBe routes.ThereIsAProblemController.onPageLoad().url
+      }
+    }
+
+    "self-healing: must redirect to problem page when user answers yes and they are already subscribed and checkAndCreateEnrolment returns EnrolmentExistsError" in {
+      val userAnswers = baseUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
+      val application = customApplicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(
+          bind[RegistrationConnector].toInstance(mockRegistrationConnector),
+          bind[SubscriptionService].toInstance(mockSubscriptionService),
+          bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+        )
+        .build()
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
+      when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())).thenReturn(Future.successful(Left(EnrolmentExistsError)))
+
+      running(application) {
+        val request =
+          FakeRequest(POST, isThisYourBusinessRoute)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustBe routes.PreRegisteredController.onPageLoad(true).url
+      }
+    }
+
+    "must redirect to your contact details when the user answers yes and there have no subscription" in {
+      val userAnswers = baseUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application = customApplicationBuilder(userAnswers = Some(userAnswers))
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, isThisYourBusinessRoute)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.YourContactDetailsController.onPageLoad(NormalMode).url
+      }
+    }
+
+    "must redirect to it is a different business page  when the user answers no and their are auto matched by corporate tax" in {
+      val userAnswers = baseUserAnswers
+        .set(RegistrationInfoPage, registrationInfo)
+        .success
+        .value
+        .set(AutoMatchedUTRPage, UniqueTaxpayerReference("1234567890"))
+        .success
+        .value
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application = customApplicationBuilder(userAnswers = Some(userAnswers))
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, isThisYourBusinessRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.DifferentBusinessController.onPageLoad().url
+      }
+    }
+
+    "must redirect to it is a different business page  when the user answers no and their are not auto matched by corporate tax" in {
+      val userAnswers = baseUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application = customApplicationBuilder(userAnswers = Some(userAnswers))
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, isThisYourBusinessRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.BusinessNotIdentifiedController.onPageLoad().url
       }
     }
 
@@ -406,4 +542,14 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
       }
     }
   }
+
+  protected def customApplicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .overrides(
+        bind[DataRequiredAction].to[DataRequiredActionImpl],
+        bind[IdentifierAction].to[FakeIdentifierAction],
+        bind[CheckForSubmissionAction].to[FakeCheckForSubmissionAction],
+        bind[SessionRepository].toInstance(mockSessionRepository),
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
+      )
 }

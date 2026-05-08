@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions.*
 import forms.IsThisYourBusinessFormProvider
 import models.IdentifierType.UTR
@@ -50,7 +51,8 @@ class IsThisYourBusinessController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   uuidGen: UUIDGen,
   clock: Clock,
-  view: IsThisYourBusinessView
+  view: IsThisYourBusinessView,
+  appConfig: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -102,7 +104,14 @@ class IsThisYourBusinessController @Inject() (
       updatedAnswers <- Future.fromTry(updatedAnswersWithUtrPage.flatMap(_.set(RegistrationInfoPage, registrationInfo)))
       updatedRequest = DataRequest(request.request, request.userId, updatedAnswers)
       result <- sessionRepository.set(updatedAnswers).flatMap {
-        case true => result(mode, form, registrationInfo)(ec, updatedRequest)
+        case true =>
+          if (appConfig.showIsYourBusinessPageonSelfHealingJourney) {
+            val preparedForm = request.userAnswers.get(IsThisYourBusinessPage) match {
+              case None        => form
+              case Some(value) => form.fill(value)
+            }
+            Future.successful(Ok(view(preparedForm, registrationInfo, mode)))
+          } else result(mode, form, registrationInfo)(ec, updatedRequest)
         case false =>
           logger.error(s"Failed to update user answers after registration was found for userId: [${request.userId}]")
           Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
@@ -159,10 +168,39 @@ class IsThisYourBusinessController @Inject() (
               Future.successful(BadRequest(view(formWithErrors, registrationInfo, mode)))
             },
         value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(IsThisYourBusinessPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IsThisYourBusinessPage, mode, updatedAnswers))
+          appConfig.showIsYourBusinessPageonSelfHealingJourney match {
+            case true =>
+              selfHealIfNecessary(value, mode)
+            case _ =>
+              gotoNextPage(value, request, mode)
+          }
       )
   }
+
+  private def selfHealIfNecessary(value: Boolean, mode: Mode)(implicit ec: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] =
+    if (value) {
+      request.userAnswers.get(RegistrationInfoPage) match {
+        case Some(registrationInfo) =>
+          println("The safe id is ******* " + registrationInfo.safeId)
+          subscriptionService.getDisplaySubscriptionId(registrationInfo.safeId) flatMap {
+            case Some(subscriptionId) =>
+              updateSubscriptionIdAndCreateEnrolment(registrationInfo.safeId, subscriptionId)
+            case _ =>
+              println("I am here *******")
+              gotoNextPage(value, request, mode)
+          }
+        case None =>
+          println(s"Registration info not found in user answers for userId: [${request.userId}] when user answered yes to is this your business question")
+          logger.error(s"Registration info not found in user answers for userId: [${request.userId}] when user answered yes to is this your business question")
+          Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+      }
+    } else {
+      gotoNextPage(value, request, mode)
+    }
+
+  private def gotoNextPage(value: Boolean, request: DataRequest[AnyContent], mode: Mode): Future[Result] =
+    for {
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(IsThisYourBusinessPage, value))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(navigator.nextPage(IsThisYourBusinessPage, mode, updatedAnswers))
 }
