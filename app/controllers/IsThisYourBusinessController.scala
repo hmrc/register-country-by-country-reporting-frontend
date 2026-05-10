@@ -181,16 +181,13 @@ class IsThisYourBusinessController @Inject() (
     if (value) {
       request.userAnswers.get(RegistrationInfoPage) match {
         case Some(registrationInfo) =>
-          println("The safe id is ******* " + registrationInfo.safeId)
           subscriptionService.getDisplaySubscriptionId(registrationInfo.safeId) flatMap {
             case Some(subscriptionId) =>
               updateSubscriptionIdAndCreateEnrolment(registrationInfo.safeId, subscriptionId)
             case _ =>
-              println("I am here *******")
               gotoNextPage(value, request, mode)
           }
         case None =>
-          println(s"Registration info not found in user answers for userId: [${request.userId}] when user answered yes to is this your business question")
           logger.error(s"Registration info not found in user answers for userId: [${request.userId}] when user answered yes to is this your business question")
           Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
       }
