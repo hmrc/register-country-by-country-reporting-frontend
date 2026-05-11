@@ -54,5 +54,8 @@ class SubscriptionService @Inject() (val subscriptionConnector: SubscriptionConn
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[Option[SubscriptionID]] =
-    subscriptionConnector.readSubscription(safeId)
+    subscriptionConnector.readSubscription(safeId) map {
+      case Some(responseDetail) => Some(SubscriptionID(responseDetail.subscriptionID))
+      case None                 => None
+    }
 }
