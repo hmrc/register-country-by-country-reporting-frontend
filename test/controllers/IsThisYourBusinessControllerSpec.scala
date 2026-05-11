@@ -90,7 +90,6 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
-        .configure("show-is-your-business-page.on-self-healing-journey.enabled" -> true)
         .overrides(
           bind[RegistrationConnector].toInstance(mockRegistrationConnector),
           bind[SubscriptionService].toInstance(mockSubscriptionService),
@@ -98,7 +97,6 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
         )
         .build()
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      // when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockRegistrationConnector.registerWithID(any())(any(), any()))
         .thenReturn(
           Future.successful(
@@ -161,84 +159,6 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, registrationInfo, NormalMode)(request, messages(application)).toString
-      }
-    }
-
-    // todo remove  when FF is removed
-    "redirect to Registration Confirmation Page for business when they are already subscribed but no enrolment created" in {
-
-      val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
-        .configure("show-is-your-business-page.on-self-healing-journey.enabled" -> false)
-        .overrides(
-          bind[RegistrationConnector].toInstance(mockRegistrationConnector),
-          bind[SubscriptionService].toInstance(mockSubscriptionService),
-          bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
-        )
-        .build()
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockRegistrationConnector.registerWithID(any())(any(), any()))
-        .thenReturn(
-          Future.successful(
-            Right(
-              RegisterWithIDResponse(
-                SafeId("safe"),
-                OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
-                AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
-              )
-            )
-          )
-        )
-      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
-      when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())).thenReturn(Future.successful(Right(NO_CONTENT)))
-
-      running(application) {
-        val request = FakeRequest(GET, isThisYourBusinessRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result) mustBe Some(routes.RegistrationConfirmationController.onPageLoad().url)
-      }
-    }
-
-    // todo remove  when FF is removed
-    "redirect to Registration Confirmation Page for business when they are already subscribed and have enrolment with other goverment gateway account" in {
-
-      val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
-        .configure("show-is-your-business-page.on-self-healing-journey.enabled" -> false)
-        .overrides(
-          bind[RegistrationConnector].toInstance(mockRegistrationConnector),
-          bind[SubscriptionService].toInstance(mockSubscriptionService),
-          bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
-        )
-        .build()
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockRegistrationConnector.registerWithID(any())(any(), any()))
-        .thenReturn(
-          Future.successful(
-            Right(
-              RegisterWithIDResponse(
-                SafeId("safe"),
-                OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
-                AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
-              )
-            )
-          )
-        )
-      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
-      when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())).thenReturn(Future.successful(Left(EnrolmentExistsError)))
-
-      running(application) {
-        val request = FakeRequest(GET, isThisYourBusinessRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result) mustBe Some(routes.PreRegisteredController.onPageLoad(true).url)
       }
     }
 

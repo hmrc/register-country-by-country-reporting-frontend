@@ -26,7 +26,6 @@ import models.requests.DataRequest
 import models.{Mode, NotFoundError, UUIDGen, UniqueTaxpayerReference}
 import navigation.CBCRNavigator
 import pages.*
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -51,8 +50,7 @@ class IsThisYourBusinessController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   uuidGen: UUIDGen,
   clock: Clock,
-  view: IsThisYourBusinessView,
-  appConfig: FrontendAppConfig
+  view: IsThisYourBusinessView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -62,20 +60,6 @@ class IsThisYourBusinessController @Inject() (
 
   implicit private val uuidGenerator: UUIDGen = uuidGen
   implicit private val implicitClock: Clock   = clock
-
-  private def result(mode: Mode, form: Form[Boolean], registrationInfo: RegistrationInfo)(implicit
-    ec: ExecutionContext,
-    request: DataRequest[AnyContent]
-  ): Future[Result] =
-    subscriptionService.getDisplaySubscriptionId(registrationInfo.safeId) flatMap {
-      case Some(subscriptionId) => updateSubscriptionIdAndCreateEnrolment(registrationInfo.safeId, subscriptionId)
-      case _ =>
-        val preparedForm = request.userAnswers.get(IsThisYourBusinessPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
-        Future.successful(Ok(view(preparedForm, registrationInfo, mode)))
-    }
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async { implicit request =>
     val autoMatchedUtr = request.userAnswers.get(AutoMatchedUTRPage)
@@ -94,6 +78,21 @@ class IsThisYourBusinessController @Inject() (
     }
   }
 
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async { implicit request =>
+    val thereIsAProblem = Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors =>
+          request.userAnswers
+            .get(RegistrationInfoPage)
+            .fold(thereIsAProblem) { case registrationInfo: RegistrationInfo =>
+              Future.successful(BadRequest(view(formWithErrors, registrationInfo, mode)))
+            },
+        value => selfHealIfNecessary(value, mode)
+      )
+  }
+
   private def handleRegistrationFound(
     mode: Mode,
     autoMatchedUtr: Option[UniqueTaxpayerReference],
@@ -102,21 +101,14 @@ class IsThisYourBusinessController @Inject() (
     val updatedAnswersWithUtrPage = autoMatchedUtr.map(request.userAnswers.set(UTRPage, _)).getOrElse(Success(request.userAnswers))
     for {
       updatedAnswers <- Future.fromTry(updatedAnswersWithUtrPage.flatMap(_.set(RegistrationInfoPage, registrationInfo)))
-      updatedRequest = DataRequest(request.request, request.userId, updatedAnswers)
-      result <- sessionRepository.set(updatedAnswers).flatMap {
-        case true =>
-          if (appConfig.showIsYourBusinessPageonSelfHealingJourney) {
-            val preparedForm = request.userAnswers.get(IsThisYourBusinessPage) match {
-              case None        => form
-              case Some(value) => form.fill(value)
-            }
-            Future.successful(Ok(view(preparedForm, registrationInfo, mode)))
-          } else result(mode, form, registrationInfo)(ec, updatedRequest)
-        case false =>
-          logger.error(s"Failed to update user answers after registration was found for userId: [${request.userId}]")
-          Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield {
+      val preparedForm = request.userAnswers.get(IsThisYourBusinessPage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
       }
-    } yield result
+      Ok(view(preparedForm, registrationInfo, mode))
+    }
   }
 
   private def handleRegistrationNotFound(
@@ -140,14 +132,14 @@ class IsThisYourBusinessController @Inject() (
       }
     } yield result
 
-  def buildRegistrationRequest()(implicit request: DataRequest[AnyContent]): Option[RegisterWithID] =
+  private def buildRegistrationRequest()(implicit request: DataRequest[AnyContent]): Option[RegisterWithID] =
     for {
       utr          <- request.userAnswers.get(UTRPage)
       businessName <- request.userAnswers.get(BusinessNamePage)
       businessType = request.userAnswers.get(BusinessTypePage)
     } yield RegisterWithID(RegistrationRequest(UTR, utr.uniqueTaxPayerReference, businessName, businessType, None))
 
-  def buildAutoMatchedBusinessRegistrationRequest(utr: UniqueTaxpayerReference): Option[RegisterWithID] =
+  private def buildAutoMatchedBusinessRegistrationRequest(utr: UniqueTaxpayerReference): Option[RegisterWithID] =
     Option(RegisterWithID(AutoMatchedRegistrationRequest(UTR, utr.uniqueTaxPayerReference)))
 
   private def buildRegisterWithId(autoMatchedUtr: Option[UniqueTaxpayerReference])(implicit request: DataRequest[AnyContent]): Option[RegisterWithID] =
@@ -155,25 +147,6 @@ class IsThisYourBusinessController @Inject() (
       case Some(utr) => buildAutoMatchedBusinessRegistrationRequest(utr)
       case None      => buildRegistrationRequest()
     }
-
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async { implicit request =>
-    val thereIsAProblem = Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors =>
-          request.userAnswers
-            .get(RegistrationInfoPage)
-            .fold(thereIsAProblem) { case registrationInfo: RegistrationInfo =>
-              Future.successful(BadRequest(view(formWithErrors, registrationInfo, mode)))
-            },
-        value =>
-          if (appConfig.showIsYourBusinessPageonSelfHealingJourney)
-            selfHealIfNecessary(value, mode)
-          else
-            gotoNextPage(value, request, mode)
-      )
-  }
 
   private def selfHealIfNecessary(value: Boolean, mode: Mode)(implicit ec: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] =
     if (value) {
@@ -186,7 +159,7 @@ class IsThisYourBusinessController @Inject() (
               gotoNextPage(value, request, mode)
           }
         case None =>
-          logger.error(s"Registration info not found in user answers for userId: [${request.userId}] when user answered yes to is this your business question")
+          logger.error(s"Registration info not found in user answers when user answered yes to 'is this your business question'")
           Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
       }
     } else {
