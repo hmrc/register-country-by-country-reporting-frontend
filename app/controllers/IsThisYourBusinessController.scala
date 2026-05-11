@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import controllers.actions.*
 import forms.IsThisYourBusinessFormProvider
 import models.IdentifierType.UTR
