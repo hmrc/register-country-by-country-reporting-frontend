@@ -168,12 +168,10 @@ class IsThisYourBusinessController @Inject() (
               Future.successful(BadRequest(view(formWithErrors, registrationInfo, mode)))
             },
         value =>
-          appConfig.showIsYourBusinessPageonSelfHealingJourney match {
-            case true =>
-              selfHealIfNecessary(value, mode)
-            case _ =>
-              gotoNextPage(value, request, mode)
-          }
+          if (appConfig.showIsYourBusinessPageonSelfHealingJourney)
+            selfHealIfNecessary(value, mode)
+          else
+            gotoNextPage(value, request, mode)
       )
   }
 

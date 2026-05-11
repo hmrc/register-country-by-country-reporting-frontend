@@ -344,7 +344,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
     }
 
     "self-healing: must redirect to confirmation page when user answers yes and they are already subscribed and checkAndCreateEnrolment passes" in {
-      val userAnswers = baseUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
+      val userAnswers = baseUserAnswers.withPage(RegistrationInfoPage, registrationInfo)
       val application = customApplicationBuilder(userAnswers = Some(userAnswers))
         .overrides(
           bind[RegistrationConnector].toInstance(mockRegistrationConnector),
@@ -371,7 +371,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
     }
 
     "self-healing: must redirect to problem page when user answers yes and they are already subscribed and checkAndCreateEnrolment returns EnrolmentCreationError" in {
-      val userAnswers = baseUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
+      val userAnswers = baseUserAnswers.withPage(RegistrationInfoPage, registrationInfo)
       val application = customApplicationBuilder(userAnswers = Some(userAnswers))
         .overrides(
           bind[RegistrationConnector].toInstance(mockRegistrationConnector),
@@ -398,7 +398,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
     }
 
     "self-healing: must redirect to problem page when user answers yes and they are already subscribed and checkAndCreateEnrolment returns EnrolmentExistsError" in {
-      val userAnswers = baseUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
+      val userAnswers = baseUserAnswers.withPage(RegistrationInfoPage, registrationInfo)
       val application = customApplicationBuilder(userAnswers = Some(userAnswers))
         .overrides(
           bind[RegistrationConnector].toInstance(mockRegistrationConnector),
@@ -425,7 +425,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
     }
 
     "must redirect to your contact details when the user answers yes and there have no subscription" in {
-      val userAnswers = baseUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
+      val userAnswers = baseUserAnswers.withPage(RegistrationInfoPage, registrationInfo)
       when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -446,12 +446,8 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
 
     "must redirect to it is a different business page  when the user answers no and their are auto matched by corporate tax" in {
       val userAnswers = baseUserAnswers
-        .set(RegistrationInfoPage, registrationInfo)
-        .success
-        .value
-        .set(AutoMatchedUTRPage, UniqueTaxpayerReference("1234567890"))
-        .success
-        .value
+        .withPage(RegistrationInfoPage, registrationInfo)
+        .withPage(AutoMatchedUTRPage, UniqueTaxpayerReference("1234567890"))
       when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -471,7 +467,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
     }
 
     "must redirect to it is a different business page  when the user answers no and their are not auto matched by corporate tax" in {
-      val userAnswers = baseUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
+      val userAnswers = baseUserAnswers.withPage(RegistrationInfoPage, registrationInfo)
       when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -492,7 +488,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = baseUserAnswers.set(RegistrationInfoPage, registrationInfo).success.value
+      val userAnswers = baseUserAnswers.withPage(RegistrationInfoPage, registrationInfo)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 

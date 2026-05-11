@@ -51,7 +51,6 @@ trait CreateSubscriptionAndUpdateEnrolment extends Logging {
     request: DataRequest[AnyContent]
   ): Future[Result] = {
     for {
-      // update IsThisYourBusinessPage
       updatedAnswers <- Future.fromTry(request.userAnswers.set(SubscriptionIDPage, subscriptionId))
       _              <- sessionRepository.set(updatedAnswers)
     } yield updatedAnswers
