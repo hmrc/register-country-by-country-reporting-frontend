@@ -17,13 +17,13 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.{GroupIds, SubscriptionInfo}
+import models.{Enrolments, GroupIds, SubscriptionInfo}
 import play.api.Logging
-import play.api.http.Status.NO_CONTENT
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT}
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.HttpErrorFunctions.is2xx
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -62,6 +62,28 @@ class EnrolmentStoreProxyConnector @Inject() (val config: FrontendAppConfig, val
           logger.error(s"Enrolment response not formed. ${response.status} response status")
           throw new IllegalStateException()
       }
+  }
 
+  def enrolmentExistsForGroupId(groupId: String)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Boolean] = {
+
+    val validKeys: Set[String] = Set(config.enrolmentKey, config.nonUkEnrolmentKey)
+    val submissionUrl          = url"${config.enrolmentStoreProxyUrl}/enrolment-store/groups/$groupId/enrolments"
+
+    http
+      .get(submissionUrl)
+      .execute[HttpResponse]
+      .map {
+        case response if response.status == NO_CONTENT => false
+        case response if is2xx(response.status) =>
+          response.json
+            .asOpt[Enrolments]
+            .exists(enrolment => enrolment.enrolments.exists(enr => validKeys.contains(enr.service)))
+        case response =>
+          logger.error(s"Enrolment check using groupId returned. ${response.status} response status")
+          throw UpstreamErrorResponse(message = "Group enrolment check failed", statusCode = INTERNAL_SERVER_ERROR)
+      }
   }
 }

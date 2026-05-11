@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package models.requests
+package models
 
-import models.UniqueTaxpayerReference
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.Enrolment
+import play.api.libs.json.{Json, Reads}
 
-case class IdentifierRequest[A](request: Request[A],
-                                userId: String,
-                                enrolments: Set[Enrolment] = Set.empty,
-                                groupId: Option[String] = None,
-                                utr: Option[UniqueTaxpayerReference] = None
-) extends WrappedRequest[A](request)
+case class Enrolment(service: String, state: String)
+
+object Enrolment {
+  implicit val enrolmentReads: Reads[Enrolment] = Json.reads[Enrolment]
+}

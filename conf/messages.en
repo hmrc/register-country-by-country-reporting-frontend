@@ -394,3 +394,12 @@ interuptPage.bullet1 = {0}, if you do not have one already
 interuptPage.bullet1.link = create an agent services account
 interuptPage.bullet2 = {0} for country-by-country reporting
 interuptPage.bullet2.link = ask your client to authorise you
+
+organisationAlreadyRegistered.title = Your organisation is already registered to use this service
+organisationAlreadyRegistered.heading = Your organisation is already registered to use this service
+organisationAlreadyRegistered.p1 = To access the country-by-country reporting service, you must either:
+organisationAlreadyRegistered.bullet1 = sign in with the Government Gateway user ID used to register for this service
+organisationAlreadyRegistered.bullet2 = make sure you have permission to use this service through the {0}
+organisationAlreadyRegistered.bullet2.link = tax and scheme management service
+organisationAlreadyRegistered.help = You can email your HMRC Customer Compliance Manager or {0} if you need support with accessing this service.
+

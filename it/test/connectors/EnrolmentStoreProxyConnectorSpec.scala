@@ -39,9 +39,10 @@ import generators.Generators
 import models.{SubscriptionID, SubscriptionInfo}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.Application
-import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK, REQUEST_TIMEOUT}
+import play.api.http.Status.*
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -55,28 +56,29 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase with WireMockHelper with
     .build()
 
   lazy val connector: EnrolmentStoreProxyConnector = app.injector.instanceOf[EnrolmentStoreProxyConnector]
-  val enrolmentStoreProxyUrl                       = "/enrolment-store-proxy/enrolment-store/enrolments"
-  val enrolmentStoreProxy200Url                    = "/enrolment-store-proxy/enrolment-store/enrolments/HMRC-CBC-ORG~cbcId~xxx200~UTR~111111200/groups"
-  val enrolmentStoreProxy204Url                    = "/enrolment-store-proxy/enrolment-store/enrolments/HMRC-CBC-ORG~cbcId~xxx204~UTR~111111204/groups"
-
-  val enrolmentStoreProxyResponseJson: String =
-    """{
-      |  "principalGroupIds": [
-      |    "ABCEDEFGI1234567",
-      |    "ABCEDEFGI1234568"
-      |  ],
-      |  "delegatedGroupIds": [
-      |    "ABCEDEFGI1234567",
-      |    "ABCEDEFGI1234568"
-      |  ]
-      |}""".stripMargin
-
-  val enrolmentStoreProxyResponseNoPrincipalIdJson: String =
-    """{
-      |  "principalGroupIds": []
-      |}""".stripMargin
 
   "EnrolmentStoreProxyConnector" - {
+    val enrolmentStoreProxyUrl    = "/enrolment-store-proxy/enrolment-store/enrolments"
+    val enrolmentStoreProxy200Url = "/enrolment-store-proxy/enrolment-store/enrolments/HMRC-CBC-ORG~cbcId~xxx200~UTR~111111200/groups"
+    val enrolmentStoreProxy204Url = "/enrolment-store-proxy/enrolment-store/enrolments/HMRC-CBC-ORG~cbcId~xxx204~UTR~111111204/groups"
+
+    val enrolmentStoreProxyResponseJson: String =
+      """{
+        |  "principalGroupIds": [
+        |    "ABCEDEFGI1234567",
+        |    "ABCEDEFGI1234568"
+        |  ],
+        |  "delegatedGroupIds": [
+        |    "ABCEDEFGI1234567",
+        |    "ABCEDEFGI1234568"
+        |  ]
+        |}""".stripMargin
+
+    val enrolmentStoreProxyResponseNoPrincipalIdJson: String =
+      """{
+        |  "principalGroupIds": []
+        |}""".stripMargin
+
     "when calling enrolmentStatus" - {
 
       "return 200 and a enrolmentStatus response when already enrolment exists" in {
@@ -122,6 +124,107 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase with WireMockHelper with
         val enrolmentInfo  = SubscriptionInfo(safeID = "safeId", utr = utr, None, cbcId = subscriptionID.value)
         stubResponse(enrolmentStoreProxy204Url, REQUEST_TIMEOUT, "")
         intercept[IllegalStateException](await(connector.enrolmentExists(enrolmentInfo)))
+      }
+
+    }
+    "when calling group enrolment" - {
+
+      val groupIdCheck = "/enrolment-store-proxy/enrolment-store/groups/test-group-id-1/enrolments"
+
+      "return true when groupId has non cbc enrolment" in {
+        val nonCbcEnrolmentResponse =
+          s"""
+             |{
+             |  "startRecord": 1,
+             |  "enrolments": [
+             |    {
+             |      "service": "HMRC-CBC-NONUK-ORG",
+             |      "friendlyName": "",
+             |      "state": "Activated",
+             |      "identifiers": [
+             |        {
+             |          "key": "cbcId",
+             |          "value": "XQCBC5000001080"
+             |        }
+             |      ],
+             |      "enrolmentDate": "2026-05-05 16:23:40.149",
+             |      "activationDate": "2026-05-05 16:23:40.149",
+             |      "failedActivationCount": 0
+             |    }
+             |  ],
+             |  "totalRecords": 1
+             |}""".stripMargin
+        stubResponse(groupIdCheck, OK, nonCbcEnrolmentResponse)
+        val result = connector.enrolmentExistsForGroupId("test-group-id-1")
+        result.futureValue mustBe true
+      }
+
+      "return true when groupId has cbc enrolment" in {
+        val cbcEnrolmentResponse =
+          s"""
+             |{
+             |  "startRecord": 1,
+             |  "enrolments": [
+             |    {
+             |      "service": "HMRC-CBC-NONUK-ORG",
+             |      "friendlyName": "",
+             |      "state": "Activated",
+             |      "identifiers": [
+             |        {
+             |          "key": "cbcId",
+             |          "value": "XQCBC5000001080"
+             |        }
+             |      ],
+             |      "enrolmentDate": "2026-05-05 16:23:40.149",
+             |      "activationDate": "2026-05-05 16:23:40.149",
+             |      "failedActivationCount": 0
+             |    }
+             |  ],
+             |  "totalRecords": 1
+             |}""".stripMargin
+        stubResponse(groupIdCheck, OK, cbcEnrolmentResponse)
+        val result = connector.enrolmentExistsForGroupId("test-group-id-1")
+        result.futureValue mustBe true
+      }
+
+      "return false when groupId has other enrolment" in {
+        val fatcaEnrolmentResponse =
+          s"""
+             |{
+             |  "startRecord": 1,
+             |  "enrolments": [
+             |    {
+             |      "service": "HMRC-FATCA-ORG",
+             |      "friendlyName": "",
+             |      "state": "Activated",
+             |      "identifiers": [
+             |        {
+             |          "key": "FATCAID",
+             |          "value": "XE3ATCA0009234567"
+             |        }
+             |      ],
+             |      "enrolmentDate": "2026-05-05 16:23:40.149",
+             |      "activationDate": "2026-05-05 16:23:40.149",
+             |      "failedActivationCount": 0
+             |    }
+             |  ],
+             |  "totalRecords": 1
+             |}""".stripMargin
+        stubResponse(groupIdCheck, OK, fatcaEnrolmentResponse)
+        val result = connector.enrolmentExistsForGroupId("test-group-id-1")
+        result.futureValue mustBe false
+      }
+      "return false when tax enrolment service returns 204" in {
+        stubResponse(groupIdCheck, NO_CONTENT, "")
+        val result = connector.enrolmentExistsForGroupId("test-group-id-1")
+        result.futureValue mustBe false
+      }
+
+      "return throw UpstreamError when tax enrolment service returns any other status" in {
+        stubResponse(groupIdCheck, BAD_REQUEST, "")
+        connector.enrolmentExistsForGroupId("test-group-id-1").failed.map{ ex =>
+          ex mustBe a[UpstreamErrorResponse]
+        }
       }
 
     }
