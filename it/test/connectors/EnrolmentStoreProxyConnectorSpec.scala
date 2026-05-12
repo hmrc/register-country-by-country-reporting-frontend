@@ -187,6 +187,34 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase with WireMockHelper with
         result.futureValue mustBe true
       }
 
+      "return false when groupId has not yet activated cbc enrolment" in {
+        val cbcEnrolmentResponse =
+          s"""
+             |{
+             |  "startRecord": 1,
+             |  "enrolments": [
+             |    {
+             |      "service": "HMRC-CBC-NONUK-ORG",
+             |      "friendlyName": "",
+             |      "state": "NotYetActivated",
+             |      "identifiers": [
+             |        {
+             |          "key": "cbcId",
+             |          "value": "XQCBC5000001080"
+             |        }
+             |      ],
+             |      "enrolmentDate": "2026-05-05 16:23:40.149",
+             |      "activationDate": "2026-05-05 16:23:40.149",
+             |      "failedActivationCount": 0
+             |    }
+             |  ],
+             |  "totalRecords": 1
+             |}""".stripMargin
+        stubResponse(groupIdCheck, OK, cbcEnrolmentResponse)
+        val result = connector.enrolmentExistsForGroupId("test-group-id-1")
+        result.futureValue mustBe false
+      }
+
       "return false when groupId has other enrolment" in {
         val fatcaEnrolmentResponse =
           s"""
@@ -214,6 +242,7 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase with WireMockHelper with
         val result = connector.enrolmentExistsForGroupId("test-group-id-1")
         result.futureValue mustBe false
       }
+
       "return false when tax enrolment service returns 204" in {
         stubResponse(groupIdCheck, NO_CONTENT, "")
         val result = connector.enrolmentExistsForGroupId("test-group-id-1")

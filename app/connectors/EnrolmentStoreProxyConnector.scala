@@ -17,9 +17,10 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.{Enrolments, GroupIds, SubscriptionInfo}
+import models.{Enrolment, Enrolments, GroupIds, SubscriptionInfo}
+import org.apache.pekko.http.scaladsl.model.HttpHeader.ParsingResult.Ok
 import play.api.Logging
-import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT}
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK}
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.HttpErrorFunctions.is2xx
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -29,6 +30,9 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EnrolmentStoreProxyConnector @Inject() (val config: FrontendAppConfig, val http: HttpClientV2) extends Logging {
+
+  val validKeys: Set[String] = Set(config.enrolmentKey, config.nonUkEnrolmentKey)
+  val ACTIVATED_STATE        = "Activated"
 
   def enrolmentExists(subscriptionInfo: SubscriptionInfo)(implicit
     hc: HeaderCarrier,
@@ -69,21 +73,28 @@ class EnrolmentStoreProxyConnector @Inject() (val config: FrontendAppConfig, val
     ec: ExecutionContext
   ): Future[Boolean] = {
 
-    val validKeys: Set[String] = Set(config.enrolmentKey, config.nonUkEnrolmentKey)
-    val submissionUrl          = url"${config.enrolmentStoreProxyUrl}/enrolment-store/groups/$groupId/enrolments"
+    val submissionUrl = url"${config.enrolmentStoreProxyUrl}/enrolment-store/groups/$groupId/enrolments"
 
     http
       .get(submissionUrl)
       .execute[HttpResponse]
-      .map {
-        case response if response.status == NO_CONTENT => false
-        case response if is2xx(response.status) =>
-          response.json
-            .asOpt[Enrolments]
-            .exists(enrolment => enrolment.enrolments.exists(enr => validKeys.contains(enr.service)))
-        case response =>
-          logger.error(s"Enrolment check using groupId returned. ${response.status} response status")
-          throw UpstreamErrorResponse(message = "Group enrolment check failed", statusCode = INTERNAL_SERVER_ERROR)
+      .map { response =>
+        response.status match {
+          case NO_CONTENT => false
+          case OK =>
+            response.json
+              .asOpt[Enrolments]
+              .exists(_.enrolments.exists(isValidEnrolment))
+          case status =>
+            logger.error(s"Enrolment check using groupId returned $status")
+            throw UpstreamErrorResponse(
+              message = "Group enrolment check failed",
+              statusCode = INTERNAL_SERVER_ERROR
+            )
+        }
       }
   }
+
+  private def isValidEnrolment(enr: Enrolment): Boolean =
+    validKeys.contains(enr.service) && enr.state.equalsIgnoreCase(ACTIVATED_STATE)
 }
