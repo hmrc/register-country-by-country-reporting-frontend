@@ -66,9 +66,6 @@ class IndexControllerSpec extends SpecBase {
         .configure(
           "keys.enrolmentKey.ct" -> "IR-CT"
         )
-        .overrides(
-          inject.bind[IdentifierAction].to[FakeIdentifierActionWithCtUtr]
-        )
         .build()
 
       running(application) {
