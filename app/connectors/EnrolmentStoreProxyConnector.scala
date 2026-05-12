@@ -18,11 +18,10 @@ package connectors
 
 import config.FrontendAppConfig
 import models.{Enrolment, Enrolments, GroupIds, SubscriptionInfo}
-import org.apache.pekko.http.scaladsl.model.HttpHeader.ParsingResult.Ok
 import play.api.Logging
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK}
-import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.HttpErrorFunctions.is2xx
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
 
