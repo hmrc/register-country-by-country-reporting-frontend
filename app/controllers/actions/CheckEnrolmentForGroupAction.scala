@@ -16,7 +16,6 @@
 
 package controllers.actions
 
-import config.FrontendAppConfig
 import controllers.routes
 import models.requests.IdentifierRequest
 import play.api.mvc.Results.Redirect
@@ -29,7 +28,7 @@ import javax.inject.Inject
 import scala.concurrent.Future.successful
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckEnrolmentForGroupAction @Inject() (config: FrontendAppConfig, taxEnrolmentService: TaxEnrolmentService)(implicit
+class CheckEnrolmentForGroupAction @Inject() (taxEnrolmentService: TaxEnrolmentService)(implicit
   val executionContext: ExecutionContext
 ) extends ActionFilter[IdentifierRequest] {
 
@@ -49,8 +48,8 @@ class CheckEnrolmentForGroupAction @Inject() (config: FrontendAppConfig, taxEnro
 
 }
 
-class CheckEnrolmentForGroupActionProvider @Inject() (config: FrontendAppConfig, taxEnrolmentService: TaxEnrolmentService)(implicit ec: ExecutionContext) {
+class CheckEnrolmentForGroupActionProvider @Inject() (taxEnrolmentService: TaxEnrolmentService)(implicit ec: ExecutionContext) {
 
   def apply[T](): ActionFilter[IdentifierRequest] =
-    new CheckEnrolmentForGroupAction(config, taxEnrolmentService)
+    new CheckEnrolmentForGroupAction(taxEnrolmentService)
 }

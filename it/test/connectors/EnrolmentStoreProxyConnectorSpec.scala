@@ -222,7 +222,7 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase with WireMockHelper with
 
       "return throw UpstreamError when tax enrolment service returns any other status" in {
         stubResponse(groupIdCheck, BAD_REQUEST, "")
-        connector.enrolmentExistsForGroupId("test-group-id-1").failed.map{ ex =>
+        connector.enrolmentExistsForGroupId("test-group-id-1").failed.map { ex =>
           ex mustBe a[UpstreamErrorResponse]
         }
       }

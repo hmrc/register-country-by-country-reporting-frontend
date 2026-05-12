@@ -51,126 +51,139 @@ class TaxEnrolmentServiceSpec extends SpecBase {
   }
 
   "TaxEnrolmentService" - {
-    "must create a Enrolment from userAnswers and call the taxEnrolmentsConnector returning with a Successful NO_CONTENT" in {
+    "checkAndCreateEnrolment" - {
+      "must create a Enrolment from userAnswers and call the taxEnrolmentsConnector returning with a Successful NO_CONTENT" in {
 
-      val response = Future.successful(Some(NO_CONTENT))
-      val safeId   = SafeId("CBC12345678")
+        val response = Future.successful(Some(NO_CONTENT))
+        val safeId   = SafeId("CBC12345678")
 
-      when(mockTaxEnrolmentsConnector.createEnrolment(any())(any(), any())).thenReturn(response)
-      when(mockEnrolmentStoreProxyConnector.enrolmentExists(any())(any(), any())).thenReturn(Future.successful(false))
+        when(mockTaxEnrolmentsConnector.createEnrolment(any())(any(), any())).thenReturn(response)
+        when(mockEnrolmentStoreProxyConnector.enrolmentExists(any())(any(), any())).thenReturn(Future.successful(false))
 
-      val subscriptionID = SubscriptionID("id")
-      val address        = Address("", None, "", None, None, Country("valid", "GB", "United Kingdom"))
-      val userAnswers = UserAnswers("")
-        .set(DoYouHaveUTRPage, false)
-        .success
-        .value
-        .set(ContactNamePage, "TestName")
-        .success
-        .value
-        .set(ContactEmailPage, "test@gmail.com")
-        .success
-        .value
-        .set(ContactPhonePage, "000000000")
-        .success
-        .value
-        .set(BusinessWithoutIdAddressPage, address)
-        .success
-        .value
+        val subscriptionID = SubscriptionID("id")
+        val address        = Address("", None, "", None, None, Country("valid", "GB", "United Kingdom"))
+        val userAnswers = UserAnswers("")
+          .set(DoYouHaveUTRPage, false)
+          .success
+          .value
+          .set(ContactNamePage, "TestName")
+          .success
+          .value
+          .set(ContactEmailPage, "test@gmail.com")
+          .success
+          .value
+          .set(ContactPhonePage, "000000000")
+          .success
+          .value
+          .set(BusinessWithoutIdAddressPage, address)
+          .success
+          .value
 
-      val result = service.checkAndCreateEnrolment(safeId, userAnswers, subscriptionID)
+        val result = service.checkAndCreateEnrolment(safeId, userAnswers, subscriptionID)
 
-      result.futureValue mustBe Right(NO_CONTENT)
+        result.futureValue mustBe Right(NO_CONTENT)
+      }
+
+      "must create a Enrolment from userAnswers and call the taxEnrolmentsConnector returning with a Successful NO_CONTENT for Business without ID" in {
+
+        val response = Future.successful(Some(NO_CONTENT))
+        val safeId   = SafeId("CBC12345678")
+
+        when(mockTaxEnrolmentsConnector.createEnrolment(any())(any(), any())).thenReturn(response)
+        when(mockEnrolmentStoreProxyConnector.enrolmentExists(any())(any(), any())).thenReturn(Future.successful(false))
+
+        val subscriptionID = SubscriptionID("id")
+        val address        = Address("", None, "", None, Some("34244556"), Country("valid", "US", "United States"))
+        val userAnswers = UserAnswers("")
+          .set(DoYouHaveUTRPage, false)
+          .success
+          .value
+          .set(ContactNamePage, "TestName")
+          .success
+          .value
+          .set(ContactEmailPage, "test@gmail.com")
+          .success
+          .value
+          .set(ContactPhonePage, "000000000")
+          .success
+          .value
+          .set(BusinessWithoutIdAddressPage, address)
+          .success
+          .value
+
+        val result = service.checkAndCreateEnrolment(safeId, userAnswers, subscriptionID)
+
+        result.futureValue mustBe Right(NO_CONTENT)
+      }
+
+      "must return none when any other Status  is received from taxEnrolments" in {
+        val response = Future.successful(None)
+
+        val safeId = SafeId("CBC12345678")
+
+        when(mockTaxEnrolmentsConnector.createEnrolment(any())(any(), any())).thenReturn(response)
+        when(mockEnrolmentStoreProxyConnector.enrolmentExists(any())(any(), any())).thenReturn(Future.successful(false))
+
+        val subscriptionID = SubscriptionID("id")
+
+        val userAnswers = UserAnswers("")
+          .set(DoYouHaveUTRPage, false)
+          .success
+          .value
+          .set(ContactNamePage, "TestName")
+          .success
+          .value
+          .set(ContactEmailPage, "test@gmail.com")
+          .success
+          .value
+          .set(ContactPhonePage, "000000000")
+          .success
+          .value
+
+        val result = service.checkAndCreateEnrolment(safeId, userAnswers, subscriptionID)
+
+        result.futureValue mustBe Left(EnrolmentCreationError)
+      }
+
+      "must return EnrolmentExistsError when there is already an enrolment" in {
+
+        val response = Future.successful(Some(NO_CONTENT))
+
+        val safeId = SafeId("CBC12345678")
+
+        when(mockTaxEnrolmentsConnector.createEnrolment(any())(any(), any())).thenReturn(response)
+        when(mockEnrolmentStoreProxyConnector.enrolmentExists(any())(any(), any())).thenReturn(Future.successful(true))
+
+        val subscriptionID = SubscriptionID("id")
+        val userAnswers = UserAnswers("")
+          .set(DoYouHaveUTRPage, false)
+          .success
+          .value
+          .set(ContactNamePage, "TestName")
+          .success
+          .value
+          .set(ContactEmailPage, "test@gmail.com")
+          .success
+          .value
+          .set(ContactPhonePage, "000000000")
+          .success
+          .value
+
+        val result = service.checkAndCreateEnrolment(safeId, userAnswers, subscriptionID)
+
+        result.futureValue mustBe Left(EnrolmentExistsError)
+      }
     }
 
-    "must create a Enrolment from userAnswers and call the taxEnrolmentsConnector returning with a Successful NO_CONTENT for Business without ID" in {
+    "checkGroupIdHasExistingEnrolment" - {
+      "must return true when connector returns true" in {
 
-      val response = Future.successful(Some(NO_CONTENT))
-      val safeId   = SafeId("CBC12345678")
+        when(mockEnrolmentStoreProxyConnector.enrolmentExistsForGroupId(any())(any(), any())).thenReturn(Future.successful(true))
 
-      when(mockTaxEnrolmentsConnector.createEnrolment(any())(any(), any())).thenReturn(response)
-      when(mockEnrolmentStoreProxyConnector.enrolmentExists(any())(any(), any())).thenReturn(Future.successful(false))
+        val result = service.checkGroupIdHasExistingEnrolment("test-group-id-1")
 
-      val subscriptionID = SubscriptionID("id")
-      val address        = Address("", None, "", None, Some("34244556"), Country("valid", "US", "United States"))
-      val userAnswers = UserAnswers("")
-        .set(DoYouHaveUTRPage, false)
-        .success
-        .value
-        .set(ContactNamePage, "TestName")
-        .success
-        .value
-        .set(ContactEmailPage, "test@gmail.com")
-        .success
-        .value
-        .set(ContactPhonePage, "000000000")
-        .success
-        .value
-        .set(BusinessWithoutIdAddressPage, address)
-        .success
-        .value
-
-      val result = service.checkAndCreateEnrolment(safeId, userAnswers, subscriptionID)
-
-      result.futureValue mustBe Right(NO_CONTENT)
-    }
-
-    "must return none when any other Status  is received from taxEnrolments" in {
-      val response = Future.successful(None)
-
-      val safeId = SafeId("CBC12345678")
-
-      when(mockTaxEnrolmentsConnector.createEnrolment(any())(any(), any())).thenReturn(response)
-      when(mockEnrolmentStoreProxyConnector.enrolmentExists(any())(any(), any())).thenReturn(Future.successful(false))
-
-      val subscriptionID = SubscriptionID("id")
-
-      val userAnswers = UserAnswers("")
-        .set(DoYouHaveUTRPage, false)
-        .success
-        .value
-        .set(ContactNamePage, "TestName")
-        .success
-        .value
-        .set(ContactEmailPage, "test@gmail.com")
-        .success
-        .value
-        .set(ContactPhonePage, "000000000")
-        .success
-        .value
-
-      val result = service.checkAndCreateEnrolment(safeId, userAnswers, subscriptionID)
-
-      result.futureValue mustBe Left(EnrolmentCreationError)
-    }
-
-    "must return EnrolmentExistsError when there is already an enrolment" in {
-
-      val response = Future.successful(Some(NO_CONTENT))
-
-      val safeId = SafeId("CBC12345678")
-
-      when(mockTaxEnrolmentsConnector.createEnrolment(any())(any(), any())).thenReturn(response)
-      when(mockEnrolmentStoreProxyConnector.enrolmentExists(any())(any(), any())).thenReturn(Future.successful(true))
-
-      val subscriptionID = SubscriptionID("id")
-      val userAnswers = UserAnswers("")
-        .set(DoYouHaveUTRPage, false)
-        .success
-        .value
-        .set(ContactNamePage, "TestName")
-        .success
-        .value
-        .set(ContactEmailPage, "test@gmail.com")
-        .success
-        .value
-        .set(ContactPhonePage, "000000000")
-        .success
-        .value
-
-      val result = service.checkAndCreateEnrolment(safeId, userAnswers, subscriptionID)
-
-      result.futureValue mustBe Left(EnrolmentExistsError)
+        result.futureValue mustBe true
+      }
     }
   }
 }

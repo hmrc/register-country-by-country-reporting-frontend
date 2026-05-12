@@ -62,7 +62,7 @@ class AuthenticatedIdentifierAction @Inject() (
           Future.successful(Redirect(routes.UnauthorisedStandardUserController.onPageLoad()))
         case _ ~ _ ~ Some(Individual) ~ _ ~ _ =>
           Future.successful(Redirect(routes.UnauthorisedIndividualController.onPageLoad()))
-        case Some(internalId) ~ enrolments ~ _ ~ Some(User) ~ groupId => privateBetaRouting(internalId, enrolments, groupId)(hc, request, block)
+        case Some(internalId) ~ enrolments ~ _ ~ Some(User) ~ groupId => privateBetaRouting(internalId, enrolments, groupId)(request, block)
         case _                                                        => throw new UnauthorizedException("Unable to retrieve internal Id")
       }
       .recover {
@@ -78,7 +78,6 @@ class AuthenticatedIdentifierAction @Inject() (
     sessionRepository.get(userId).map(_.exists(_.get(PrivateBetaAccessCodePage).contains(passKey)))
   }
   private def privateBetaRouting[A](internalId: String, enrolments: Enrolments, groupId: Option[String])(implicit
-    hc: HeaderCarrier,
     request: Request[A],
     block: IdentifierRequest[A] => Future[Result]
   ) =
