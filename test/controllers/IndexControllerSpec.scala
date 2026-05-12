@@ -17,7 +17,17 @@
 package controllers
 
 import base.SpecBase
-import controllers.actions.{CheckForSubmissionAction, DataRequiredAction, DataRequiredActionImpl, DataRetrievalAction, FakeCheckForSubmissionAction, FakeDataRetrievalAction, FakeIdentifierAction, FakeIdentifierActionWithCtUtr, IdentifierAction}
+import controllers.actions.{
+  CheckForSubmissionAction,
+  DataRequiredAction,
+  DataRequiredActionImpl,
+  DataRetrievalAction,
+  FakeCheckForSubmissionAction,
+  FakeDataRetrievalAction,
+  FakeIdentifierAction,
+  FakeIdentifierActionWithCtUtr,
+  IdentifierAction
+}
 import models.{NormalMode, UniqueTaxpayerReference, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -63,7 +73,7 @@ class IndexControllerSpec extends SpecBase {
 
       running(application) {
         val request = FakeRequest(GET, routes.IndexController.onPageLoad().url)
-        val result = route(application, request).value
+        val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.IsThisYourBusinessController.onPageLoad(NormalMode).url
