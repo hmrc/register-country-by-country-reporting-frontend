@@ -60,6 +60,17 @@ class CheckEnrolmentForGroupActionSpec extends SpecBase with EitherValues {
       result.futureValue mustBe None
     }
 
+    "must Redirect to There is a problem page When Service have failed future" in {
+
+      val action = new Harness
+      when(fakeService.checkGroupIdHasExistingEnrolment(any())(any(), any())).thenReturn(Future.failed(RuntimeException("Failed")))
+
+      val result = action.callFilter(IdentifierRequest(FakeRequest(), "id", groupId = Some("test-group-id"))).map(_.value)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).value mustEqual routes.ThereIsAProblemController.onPageLoad().url
+    }
+
     "must Redirect When Service returns true" in {
 
       val action = new Harness

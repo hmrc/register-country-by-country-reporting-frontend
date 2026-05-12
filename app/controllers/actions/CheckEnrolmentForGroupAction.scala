@@ -18,6 +18,7 @@ package controllers.actions
 
 import controllers.routes
 import models.requests.IdentifierRequest
+import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
 import services.TaxEnrolmentService
@@ -30,7 +31,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CheckEnrolmentForGroupAction @Inject() (taxEnrolmentService: TaxEnrolmentService)(implicit
   val executionContext: ExecutionContext
-) extends ActionFilter[IdentifierRequest] {
+) extends ActionFilter[IdentifierRequest]
+    with Logging {
 
   override protected def filter[A](request: IdentifierRequest[A]): Future[Option[Result]] =
     request.groupId match {
@@ -39,6 +41,10 @@ class CheckEnrolmentForGroupAction @Inject() (taxEnrolmentService: TaxEnrolmentS
         taxEnrolmentService
           .checkGroupIdHasExistingEnrolment(groupId)
           .map(haveEnrolment => navigate(haveEnrolment))
+          .recover(ex =>
+            logger.error(s"Failed to check group enrolment ${ex.getMessage}")
+            Some(Redirect(routes.ThereIsAProblemController.onPageLoad().url))
+          )
       case None => successful(None)
     }
 
