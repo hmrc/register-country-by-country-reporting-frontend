@@ -28,10 +28,10 @@
 
 @layout(pageTitle = titleNoForm(messages("organisationAlreadyRegistered.title"))) {
     @heading(messages("organisationAlreadyRegistered.heading"))
-    @paragraph(Html(messages("organisationAlreadyRegistered.p1")))
+    @paragraph(Html(messages("organisationAlreadyRegistered.p1")), classes = "govuk-body govuk-!-margin-bottom-2")
     <ul class="govuk-list govuk-list--bullet">
         <li>@Html(messages("organisationAlreadyRegistered.bullet1"))</li>
-        <li class="govuk-!-margin-bottom-2">@Html(messages("organisationAlreadyRegistered.bullet2", link(appConfig.taxAndSchemeManagementService, "organisationAlreadyRegistered.bullet2.link")))</li>
+        <li>@Html(messages("organisationAlreadyRegistered.bullet2", link(appConfig.taxAndSchemeManagementService, "organisationAlreadyRegistered.bullet2.link")))</li>
     </ul>
     @paragraph(Html(messages("organisationAlreadyRegistered.help" , link(s"mailto:${appConfig.emailEnquiries}", appConfig.emailEnquiries))))
 }
