@@ -18,8 +18,9 @@ package repositories
 
 import config.FrontendAppConfig
 import models.UserAnswers
+import org.apache.pekko.Done
 import org.mongodb.scala.bson.conversions.Bson
-import org.mongodb.scala.model._
+import org.mongodb.scala.model.*
 import play.api.libs.json.Format
 import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import uk.gov.hmrc.mongo.MongoComponent
@@ -85,11 +86,11 @@ class SessionRepository @Inject() (
       .map(_ => true)
   }
 
-  def clear(id: String): Future[Boolean] =
+  def clear(id: String): Future[Done] =
     collection
       .deleteOne(byId(id))
       .toFuture()
-      .map(_ => true)
+      .map(_ => Done)
 
   def reset(id: String): Future[Boolean] =
     clear(id).flatMap(_ => set(UserAnswers(id)))
