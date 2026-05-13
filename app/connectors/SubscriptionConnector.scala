@@ -43,7 +43,15 @@ class SubscriptionConnector @Inject() (val config: FrontendAppConfig, val http: 
       .map {
         case responseMessage if is2xx(responseMessage.status) =>
           responseMessage.json
-            .asOpt[ResponseDetail]
+            .validate[ResponseDetail]
+            .fold(
+              errors => {
+                logger.error(s"Failed to parse subscription response: $errors")
+                None
+              },
+              responseDetail => Some(responseDetail)
+            )
+
         case errorStatus =>
           logger.warn(s"Status $errorStatus has been thrown when display subscription was called")
           None

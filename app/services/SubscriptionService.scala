@@ -16,6 +16,7 @@
 
 package services
 
+import cats.data.OptionT
 import connectors.SubscriptionConnector
 import models.subscription.request.{CreateSubscriptionForCBCRequest, SubscriptionRequest}
 import models.{ApiError, SafeId, SubscriptionCreateError, SubscriptionID, UserAnswers}
@@ -57,5 +58,18 @@ class SubscriptionService @Inject() (val subscriptionConnector: SubscriptionConn
     subscriptionConnector.readSubscription(safeId) map {
       case Some(responseDetail) => Some(SubscriptionID(responseDetail.subscriptionID))
       case None                 => None
+    }
+
+  def getSubscriptionEmails(safeId: SafeId)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): OptionT[Future, Seq[String]] =
+    OptionT {
+      subscriptionConnector.readSubscription(safeId).map {
+        _.map { responseDetail =>
+          Seq(responseDetail.primaryContact.email) ++
+            responseDetail.secondaryContact.map(_.email).toSeq
+        }
+      }
     }
 }

@@ -53,7 +53,7 @@ class RegistrationConfirmationControllerSpec extends SpecBase with BeforeAndAfte
 
       when(mockSessionRepository.reset(any())).thenReturn(Future.successful(true))
 
-      when(mockEmailService.sendEmail(any(), any())(any())).thenReturn(Future.successful(Some(ACCEPTED)))
+      when(mockEmailService.sendEmail(any(), any())(any(), any())).thenReturn(Future.successful(Some(ACCEPTED)))
 
       val userAnswers = UserAnswers(userAnswersId)
         .set(SubscriptionIDPage, SubscriptionID(subscriptionId))

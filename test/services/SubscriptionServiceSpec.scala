@@ -19,7 +19,9 @@ package services
 import base.SpecBase
 import connectors.SubscriptionConnector
 import models.matching.RegistrationInfo
+import models.register.request.ContactDetails
 import models.register.response.details.AddressResponse
+import models.subscription.response.{ContactInformation, OrganisationDetails, ResponseDetail}
 import models.{SafeId, SubscriptionCreateError, SubscriptionCreateInformationMissingError, SubscriptionID, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.scalatestplus.mockito.MockitoSugar
@@ -72,13 +74,25 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
     }
 
     "must return 'SubscriptionID' when there is already a subscription exists" in {
-      val subscriptionID = SubscriptionID("id")
-      val safeId         = SafeId("CBC12345678")
+      val primaryContactInfo = ContactInformation(
+        organisationDetails = OrganisationDetails("OrganisationDetails"),
+        email = "EmailAddress@test.com",
+        None,
+        None
+      )
+      val responseDetail = ResponseDetail(
+        subscriptionID = "id",
+        tradingName = None,
+        isGBUser = true,
+        primaryContact = primaryContactInfo,
+        secondaryContact = None
+      )
+      val safeId = SafeId("CBC12345678")
 
-      when(mockSubscriptionConnector.readSubscription(any())(any(), any())).thenReturn(Future.successful(Some(subscriptionID)))
+      when(mockSubscriptionConnector.readSubscription(any())(any(), any())).thenReturn(Future.successful(Some(responseDetail)))
 
       val result = service.checkAndCreateSubscription(safeId, emptyUserAnswers)
-      result.futureValue mustBe Right(subscriptionID)
+      result.futureValue mustBe Right(SubscriptionID("id"))
     }
 
     "must return SubscriptionCreateInformationMissingError when UserAnswers is empty" in {
@@ -156,9 +170,24 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
     "getDisplaySubscriptionId" - {
 
       "must return 'SubscriptionID' for valid input" in {
+        val primaryContactInfo = ContactInformation(
+          organisationDetails = OrganisationDetails("OrganisationDetails"),
+          email = "EmailAddress@test.com",
+          None,
+          None
+        )
+        val responseDetail = Some(
+          ResponseDetail(
+            subscriptionID = "id",
+            tradingName = None,
+            isGBUser = true,
+            primaryContact = primaryContactInfo,
+            secondaryContact = None
+          )
+        )
         val safeId = SafeId("CBC12345678")
 
-        when(mockSubscriptionConnector.readSubscription(any())(any(), any())).thenReturn(Future.successful(Some(SubscriptionID("id"))))
+        when(mockSubscriptionConnector.readSubscription(any())(any(), any())).thenReturn(Future.successful(responseDetail))
         val result = service.getDisplaySubscriptionId(safeId)
         result.futureValue mustBe Some(SubscriptionID("id"))
       }
