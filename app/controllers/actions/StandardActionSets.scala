@@ -29,17 +29,18 @@ class StandardActionSets @Inject() (identify: IdentifierAction,
                                     initializeData: DataInitializeAction,
                                     retrieveCtUTR: CtUtrRetrievalAction,
                                     checkEnrolment: CheckEnrolledToServiceActionProvider,
+                                    checkGroupEnrolment: CheckEnrolmentForGroupActionProvider,
                                     dependantAnswer: DependantAnswerProvider
 ) {
 
   def identifiedUserWithEnrolmentCheckAndCtUtrRetrieval(): ActionBuilder[IdentifierRequest, AnyContent] =
-    identify andThen checkEnrolment() andThen retrieveCtUTR()
+    identify andThen checkEnrolment() andThen checkGroupEnrolment() andThen retrieveCtUTR()
 
   def identifiedUserWithEnrolmentCheck(): ActionBuilder[IdentifierRequest, AnyContent] =
     identify andThen checkEnrolment()
 
   def identifiedUserWithInitializedData(): ActionBuilder[DataRequest, AnyContent] =
-    identifiedUserWithEnrolmentCheck() andThen getData andThen initializeData
+    identifiedUserWithEnrolmentCheck() andThen checkGroupEnrolment() andThen getData andThen initializeData
 
   def identifiedWithoutEnrolmentCheck(): ActionBuilder[DataRequest, AnyContent] =
     identify andThen getData andThen requireData

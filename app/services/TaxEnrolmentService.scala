@@ -42,4 +42,8 @@ class TaxEnrolmentService @Inject() (taxEnrolmentsConnector: TaxEnrolmentsConnec
     }
   }
 
+  def checkGroupIdHasExistingEnrolment(groupId: String)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Boolean] = enrolmentStoreProxyConnector.enrolmentExistsForGroupId(groupId)
 }
