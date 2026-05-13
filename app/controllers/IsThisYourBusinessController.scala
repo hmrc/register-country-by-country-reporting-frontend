@@ -56,23 +56,13 @@ class IsThisYourBusinessController @Inject() (
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async { implicit request =>
-    request.userAnswers
-      .get(AutoMatchedUTRPage).map { autoMatchedUtr =>
-        matchingService.sendBusinessRegistrationInformation(autoMatchedUtr, request.userAnswers).map{
-          case Right(response) =>
-            handleRegistrationFound(mode, autoMatchedUtr, response)
-          case Left(NotFoundError) =>
-           //not able to render the view and must go to businessType controller
-        }
-      }
-      
-      
-      
-      .getOrElse(view())
-    {
-      
-      case _ =>
-        Redirect(routes.ThereIsAProblemController.onPageLoad())
+    val autoMatchedUtr = request.userAnswers.get(AutoMatchedUTRPage)
+   
+    matchingService.sendBusinessRegistrationInformation(autoMatchedUtr, request.userAnswers).map{
+      case Right(response) =>
+        handleRegistrationFound(mode, autoMatchedUtr, response)
+      case Left(NotFoundError) =>
+       //not able to render the view and must go to businessType controller
     }
   }
 

@@ -45,7 +45,7 @@ class BusinessMatchingWithIdService @Inject() (registrationConnector: Registrati
   implicit private val uuidGenerator: UUIDGen = uuidGen
   implicit private val implicitClock: Clock   = clock
   
-  def sendBusinessRegistrationInformation(autoMatchedUtr:UniqueTaxpayerReference , userAnswers: UserAnswers)(implicit hc: HeaderCarrier)
+  def sendBusinessRegistrationInformation(autoMatchedUtr: Option[UniqueTaxpayerReference] , userAnswers: UserAnswers)(implicit hc: HeaderCarrier)
   : Future[Either[ApiError, RegistrationInfo]] =
         registrationConnector
           .registerWithID(buildRegisterWithId(autoMatchedUtr, userAnswers))
@@ -56,8 +56,11 @@ class BusinessMatchingWithIdService @Inject() (registrationConnector: Registrati
     
 
 
-  def buildRegisterWithId(autoMatchedUtr:UniqueTaxpayerReference, userAnswers: UserAnswers): RegisterWithID =
-    buildRegistrationRequest(userAnswers).getOrElse(RegisterWithID(AutoMatchedRegistrationRequest(UTR, autoMatchedUtr.uniqueTaxPayerReference)))
+  def buildRegisterWithId(autoMatchedUtr:Option[UniqueTaxpayerReference], userAnswers: UserAnswers): RegisterWithID = {
+    autoMatchedUtr.fold(buildRegistrationRequest(userAnswers)) {
+      utr => RegisterWithID(AutoMatchedRegistrationRequest(UTR, utr.uniqueTaxPayerReference))
+    }
+  }
 
 
   private def buildRegistrationRequest(userAnswers: UserAnswers): Option[RegisterWithID] =
