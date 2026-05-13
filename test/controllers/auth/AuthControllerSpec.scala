@@ -23,12 +23,11 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-import java.net.URLEncoder
 import scala.concurrent.Future
 
 class AuthControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  override def afterEach() =
+  override def afterEach(): Unit =
     reset(mockSessionRepository)
 
   "signOut" - {

@@ -20,12 +20,13 @@ import controllers.actions.*
 import forms.IsThisYourBusinessFormProvider
 import models.IdentifierType.UTR
 import models.matching.{AutoMatchedRegistrationRequest, RegistrationInfo, RegistrationRequest}
-import models.register.request.*
+import models.register.request.RegisterWithID
 import models.requests.DataRequest
-import models.{Mode, NotFoundError, UUIDGen, UniqueTaxpayerReference}
+import models.{ApiError, Mode, NotFoundError, UUIDGen, UniqueTaxpayerReference, UserAnswers}
 import navigation.CBCRNavigator
 import pages.*
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.{BusinessMatchingWithIdService, SubscriptionService, TaxEnrolmentService}
@@ -47,7 +48,9 @@ class IsThisYourBusinessController @Inject() (
   matchingService: BusinessMatchingWithIdService,
   formProvider: IsThisYourBusinessFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: IsThisYourBusinessView
+  view: IsThisYourBusinessView,
+  uuidGen: UUIDGen,
+  clock: Clock
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -55,15 +58,19 @@ class IsThisYourBusinessController @Inject() (
 
   val form = formProvider()
 
+  implicit private val uuidGenerator: UUIDGen = uuidGen
+  implicit private val implicitClock: Clock   = clock
+
+  private val thereIsAProblem: Result = Redirect(routes.ThereIsAProblemController.onPageLoad())
+
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async { implicit request =>
     val autoMatchedUtr = request.userAnswers.get(AutoMatchedUTRPage)
-   
-    matchingService.sendBusinessRegistrationInformation(autoMatchedUtr, request.userAnswers).map{
-      case Right(response) =>
-        handleRegistrationFound(mode, autoMatchedUtr, response)
-      case Left(NotFoundError) =>
-       //not able to render the view and must go to businessType controller
-    }
+    buildRegisterWithId(autoMatchedUtr)
+      .fold(Future.successful(thereIsAProblem)) { registerWithId =>
+        matchingService
+          .sendBusinessRegistrationInformation(registerWithId)
+          .flatMap(handleRegistrationInfoResult(request.userAnswers, mode, autoMatchedUtr, _))
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async { implicit request =>
@@ -77,9 +84,85 @@ class IsThisYourBusinessController @Inject() (
             .fold(thereIsAProblem) { case registrationInfo: RegistrationInfo =>
               Future.successful(BadRequest(view(formWithErrors, registrationInfo, mode)))
             },
-        value => Future.successful(BadRequest)
-//          selfHealIfNecessary(value, mode)
+        value => selfHealIfNecessary(value, mode)
       )
   }
 
+  private def handleRegistrationInfoResult(userAnswers: UserAnswers,
+                                           mode: Mode,
+                                           autoMatchedUtr: Option[UniqueTaxpayerReference],
+                                           response: Either[ApiError, RegistrationInfo]
+  )(implicit request: DataRequest[AnyContent]): Future[Result] =
+    response match {
+      case Right(registrationInfo) =>
+        handleRegistrationFound(userAnswers, mode, autoMatchedUtr, registrationInfo)
+      case Left(NotFoundError) =>
+        handleRegistrationNotFound(userAnswers, mode, autoMatchedUtr)
+      case _ =>
+        Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+    }
+
+  def handleRegistrationFound(userAnswers: UserAnswers, mode: Mode, autoMatchedUtr: Option[UniqueTaxpayerReference], registrationInfo: RegistrationInfo)(
+    implicit request: DataRequest[AnyContent]
+  ): Future[Result] = {
+    val updatedAnswersWithUtrPage = autoMatchedUtr.map(userAnswers.set(UTRPage, _)).getOrElse(Success(userAnswers))
+    for {
+      updatedAnswers <- Future.fromTry(updatedAnswersWithUtrPage.flatMap(_.set(RegistrationInfoPage, registrationInfo)))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield {
+      val preparedForm = userAnswers.get(IsThisYourBusinessPage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
+      Ok(view(preparedForm, registrationInfo, mode))
+    }
+  }
+
+  private def handleRegistrationNotFound(userAnswers: UserAnswers, mode: Mode, autoMatchedUtr: Option[UniqueTaxpayerReference]): Future[Result] =
+    autoMatchedUtr.fold(Future.successful(Redirect(routes.BusinessNotIdentifiedController.onPageLoad()))) { _ =>
+      for {
+        autoMatchedUtrRemoved <- Future.fromTry(userAnswers.remove(AutoMatchedUTRPage))
+        result                <- sessionRepository.set(autoMatchedUtrRemoved)
+      } yield Redirect(routes.BusinessTypeController.onPageLoad(mode))
+    }
+
+  private def selfHealIfNecessary(value: Boolean, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] =
+    if (!value) {
+      proceedToNextPage(value, request, mode)
+    } else {
+      request.userAnswers
+        .get(RegistrationInfoPage)
+        .fold {
+          logger.error(s"Registration info not found in user answers when user answered yes to 'is this your business question'")
+          Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+        } { registrationInfo =>
+          subscriptionService.getDisplaySubscriptionId(registrationInfo.safeId) flatMap {
+            case Some(subscriptionId) =>
+              updateSubscriptionIdAndCreateEnrolment(registrationInfo.safeId, subscriptionId)
+            case _ =>
+              proceedToNextPage(value, request, mode)
+          }
+        }
+    }
+
+  private def proceedToNextPage(value: Boolean, request: DataRequest[AnyContent], mode: Mode): Future[Result] =
+    for {
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(IsThisYourBusinessPage, value))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(navigator.nextPage(IsThisYourBusinessPage, mode, updatedAnswers))
+
+  private def buildRegistrationRequest()(implicit request: DataRequest[AnyContent]): Option[RegisterWithID] =
+    for {
+      utr          <- request.userAnswers.get(UTRPage)
+      businessName <- request.userAnswers.get(BusinessNamePage)
+      businessType = request.userAnswers.get(BusinessTypePage)
+    } yield RegisterWithID(RegistrationRequest(UTR, utr.uniqueTaxPayerReference, businessName, businessType, None))
+
+  private def buildAutoMatchedBusinessRegistrationRequest(utr: UniqueTaxpayerReference): RegisterWithID =
+    RegisterWithID(AutoMatchedRegistrationRequest(UTR, utr.uniqueTaxPayerReference))
+
+  private def buildRegisterWithId(autoMatchedUtr: Option[UniqueTaxpayerReference])(implicit request: DataRequest[AnyContent]): Option[RegisterWithID] =
+    autoMatchedUtr
+      .map(buildAutoMatchedBusinessRegistrationRequest)
+      .orElse(buildRegistrationRequest())
 }
