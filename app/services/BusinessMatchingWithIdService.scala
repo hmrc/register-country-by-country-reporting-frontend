@@ -16,14 +16,16 @@
 
 package services
 
+import cats.data.OptionT
+import cats.data.OptionT.{fromOption, liftF}
 import connectors.RegistrationConnector
-import controllers.routes
-import models.{ApiError, InternalServerError, Mode, NormalMode, UUIDGen, UniqueTaxpayerReference, UserAnswers}
+import controllers.{CreateSubscriptionAndUpdateEnrolment, routes}
 import models.IdentifierType.UTR
 import models.matching.{AutoMatchedRegistrationRequest, RegistrationInfo, RegistrationRequest}
 import models.register.request.RegisterWithID
 import models.requests.DataRequest
-import pages.{AutoMatchedUTRPage, BusinessNamePage, BusinessTypePage, IsThisYourBusinessPage, RegistrationInfoPage, UTRPage}
+import models.{NormalMode, UUIDGen, UniqueTaxpayerReference, UserAnswers}
+import pages.{BusinessNamePage, BusinessTypePage, RegistrationInfoPage, UTRPage}
 import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Result}
@@ -33,96 +35,43 @@ import uk.gov.hmrc.http.HeaderCarrier
 import java.time.Clock
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Success
 
 class BusinessMatchingWithIdService @Inject() (registrationConnector: RegistrationConnector,
-                                               sessionRepository: SessionRepository,
+                                               override val sessionRepository: SessionRepository,
+                                               override val subscriptionService: SubscriptionService,
+                                               override val taxEnrolmentService: TaxEnrolmentService,
                                                uuidGen: UUIDGen,
                                                clock: Clock
 )(implicit
   ec: ExecutionContext
-) extends Logging {
+) extends Logging
+    with CreateSubscriptionAndUpdateEnrolment {
   implicit private val uuidGenerator: UUIDGen = uuidGen
   implicit private val implicitClock: Clock   = clock
-  
-  def sendBusinessRegistrationInformation(autoMatchedUtr:UniqueTaxpayerReference , userAnswers: UserAnswers)(implicit hc: HeaderCarrier)
-  : Future[Either[ApiError, RegistrationInfo]] =
-        registrationConnector
-          .registerWithID(buildRegisterWithId(autoMatchedUtr, userAnswers))
-          .map { response =>
-            response.map(x => RegistrationInfo.apply(x))
-          }
-      
-    
 
+  def sendBusinessRegistrationInformation(registrationPayload: RegisterWithID)(implicit hc: HeaderCarrier): Future[RegistrationInfo] =
+    registrationConnector
+      .registerWithID(registrationPayload)
+      .map { response =>
+        RegistrationInfo.apply(response)
+      }
 
-  def buildRegisterWithId(autoMatchedUtr:UniqueTaxpayerReference, userAnswers: UserAnswers): RegisterWithID =
-    buildRegistrationRequest(userAnswers).getOrElse(RegisterWithID(AutoMatchedRegistrationRequest(UTR, autoMatchedUtr.uniqueTaxPayerReference)))
+  def buildRegisterWithIdForAutoMatched(autoMatchedUtr: UniqueTaxpayerReference): RegisterWithID =
+    RegisterWithID(AutoMatchedRegistrationRequest(UTR, autoMatchedUtr.uniqueTaxPayerReference))
 
-
-  private def buildRegistrationRequest(userAnswers: UserAnswers): Option[RegisterWithID] =
+  def buildRegistrationRequest(userAnswers: UserAnswers): Option[RegisterWithID] =
     for {
-      utr          <-userAnswers.get(UTRPage)
+      utr          <- userAnswers.get(UTRPage)
       businessName <- userAnswers.get(BusinessNamePage)
       businessType = userAnswers.get(BusinessTypePage)
     } yield RegisterWithID(RegistrationRequest(UTR, utr.uniqueTaxPayerReference, businessName, businessType, None))
 
-    private def handleRegistrationFound(
-      mode: Mode,
-      autoMatchedUtr: Option[UniqueTaxpayerReference],
-      registrationInfo: RegistrationInfo
-    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
-      val updatedAnswersWithUtrPage = autoMatchedUtr.map(request.userAnswers.set(UTRPage, _)).getOrElse(Success(request.userAnswers))
-      for {
-        updatedAnswers <- Future.fromTry(updatedAnswersWithUtrPage.flatMap(_.set(RegistrationInfoPage, registrationInfo)))
-        _              <- sessionRepository.set(updatedAnswers)
-      } yield {
-        val preparedForm = request.userAnswers.get(IsThisYourBusinessPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
-        Ok(view(preparedForm, registrationInfo, mode))
-      }
-    }
-
-    private def handleRegistrationNotFound(
-      mode: Mode,
-      autoMatchedUtr: Option[UniqueTaxpayerReference]
-    )(implicit request: DataRequest[AnyContent]): Future[Result] =
-      if (autoMatchedUtr.nonEmpty) {
-        resultWithAutoMatchedFieldCleared(mode)
-      } else {
-        Future.successful(Redirect(routes.BusinessNotIdentifiedController.onPageLoad()))
-      }
-
-    def resultWithAutoMatchedFieldCleared(userAnswers: UserAnswers): Future[Boolean] =
-      for {
-        autoMatchedUtrRemoved <- Future.fromTry(userAnswers.remove(AutoMatchedUTRPage))
-        result <- sessionRepository.set(autoMatchedUtrRemoved)
-      } yield result
-//
-//    private def selfHealIfNecessary(value: Boolean, mode: Mode)(implicit ec: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] =
-//      if (value) {
-//        request.userAnswers.get(RegistrationInfoPage) match {
-//          case Some(registrationInfo) =>
-//            subscriptionService.getDisplaySubscriptionId(registrationInfo.safeId) flatMap {
-//              case Some(subscriptionId) =>
-//                updateSubscriptionIdAndCreateEnrolment(registrationInfo.safeId, subscriptionId)
-//              case _ =>
-//                gotoNextPage(value, request, mode)
-//            }
-//          case None =>
-//            logger.error(s"Registration info not found in user answers when user answered yes to 'is this your business question'")
-//            Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
-//        }
-//      } else {
-//        gotoNextPage(value, request, mode)
-//      }
-//
-//    private def gotoNextPage(value: Boolean, request: DataRequest[AnyContent], mode: Mode): Future[Result] =
-//      for {
-//        updatedAnswers <- Future.fromTry(request.userAnswers.set(IsThisYourBusinessPage, value))
-//        _              <- sessionRepository.set(updatedAnswers)
-//      } yield Redirect(navigator.nextPage(IsThisYourBusinessPage, mode, updatedAnswers))
+  def selfHealingLogic()(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Result] =
+    (for {
+      registrationInfo    <- fromOption[Future](request.userAnswers.get(RegistrationInfoPage))
+      maybeSubscriptionId <- liftF(subscriptionService.getDisplaySubscriptionId(registrationInfo.safeId))
+      subscriptionId      <- fromOption[Future](maybeSubscriptionId)
+      result              <- liftF(updateSubscriptionIdAndCreateEnrolment(registrationInfo.safeId, subscriptionId))
+    } yield result).getOrElse(Redirect(controllers.routes.YourContactDetailsController.onPageLoad(NormalMode)))
 
 }

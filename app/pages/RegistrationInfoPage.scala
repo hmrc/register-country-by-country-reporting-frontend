@@ -16,12 +16,17 @@
 
 package pages
 
+import models.UserAnswers
 import models.matching.RegistrationInfo
 import play.api.libs.json.JsPath
+import scala.util.{Success, Try}
 
 case object RegistrationInfoPage extends QuestionPage[RegistrationInfo] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "registrationInfo"
+
+  override def cleanup(value: Option[RegistrationInfo], userAnswers: UserAnswers): Try[UserAnswers] =
+    if userAnswers.get(IsThisYourBusinessPage).contains(false) then super.cleanup(value, userAnswers) else Success(userAnswers)
 }

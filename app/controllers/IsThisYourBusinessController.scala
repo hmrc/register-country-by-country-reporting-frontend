@@ -16,32 +16,28 @@
 
 package controllers
 
+import cats.data.OptionT.{fromOption, liftF}
 import controllers.actions.*
 import forms.IsThisYourBusinessFormProvider
-import models.IdentifierType.UTR
-import models.matching.{AutoMatchedRegistrationRequest, RegistrationInfo, RegistrationRequest}
+import models.Mode
+import models.matching.RegistrationInfo
 import models.register.request.*
-import models.requests.DataRequest
-import models.{Mode, NotFoundError, UUIDGen, UniqueTaxpayerReference}
 import navigation.CBCRNavigator
 import pages.*
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{BusinessMatchingWithIdService, SubscriptionService, TaxEnrolmentService}
+import services.BusinessMatchingWithIdService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.IsThisYourBusinessView
 
-import java.time.Clock
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Success
 
 class IsThisYourBusinessController @Inject() (
   override val messagesApi: MessagesApi,
-  override val sessionRepository: SessionRepository,
-  override val subscriptionService: SubscriptionService,
-  override val taxEnrolmentService: TaxEnrolmentService,
+  val sessionRepository: SessionRepository,
   navigator: CBCRNavigator,
   standardActionSets: StandardActionSets,
   matchingService: BusinessMatchingWithIdService,
@@ -50,30 +46,23 @@ class IsThisYourBusinessController @Inject() (
   view: IsThisYourBusinessView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with CreateSubscriptionAndUpdateEnrolment {
+    with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async { implicit request =>
-    request.userAnswers
-      .get(AutoMatchedUTRPage).map { autoMatchedUtr =>
-        matchingService.sendBusinessRegistrationInformation(autoMatchedUtr, request.userAnswers).map{
-          case Right(response) =>
-            handleRegistrationFound(mode, autoMatchedUtr, response)
-          case Left(NotFoundError) =>
-           //not able to render the view and must go to businessType controller
-        }
-      }
-      
-      
-      
-      .getOrElse(view())
-    {
-      
-      case _ =>
-        Redirect(routes.ThereIsAProblemController.onPageLoad())
-    }
+    (for {
+      futureRegInfo <- fromOption[Future](
+        request.userAnswers
+          .get(RegistrationInfoPage)
+          .map(Future.successful)
+          .orElse(matchingService.buildRegistrationRequest(request.userAnswers).map(matchingService.sendBusinessRegistrationInformation))
+      )
+      regInfo     <- liftF(futureRegInfo)
+      userAnswers <- liftF(Future.fromTry(request.userAnswers.set(RegistrationInfoPage, regInfo)))
+      _           <- liftF(sessionRepository.set(userAnswers))
+    } yield Ok(view(form, regInfo, mode))).getOrElse(Redirect(controllers.routes.ThereIsAProblemController.onPageLoad()))
+
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async { implicit request =>
@@ -87,8 +76,13 @@ class IsThisYourBusinessController @Inject() (
             .fold(thereIsAProblem) { case registrationInfo: RegistrationInfo =>
               Future.successful(BadRequest(view(formWithErrors, registrationInfo, mode)))
             },
-        value => Future.successful(BadRequest)
-//          selfHealIfNecessary(value, mode)
+        value =>
+          (for {
+            userAnswers <- Future.fromTry(request.userAnswers.set(IsThisYourBusinessPage, value))
+            _           <- sessionRepository.set(userAnswers)
+          } yield
+            if !value then Future.successful(Redirect(navigator.nextPage(IsThisYourBusinessPage, mode, userAnswers)))
+            else matchingService.selfHealingLogic()).flatten
       )
   }
 

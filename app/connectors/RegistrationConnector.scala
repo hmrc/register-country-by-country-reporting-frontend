@@ -19,7 +19,7 @@ package connectors
 import config.FrontendAppConfig
 import models.register.request.{RegisterWithID, RegisterWithoutId}
 import models.register.response.{RegisterWithIDResponse, RegisterWithoutIDResponse}
-import models.{ApiError, InternalServerError, NotFoundError, SafeId}
+import models.{ApiError, InternalProblemError, NotFoundError, SafeId}
 import play.api.Logging
 import play.api.http.Status.NOT_FOUND
 import play.api.libs.json.Json
@@ -35,19 +35,19 @@ import scala.concurrent.{ExecutionContext, Future}
 class RegistrationConnector @Inject() (val config: FrontendAppConfig, val http: HttpClientV2) extends Logging {
   val registrationUrl = s"${config.registerCountryByCountryUrl}/registration"
 
-  def registerWithID(registration: RegisterWithID)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[ApiError, RegisterWithIDResponse]] =
-    http.post(url"$registrationUrl/utr").withBody(Json.toJson(registration)).execute[HttpResponse] map {
+  def registerWithID(registration: RegisterWithID)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegisterWithIDResponse] =
+    http.post(url"$registrationUrl/utr").withBody(Json.toJson(registration)).execute[HttpResponse] flatMap {
       case response if is2xx(response.status) =>
         response.json.asOpt[RegisterWithIDResponse] match {
-          case Some(responseDetails) => Right(responseDetails)
+          case Some(responseDetails) => Future.successful(responseDetails)
           case _ =>
             logger.warn("Failed to read registerWithIDResponse json")
-            Left(InternalServerError)
+            Future.failed(InternalProblemError)
         }
-      case response if response.status == NOT_FOUND => Left(NotFoundError)
+      case response if response.status == NOT_FOUND => Future.failed(NotFoundError)
       case errorStatus =>
         logger.error(s"RegisterWithID call failed with Status ${errorStatus.status}")
-        Left(InternalServerError)
+        Future.failed(InternalProblemError)
     }
 
   def registerWithoutID(registration: RegisterWithoutId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[ApiError, Option[SafeId]]] =
@@ -56,6 +56,6 @@ class RegistrationConnector @Inject() (val config: FrontendAppConfig, val http: 
         Right(response.json.asOpt[RegisterWithoutIDResponse].map(_.safeId))
       case errorResponse =>
         logger.error(s"RegisterWithoutID call failed with Status ${errorResponse.status}")
-        Left(InternalServerError)
+        Left(InternalProblemError)
     }
 }
