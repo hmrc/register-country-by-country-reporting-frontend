@@ -28,7 +28,9 @@ import controllers.actions.{
   FakeIdentifierActionWithCtUtr,
   IdentifierAction
 }
-import models.{NormalMode, UniqueTaxpayerReference, UserAnswers}
+import models.matching.RegistrationInfo
+import models.register.response.details.AddressResponse
+import models.{InternalProblemError, NormalMode, SafeId, UniqueTaxpayerReference, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import pages.AutoMatchedUTRPage
@@ -38,10 +40,12 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import repositories.SessionRepository
+import services.BusinessMatchingWithIdService
 
 import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase {
+  val mockBusinessMatchingService: BusinessMatchingWithIdService = mock[BusinessMatchingWithIdService]
 
   "Index Controller" - {
 
@@ -59,12 +63,50 @@ class IndexControllerSpec extends SpecBase {
       }
     }
 
-    "must redirect to isThisYourBusinessController when automatched by CT" in {
+    "must redirect to 'Is register AddressIn the uk' when sendBusinessRegistrationInformation fails" in {
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockBusinessMatchingService.sendBusinessRegistrationInformation(any())(any()))
+        .thenReturn(
+          Future.failed(InternalProblemError)
+        )
 
       val application = customApplicationBuilder(userAnswers = None)
         .configure(
           "keys.enrolmentKey.ct" -> "IR-CT"
+        )
+        .overrides(
+          bind[BusinessMatchingWithIdService].toInstance(mockBusinessMatchingService)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.IndexController.onPageLoad().url)
+        val result  = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
+      }
+    }
+
+    "must redirect to isThisYourBusinessController when automatched by CT" in {
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockBusinessMatchingService.sendBusinessRegistrationInformation(any())(any()))
+        .thenReturn(
+          Future.successful(
+            RegistrationInfo(
+              SafeId("safe"),
+              "Business Name",
+              AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
+            )
+          )
+        )
+
+      val application = customApplicationBuilder(userAnswers = None)
+        .configure(
+          "keys.enrolmentKey.ct" -> "IR-CT"
+        )
+        .overrides(
+          bind[BusinessMatchingWithIdService].toInstance(mockBusinessMatchingService)
         )
         .build()
 

@@ -37,8 +37,7 @@ class IndexController @Inject() (
   sessionRepository: SessionRepository,
   clock: Clock,
   matchingService: BusinessMatchingWithIdService,
-  standardActionSets: StandardActionSets,
-  errorView: ThereIsAProblemView
+  standardActionSets: StandardActionSets
 )(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport
@@ -48,17 +47,17 @@ class IndexController @Inject() (
     request.utr
       .map { utrFromCtEnrolment =>
         val userAnswers = UserAnswers(request.userId, lastUpdated = Instant.now(clock))
-      (for {
-        ua  <- Future.fromTry(userAnswers.set(PrivateBetaAccessCodePage, config.privateBetaPassword))
-        ua2 <- Future.fromTry(ua.set(AutoMatchedUTRPage, utrFromCtEnrolment))
-        registrationPayload = matchingService.buildRegisterWithIdForAutoMatched(utrFromCtEnrolment)
-        registrationData <- matchingService.sendBusinessRegistrationInformation(registrationPayload)
-        ua3              <- Future.fromTry(ua2.set(RegistrationInfoPage, registrationData))
-        _                <- sessionRepository.set(ua3)
-      } yield Redirect(routes.IsThisYourBusinessController.onPageLoad(NormalMode)))
-        .recover { case InternalProblemError | NotFoundError =>
-          Redirect(routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode))
-        }
+        (for {
+          ua  <- Future.fromTry(userAnswers.set(PrivateBetaAccessCodePage, config.privateBetaPassword))
+          ua2 <- Future.fromTry(ua.set(AutoMatchedUTRPage, utrFromCtEnrolment))
+          registrationPayload = matchingService.buildRegisterWithIdForAutoMatched(utrFromCtEnrolment)
+          registrationData <- matchingService.sendBusinessRegistrationInformation(registrationPayload)
+          ua3              <- Future.fromTry(ua2.set(RegistrationInfoPage, registrationData))
+          _                <- sessionRepository.set(ua3)
+        } yield Redirect(routes.IsThisYourBusinessController.onPageLoad(NormalMode)))
+          .recover { case InternalProblemError | NotFoundError =>
+            Redirect(routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode))
+          }
       }
       .getOrElse(Future.successful(Redirect(routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode))))
   }

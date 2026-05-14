@@ -16,10 +16,8 @@
 
 package pages
 
-import models.UserAnswers
 import models.matching.RegistrationInfo
 import play.api.libs.json.JsPath
-import scala.util.{Success, Try}
 
 case object RegistrationInfoPage extends QuestionPage[RegistrationInfo] {
 

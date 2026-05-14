@@ -207,21 +207,18 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(
-          bind[RegistrationConnector].toInstance(mockRegistrationConnector)
+          bind[BusinessMatchingWithIdService].toInstance(businessMatchingService)
         )
         .build()
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
-
-      when(mockRegistrationConnector.registerWithID(any())(any(), any()))
+      when(businessMatchingService.buildRegistrationRequest(any())).thenReturn(Some(RegisterWithID(registrationRequest)))
+      when(businessMatchingService.sendBusinessRegistrationInformation(any())(any()))
         .thenReturn(
           Future.successful(
-            Right(
-              RegisterWithIDResponse(
-                SafeId("safe"),
-                OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
-                AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
-              )
+            RegistrationInfo(
+              SafeId("safe"),
+              "Business Name",
+              AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
             )
           )
         )

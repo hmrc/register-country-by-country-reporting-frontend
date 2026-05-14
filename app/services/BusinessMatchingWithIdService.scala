@@ -19,7 +19,7 @@ package services
 import cats.data.OptionT
 import cats.data.OptionT.{fromOption, liftF}
 import connectors.RegistrationConnector
-import controllers.{routes, CreateSubscriptionAndUpdateEnrolment}
+import controllers.CreateSubscriptionAndUpdateEnrolment
 import models.IdentifierType.UTR
 import models.matching.{AutoMatchedRegistrationRequest, RegistrationInfo, RegistrationRequest}
 import models.register.request.RegisterWithID

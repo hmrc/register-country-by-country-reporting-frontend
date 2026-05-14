@@ -18,10 +18,11 @@ package controllers.auth
 
 import base.SpecBase
 import config.FrontendAppConfig
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.apache.pekko.Done
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 import java.net.URLEncoder
 import scala.concurrent.Future
@@ -34,7 +35,7 @@ class AuthControllerSpec extends SpecBase with BeforeAndAfterEach {
   "signOut" - {
 
     "must redirect to sign out, specifying the exit survey as the continue URL" in {
-      when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))
+      when(mockSessionRepository.clear(any())).thenReturn(Future.successful(Done))
 
       val application =
         applicationBuilder(Some(emptyUserAnswers)).build()
@@ -58,7 +59,7 @@ class AuthControllerSpec extends SpecBase with BeforeAndAfterEach {
   "signOutNoSurvey" - {
 
     "must redirect to SignedOut URL" in {
-      when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))
+      when(mockSessionRepository.clear(any())).thenReturn(Future.successful(Done))
 
       val application =
         applicationBuilder(None).build()

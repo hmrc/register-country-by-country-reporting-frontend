@@ -75,14 +75,16 @@ class RegistrationConnectorSpec extends SpecBase with WireMockHelper with ScalaC
         stubPostResponse(s"$registrationUrl/utr", OK, businessWithIdJsonResponse)
 
         val result = connector.registerWithID(registrationWithOrganisationIDPayload)
-        result.futureValue mustBe Right(expectedResponse)
+        result.futureValue mustBe expectedResponse
       }
 
       "must return 'InternalServerError' when safeId is missing in the businessWithIdResponse" in {
         stubPostResponse(s"$registrationUrl/utr", OK, businessWithIdMissingSafeIdJson)
 
         val result = connector.registerWithID(registrationWithOrganisationIDPayload)
-        result.futureValue mustBe Left(InternalProblemError)
+        whenReady(result.failed) { ex =>
+          ex mustBe InternalProblemError
+        }
       }
 
       "must return 'InternalServerError' when EIS returns Http status other than NOT_FOUND and OK status" in {
@@ -90,21 +92,27 @@ class RegistrationConnectorSpec extends SpecBase with WireMockHelper with ScalaC
         stubPostResponse(s"$registrationUrl/utr", errorStatus, businessWithIdMissingSafeIdJson)
 
         val result = connector.registerWithID(registrationWithOrganisationIDPayload)
-        result.futureValue mustBe Left(InternalProblemError)
+        whenReady(result.failed) { ex =>
+          ex mustBe InternalProblemError
+        }
       }
 
       "must return 'NotFoundError' when EIS returns NOT_FOUND status" in {
         stubPostResponse(s"$registrationUrl/utr", NOT_FOUND, businessWithIdMissingSafeIdJson)
 
         val result = connector.registerWithID(registrationWithOrganisationIDPayload)
-        result.futureValue mustBe Left(NotFoundError)
+        whenReady(result.failed) { ex =>
+          ex mustBe NotFoundError
+        }
       }
 
       "must return Internal Server Error when EIS returns REQUEST_TIMEOUT status" in {
         stubPostResponse(s"$registrationUrl/utr", REQUEST_TIMEOUT)
 
         val result = connector.registerWithID(registrationWithOrganisationIDPayload)
-        result.futureValue mustBe Left(InternalProblemError)
+        whenReady(result.failed) { ex =>
+          ex mustBe InternalProblemError
+        }
       }
     }
 
