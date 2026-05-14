@@ -27,9 +27,9 @@ case object IsThisYourBusinessPage extends QuestionPage[Boolean] {
 
   override def toString: String = "isThisYourBusiness"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
-    case Some(false) => List(RegistrationInfoPage).foldLeft(Try(userAnswers))(Page.removePage)
-    case _           => super.cleanup(value, userAnswers)
-  }
+//  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+//    case Some(false) => List(RegistrationInfoPage).foldLeft(Try(userAnswers))(Page.removePage)
+//    case _           => super.cleanup(value, userAnswers)
+//  }
 
 }

@@ -19,7 +19,7 @@ package controllers
 import cats.data.OptionT.{fromOption, liftF}
 import controllers.actions.*
 import forms.IsThisYourBusinessFormProvider
-import models.Mode
+import models.{Mode, NotFoundError}
 import models.matching.RegistrationInfo
 import models.register.request.*
 import navigation.CBCRNavigator
@@ -67,7 +67,14 @@ class IsThisYourBusinessController @Inject() (
         case Some(value) => form.fill(value)
       }
       Ok(view(preparedForm, regInfo, mode))
-    }).getOrElse(Redirect(controllers.routes.ThereIsAProblemController.onPageLoad()))
+    })
+      .getOrElse(Redirect(controllers.routes.ThereIsAProblemController.onPageLoad()))
+      .recover {
+        case NotFoundError =>
+          Redirect(controllers.routes.BusinessNotIdentifiedController.onPageLoad())
+        case _ =>
+          Redirect(controllers.routes.ThereIsAProblemController.onPageLoad())
+      }
 
   }
 

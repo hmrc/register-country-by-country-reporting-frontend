@@ -27,6 +27,4 @@ case object RegistrationInfoPage extends QuestionPage[RegistrationInfo] {
 
   override def toString: String = "registrationInfo"
 
-  override def cleanup(value: Option[RegistrationInfo], userAnswers: UserAnswers): Try[UserAnswers] =
-    if userAnswers.get(IsThisYourBusinessPage).contains(false) then super.cleanup(value, userAnswers) else Success(userAnswers)
 }

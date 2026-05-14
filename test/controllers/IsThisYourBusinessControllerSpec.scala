@@ -72,11 +72,12 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
     AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
   )
 
-  val mockRegistrationConnector: RegistrationConnector   = mock[RegistrationConnector]
-  val mockSubscriptionService: SubscriptionService       = mock[SubscriptionService]
-  val mockTaxEnrolmentsService: TaxEnrolmentService      = mock[TaxEnrolmentService]
-  val mockMatchingService: BusinessMatchingWithIdService = mock[BusinessMatchingWithIdService]
-  val mockUUIDGen: UUIDGen                               = mock[UUIDGen]
+  val mockRegistrationConnector: RegistrationConnector       = mock[RegistrationConnector]
+  val businessMatchingService: BusinessMatchingWithIdService = mock[BusinessMatchingWithIdService]
+  val mockSubscriptionService: SubscriptionService           = mock[SubscriptionService]
+  val mockTaxEnrolmentsService: TaxEnrolmentService          = mock[TaxEnrolmentService]
+  val mockMatchingService: BusinessMatchingWithIdService     = mock[BusinessMatchingWithIdService]
+  val mockUUIDGen: UUIDGen                                   = mock[UUIDGen]
 
   override def beforeEach(): Unit =
     reset(
@@ -88,24 +89,21 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
   "IsThisYourBusiness Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
-      val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
+      val userAnswers = baseUserAnswers.withPage(AutoMatchedUTRPage, UniqueTaxpayerReference("1234567890"))
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(
-          bind[RegistrationConnector].toInstance(mockRegistrationConnector),
-          bind[SubscriptionService].toInstance(mockSubscriptionService),
-          bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+          bind[BusinessMatchingWithIdService].toInstance(businessMatchingService)
         )
         .build()
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockRegistrationConnector.registerWithID(any())(any(), any()))
+      when(businessMatchingService.buildRegistrationRequest(any())).thenReturn(Some(RegisterWithID(registrationRequest)))
+      when(businessMatchingService.sendBusinessRegistrationInformation(any())(any()))
         .thenReturn(
           Future.successful(
-            Right(
-              RegisterWithIDResponse(
-                SafeId("safe"),
-                OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
-                AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
-              )
+            RegistrationInfo(
+              SafeId("safe"),
+              "Business Name",
+              AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
             )
           )
         )
@@ -123,29 +121,22 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
     }
 
     "must return OK and the correct view for a GET when there is no CT UTR" in {
-
       val registerWithID = RegisterWithID(registrationRequest)
 
       val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
         .overrides(
-          bind[RegistrationConnector].toInstance(mockRegistrationConnector),
-          bind[SubscriptionService].toInstance(mockSubscriptionService),
-          bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
+          bind[BusinessMatchingWithIdService].toInstance(businessMatchingService)
         )
         .build()
-      when(mockMatchingService.sendBusinessRegistrationInformation(mockitoEq(registerWithID))(any(), any()))
-        .thenReturn(Future.successful(Right(RegistrationInfo(safeId, OrgName, address))))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
-      when(mockRegistrationConnector.registerWithID(any())(any(), any()))
+      when(businessMatchingService.buildRegistrationRequest(any())).thenReturn(Some(RegisterWithID(registrationRequest)))
+      when(businessMatchingService.sendBusinessRegistrationInformation(any())(any()))
         .thenReturn(
           Future.successful(
-            Right(
-              RegisterWithIDResponse(
-                SafeId("safe"),
-                OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
-                AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
-              )
+            RegistrationInfo(
+              SafeId("safe"),
+              "Business Name",
+              AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
             )
           )
         )
@@ -162,58 +153,18 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
       }
     }
 
-    "must redirect to the BusinessNotIdentifiedPage for a GET when there is no CT UTR and RegistrationInfo not found" in {
-
-      val registerWithID = RegisterWithID(registrationRequest)
-      val startUrl       = routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode).url
-
-      val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
-        .overrides(
-          bind[RegistrationConnector].toInstance(mockRegistrationConnector),
-          bind[SubscriptionService].toInstance(mockSubscriptionService),
-          bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
-        )
-        .build()
-      when(mockMatchingService.sendBusinessRegistrationInformation(mockitoEq(registerWithID))(any(), any()))
-        .thenReturn(Future.successful(Left(NotFoundError)))
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
-      when(mockRegistrationConnector.registerWithID(any())(any(), any()))
-        .thenReturn(
-          Future.successful(
-            Right(
-              RegisterWithIDResponse(
-                SafeId("safe"),
-                OrganisationResponse("Business Name", isAGroup = false, Some("limited"), None),
-                AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
-              )
-            )
-          )
-        )
-
-      running(application) {
-        val request = FakeRequest(GET, businessNotIdentifiedRoute)
-
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[BusinessNotIdentifiedView]
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(findCompanyName, startUrl, Some(LimitedCompany))(request, messages(application)).toString
-      }
-    }
-
     "redirect to we are yet to identify your business when it's a non-match" in {
 
       val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
         .overrides(
-          bind[RegistrationConnector].toInstance(mockRegistrationConnector)
+          bind[BusinessMatchingWithIdService].toInstance(businessMatchingService)
         )
         .build()
 
-      when(mockRegistrationConnector.registerWithID(any())(any(), any()))
-        .thenReturn(Future.successful(Left(NotFoundError)))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(businessMatchingService.buildRegistrationRequest(any())).thenReturn(Some(RegisterWithID(registrationRequest)))
+      when(businessMatchingService.sendBusinessRegistrationInformation(any())(any()))
+        .thenReturn(Future.failed(NotFoundError))
 
       running(application) {
         val request = FakeRequest(GET, isThisYourBusinessRoute)
@@ -223,6 +174,30 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result) mustBe Some(routes.BusinessNotIdentifiedController.onPageLoad().url)
+      }
+    }
+
+    "redirect to problem page when the service to get Registration Info fails" in {
+
+      val application = applicationBuilder(userAnswers = Some(baseUserAnswers))
+        .overrides(
+          bind[BusinessMatchingWithIdService].toInstance(businessMatchingService)
+        )
+        .build()
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(businessMatchingService.buildRegistrationRequest(any())).thenReturn(Some(RegisterWithID(registrationRequest)))
+      when(businessMatchingService.sendBusinessRegistrationInformation(any())(any()))
+        .thenReturn(Future.failed(InternalProblemError))
+
+      running(application) {
+        val request = FakeRequest(GET, isThisYourBusinessRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result) mustBe Some(routes.ThereIsAProblemController.onPageLoad().url)
       }
     }
 
