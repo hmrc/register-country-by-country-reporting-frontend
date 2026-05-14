@@ -61,7 +61,13 @@ class IsThisYourBusinessController @Inject() (
       regInfo     <- liftF(futureRegInfo)
       userAnswers <- liftF(Future.fromTry(request.userAnswers.set(RegistrationInfoPage, regInfo)))
       _           <- liftF(sessionRepository.set(userAnswers))
-    } yield Ok(view(form, regInfo, mode))).getOrElse(Redirect(controllers.routes.ThereIsAProblemController.onPageLoad()))
+    } yield {
+      val preparedForm = request.userAnswers.get(IsThisYourBusinessPage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
+      Ok(view(preparedForm, regInfo, mode))
+    }).getOrElse(Redirect(controllers.routes.ThereIsAProblemController.onPageLoad()))
 
   }
 
