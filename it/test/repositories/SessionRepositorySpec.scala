@@ -18,6 +18,7 @@ package repositories
 
 import config.{CryptoProvider, FrontendAppConfig}
 import models.UserAnswers
+import org.apache.pekko.Done
 import org.mockito.Mockito.when
 import org.mongodb.scala.model.Filters
 import org.scalatest.OptionValues
@@ -136,14 +137,14 @@ class SessionRepositorySpec
 
       val result = repository.clear(userAnswers.id).futureValue
 
-      result mustEqual true
+      result mustEqual Done
       repository.get(userAnswers.id).futureValue must not be defined
     }
 
     "must return true when there is no record to remove" in {
       val result = repository.clear("id that does not exist").futureValue
 
-      result mustEqual true
+      result mustEqual Done
     }
   }
 
