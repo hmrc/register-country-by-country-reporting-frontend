@@ -118,7 +118,7 @@ class IndexControllerSpec extends SpecBase {
         redirectLocation(result).value mustEqual routes.IsThisYourBusinessController.onPageLoad(NormalMode).url
 
         val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(captor.capture())
+        verify(mockSessionRepository, times(3)).set(captor.capture())
         captor.getValue.get(AutoMatchedUTRPage).value mustEqual UniqueTaxpayerReference("1234567890")
       }
     }

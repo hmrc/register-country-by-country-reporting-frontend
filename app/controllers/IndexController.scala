@@ -48,6 +48,7 @@ class IndexController @Inject() (
         (for {
           ua  <- Future.fromTry(userAnswers.set(PrivateBetaAccessCodePage, config.privateBetaPassword))
           ua2 <- Future.fromTry(ua.set(AutoMatchedUTRPage, utrFromCtEnrolment))
+          _   <- sessionRepository.set(ua2)
           registrationPayload = matchingService.buildRegisterWithIdForAutoMatched(utrFromCtEnrolment)
           registrationData <- matchingService.sendBusinessRegistrationInformation(registrationPayload)
           ua3              <- Future.fromTry(ua2.set(RegistrationInfoPage, registrationData))
