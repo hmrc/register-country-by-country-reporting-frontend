@@ -37,6 +37,7 @@ import queries.Settable
 import repositories.SessionRepository
 import uk.gov.hmrc.auth.core.Enrolment
 import uk.gov.hmrc.http.HeaderCarrier
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import java.time.{Clock, Instant, ZoneId}
 

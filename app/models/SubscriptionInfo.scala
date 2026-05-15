@@ -16,7 +16,7 @@
 
 package models
 
-import pages.{AutoMatchedUTRPage, BusinessTypePage, BusinessWithoutIdAddressPage, UTRPage}
+import pages.{AutoMatchedUTRPage, BusinessWithoutIdAddressPage, UTRPage}
 import play.api.libs.json.{Json, OFormat}
 
 case class SubscriptionInfo(safeID: String, utr: Option[String] = None, nonUkPostcode: Option[String] = None, cbcId: String) {
