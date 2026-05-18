@@ -139,3 +139,5 @@ GET         /register/some-information-is-missing                            con
 GET         /register/problem/information-sent                               controllers.InformationSentController.onPageLoad()
 
 GET         /problem/email-us-for-access                                     controllers.InterruptPageController.onPageLoad()
+
+GET        /register/problem/organisation-already-registered                 controllers.OrganisationAlreadyRegisteredController.onPageLoad()

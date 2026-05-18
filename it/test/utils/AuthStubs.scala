@@ -27,7 +27,7 @@ trait AuthStubs { this: Suite =>
   val authRequest =
     s"""{
        |  "authorise" : [ ],
-       |  "retrieve" : [ "internalId", "allEnrolments", "affinityGroup", "credentialRole" ]
+       |  "retrieve" : [ "internalId", "allEnrolments", "affinityGroup", "credentialRole", "groupIdentifier" ]
        |}""".stripMargin
 
   def authOKResponse(cbcId: String, affinity: String = "Organisation") =

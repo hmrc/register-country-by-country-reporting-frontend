@@ -16,25 +16,62 @@
 
 package services
 
+import cats.data.OptionT
+import cats.data.OptionT.{fromOption, liftF}
 import connectors.RegistrationConnector
-import models.ApiError
-import models.matching.RegistrationInfo
+import controllers.CreateSubscriptionAndUpdateEnrolment
+import models.IdentifierType.UTR
+import models.matching.{AutoMatchedRegistrationRequest, RegistrationInfo, RegistrationRequest}
 import models.register.request.RegisterWithID
+import models.requests.DataRequest
+import models.{NormalMode, UUIDGen, UniqueTaxpayerReference, UserAnswers}
+import pages.{BusinessNamePage, BusinessTypePage, RegistrationInfoPage, UTRPage}
+import play.api.Logging
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{AnyContent, Result}
+import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.Clock
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class BusinessMatchingWithIdService @Inject() (registrationConnector: RegistrationConnector) {
+class BusinessMatchingWithIdService @Inject() (registrationConnector: RegistrationConnector,
+                                               override val sessionRepository: SessionRepository,
+                                               override val subscriptionService: SubscriptionService,
+                                               override val taxEnrolmentService: TaxEnrolmentService,
+                                               uuidGen: UUIDGen,
+                                               clock: Clock
+)(implicit
+  ec: ExecutionContext
+) extends Logging
+    with CreateSubscriptionAndUpdateEnrolment {
+  implicit private val uuidGenerator: UUIDGen = uuidGen
+  implicit private val implicitClock: Clock   = clock
 
-  def sendBusinessRegistrationInformation(registerWithID: RegisterWithID)(implicit
-    hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[Either[ApiError, RegistrationInfo]] =
+  def sendBusinessRegistrationInformation(registrationPayload: RegisterWithID)(implicit hc: HeaderCarrier): Future[RegistrationInfo] =
     registrationConnector
-      .registerWithID(registerWithID)
+      .registerWithID(registrationPayload)
       .map { response =>
-        response.map(x => RegistrationInfo.apply(x))
+        RegistrationInfo.apply(response)
       }
+
+  def buildRegisterWithIdForAutoMatched(autoMatchedUtr: UniqueTaxpayerReference): RegisterWithID =
+    RegisterWithID(AutoMatchedRegistrationRequest(UTR, autoMatchedUtr.uniqueTaxPayerReference))
+
+  def buildRegistrationRequest(userAnswers: UserAnswers): Option[RegisterWithID] =
+    for {
+      utr          <- userAnswers.get(UTRPage)
+      businessName <- userAnswers.get(BusinessNamePage)
+      businessType = userAnswers.get(BusinessTypePage)
+    } yield RegisterWithID(RegistrationRequest(UTR, utr.uniqueTaxPayerReference, businessName, businessType, None))
+
+  def selfHealingLogic()(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Result] =
+    (for {
+      registrationInfo    <- fromOption[Future](request.userAnswers.get(RegistrationInfoPage))
+      maybeSubscriptionId <- liftF(subscriptionService.getDisplaySubscriptionId(registrationInfo.safeId))
+      subscriptionId      <- fromOption[Future](maybeSubscriptionId)
+      result              <- liftF(updateSubscriptionIdAndCreateEnrolment(registrationInfo.safeId, subscriptionId))
+    } yield result).getOrElse(Redirect(controllers.routes.YourContactDetailsController.onPageLoad(NormalMode)))
 
 }

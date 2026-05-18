@@ -17,8 +17,8 @@
 package navigation
 
 import controllers.routes
-import models._
-import pages._
+import models.*
+import pages.*
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -158,6 +158,7 @@ class CBCRNavigator @Inject() extends Navigator {
       case (Some(true), _) =>
         checkNextPageForValueThenRoute(mode, ua, ContactNamePage, routes.YourContactDetailsController.onPageLoad(mode))
       case (Some(false), true) => controllers.routes.DifferentBusinessController.onPageLoad()
-      case _ => controllers.routes.BusinessNotIdentifiedController.onPageLoad()
+      case (Some(false), false) => controllers.routes.BusinessNotIdentifiedController.onPageLoad()
+      case (None, _) => controllers.routes.ThereIsAProblemController.onPageLoad()
     }
 }

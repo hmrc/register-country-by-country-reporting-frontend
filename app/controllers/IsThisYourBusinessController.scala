@@ -16,136 +16,67 @@
 
 package controllers
 
+import cats.data.OptionT.{fromOption, liftF}
 import controllers.actions.*
 import forms.IsThisYourBusinessFormProvider
-import models.IdentifierType.UTR
-import models.matching.{AutoMatchedRegistrationRequest, RegistrationInfo, RegistrationRequest}
+import models.{Mode, NotFoundError}
+import models.matching.RegistrationInfo
 import models.register.request.*
-import models.requests.DataRequest
-import models.{Mode, NotFoundError, UUIDGen, UniqueTaxpayerReference}
 import navigation.CBCRNavigator
 import pages.*
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{BusinessMatchingWithIdService, SubscriptionService, TaxEnrolmentService}
+import services.BusinessMatchingWithIdService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.IsThisYourBusinessView
 
-import java.time.Clock
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Success
 
 class IsThisYourBusinessController @Inject() (
   override val messagesApi: MessagesApi,
-  override val sessionRepository: SessionRepository,
-  override val subscriptionService: SubscriptionService,
-  override val taxEnrolmentService: TaxEnrolmentService,
+  val sessionRepository: SessionRepository,
   navigator: CBCRNavigator,
   standardActionSets: StandardActionSets,
   matchingService: BusinessMatchingWithIdService,
   formProvider: IsThisYourBusinessFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  uuidGen: UUIDGen,
-  clock: Clock,
   view: IsThisYourBusinessView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with CreateSubscriptionAndUpdateEnrolment {
+    with I18nSupport {
 
-  val form = formProvider()
-
-  implicit private val uuidGenerator: UUIDGen = uuidGen
-  implicit private val implicitClock: Clock   = clock
-
-  private def result(mode: Mode, form: Form[Boolean], registrationInfo: RegistrationInfo)(implicit
-    ec: ExecutionContext,
-    request: DataRequest[AnyContent]
-  ): Future[Result] =
-    subscriptionService.getDisplaySubscriptionId(registrationInfo.safeId) flatMap {
-      case Some(subscriptionId) => updateSubscriptionIdAndCreateEnrolment(registrationInfo.safeId, subscriptionId)
-      case _ =>
-        val preparedForm = request.userAnswers.get(IsThisYourBusinessPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
-        Future.successful(Ok(view(preparedForm, registrationInfo, mode)))
-    }
+  val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async { implicit request =>
-    val autoMatchedUtr = request.userAnswers.get(AutoMatchedUTRPage)
-    buildRegisterWithId(autoMatchedUtr) match {
-      case Some(registerWithID) =>
-        matchingService.sendBusinessRegistrationInformation(registerWithID).flatMap {
-          case Right(response) =>
-            handleRegistrationFound(mode, autoMatchedUtr, response)
-          case Left(NotFoundError) =>
-            handleRegistrationNotFound(mode, autoMatchedUtr)
-          case _ =>
-            Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
-        }
-      case _ =>
-        Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
-    }
-  }
-
-  private def handleRegistrationFound(
-    mode: Mode,
-    autoMatchedUtr: Option[UniqueTaxpayerReference],
-    registrationInfo: RegistrationInfo
-  )(implicit request: DataRequest[AnyContent]): Future[Result] = {
-    val updatedAnswersWithUtrPage = autoMatchedUtr.map(request.userAnswers.set(UTRPage, _)).getOrElse(Success(request.userAnswers))
-    for {
-      updatedAnswers <- Future.fromTry(updatedAnswersWithUtrPage.flatMap(_.set(RegistrationInfoPage, registrationInfo)))
-      updatedRequest = DataRequest(request.request, request.userId, updatedAnswers)
-      result <- sessionRepository.set(updatedAnswers).flatMap {
-        case true => result(mode, form, registrationInfo)(ec, updatedRequest)
-        case false =>
-          logger.error(s"Failed to update user answers after registration was found for userId: [${request.userId}]")
-          Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+    (for {
+      futureRegInfo <- fromOption[Future](
+        request.userAnswers
+          .get(RegistrationInfoPage)
+          .map(Future.successful)
+          .orElse(matchingService.buildRegistrationRequest(request.userAnswers).map(matchingService.sendBusinessRegistrationInformation))
+      )
+      regInfo     <- liftF(futureRegInfo)
+      userAnswers <- liftF(Future.fromTry(request.userAnswers.set(RegistrationInfoPage, regInfo)))
+      _           <- liftF(sessionRepository.set(userAnswers))
+    } yield {
+      val preparedForm = request.userAnswers.get(IsThisYourBusinessPage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
       }
-    } yield result
-  }
-
-  private def handleRegistrationNotFound(
-    mode: Mode,
-    autoMatchedUtr: Option[UniqueTaxpayerReference]
-  )(implicit request: DataRequest[AnyContent]): Future[Result] =
-    if (autoMatchedUtr.nonEmpty) {
-      resultWithAutoMatchedFieldCleared(mode)
-    } else {
-      Future.successful(Redirect(routes.BusinessNotIdentifiedController.onPageLoad()))
-    }
-
-  private def resultWithAutoMatchedFieldCleared(mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] =
-    for {
-      autoMatchedUtrRemoved <- Future.fromTry(request.userAnswers.remove(AutoMatchedUTRPage))
-      result <- sessionRepository.set(autoMatchedUtrRemoved) flatMap {
-        case true => Future.successful(Redirect(routes.BusinessTypeController.onPageLoad(mode)))
-        case false =>
-          logger.error(s"Failed to clear autoMatchedUTR field from user answers for userId: [${request.userId}]")
-          Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
+      Ok(view(preparedForm, regInfo, mode))
+    })
+      .getOrElse(Redirect(controllers.routes.ThereIsAProblemController.onPageLoad()))
+      .recover {
+        case NotFoundError =>
+          Redirect(controllers.routes.BusinessNotIdentifiedController.onPageLoad())
+        case _ =>
+          Redirect(controllers.routes.ThereIsAProblemController.onPageLoad())
       }
-    } yield result
 
-  def buildRegistrationRequest()(implicit request: DataRequest[AnyContent]): Option[RegisterWithID] =
-    for {
-      utr          <- request.userAnswers.get(UTRPage)
-      businessName <- request.userAnswers.get(BusinessNamePage)
-      businessType = request.userAnswers.get(BusinessTypePage)
-    } yield RegisterWithID(RegistrationRequest(UTR, utr.uniqueTaxPayerReference, businessName, businessType, None))
-
-  def buildAutoMatchedBusinessRegistrationRequest(utr: UniqueTaxpayerReference): Option[RegisterWithID] =
-    Option(RegisterWithID(AutoMatchedRegistrationRequest(UTR, utr.uniqueTaxPayerReference)))
-
-  private def buildRegisterWithId(autoMatchedUtr: Option[UniqueTaxpayerReference])(implicit request: DataRequest[AnyContent]): Option[RegisterWithID] =
-    autoMatchedUtr match {
-      case Some(utr) => buildAutoMatchedBusinessRegistrationRequest(utr)
-      case None      => buildRegistrationRequest()
-    }
+  }
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.identifiedUserWithData().async { implicit request =>
     val thereIsAProblem = Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
@@ -159,10 +90,13 @@ class IsThisYourBusinessController @Inject() (
               Future.successful(BadRequest(view(formWithErrors, registrationInfo, mode)))
             },
         value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(IsThisYourBusinessPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IsThisYourBusinessPage, mode, updatedAnswers))
+          (for {
+            userAnswers <- Future.fromTry(request.userAnswers.set(IsThisYourBusinessPage, value))
+            _           <- sessionRepository.set(userAnswers)
+          } yield
+            if !value then Future.successful(Redirect(navigator.nextPage(IsThisYourBusinessPage, mode, userAnswers)))
+            else matchingService.selfHealingLogic()).flatten
       )
   }
+
 }

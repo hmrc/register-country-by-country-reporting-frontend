@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import play.api.libs.json.JsPath
+import play.api.libs.json.{Json, Reads}
 
-case object IsThisYourBusinessPage extends QuestionPage[Boolean] {
+case class Enrolment(service: String, state: String)
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "isThisYourBusiness"
-
+object Enrolment {
+  implicit val enrolmentReads: Reads[Enrolment] = Json.reads[Enrolment]
 }

@@ -22,6 +22,7 @@ import config.FrontendAppConfig
 import controllers.routes
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import pages.PrivateBetaAccessCodePage
 import play.api.inject
 import play.api.mvc.{Action, AnyContent, BodyParsers, Results}
@@ -52,7 +53,7 @@ class AuthActionSpec extends SpecBase {
   val appConfig: FrontendAppConfig         = app.injector.instanceOf[FrontendAppConfig]
   val sessionRepository: SessionRepository = app.injector.instanceOf[SessionRepository]
 
-  type AuthRetrievals = Option[String] ~ Enrolments ~ Option[AffinityGroup] ~ Option[CredentialRole]
+  type AuthRetrievals = Option[String] ~ Enrolments ~ Option[AffinityGroup] ~ Option[CredentialRole] ~ Option[String]
 
   "Auth Action" - {
 
@@ -164,7 +165,7 @@ class AuthActionSpec extends SpecBase {
 
         val fakeConfig: FrontendAppConfig   = mock[FrontendAppConfig]
         val application                     = applicationBuilder(userAnswers = None).build()
-        val validRetrievals: AuthRetrievals = Some("userId") ~ Enrolments(Set.empty) ~ Some(Organisation) ~ Some(User)
+        val validRetrievals: AuthRetrievals = Some("userId") ~ Enrolments(Set.empty) ~ Some(Organisation) ~ Some(User) ~ Some("testgroupId")
         running(application) {
           when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any()))
             .thenReturn(Future.successful(validRetrievals))
@@ -187,7 +188,7 @@ class AuthActionSpec extends SpecBase {
             conf = "features.privateBetaEnabled" -> true
           )
           .build()
-        val validRetrievals: AuthRetrievals = Some("userId") ~ Enrolments(Set.empty) ~ Some(Organisation) ~ Some(User)
+        val validRetrievals: AuthRetrievals = Some("userId") ~ Enrolments(Set.empty) ~ Some(Organisation) ~ Some(User) ~ Some("testgroupId")
         running(application) {
           when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any()))
             .thenReturn(Future.successful(validRetrievals))
@@ -214,7 +215,7 @@ class AuthActionSpec extends SpecBase {
             conf = "features.privateBetaEnabled" -> true
           )
           .build()
-        val validRetrievals: AuthRetrievals = Some("userId") ~ Enrolments(Set.empty) ~ Some(Organisation) ~ Some(User)
+        val validRetrievals: AuthRetrievals = Some("userId") ~ Enrolments(Set.empty) ~ Some(Organisation) ~ Some(User) ~ Some("testgroupId")
         running(application) {
           when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any()))
             .thenReturn(Future.successful(validRetrievals))
@@ -258,7 +259,7 @@ class AuthActionSpec extends SpecBase {
         val mockAuthConnector: AuthConnector = mock[AuthConnector]
         val emptyEnrolments: Enrolments      = Enrolments(Set.empty)
 
-        val retrieval: AuthRetrievals = None ~ emptyEnrolments ~ Some(Individual) ~ None
+        val retrieval: AuthRetrievals = None ~ emptyEnrolments ~ Some(Individual) ~ None ~ Some("testgroupId")
         when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(retrieval)
 
         val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, sessionRepository, bodyParsers)
@@ -294,7 +295,7 @@ class AuthActionSpec extends SpecBase {
         val mockAuthConnector: AuthConnector = mock[AuthConnector]
         val emptyEnrolments: Enrolment       = Enrolment(key = "")
 
-        val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(emptyEnrolments)) ~ None ~ Some(Assistant)
+        val retrieval: AuthRetrievals = Some("internalID") ~ Enrolments(Set(emptyEnrolments)) ~ None ~ Some(Assistant) ~ Some("testgroupId")
         when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(retrieval)
 
         val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, sessionRepository, bodyParsers)

@@ -17,9 +17,11 @@
 package controllers
 
 import models.BusinessType.LimitedCompany
-import models.{UniqueTaxpayerReference, UserAnswers}
-import pages.{BusinessNamePage, BusinessTypePage, UTRPage}
-import play.api.http.Status.OK
+import models.matching.RegistrationInfo
+import models.register.response.details.AddressResponse
+import models.{SafeId, UniqueTaxpayerReference, UserAnswers}
+import pages.{BusinessNamePage, BusinessTypePage, RegistrationInfoPage, UTRPage}
+import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import utils.ISpecBehaviours
 
@@ -53,8 +55,35 @@ class IsThisYourBusinessControllerISpec extends ISpecBehaviours {
 
     behave like standardOnPageLoadRedirects(pageUrl)
 
-    behave like pageSubmits(pageUrl, requestBody, "/register-to-send-a-country-by-country-report/register/your-contact-details")
+    "should submit form" in {
+      stubAuthorised(appId = None)
 
+      val registrationInfo: RegistrationInfo = RegistrationInfo(
+        SafeId("safe"),
+        "Business Name",
+        AddressResponse("Line 1", Some("Line 2"), None, None, None, "DE")
+      )
+
+      val ua: UserAnswers = UserAnswers("internalId")
+        .withPage(BusinessTypePage, LimitedCompany)
+        .withPage(UTRPage, UniqueTaxpayerReference("testUtr"))
+        .withPage(BusinessNamePage, "Business Name")
+        .withPage(RegistrationInfoPage, registrationInfo)
+
+      await(repository.set(ua))
+
+      val response = await(
+        buildClient(pageUrl)
+          .addCookies(wsSessionCookie)
+          .addHttpHeaders("Csrf-Token" -> "nocheck")
+          .withFollowRedirects(false)
+          .post(requestBody)
+      )
+
+      response.status mustBe SEE_OTHER
+      response.header("Location").value must
+        include("/register-to-send-a-country-by-country-report/register/your-contact-details")
+    }
     behave like standardOnSubmit(pageUrl, requestBody)
   }
 }

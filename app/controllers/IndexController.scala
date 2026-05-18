@@ -18,15 +18,14 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions.StandardActionSets
-import models.{NormalMode, UserAnswers}
-import pages.{AutoMatchedUTRPage, PrivateBetaAccessCodePage}
+import models.{InternalProblemError, NormalMode, NotFoundError, UserAnswers}
+import pages.{AutoMatchedUTRPage, PrivateBetaAccessCodePage, RegistrationInfoPage}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.BusinessMatchingWithIdService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.ThereIsAProblemView
-
 import java.time.{Clock, Instant}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,29 +34,30 @@ class IndexController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   sessionRepository: SessionRepository,
   clock: Clock,
-  standardActionSets: StandardActionSets,
-  errorView: ThereIsAProblemView
+  matchingService: BusinessMatchingWithIdService,
+  standardActionSets: StandardActionSets
 )(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.identifiedUserWithEnrolmentCheckAndCtUtrRetrieval().async { implicit request =>
-    request.utr match {
-      case Some(utr) =>
+    request.utr
+      .map { utrFromCtEnrolment =>
         val userAnswers = UserAnswers(request.userId, lastUpdated = Instant.now(clock))
-        for {
-          savePrivateBetaPassKey <- Future.fromTry(userAnswers.set(PrivateBetaAccessCodePage, config.privateBetaPassword))
-          autoMatchedUserAnswers <- Future.fromTry(savePrivateBetaPassKey.set(AutoMatchedUTRPage, utr))
-          result <- sessionRepository.set(autoMatchedUserAnswers) map {
-            case true =>
-              Redirect(routes.IsThisYourBusinessController.onPageLoad(NormalMode))
-            case false =>
-              logger.error(s"Failed to update user answers with autoMatchedUTR field for userId: [${request.userId}]")
-              InternalServerError(errorView())
+        (for {
+          ua  <- Future.fromTry(userAnswers.set(PrivateBetaAccessCodePage, config.privateBetaPassword))
+          ua2 <- Future.fromTry(ua.set(AutoMatchedUTRPage, utrFromCtEnrolment))
+          _   <- sessionRepository.set(ua2)
+          registrationPayload = matchingService.buildRegisterWithIdForAutoMatched(utrFromCtEnrolment)
+          registrationData <- matchingService.sendBusinessRegistrationInformation(registrationPayload)
+          ua3              <- Future.fromTry(ua2.set(RegistrationInfoPage, registrationData))
+          _                <- sessionRepository.set(ua3)
+        } yield Redirect(routes.IsThisYourBusinessController.onPageLoad(NormalMode)))
+          .recover { case InternalProblemError | NotFoundError =>
+            Redirect(routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode))
           }
-        } yield result
-      case None => Future.successful(Redirect(routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode)))
-    }
+      }
+      .getOrElse(Future.successful(Redirect(routes.IsRegisteredAddressInUkController.onPageLoad(NormalMode))))
   }
 }
