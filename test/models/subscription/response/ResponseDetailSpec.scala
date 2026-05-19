@@ -28,31 +28,51 @@ class ResponseDetailSpec extends SpecBase {
         subscriptionID = "subscription-id",
         tradingName = Some("Trading Name"),
         isGBUser = true,
-        primaryContact = ContactInformation(
-          organisationDetails = OrganisationDetails("Primary Organisation"),
-          email = "primary@test.com",
-          phone = Some("01234567890"),
-          mobile = Some("07123456789")
+        primaryContact = Seq(
+          ContactInformation(
+            organisationDetails = OrganisationDetails("Primary Organisation"),
+            email = "primary@test.com",
+            phone = Some("01234567890"),
+            mobile = Some("07123456789")
+          )
         ),
         secondaryContact = None
       )
 
-      val json = Json.obj(
+      val jsonForWriting = Json.obj(
         "subscriptionID" -> "subscription-id",
         "tradingName"    -> "Trading Name",
         "isGBUser"       -> true,
-        "primaryContact" -> Json.obj(
-          "organisationDetails" -> Json.obj(
-            "organisationName" -> "Primary Organisation"
-          ),
-          "email"  -> "primary@test.com",
-          "phone"  -> "01234567890",
-          "mobile" -> "07123456789"
+        "primaryContact" -> Json.arr(
+          Json.obj(
+            "organisationDetails" -> Json.obj(
+              "organisationName" -> "Primary Organisation"
+            ),
+            "email"  -> "primary@test.com",
+            "phone"  -> "01234567890",
+            "mobile" -> "07123456789"
+          )
         )
       )
 
-      Json.toJson(responseDetail) mustBe json
-      json.as[ResponseDetail] mustBe responseDetail
+      val jsonForReading = Json.obj(
+        "subscriptionID" -> "subscription-id",
+        "tradingName"    -> "Trading Name",
+        "isGBUser"       -> true,
+        "primaryContact" -> Json.arr(
+          Json.obj(
+            "organisation" -> Json.obj(
+              "organisationName" -> "Primary Organisation"
+            ),
+            "email"  -> "primary@test.com",
+            "phone"  -> "01234567890",
+            "mobile" -> "07123456789"
+          )
+        )
+      )
+
+      Json.toJson(responseDetail) mustBe jsonForWriting
+      jsonForReading.as[ResponseDetail] mustBe responseDetail
     }
 
     "must serialise and deserialise with a secondary contact" in {
@@ -60,42 +80,72 @@ class ResponseDetailSpec extends SpecBase {
         subscriptionID = "subscription-id",
         tradingName = None,
         isGBUser = false,
-        primaryContact = ContactInformation(
-          organisationDetails = OrganisationDetails("Primary Organisation"),
-          email = "primary@test.com",
-          phone = None,
-          mobile = None
+        primaryContact = Seq(
+          ContactInformation(
+            organisationDetails = OrganisationDetails("Primary Organisation"),
+            email = "primary@test.com",
+            phone = None,
+            mobile = None
+          )
         ),
         secondaryContact = Some(
-          ContactInformation(
-            organisationDetails = OrganisationDetails("Secondary Organisation"),
-            email = "secondary@test.com",
-            phone = Some("09876543210"),
-            mobile = None
+          Seq(
+            ContactInformation(
+              organisationDetails = OrganisationDetails("Secondary Organisation"),
+              email = "secondary@test.com",
+              phone = Some("09876543210"),
+              mobile = None
+            )
           )
         )
       )
 
-      val json = Json.obj(
+      val jsonForWriting = Json.obj(
         "subscriptionID" -> "subscription-id",
         "isGBUser"       -> false,
-        "primaryContact" -> Json.obj(
-          "organisationDetails" -> Json.obj(
-            "organisationName" -> "Primary Organisation"
-          ),
-          "email" -> "primary@test.com"
+        "primaryContact" -> Json.arr(
+          Json.obj(
+            "organisationDetails" -> Json.obj(
+              "organisationName" -> "Primary Organisation"
+            ),
+            "email" -> "primary@test.com"
+          )
         ),
-        "secondaryContact" -> Json.obj(
-          "organisationDetails" -> Json.obj(
-            "organisationName" -> "Secondary Organisation"
-          ),
-          "email" -> "secondary@test.com",
-          "phone" -> "09876543210"
+        "secondaryContact" -> Json.arr(
+          Json.obj(
+            "organisationDetails" -> Json.obj(
+              "organisationName" -> "Secondary Organisation"
+            ),
+            "email" -> "secondary@test.com",
+            "phone" -> "09876543210"
+          )
         )
       )
 
-      Json.toJson(responseDetail) mustBe json
-      json.as[ResponseDetail] mustBe responseDetail
+      val jsonForReading = Json.obj(
+        "subscriptionID" -> "subscription-id",
+        "isGBUser"       -> false,
+        "primaryContact" -> Json.arr(
+          Json.obj(
+            "organisation" -> Json.obj(
+              "organisationName" -> "Primary Organisation"
+            ),
+            "email" -> "primary@test.com"
+          )
+        ),
+        "secondaryContact" -> Json.arr(
+          Json.obj(
+            "organisation" -> Json.obj(
+              "organisationName" -> "Secondary Organisation"
+            ),
+            "email" -> "secondary@test.com",
+            "phone" -> "09876543210"
+          )
+        )
+      )
+
+      Json.toJson(responseDetail) mustBe jsonForWriting
+      jsonForReading.as[ResponseDetail] mustBe responseDetail
     }
   }
 }

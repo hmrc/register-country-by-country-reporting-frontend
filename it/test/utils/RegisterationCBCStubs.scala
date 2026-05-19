@@ -77,18 +77,21 @@ object RegisterationCBCStubs {
   val OK_ReadSubscription_Response =
     """
       |{
-      |  "subscriptionID": "id",
-      |  "tradingName": null,
-      |  "isGBUser": true,
-      |  "primaryContact": {
-      |    "organisationDetails": {
-      |      "organisationName": "orgName"
-      |    },
-      |    "email": "test@example.com",
-      |    "phone": "1234567890",
-      |    "mobile": "071234567890"
-      |  },
-      |  "secondaryContact": null
+      |  "displaySubscriptionForCBCResponse": {
+      |    "responseDetail": {
+      |      "subscriptionID": "id",
+      |      "isGBUser": true,
+      |      "primaryContact": [
+      |        {
+      |          "organisation": {
+      |            "organisationName": "orgName"
+      |          },
+      |          "email": "test@example.com"
+      |        }
+      |      ],
+      |      "secondaryContact": null
+      |    }
+      |  }
       |}
       |""".stripMargin
 

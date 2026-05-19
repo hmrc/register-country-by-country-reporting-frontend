@@ -18,11 +18,12 @@ package models.subscription.response
 
 import play.api.libs.json.{Json, OFormat}
 
-case class ResponseDetail(subscriptionID: String,
-                          tradingName: Option[String],
-                          isGBUser: Boolean,
-                          primaryContact: ContactInformation,
-                          secondaryContact: Option[ContactInformation]
+case class ResponseDetail(
+  subscriptionID: String,
+  tradingName: Option[String],
+  isGBUser: Boolean,
+  primaryContact: Seq[ContactInformation],
+  secondaryContact: Option[Seq[ContactInformation]]
 )
 
 object ResponseDetail:

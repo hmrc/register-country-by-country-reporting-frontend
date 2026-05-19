@@ -42,14 +42,14 @@ class SubscriptionConnector @Inject() (val config: FrontendAppConfig, val http: 
       .execute[HttpResponse]
       .map {
         case responseMessage if is2xx(responseMessage.status) =>
-          responseMessage.json
+          (responseMessage.json \ "displaySubscriptionForCBCResponse" \ "responseDetail")
             .validate[ResponseDetail]
             .fold(
               errors => {
                 logger.error(s"Failed to parse subscription response: $errors")
                 None
               },
-              responseDetail => Some(responseDetail)
+              Some(_)
             )
 
         case errorStatus =>

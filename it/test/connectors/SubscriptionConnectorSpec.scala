@@ -55,18 +55,22 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockHelper with ScalaC
             subscriptionID = "111111111",
             tradingName = None,
             isGBUser = true,
-            primaryContact = ContactInformation(
-              email = "test@example.com",
-              phone = Some("1234567890"),
-              mobile = Some("071234567890"),
-              organisationDetails = OrganisationDetails(organisationName = "orgName")
+            primaryContact = Seq(
+              ContactInformation(
+                email = "test@example.com",
+                phone = Some("1234567890"),
+                mobile = Some("071234567890"),
+                organisationDetails = OrganisationDetails(organisationName = "orgName")
+              )
             ),
             secondaryContact = Some(
-              ContactInformation(
-                organisationDetails = OrganisationDetails(organisationName = "someOrgName"),
-                email = "test2@example.com",
-                phone = None,
-                mobile = None
+              Seq(
+                ContactInformation(
+                  organisationDetails = OrganisationDetails(organisationName = "someOrgName"),
+                  email = "test2@example.com",
+                  phone = None,
+                  mobile = None
+                )
               )
             )
           )
@@ -75,22 +79,34 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockHelper with ScalaC
         val subscriptionResponse: String =
           """
             |{
-            |  "subscriptionID": "111111111",
-            |  "tradingName": null,
-            |  "isGBUser": true,
-            |  "primaryContact": {
-            |    "organisationDetails": {
-            |      "organisationName": "orgName"
+            |  "displaySubscriptionForCBCResponse": {
+            |    "responseCommon": {
+            |      "status": "OK",
+            |      "processingDate": "2020-08-09T11:23:45Z"
             |    },
-            |    "email": "test@example.com",
-            |    "phone": "1234567890",
-            |    "mobile": "071234567890"
-            |  },
-            |  "secondaryContact": {
-            |    "organisationDetails": {
-            |      "organisationName": "someOrgName"
-            |    },
-            |    "email": "test2@example.com"
+            |    "responseDetail": {
+            |      "subscriptionID": "111111111",
+            |      "tradingName": null,
+            |      "isGBUser": true,
+            |      "primaryContact": [
+            |        {
+            |          "organisation": {
+            |            "organisationName": "orgName"
+            |          },
+            |          "email": "test@example.com",
+            |          "phone": "1234567890",
+            |          "mobile": "071234567890"
+            |        }
+            |      ],
+            |      "secondaryContact": [
+            |        {
+            |          "organisation": {
+            |            "organisationName": "someOrgName"
+            |          },
+            |          "email": "test2@example.com"
+            |        }
+            |      ]
+            |    }
             |  }
             |}
             |""".stripMargin
@@ -98,6 +114,7 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockHelper with ScalaC
         stubPostResponse(s"$subscriptionUrl/read-subscription/${safeId.value}", OK, subscriptionResponse)
 
         val result: Future[Option[ResponseDetail]] = connector.readSubscription(safeId)
+
         result.futureValue mustBe expectedResponse
       }
 

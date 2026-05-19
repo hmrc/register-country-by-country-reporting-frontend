@@ -67,7 +67,9 @@ class SubscriptionService @Inject() (val subscriptionConnector: SubscriptionConn
       .readSubscription(safeId)
       .map {
         case Some(responseDetail) =>
-          responseDetail.primaryContact.email +: responseDetail.secondaryContact.map(_.email).toSeq
+          responseDetail.primaryContact.map(_.email) ++
+            responseDetail.secondaryContact.getOrElse(Seq.empty).map(_.email)
+
         case None =>
           Seq.empty
       }

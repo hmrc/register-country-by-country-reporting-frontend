@@ -84,7 +84,7 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
         subscriptionID = "id",
         tradingName = None,
         isGBUser = true,
-        primaryContact = primaryContactInfo,
+        primaryContact = Seq(primaryContactInfo),
         secondaryContact = None
       )
       val safeId = SafeId("CBC12345678")
@@ -181,7 +181,7 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
             subscriptionID = "id",
             tradingName = None,
             isGBUser = true,
-            primaryContact = primaryContactInfo,
+            primaryContact = Seq(primaryContactInfo),
             secondaryContact = None
           )
         )
