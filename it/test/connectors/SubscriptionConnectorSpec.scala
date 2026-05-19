@@ -20,6 +20,7 @@ import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalTo, post, urlEqualTo}
 import generators.Generators
 import models.subscription.request.CreateSubscriptionForCBCRequest
+import models.subscription.response.{ContactInformation, OrganisationDetails, ResponseDetail}
 import models.{SafeId, SubscriptionID}
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -47,27 +48,74 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockHelper with ScalaC
 
   "SubscriptionConnector" - {
     "readSubscription" - {
-      "must return SubscriptionID for valid input request" in {
-        val expectedResponse = SubscriptionID("subscriptionID")
+
+      "must return ResponseDetail for valid input safeId" in {
+        val expectedResponse = Some(
+          ResponseDetail(
+            subscriptionID = "111111111",
+            tradingName = None,
+            isGBUser = true,
+            primaryContact = Seq(
+              ContactInformation(
+                email = "test@example.com",
+                phone = Some("1234567890"),
+                mobile = Some("071234567890"),
+                organisation = OrganisationDetails(organisationName = "orgName")
+              )
+            ),
+            secondaryContact = Some(
+              Seq(
+                ContactInformation(
+                  organisation = OrganisationDetails(organisationName = "someOrgName"),
+                  email = "test2@example.com",
+                  phone = None,
+                  mobile = None
+                )
+              )
+            )
+          )
+        )
 
         val subscriptionResponse: String =
-          s"""
-             |{
-             | "displaySubscriptionForCBCResponse": {
-             |   "responseCommon": {
-             |     "status": "OK",
-             |     "processingDate": "2020-09-23T16:12:11Z"
-             |   },
-             |   "responseDetail": {
-             |      "subscriptionID": "subscriptionID"
-             |   }
-             | }
-             |}""".stripMargin
+          """
+            |{
+            |  "displaySubscriptionForCBCResponse": {
+            |    "responseCommon": {
+            |      "status": "OK",
+            |      "processingDate": "2020-08-09T11:23:45Z"
+            |    },
+            |    "responseDetail": {
+            |      "subscriptionID": "111111111",
+            |      "tradingName": null,
+            |      "isGBUser": true,
+            |      "primaryContact": [
+            |        {
+            |          "organisation": {
+            |            "organisationName": "orgName"
+            |          },
+            |          "email": "test@example.com",
+            |          "phone": "1234567890",
+            |          "mobile": "071234567890"
+            |        }
+            |      ],
+            |      "secondaryContact": [
+            |        {
+            |          "organisation": {
+            |            "organisationName": "someOrgName"
+            |          },
+            |          "email": "test2@example.com"
+            |        }
+            |      ]
+            |    }
+            |  }
+            |}
+            |""".stripMargin
 
         stubPostResponse(s"$subscriptionUrl/read-subscription/${safeId.value}", OK, subscriptionResponse)
 
-        val result: Future[Option[SubscriptionID]] = connector.readSubscription(safeId)
-        result.futureValue.value mustBe expectedResponse
+        val result: Future[Option[ResponseDetail]] = connector.readSubscription(safeId)
+
+        result.futureValue mustBe expectedResponse
       }
 
       "must return None for invalid json response" in {

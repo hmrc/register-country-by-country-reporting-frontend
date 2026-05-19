@@ -246,7 +246,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
         .build()
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
       when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())).thenReturn(Future.successful(Right(NO_CONTENT)))
 
       running(application) {
@@ -273,7 +273,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
         .build()
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
       when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())).thenReturn(Future.successful(Left(EnrolmentCreationError)))
 
       running(application) {
@@ -300,7 +300,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
         .build()
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
       when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())).thenReturn(Future.successful(Left(EnrolmentExistsError)))
 
       running(application) {
@@ -318,7 +318,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
 
     "must redirect to your contact details when the user answers yes and there have no subscription" in {
       val userAnswers = baseUserAnswers.withPage(RegistrationInfoPage, registrationInfo)
-      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application = customApplicationBuilder(userAnswers = Some(userAnswers))
@@ -340,7 +340,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
       val userAnswers = baseUserAnswers
         .withPage(RegistrationInfoPage, registrationInfo)
         .withPage(AutoMatchedUTRPage, UniqueTaxpayerReference("1234567890"))
-      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application = customApplicationBuilder(userAnswers = Some(userAnswers))
@@ -360,7 +360,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
 
     "must redirect to it is a different business page  when the user answers no and their are not auto matched by corporate tax" in {
       val userAnswers = baseUserAnswers.withPage(RegistrationInfoPage, registrationInfo)
-      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionService.getDisplaySubscriptionId(any())(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application = customApplicationBuilder(userAnswers = Some(userAnswers))

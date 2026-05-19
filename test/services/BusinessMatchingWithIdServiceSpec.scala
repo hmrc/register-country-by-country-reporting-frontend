@@ -116,7 +116,7 @@ class BusinessMatchingWithIdServiceSpec extends SpecBase {
         val mockDatarequest = mock[DataRequest[AnyContent]]
         when(mockDatarequest.userAnswers).thenReturn(userAnswers)
         when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-        when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
+        when(mockSubscriptionService.getDisplaySubscriptionId(any())(any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
         when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())).thenReturn(Future.successful(Right(())))
 
         val result = testService.selfHealingLogic()(hc, mockDatarequest).futureValue
@@ -129,7 +129,7 @@ class BusinessMatchingWithIdServiceSpec extends SpecBase {
         val mockDatarequest = mock[DataRequest[AnyContent]]
         when(mockDatarequest.userAnswers).thenReturn(userAnswers)
         when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-        when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(None))
+        when(mockSubscriptionService.getDisplaySubscriptionId(any())(any())).thenReturn(Future.successful(None))
 
         val result = testService.selfHealingLogic()(hc, mockDatarequest).futureValue
         result mustBe Redirect(routes.YourContactDetailsController.onPageLoad(NormalMode))
@@ -140,7 +140,7 @@ class BusinessMatchingWithIdServiceSpec extends SpecBase {
         val mockDatarequest = mock[DataRequest[AnyContent]]
         when(mockDatarequest.userAnswers).thenReturn(userAnswers)
         when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-        when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
+        when(mockSubscriptionService.getDisplaySubscriptionId(any())(any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
         when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())).thenReturn(Future.successful(Left(EnrolmentCreationError)))
 
         val result = testService.selfHealingLogic()(hc, mockDatarequest).futureValue
@@ -153,7 +153,7 @@ class BusinessMatchingWithIdServiceSpec extends SpecBase {
         val mockDatarequest = mock[DataRequest[AnyContent]]
         when(mockDatarequest.userAnswers).thenReturn(userAnswers)
         when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-        when(mockSubscriptionService.getDisplaySubscriptionId(any())(any(), any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
+        when(mockSubscriptionService.getDisplaySubscriptionId(any())(any())).thenReturn(Future.successful(Some(SubscriptionID("subscriptionId"))))
         when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())).thenReturn(Future.successful(Left(EnrolmentExistsError)))
 
         val result = testService.selfHealingLogic()(hc, mockDatarequest).futureValue

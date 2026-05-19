@@ -18,22 +18,22 @@ package connectors
 
 import config.FrontendAppConfig
 import models.subscription.request.CreateSubscriptionForCBCRequest
-import models.subscription.response.{CreateSubscriptionResponse, DisplaySubscriptionResponse}
+import models.subscription.response.{CreateSubscriptionResponse, ResponseDetail}
 import models.{SafeId, SubscriptionID}
 import play.api.Logging
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.*
 import uk.gov.hmrc.http.HttpErrorFunctions.is2xx
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
-import play.api.libs.ws.JsonBodyWritables._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SubscriptionConnector @Inject() (val config: FrontendAppConfig, val http: HttpClientV2) extends Logging {
 
-  def readSubscription(safeId: SafeId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SubscriptionID]] = {
+  def readSubscription(safeId: SafeId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ResponseDetail]] = {
 
     val submissionUrl = url"${config.registerCountryByCountryUrl}/subscription/read-subscription/${safeId.value}"
 
@@ -42,9 +42,16 @@ class SubscriptionConnector @Inject() (val config: FrontendAppConfig, val http: 
       .execute[HttpResponse]
       .map {
         case responseMessage if is2xx(responseMessage.status) =>
-          responseMessage.json
-            .asOpt[DisplaySubscriptionResponse]
-            .map(_.subscriptionID)
+          (responseMessage.json \ "displaySubscriptionForCBCResponse" \ "responseDetail")
+            .validate[ResponseDetail]
+            .fold(
+              errors => {
+                logger.error(s"Failed to parse subscription response: $errors")
+                None
+              },
+              Some(_)
+            )
+
         case errorStatus =>
           logger.warn(s"Status $errorStatus has been thrown when display subscription was called")
           None

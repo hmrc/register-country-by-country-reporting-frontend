@@ -99,7 +99,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
         bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
       )
       .build()
-    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Left(EnrolmentCreationError))
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any())) thenReturn Future.successful(Left(EnrolmentCreationError))
 
     running(application) {
       val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
@@ -119,7 +119,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
         bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
       )
       .build()
-    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Left(EnrolmentCreationError))
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any())) thenReturn Future.successful(Left(EnrolmentCreationError))
 
     running(application) {
       val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit().url)
@@ -151,7 +151,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
         bind[TaxEnrolmentService].toInstance(mockTaxEnrolmentsService)
       )
       .build()
-    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any())) thenReturn
       Future.successful(Left(SubscriptionCreateInformationMissingError("Contact Information Missing")))
 
     running(application) {
@@ -167,7 +167,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
     val userAnswers = UserAnswers(userAnswersId).set(RegistrationInfoPage, registrationInfo).success.value
 
-    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
     when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())) thenReturn Future.successful(Right(NO_CONTENT))
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -206,7 +206,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       .success
       .value
 
-    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
     when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())) thenReturn Future.successful(Right(NO_CONTENT))
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
     when(mockRegisterWithoutIdService.registerWithoutId()(any(), any())) thenReturn Future.successful(Right(SafeId("111111")))
@@ -246,7 +246,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       .success
       .value
 
-    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
     when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())) thenReturn Future.successful(Right(NO_CONTENT))
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
     when(mockRegisterWithoutIdService.registerWithoutId()(any(), any())) thenReturn Future.successful(
@@ -286,7 +286,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       .set(ContactPhonePage, "000000000")
       .success
       .value
-    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
     when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())) thenReturn Future.successful(Right(NO_CONTENT))
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
     when(mockRegisterWithoutIdService.registerWithoutId()(any(), any())) thenReturn Future.successful(
@@ -319,7 +319,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
     )
     val userAnswers = UserAnswers(userAnswersId).set(RegistrationInfoPage, registrationInfo).success.value
 
-    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
     when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())) thenReturn Future.successful(Left(EnrolmentCreationError))
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -349,7 +349,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
     )
     val userAnswers = UserAnswers(userAnswersId).set(RegistrationInfoPage, registrationInfo).success.value
 
-    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any(), any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
+    when(mockSubscriptionService.checkAndCreateSubscription(any(), any())(any())) thenReturn Future.successful(Right(SubscriptionID("111111")))
     when(mockTaxEnrolmentsService.checkAndCreateEnrolment(any(), any(), any())(any(), any())) thenReturn Future.successful(Left(EnrolmentExistsError))
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 

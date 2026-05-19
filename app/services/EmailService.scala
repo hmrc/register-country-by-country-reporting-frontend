@@ -29,7 +29,9 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailService @Inject() (emailConnector: EmailConnector, appConfig: FrontendAppConfig)(implicit executionContext: ExecutionContext) extends Logging {
+class EmailService @Inject() (emailConnector: EmailConnector, appConfig: FrontendAppConfig, subscriptionService: SubscriptionService)(implicit
+  executionContext: ExecutionContext
+) extends Logging {
 
   private def sendAndLogEmail(emailRequest: EmailRequest)(implicit hc: HeaderCarrier): Future[Int] =
     emailConnector.sendEmail(emailRequest) map { resp =>
@@ -40,18 +42,37 @@ class EmailService @Inject() (emailConnector: EmailConnector, appConfig: Fronten
       resp.status
     }
 
-  def sendEmail(userAnswers: UserAnswers, subscriptionID: SubscriptionID)(implicit hc: HeaderCarrier): Future[Option[Int]] = {
+  def sendEmail(userAnswers: UserAnswers, subscriptionID: SubscriptionID)(implicit
+    hc: HeaderCarrier
+  ): Future[Seq[Int]] = {
 
-    val primaryResponse = userAnswers.get(ContactEmailPage).fold(Future.successful(Option.empty[Int])) { contactEmail =>
-      sendAndLogEmail(EmailRequest(contactEmail, appConfig.emailOrganisationTemplate, subscriptionID.value, userAnswers.get(ContactNamePage))).map(Some(_))
-    }
+    def send(email: String): Future[Int] =
+      sendAndLogEmail(
+        EmailRequest(
+          email,
+          appConfig.emailOrganisationTemplate,
+          subscriptionID.value,
+          userAnswers.get(ContactNamePage)
+        )
+      )
 
-    userAnswers.get(SecondContactEmailPage).fold(Future.successful(Option.empty[Int])) { contactEmail =>
-      sendAndLogEmail(EmailRequest(contactEmail, appConfig.emailOrganisationTemplate, subscriptionID.value, userAnswers.get(SecondContactNamePage)))
-        .map(Some(_))
-    }
+    val answerEmails: Seq[String] =
+      Seq(
+        userAnswers.get(ContactEmailPage),
+        userAnswers.get(SecondContactEmailPage)
+      ).flatten
 
-    primaryResponse
+    def subscriptionEmails: Future[Seq[String]] =
+      userAnswers
+        .get(RegistrationInfoPage)
+        .fold(Future.successful(Seq.empty[String])) { registrationInfo =>
+          subscriptionService.getSubscriptionEmails(registrationInfo.safeId)
+        }
 
+    val emails =
+      if (answerEmails.nonEmpty) Future.successful(answerEmails)
+      else subscriptionEmails
+
+    emails.flatMap(Future.traverse(_)(send))
   }
 }
