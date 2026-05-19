@@ -30,7 +30,7 @@ class ResponseDetailSpec extends SpecBase {
         isGBUser = true,
         primaryContact = Seq(
           ContactInformation(
-            organisationDetails = OrganisationDetails("Primary Organisation"),
+            organisation = OrganisationDetails("Primary Organisation"),
             email = "primary@test.com",
             phone = Some("01234567890"),
             mobile = Some("07123456789")
@@ -39,23 +39,7 @@ class ResponseDetailSpec extends SpecBase {
         secondaryContact = None
       )
 
-      val jsonForWriting = Json.obj(
-        "subscriptionID" -> "subscription-id",
-        "tradingName"    -> "Trading Name",
-        "isGBUser"       -> true,
-        "primaryContact" -> Json.arr(
-          Json.obj(
-            "organisationDetails" -> Json.obj(
-              "organisationName" -> "Primary Organisation"
-            ),
-            "email"  -> "primary@test.com",
-            "phone"  -> "01234567890",
-            "mobile" -> "07123456789"
-          )
-        )
-      )
-
-      val jsonForReading = Json.obj(
+      val json = Json.obj(
         "subscriptionID" -> "subscription-id",
         "tradingName"    -> "Trading Name",
         "isGBUser"       -> true,
@@ -71,8 +55,8 @@ class ResponseDetailSpec extends SpecBase {
         )
       )
 
-      Json.toJson(responseDetail) mustBe jsonForWriting
-      jsonForReading.as[ResponseDetail] mustBe responseDetail
+      Json.toJson(responseDetail) mustBe json
+      json.as[ResponseDetail] mustBe responseDetail
     }
 
     "must serialise and deserialise with a secondary contact" in {
@@ -82,7 +66,7 @@ class ResponseDetailSpec extends SpecBase {
         isGBUser = false,
         primaryContact = Seq(
           ContactInformation(
-            organisationDetails = OrganisationDetails("Primary Organisation"),
+            organisation = OrganisationDetails("Primary Organisation"),
             email = "primary@test.com",
             phone = None,
             mobile = None
@@ -91,7 +75,7 @@ class ResponseDetailSpec extends SpecBase {
         secondaryContact = Some(
           Seq(
             ContactInformation(
-              organisationDetails = OrganisationDetails("Secondary Organisation"),
+              organisation = OrganisationDetails("Secondary Organisation"),
               email = "secondary@test.com",
               phone = Some("09876543210"),
               mobile = None
@@ -100,29 +84,7 @@ class ResponseDetailSpec extends SpecBase {
         )
       )
 
-      val jsonForWriting = Json.obj(
-        "subscriptionID" -> "subscription-id",
-        "isGBUser"       -> false,
-        "primaryContact" -> Json.arr(
-          Json.obj(
-            "organisationDetails" -> Json.obj(
-              "organisationName" -> "Primary Organisation"
-            ),
-            "email" -> "primary@test.com"
-          )
-        ),
-        "secondaryContact" -> Json.arr(
-          Json.obj(
-            "organisationDetails" -> Json.obj(
-              "organisationName" -> "Secondary Organisation"
-            ),
-            "email" -> "secondary@test.com",
-            "phone" -> "09876543210"
-          )
-        )
-      )
-
-      val jsonForReading = Json.obj(
+      val json = Json.obj(
         "subscriptionID" -> "subscription-id",
         "isGBUser"       -> false,
         "primaryContact" -> Json.arr(
@@ -144,8 +106,8 @@ class ResponseDetailSpec extends SpecBase {
         )
       )
 
-      Json.toJson(responseDetail) mustBe jsonForWriting
-      jsonForReading.as[ResponseDetail] mustBe responseDetail
+      Json.toJson(responseDetail) mustBe json
+      json.as[ResponseDetail] mustBe responseDetail
     }
   }
 }

@@ -43,8 +43,7 @@ class EmailService @Inject() (emailConnector: EmailConnector, appConfig: Fronten
     }
 
   def sendEmail(userAnswers: UserAnswers, subscriptionID: SubscriptionID)(implicit
-    hc: HeaderCarrier,
-    ec: ExecutionContext
+    hc: HeaderCarrier
   ): Future[Seq[Int]] = {
 
     def send(email: String): Future[Int] =

@@ -25,11 +25,10 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubscriptionService @Inject() (val subscriptionConnector: SubscriptionConnector) {
+class SubscriptionService @Inject() (val subscriptionConnector: SubscriptionConnector)(implicit executionContext: ExecutionContext) {
 
   def checkAndCreateSubscription(safeID: SafeId, userAnswers: UserAnswers)(implicit
-    hc: HeaderCarrier,
-    ec: ExecutionContext
+    hc: HeaderCarrier
   ): Future[Either[ApiError, SubscriptionID]] = {
     val businessName = userAnswers
       .get(BusinessWithoutIDNamePage)
@@ -51,8 +50,7 @@ class SubscriptionService @Inject() (val subscriptionConnector: SubscriptionConn
   }
 
   def getDisplaySubscriptionId(safeId: SafeId)(implicit
-    hc: HeaderCarrier,
-    ec: ExecutionContext
+    hc: HeaderCarrier
   ): Future[Option[SubscriptionID]] =
     subscriptionConnector.readSubscription(safeId) map {
       case Some(responseDetail) => Some(SubscriptionID(responseDetail.subscriptionID))
@@ -60,8 +58,7 @@ class SubscriptionService @Inject() (val subscriptionConnector: SubscriptionConn
     }
 
   def getSubscriptionEmails(safeId: SafeId)(implicit
-    hc: HeaderCarrier,
-    ec: ExecutionContext
+    hc: HeaderCarrier
   ): Future[Seq[String]] =
     subscriptionConnector
       .readSubscription(safeId)

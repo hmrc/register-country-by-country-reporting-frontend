@@ -60,13 +60,13 @@ class SubscriptionConnectorSpec extends SpecBase with WireMockHelper with ScalaC
                 email = "test@example.com",
                 phone = Some("1234567890"),
                 mobile = Some("071234567890"),
-                organisationDetails = OrganisationDetails(organisationName = "orgName")
+                organisation = OrganisationDetails(organisationName = "orgName")
               )
             ),
             secondaryContact = Some(
               Seq(
                 ContactInformation(
-                  organisationDetails = OrganisationDetails(organisationName = "someOrgName"),
+                  organisation = OrganisationDetails(organisationName = "someOrgName"),
                   email = "test2@example.com",
                   phone = None,
                   mobile = None

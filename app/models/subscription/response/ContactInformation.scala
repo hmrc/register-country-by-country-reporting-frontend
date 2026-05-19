@@ -16,24 +16,15 @@
 
 package models.subscription.response
 
-import play.api.libs.functional.syntax.*
 import play.api.libs.json.*
 
 case class ContactInformation(
-  organisationDetails: OrganisationDetails,
+  organisation: OrganisationDetails,
   email: String,
   phone: Option[String],
   mobile: Option[String]
 )
 
 object ContactInformation {
-
-  given Reads[ContactInformation] = (
-    (__ \ "organisation").read[OrganisationDetails] and
-      (__ \ "email").read[String] and
-      (__ \ "phone").readNullable[String] and
-      (__ \ "mobile").readNullable[String]
-  )(ContactInformation.apply)
-
-  given OWrites[ContactInformation] = Json.writes[ContactInformation]
+  given OFormat[ContactInformation] = Json.format[ContactInformation]
 }

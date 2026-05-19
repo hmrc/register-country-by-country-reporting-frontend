@@ -75,7 +75,7 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
 
     "must return 'SubscriptionID' when there is already a subscription exists" in {
       val primaryContactInfo = ContactInformation(
-        organisationDetails = OrganisationDetails("OrganisationDetails"),
+        organisation = OrganisationDetails("OrganisationDetails"),
         email = "EmailAddress@test.com",
         None,
         None
@@ -171,7 +171,7 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
 
       "must return 'SubscriptionID' for valid input" in {
         val primaryContactInfo = ContactInformation(
-          organisationDetails = OrganisationDetails("OrganisationDetails"),
+          organisation = OrganisationDetails("OrganisationDetails"),
           email = "EmailAddress@test.com",
           None,
           None
