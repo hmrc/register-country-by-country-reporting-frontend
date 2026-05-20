@@ -29,6 +29,7 @@ import play.api.http.Status.{ACCEPTED, INTERNAL_SERVER_ERROR}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HttpResponse
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
@@ -66,7 +67,7 @@ class EmailServiceSpec extends SpecBase with BeforeAndAfterEach with Generators 
 
       val result = emailService.sendEmail(userAnswers, SubscriptionID("Id"))
 
-      result.futureValue.value mustBe ACCEPTED
+      result.futureValue mustBe Seq(ACCEPTED, ACCEPTED)
 
       verify(mockEmailConnector, times(2)).sendEmail(any())(any())
     }
@@ -79,7 +80,7 @@ class EmailServiceSpec extends SpecBase with BeforeAndAfterEach with Generators 
 
       val result = emailService.sendEmail(userAnswers, SubscriptionID("Id"))
 
-      result.futureValue.value mustBe INTERNAL_SERVER_ERROR
+      result.futureValue mustBe Seq(INTERNAL_SERVER_ERROR)
       verify(mockEmailConnector, times(1)).sendEmail(any())(any())
     }
   }

@@ -76,7 +76,23 @@ object RegisterationCBCStubs {
 
   val OK_ReadSubscription_Response =
     """
-      |{"displaySubscriptionForCBCResponse":
-      |{"responseDetail":{"subscriptionID": "id"}}}""".stripMargin
+      |{
+      |  "displaySubscriptionForCBCResponse": {
+      |    "responseDetail": {
+      |      "subscriptionID": "id",
+      |      "isGBUser": true,
+      |      "primaryContact": [
+      |        {
+      |          "organisation": {
+      |            "organisationName": "orgName"
+      |          },
+      |          "email": "test@example.com"
+      |        }
+      |      ],
+      |      "secondaryContact": null
+      |    }
+      |  }
+      |}
+      |""".stripMargin
 
 }

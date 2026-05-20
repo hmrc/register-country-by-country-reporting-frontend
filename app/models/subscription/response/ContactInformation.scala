@@ -16,17 +16,15 @@
 
 package models.subscription.response
 
-import base.SpecBase
-import models.SubscriptionID
-import models.subscription.response
-import play.api.libs.json.Json
+import play.api.libs.json.*
 
-class DisplaySubscriptionResponseSpec extends SpecBase {
+case class ContactInformation(
+  organisation: OrganisationDetails,
+  email: String,
+  phone: Option[String],
+  mobile: Option[String]
+)
 
-  "DisplaySubscriptionResponse" - {
-    "must read DisplaySubscriptionForCBCResponse" in {
-      val json = Json.parse("""{"displaySubscriptionForCBCResponse": {"responseDetail":{"subscriptionID": "id"}}}""".stripMargin)
-      json.as[DisplaySubscriptionResponse] mustBe response.DisplaySubscriptionResponse(SubscriptionID("id"))
-    }
-  }
+object ContactInformation {
+  given OFormat[ContactInformation] = Json.format[ContactInformation]
 }

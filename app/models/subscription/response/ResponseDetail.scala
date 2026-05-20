@@ -16,15 +16,16 @@
 
 package models.subscription.response
 
-import models.SubscriptionID
-import play.api.libs.json.{__, Reads}
+import play.api.libs.json.{Json, OFormat}
 
-case class DisplaySubscriptionResponse(subscriptionID: SubscriptionID)
+case class ResponseDetail(
+  subscriptionID: String,
+  tradingName: Option[String],
+  isGBUser: Boolean,
+  primaryContact: Seq[ContactInformation],
+  secondaryContact: Option[Seq[ContactInformation]]
+)
 
-object DisplaySubscriptionResponse {
+object ResponseDetail:
 
-  implicit val reads: Reads[DisplaySubscriptionResponse] = {
-    import play.api.libs.functional.syntax._
-    (__ \ "displaySubscriptionForCBCResponse" \ "responseDetail" \ "subscriptionID").read[SubscriptionID] fmap (id => DisplaySubscriptionResponse(id))
-  }
-}
+  given OFormat[ResponseDetail] = Json.format[ResponseDetail]
