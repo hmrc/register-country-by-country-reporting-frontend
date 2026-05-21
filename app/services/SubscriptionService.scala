@@ -57,15 +57,26 @@ class SubscriptionService @Inject() (val subscriptionConnector: SubscriptionConn
       case None                 => None
     }
 
-  def getSubscriptionEmails(safeId: SafeId)(implicit
+  def getSubscriptionEmailRecipients(safeId: SafeId)(implicit
     hc: HeaderCarrier
-  ): Future[Seq[String]] =
+  ): Future[Seq[(String, String)]] =
     subscriptionConnector
       .readSubscription(safeId)
       .map {
         case Some(responseDetail) =>
-          responseDetail.primaryContact.map(_.email) ++
-            responseDetail.secondaryContact.getOrElse(Seq.empty).map(_.email)
+          val primaryRecipients =
+            responseDetail.primaryContact.map { contact =>
+              contact.email -> contact.organisation.organisationName
+            }
+
+          val secondaryRecipients =
+            responseDetail.secondaryContact
+              .getOrElse(Seq.empty)
+              .map { contact =>
+                contact.email -> contact.organisation.organisationName
+              }
+
+          primaryRecipients ++ secondaryRecipients
 
         case None =>
           Seq.empty

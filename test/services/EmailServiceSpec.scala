@@ -23,14 +23,14 @@ import models.SubscriptionID
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{ContactEmailPage, SecondContactEmailPage}
+import pages.{ContactEmailPage, ContactNamePage, SecondContactEmailPage}
 import play.api.Application
 import play.api.http.Status.{ACCEPTED, INTERNAL_SERVER_ERROR}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HttpResponse
-import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class EmailServiceSpec extends SpecBase with BeforeAndAfterEach with Generators with ScalaCheckPropertyChecks {
@@ -61,6 +61,9 @@ class EmailServiceSpec extends SpecBase with BeforeAndAfterEach with Generators 
         .set(ContactEmailPage, "test@gmail.com")
         .success
         .value
+        .set(ContactNamePage, "Test Name!")
+        .success
+        .value
         .set(SecondContactEmailPage, "test@gmail.com")
         .success
         .value
@@ -76,7 +79,13 @@ class EmailServiceSpec extends SpecBase with BeforeAndAfterEach with Generators 
 
       when(mockEmailConnector.sendEmail(any())(any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
 
-      val userAnswers = emptyUserAnswers.set(ContactEmailPage, "test@gmail.com").success.value
+      val userAnswers = emptyUserAnswers
+        .set(ContactEmailPage, "test@gmail.com")
+        .success
+        .value
+        .set(ContactNamePage, "Test name!")
+        .success
+        .value
 
       val result = emailService.sendEmail(userAnswers, SubscriptionID("Id"))
 

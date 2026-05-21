@@ -46,13 +46,13 @@ class EmailService @Inject() (emailConnector: EmailConnector, appConfig: Fronten
     hc: HeaderCarrier
   ): Future[Seq[Int]] = {
 
-    def send(email: String): Future[Int] =
+    def send(email: String, name: String): Future[Int] =
       sendAndLogEmail(
         EmailRequest(
           email,
           appConfig.emailOrganisationTemplate,
           subscriptionID.value,
-          userAnswers.get(ContactNamePage)
+          name
         )
       )
 
@@ -62,17 +62,24 @@ class EmailService @Inject() (emailConnector: EmailConnector, appConfig: Fronten
         userAnswers.get(SecondContactEmailPage)
       ).flatten
 
-    def subscriptionEmails: Future[Seq[String]] =
+    val answerRecipients: Seq[(String, String)] =
+      userAnswers.get(ContactNamePage).fold(Seq.empty[(String, String)]) { contactName =>
+        answerEmails.map(email => email -> contactName)
+      }
+
+    def subscriptionRecipients: Future[Seq[(String, String)]] =
       userAnswers
         .get(RegistrationInfoPage)
-        .fold(Future.successful(Seq.empty[String])) { registrationInfo =>
-          subscriptionService.getSubscriptionEmails(registrationInfo.safeId)
+        .fold(Future.successful(Seq.empty[(String, String)])) { registrationInfo =>
+          subscriptionService.getSubscriptionEmailRecipients(registrationInfo.safeId)
         }
 
-    val emails =
-      if (answerEmails.nonEmpty) Future.successful(answerEmails)
-      else subscriptionEmails
+    val recipients: Future[Seq[(String, String)]] =
+      if (answerRecipients.nonEmpty) Future.successful(answerRecipients)
+      else subscriptionRecipients
 
-    emails.flatMap(Future.traverse(_)(send))
+    recipients.flatMap(Future.traverse(_) { case (email, name) =>
+      send(email, name)
+    })
   }
 }
