@@ -19,7 +19,6 @@ package services
 import base.SpecBase
 import connectors.SubscriptionConnector
 import models.matching.RegistrationInfo
-import models.register.request.ContactDetails
 import models.register.response.details.AddressResponse
 import models.subscription.response.{ContactInformation, OrganisationDetails, ResponseDetail}
 import models.{SafeId, SubscriptionCreateError, SubscriptionCreateInformationMissingError, SubscriptionID, UserAnswers}
@@ -30,8 +29,7 @@ import pages.*
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-
-import scala.concurrent.ExecutionContext.Implicits.global
+import models.email.EmailRecipient
 import scala.concurrent.Future
 
 class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheckPropertyChecks {
@@ -197,6 +195,103 @@ class SubscriptionServiceSpec extends SpecBase with MockitoSugar with ScalaCheck
         when(mockSubscriptionConnector.readSubscription(any())(any(), any())).thenReturn(Future.successful(None))
         val result = service.getDisplaySubscriptionId(safeId)
         result.futureValue mustBe None
+      }
+    }
+
+    "getSubscriptionEmailRecipients" - {
+
+      "must return email recipients from primary and secondary contacts" in {
+        val primaryContactInfo = ContactInformation(
+          organisation = OrganisationDetails("Primary Organisation"),
+          email = "primary@test.com",
+          None,
+          None
+        )
+
+        val secondaryContactInfo = ContactInformation(
+          organisation = OrganisationDetails("Secondary Organisation"),
+          email = "secondary@test.com",
+          None,
+          None
+        )
+
+        val responseDetail = Some(
+          ResponseDetail(
+            subscriptionID = "id",
+            tradingName = None,
+            isGBUser = true,
+            primaryContact = Seq(primaryContactInfo),
+            secondaryContact = Some(Seq(secondaryContactInfo))
+          )
+        )
+
+        val safeId = SafeId("CBC12345678")
+
+        when(mockSubscriptionConnector.readSubscription(any())(any(), any()))
+          .thenReturn(Future.successful(responseDetail))
+
+        val result = service.getSubscriptionEmailRecipients(safeId)
+
+        result.futureValue mustBe Seq(
+          EmailRecipient(
+            email = "primary@test.com",
+            name = "Primary Organisation"
+          ),
+          EmailRecipient(
+            email = "secondary@test.com",
+            name = "Secondary Organisation"
+          )
+        )
+
+        verify(mockSubscriptionConnector, times(1)).readSubscription(any())(any(), any())
+      }
+
+      "must return email recipients from primary contacts when secondary contacts are missing" in {
+        val primaryContactInfo = ContactInformation(
+          organisation = OrganisationDetails("Primary Organisation"),
+          email = "primary@test.com",
+          None,
+          None
+        )
+
+        val responseDetail = Some(
+          ResponseDetail(
+            subscriptionID = "id",
+            tradingName = None,
+            isGBUser = true,
+            primaryContact = Seq(primaryContactInfo),
+            secondaryContact = None
+          )
+        )
+
+        val safeId = SafeId("CBC12345678")
+
+        when(mockSubscriptionConnector.readSubscription(any())(any(), any()))
+          .thenReturn(Future.successful(responseDetail))
+
+        val result = service.getSubscriptionEmailRecipients(safeId)
+
+        result.futureValue mustBe Seq(
+          EmailRecipient(
+            email = "primary@test.com",
+            name = "Primary Organisation"
+          )
+        )
+
+        verify(mockSubscriptionConnector, times(1)).readSubscription(any())(any(), any())
+      }
+
+      "must return an empty sequence when no subscription is found" in {
+        val safeId = SafeId("CBC12345678")
+
+        when(mockSubscriptionConnector.readSubscription(any())(any(), any()))
+          .thenReturn(Future.successful(None))
+
+        val result = service.getSubscriptionEmailRecipients(safeId)
+
+        result.futureValue mustBe Seq.empty[EmailRecipient]
+
+        verify(mockSubscriptionConnector, times(1)).readSubscription(any())(any(), any())
       }
     }
   }
