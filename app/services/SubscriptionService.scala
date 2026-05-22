@@ -17,6 +17,7 @@
 package services
 
 import connectors.SubscriptionConnector
+import models.email.EmailRecipient
 import models.subscription.request.{CreateSubscriptionForCBCRequest, SubscriptionRequest}
 import models.{ApiError, SafeId, SubscriptionCreateError, SubscriptionID, UserAnswers}
 import pages.{BusinessWithoutIDNamePage, RegistrationInfoPage}
@@ -57,15 +58,32 @@ class SubscriptionService @Inject() (val subscriptionConnector: SubscriptionConn
       case None                 => None
     }
 
-  def getSubscriptionEmails(safeId: SafeId)(implicit
+  def getSubscriptionEmailRecipients(safeId: SafeId)(implicit
     hc: HeaderCarrier
-  ): Future[Seq[String]] =
+  ): Future[Seq[EmailRecipient]] =
     subscriptionConnector
       .readSubscription(safeId)
       .map {
         case Some(responseDetail) =>
-          responseDetail.primaryContact.map(_.email) ++
-            responseDetail.secondaryContact.getOrElse(Seq.empty).map(_.email)
+          val primaryRecipients =
+            responseDetail.primaryContact.map { contact =>
+              EmailRecipient(
+                email = contact.email,
+                name = contact.organisation.organisationName
+              )
+            }
+
+          val secondaryRecipients =
+            responseDetail.secondaryContact
+              .getOrElse(Seq.empty)
+              .map { contact =>
+                EmailRecipient(
+                  email = contact.email,
+                  name = contact.organisation.organisationName
+                )
+              }
+
+          primaryRecipients ++ secondaryRecipients
 
         case None =>
           Seq.empty

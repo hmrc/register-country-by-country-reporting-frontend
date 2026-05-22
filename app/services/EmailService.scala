@@ -18,9 +18,9 @@ package services
 
 import config.FrontendAppConfig
 import connectors.EmailConnector
-import models.email.EmailRequest
+import models.email.{EmailRecipient, EmailRequest}
 import models.{SubscriptionID, UserAnswers}
-import pages._
+import pages.*
 import play.api.Logging
 import play.api.http.Status.ACCEPTED
 import uk.gov.hmrc.http.HeaderCarrier
@@ -33,46 +33,76 @@ class EmailService @Inject() (emailConnector: EmailConnector, appConfig: Fronten
   executionContext: ExecutionContext
 ) extends Logging {
 
-  private def sendAndLogEmail(emailRequest: EmailRequest)(implicit hc: HeaderCarrier): Future[Int] =
+  private def submitEmailRequest(emailRequest: EmailRequest)(implicit hc: HeaderCarrier): Future[Int] =
     emailConnector.sendEmail(emailRequest) map { resp =>
       resp.status match {
         case ACCEPTED => logger.info("Email queued")
-        case _        => logger.warn(s"Email service failed to send an email")
+        case _        => logger.warn("Email service failed to send an email")
       }
       resp.status
     }
 
-  def sendEmail(userAnswers: UserAnswers, subscriptionID: SubscriptionID)(implicit
-    hc: HeaderCarrier
-  ): Future[Seq[Int]] = {
-
-    def send(email: String): Future[Int] =
-      sendAndLogEmail(
-        EmailRequest(
-          email,
-          appConfig.emailOrganisationTemplate,
-          subscriptionID.value,
-          userAnswers.get(ContactNamePage)
-        )
-      )
-
-    val answerEmails: Seq[String] =
+  // Fetches the users email / name from their own answers in the journey - they may not have hit these pages so can be empty
+  private def userAnswerRecipients(userAnswers: UserAnswers): Seq[EmailRecipient] = {
+    val answerEmails =
       Seq(
         userAnswers.get(ContactEmailPage),
         userAnswers.get(SecondContactEmailPage)
       ).flatten
 
-    def subscriptionEmails: Future[Seq[String]] =
-      userAnswers
-        .get(RegistrationInfoPage)
-        .fold(Future.successful(Seq.empty[String])) { registrationInfo =>
-          subscriptionService.getSubscriptionEmails(registrationInfo.safeId)
-        }
-
-    val emails =
-      if (answerEmails.nonEmpty) Future.successful(answerEmails)
-      else subscriptionEmails
-
-    emails.flatMap(Future.traverse(_)(send))
+    userAnswers.get(ContactNamePage).fold(Seq.empty[EmailRecipient]) { contactName =>
+      answerEmails.map { email =>
+        EmailRecipient(
+          email = email,
+          name = contactName
+        )
+      }
+    }
   }
+// Makes a call to the subscriptionConnector to fetch the users primary and secondary contact (This can also be empty)
+  private def subscriptionRecipients(userAnswers: UserAnswers)(implicit
+    hc: HeaderCarrier
+  ): Future[Seq[EmailRecipient]] =
+    userAnswers
+      .get(RegistrationInfoPage)
+      .fold(Future.successful(Seq.empty[EmailRecipient])) { registrationInfo =>
+        subscriptionService.getSubscriptionEmailRecipients(registrationInfo.safeId)
+      }
+
+  private def recipientsFor(userAnswers: UserAnswers)(implicit
+    hc: HeaderCarrier
+  ): Future[Seq[EmailRecipient]] = {
+    val recipients = userAnswerRecipients(userAnswers)
+
+    if (recipients.nonEmpty) Future.successful(recipients)
+    else subscriptionRecipients(userAnswers)
+  }
+
+  private def emailRequest(
+    recipient: EmailRecipient,
+    subscriptionID: SubscriptionID
+  ): EmailRequest =
+    EmailRequest(
+      recipient.email,
+      appConfig.emailOrganisationTemplate,
+      subscriptionID.value,
+      recipient.name
+    )
+
+  def sendEmail(userAnswers: UserAnswers, subscriptionID: SubscriptionID)(implicit
+    hc: HeaderCarrier
+  ): Future[Seq[Int]] =
+    recipientsFor(userAnswers).flatMap {
+      case Nil =>
+        logger.warn(
+          s"No email recipients found for subscriptionID ${subscriptionID.value}; email not sent"
+        )
+        Future.successful(Seq.empty[Int])
+
+      case recipients =>
+        Future.traverse(recipients) { recipient =>
+          submitEmailRequest(emailRequest(recipient, subscriptionID))
+        }
+    }
+
 }

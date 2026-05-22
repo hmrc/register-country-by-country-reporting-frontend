@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,11 @@ package models.email
 
 import play.api.libs.json.{Json, OFormat}
 
-case class EmailRequest(to: List[String], templateId: String, parameters: Map[String, String])
+case class EmailRecipient(
+  email: String,
+  name: String
+)
 
-object EmailRequest {
-  implicit val format: OFormat[EmailRequest] = Json.format[EmailRequest]
-
-  def apply(emailId: String, emailTemplate: String, cbcID: String, name: String): EmailRequest =
-    EmailRequest(
-      List(emailId),
-      emailTemplate,
-      Map("cbcID" -> cbcID, "name" -> name)
-    )
+object EmailRecipient {
+  implicit val format: OFormat[EmailRecipient] = Json.format[EmailRecipient]
 }
