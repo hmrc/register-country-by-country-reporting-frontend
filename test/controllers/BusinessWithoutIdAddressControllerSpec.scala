@@ -44,6 +44,10 @@ class BusinessWithoutIdAddressControllerSpec extends SpecBase {
     override lazy val countryList: Option[Seq[Country]] = Some(testCountryList)
   }
 
+  val emptyCountryListFactory = new CountryListFactory(app.environment, mockAppConfig) {
+    override lazy val countryList: Option[Seq[Country]] = None
+  }
+
   lazy val businessWithoutIdAddressRoute = routes.BusinessWithoutIdAddressController.onPageLoad(NormalMode).url
 
   val userAnswers = UserAnswers(userAnswersId).set(BusinessWithoutIdAddressPage, address).success.value
@@ -70,6 +74,26 @@ class BusinessWithoutIdAddressControllerSpec extends SpecBase {
                                                                                                                                    messages(application)
         ).toString
         contentAsString(result) must include("Select a country")
+      }
+    }
+
+    "must redirect to There is a problem page when the countryList  is empty in GET" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(
+          bind[CountryListFactory].to(emptyCountryListFactory)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, businessWithoutIdAddressRoute)
+
+        val view = application.injector.instanceOf[BusinessWithoutIdAddressView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.ThereIsAProblemController.onPageLoad().url
       }
     }
 
@@ -118,6 +142,35 @@ class BusinessWithoutIdAddressControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual onwardRoute.url
+      }
+    }
+
+    "must redirect to there is a problem when country list is empty for submit" in {
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[CountryListFactory].to(emptyCountryListFactory)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, businessWithoutIdAddressRoute)
+            .withFormUrlEncodedBody(("addressLine1", "value 1"),
+                                    ("addressLine2", "value 2"),
+                                    ("addressLine3", "value 2"),
+                                    ("addressLine4", "value 2"),
+                                    ("postCode", "NE98 1ZZ"),
+                                    ("country", "GG")
+            )
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.ThereIsAProblemController.onPageLoad().url
       }
     }
 

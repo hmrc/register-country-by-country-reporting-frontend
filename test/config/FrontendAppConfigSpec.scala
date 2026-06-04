@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.routes
 import play.api.test.FakeRequest
 import play.api.test.Helpers.GET
+import play.api.i18n.Lang
 
 class FrontendAppConfigSpec extends SpecBase {
 
@@ -38,6 +39,17 @@ class FrontendAppConfigSpec extends SpecBase {
       val appConfig   = application.injector.instanceOf[FrontendAppConfig]
       val request     = FakeRequest(GET, routes.ThereIsAProblemController.onPageLoad().url)
       appConfig.feedbackUrl(request) mustNot include("&backUrl=")
+    }
+
+    "languageMap" - {
+      "should return a Map containing English language mapping" in {
+        val application = applicationBuilder(None).build()
+        val appConfig   = application.injector.instanceOf[FrontendAppConfig]
+
+        val result = appConfig.languageMap
+
+        result must contain("en" -> Lang("en"))
+      }
     }
   }
 }

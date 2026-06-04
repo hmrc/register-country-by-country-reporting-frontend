@@ -20,8 +20,9 @@ import base.SpecBase
 import forms.DoYouHaveUTRFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
+import pages.DoYouHaveUTRPage
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.DoYouHaveUTRView
 
 import scala.concurrent.Future
@@ -51,11 +52,44 @@ class DoYouHaveUTRControllerSpec extends SpecBase {
       }
     }
 
+    "must return OK and the correct view for a GET when DoYouHaveUTRPage is populated" in {
+      val answers     = emptyUserAnswers.withPage(DoYouHaveUTRPage, true)
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, doYouHaveUTRRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[DoYouHaveUTRView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(request, messages(application)).toString
+      }
+    }
+
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application = applicationBuilder().build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, doYouHaveUTRRoute).withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
+      }
+    }
+
+    "must redirect to the next page when valid same data is submitted" in {
+      val answers = emptyUserAnswers.withPage(DoYouHaveUTRPage, true)
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
 
       running(application) {
         val request =
