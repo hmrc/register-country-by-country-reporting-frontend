@@ -38,7 +38,7 @@ class PrivateBetaAccessCodeControllerSpec extends SpecBase {
 
   "PrivateBetaAccessCode Controller" - {
 
-    "must return OK and the correct view for a GET when user is authenticated" in {
+    "must return OK and the correct view for a GET" in {
 
       val application = customApplicationBuilder(userAnswers = Some(emptyUserAnswers))
         .build()
