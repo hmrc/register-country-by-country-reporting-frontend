@@ -89,6 +89,25 @@ class BusinessTypeControllerSpec extends SpecBase {
       }
     }
 
+    "must redirect to the next page when the same BusinessType is submitted" in {
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers.withPage(BusinessTypePage, BusinessType.values.head))).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, businessTypeRoute)
+            .withFormUrlEncodedBody(("value", BusinessType.values.head.toString))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
+      }
+    }
+
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()

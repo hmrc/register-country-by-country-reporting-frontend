@@ -60,6 +60,24 @@ class BusinessNameControllerSpec extends SpecBase {
       }
     }
 
+    "must redirect to there is a problem when business type is not present in GET" in {
+
+      val userAnswers = emptyUserAnswers
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, businessNameRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[BusinessNameView]
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.ThereIsAProblemController.onPageLoad().url
+      }
+    }
+
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = UserAnswers(userAnswersId)
@@ -126,6 +144,28 @@ class BusinessNameControllerSpec extends SpecBase {
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual onwardRoute.url
         verify(mockSessionRepository, times(0)).set(any())
+      }
+    }
+
+    "must redirect to there is a problem if the business type is missing" in {
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val userAnswers = emptyUserAnswers
+        .withPage(BusinessNamePage, "answer")
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, businessNameRoute)
+            .withFormUrlEncodedBody(("value", "answer"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.ThereIsAProblemController.onPageLoad().url
+
       }
     }
 
