@@ -29,3 +29,8 @@
 body:not(.js-enabled) .js-enabled {
   display: none;
 }
+
+.govuk-link {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
