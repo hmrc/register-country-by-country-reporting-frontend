@@ -82,10 +82,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
   lazy val sendEmailUrl: String              = configuration.get[Service]("microservice.services.email").baseUrl
   lazy val emailOrganisationTemplate: String = configuration.get[String]("emailtemplates.organisation")
 
-  lazy val encryptionEnabled: Boolean                  = configuration.get[Boolean]("mongodb.encryptionEnabled")
-  lazy val emailForSession: String                     = configuration.get[String]("urls.emailForSession")
-  lazy val agentServiceLink: String                    = configuration.get[String]("urls.agentServiceLink")
-  lazy val clientAuthoriseLink: String                 = configuration.get[String]("urls.clientAuthoriseLink")
-  lazy val taxAndSchemeManagementService: String       = configuration.get[String]("urls.taxAndSchemeManagementService")
-  lazy val taxAndSchemeManagementServiceNoHttp: String = configuration.get[String]("urls.taxAndSchemeManagementServiceNoHttp")
+  lazy val encryptionEnabled: Boolean            = configuration.get[Boolean]("mongodb.encryptionEnabled")
+  lazy val emailForSession: String               = configuration.get[String]("urls.emailForSession")
+  lazy val agentServiceLink: String              = configuration.get[String]("urls.agentServiceLink")
+  lazy val clientAuthoriseLink: String           = configuration.get[String]("urls.clientAuthoriseLink")
+  lazy val taxAndSchemeManagementService: String = configuration.get[String]("urls.taxAndSchemeManagementService")
 }
