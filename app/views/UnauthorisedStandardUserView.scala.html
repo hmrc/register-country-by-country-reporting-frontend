@@ -26,16 +26,27 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("unauthorisedStandardUser.title")),
-        showBackLink = false) {
+@layout(pageTitle = titleNoForm(messages("unauthorisedStandardUser.title")), showBackLink = false) {
 
     @heading(messages("unauthorisedStandardUser.heading"))
 
-    @paragraph(Html(messages("unauthorisedStandardUser.paragraph1")))
-    @paragraph(Html(messages("unauthorisedStandardUser.paragraph2")))
-    @paragraph(Html(messages("unauthorisedStandardUser.paragraph3")))
+    @paragraph(Html(messages("unauthorisedStandardUser.p1")))
 
-    <p class="govuk-body">@messages("unauthorisedStandardUser.paragraph4")
-     <span> @link(appConfig.businessTaxAccountLink, "unauthorisedStandardUser.link").</span>
-    </p>
+    <h2 class="govuk-heading-m">@messages("unauthorisedStandardUser.h2")</h2>
+
+    <ol class="govuk-list govuk-list--number">
+        <li>@messages("unauthorisedStandardUser.l1")</li>
+        <li>@messages("unauthorisedStandardUser.l2")</li>
+        <li>@messages("unauthorisedStandardUser.l3")</li>
+    </ol>
+
+    @paragraph(
+        HtmlFormat.fill(Seq(
+            Html(messages("unauthorisedStandardUser.p2")),
+            Html("<br>"),
+            Html(appConfig.taxAndSchemeManagementService)
+        ))
+    )
+
+    @paragraph(Html(messages("unauthorisedStandardUser.p3")))
 }
