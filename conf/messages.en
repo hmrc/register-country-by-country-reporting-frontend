@@ -329,7 +329,8 @@ unauthorisedStandardUser.l1 = Sign in with their Government Gateway user ID.
 unauthorisedStandardUser.l2 = Register for the country-by-country reporting service, if your organisation has not already registered.
 unauthorisedStandardUser.l3 = Give you permission to use this service through the tax and scheme management service.
 unauthorisedStandardUser.p2 = If your administrator does not have the link for the tax and scheme management service, then you can share this link with them. The link will only work for your administrator:
-unauthorisedStandardUser.p3 = Once your administrator has completed these steps, you will then be able to sign in with your own Government Gateway user ID to use this service.
+unauthorisedStandardUser.p3 = www.tax.service.gov.uk/tax-and-scheme-management/services
+unauthorisedStandardUser.p4 = Once your administrator has completed these steps, you will then be able to sign in with your own Government Gateway user ID to use this service.
 
 businessWithIDName.checkYourAnswersLabel = Your business
 businessWithIDName.change.hidden = Change your business
