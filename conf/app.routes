@@ -127,8 +127,7 @@ GET         /register/problem/business-not-identified                        con
 
 GET         /register/problem/individual-sign-in-problem                     controllers.UnauthorisedIndividualController.onPageLoad()
 
-GET         /register/problem/organisation-without-utr-pre-registered        controllers.PreRegisteredController.onPageLoad(withId: Boolean = false)
-GET         /register/problem/organisation-with-utr-pre-registered           controllers.PreRegisteredController.onPageLoad(withId: Boolean = true)
+GET         /register/problem/organisation-with-utr-already-registered       controllers.PreRegisteredController.onPageLoad()
 
 GET         /register/problem/there-is-a-problem                             controllers.ThereIsAProblemController.onPageLoad()
 
@@ -140,4 +139,4 @@ GET         /register/problem/information-sent                               con
 
 GET         /problem/email-us-for-access                                     controllers.InterruptPageController.onPageLoad()
 
-GET        /register/problem/organisation-already-registered                 controllers.OrganisationAlreadyRegisteredController.onPageLoad()
+GET         /register/problem/organisation-already-registered                controllers.OrganisationAlreadyRegisteredController.onPageLoad()

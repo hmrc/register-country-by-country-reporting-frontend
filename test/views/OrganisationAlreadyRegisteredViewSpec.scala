@@ -43,12 +43,13 @@ class OrganisationAlreadyRegisteredViewSpec extends SpecBase with Injecting with
       val pageHeadings = getPageHeading(doc)
       pageHeadings must include("Your organisation is already registered to use this service")
       val paragraphValues = getAllParagraph(doc).text()
+      paragraphValues must include("You have signed in with a Government Gateway user ID that does not have permission to use this service.")
       paragraphValues must include("To access the country-by-country reporting service, you must either:")
       paragraphValues must include(
         "You can email your HMRC Customer Compliance Manager or msb.countrybycountryreportingmailbox@hmrc.gov.uk if you need support with accessing this service."
       )
       elementText(doc, "li") must include("sign in with the Government Gateway user ID used to register for this service")
-      elementText(doc, "li") must include("make sure you have permission to use this service through the")
+      elementText(doc, "li") must include("give yourself permission to use this service through the")
       elementText(doc, "a") must include("tax and scheme management service")
     }
   }

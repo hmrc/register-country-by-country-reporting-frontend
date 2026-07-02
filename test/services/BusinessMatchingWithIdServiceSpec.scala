@@ -158,7 +158,7 @@ class BusinessMatchingWithIdServiceSpec extends SpecBase {
 
         val result = testService.selfHealingLogic()(hc, mockDatarequest).futureValue
 
-        result mustBe Redirect(routes.PreRegisteredController.onPageLoad(true))
+        result mustBe Redirect(routes.PreRegisteredController.onPageLoad())
       }
     }
   }

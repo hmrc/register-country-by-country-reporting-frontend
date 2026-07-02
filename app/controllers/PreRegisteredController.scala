@@ -34,8 +34,8 @@ class PreRegisteredController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(withId: Boolean): Action[AnyContent] = standardActionSets.identifiedUserWithData() { implicit request =>
-    Ok(view(frontendAppConfig.emailEnquiries, withId))
+  def onPageLoad(): Action[AnyContent] = standardActionSets.identifiedUserWithData() { implicit request =>
+    Ok(view(frontendAppConfig.emailEnquiries))
   }
 
 }
