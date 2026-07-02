@@ -312,7 +312,7 @@ class IsThisYourBusinessControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe routes.PreRegisteredController.onPageLoad(true).url
+        redirectLocation(result).value mustBe routes.PreRegisteredController.onPageLoad().url
       }
     }
 

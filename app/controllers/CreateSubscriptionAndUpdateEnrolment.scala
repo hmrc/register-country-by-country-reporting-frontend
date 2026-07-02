@@ -18,7 +18,7 @@ package controllers
 
 import models.requests.DataRequest
 import models.{EnrolmentCreationError, EnrolmentExistsError, SafeId, SubscriptionCreateInformationMissingError, SubscriptionID}
-import pages.{RegistrationInfoPage, SubscriptionIDPage}
+import pages.SubscriptionIDPage
 import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Result}
@@ -62,11 +62,8 @@ trait CreateSubscriptionAndUpdateEnrolment extends Logging {
         Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
       case Left(EnrolmentExistsError) =>
         logger.warn(s"Error: EnrolmentExistsError")
-        if (request.userAnswers.get(RegistrationInfoPage).isDefined) {
-          Future.successful(Redirect(routes.PreRegisteredController.onPageLoad(true)))
-        } else {
-          Future.successful(Redirect(routes.PreRegisteredController.onPageLoad(false)))
-        }
+        Future.successful(Redirect(routes.PreRegisteredController.onPageLoad()))
+
       case _ => Future.successful(Redirect(routes.ThereIsAProblemController.onPageLoad()))
     }
   }
