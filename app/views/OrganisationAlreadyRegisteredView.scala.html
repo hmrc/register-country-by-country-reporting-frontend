@@ -28,6 +28,7 @@
 
 @layout(pageTitle = titleNoForm(messages("organisationAlreadyRegistered.title"))) {
     @heading(messages("organisationAlreadyRegistered.heading"))
+    @paragraph(Html(messages("organisationAlreadyRegistered.p2")))
     @paragraph(Html(messages("organisationAlreadyRegistered.p1")), classes = "govuk-body govuk-!-margin-bottom-2")
     <ul class="govuk-list govuk-list--bullet">
         <li>@Html(messages("organisationAlreadyRegistered.bullet1"))</li>
