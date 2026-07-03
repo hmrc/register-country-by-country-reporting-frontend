@@ -29,7 +29,7 @@ class PreRegisteredControllerISpec extends ISpecBehaviours {
     await(repository.set(UserAnswers("internalId")))
 
     val response = await(
-      buildClient(Some("/register/problem/organisation-without-utr-pre-registered"))
+      buildClient(Some("/register/problem/organisation-already-registered"))
         .addCookies(wsSessionCookie)
         .get()
     )
@@ -43,7 +43,7 @@ class PreRegisteredControllerISpec extends ISpecBehaviours {
     await(repository.set(UserAnswers("internalId")))
 
     val response = await(
-      buildClient(Some("/register/problem/organisation-with-utr-pre-registered"))
+      buildClient(Some("/register/problem/organisation-already-registered"))
         .addCookies(wsSessionCookie)
         .get()
     )
