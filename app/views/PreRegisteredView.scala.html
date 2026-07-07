@@ -25,16 +25,27 @@
         appConfig: FrontendAppConfig
 )
 
-@(emailLink: String, withId: Boolean)(implicit request: Request[_], messages: Messages)
+@(emailLink: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("preRegistered.title")), showBackLink = false) {
 
     @heading(messages("preRegistered.heading"))
-    @if(withId) {
-        @paragraph(Html(messages("preRegistered.withID.information")))
-    } else {
-        @paragraph(Html(messages("preRegistered.withOutID.information")))
-        @paragraph(link(appConfig.loginUrl, "preRegistered.withOutID.GGLink"))
-    }
+
+        @paragraph(Html(messages("preRegistered.information.1")))
+        @paragraph(Html(messages("preRegistered.information.2")), classes = "govuk-body govuk-!-margin-bottom-2")
+        <ul class="govuk-list govuk-list--bullet" >
+            <li>@messages("preRegistered.information.bullet.1")</li>
+            <li>@messages("preRegistered.information.bullet.2")</li>
+        </ul>
+        @paragraph(Html(messages("preRegistered.information.3")))
+
+    @heading(messages("preRegistered.subheading.1"), size = "m", level = "h2")
+
+        @paragraph(Html(messages("preRegistered.information.4", link(appConfig.taxAndSchemeManagementService, "preRegistered.information.4.link"))))
+        @paragraph(Html(messages("preRegistered.information.5")))
+
+    @heading(messages("preRegistered.subheading.2"), size = "m", level = "h2")
+
+
     @paragraph(Html(messages("preRegistered.help" , link(s"mailto:$emailLink", "enquiries.email"))))
 }

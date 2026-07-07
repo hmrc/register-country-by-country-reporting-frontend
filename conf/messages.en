@@ -310,11 +310,18 @@ businessNotIdentified.button = Try again
 
 preRegistered.title = Your organisation is already registered to use this service
 preRegistered.heading = Your organisation is already registered to use this service
-preRegistered.withOutID.information = You can access the service using the Government Gateway details that were used to register for country-by-country reporting.
-preRegistered.withOutID.GGLink = Sign in using Government Gateway
+preRegistered.information.1 = You have signed in with a Government Gateway user ID that is not part of the group linked to this registration.
+preRegistered.information.2 = To access the country-by-country reporting service, you must either sign in with:
+preRegistered.information.bullet.1 = the Government Gateway user ID used to register for this service
+preRegistered.information.bullet.2 = a Government Gateway user ID that’s part of the group linked to this registration
+preRegistered.information.3 = The Government Gateway user ID in the group must also have permission to use this service.
+preRegistered.subheading.1 = Setting up permissions to use this service
+preRegistered.information.4 = If you sign in as an administrator, you can give yourself permission to use this service through the {0}.
+preRegistered.information.4.link = tax and scheme management service
+preRegistered.information.5 = If you sign in as a standard user, an administrator with permission to use this service must give you access.
+preRegistered.subheading.2 = Contact HMRC for support
 preRegistered.help = You can email your HMRC Customer Compliance Manager or {0} if you’re having problems accessing the service.
 preRegistered.help.linkLocation = mailto:msb.countrybycountryreportingmailbox@hmrc.gov.uk
-preRegistered.withID.information = You will need to contact your administrator to give you access via the ‘Manage account’ settings within their business tax account.
 
 thereIsAProblem.title = Sorry, there is a problem with the service
 thereIsAProblem.heading = Sorry, there is a problem with the service
@@ -400,9 +407,10 @@ interuptPage.bullet2.link = ask your client to authorise you
 
 organisationAlreadyRegistered.title = Your organisation is already registered to use this service
 organisationAlreadyRegistered.heading = Your organisation is already registered to use this service
+organisationAlreadyRegistered.p2 = You have signed in with a Government Gateway user ID that does not have permission to use this service.
 organisationAlreadyRegistered.p1 = To access the country-by-country reporting service, you must either:
 organisationAlreadyRegistered.bullet1 = sign in with the Government Gateway user ID used to register for this service
-organisationAlreadyRegistered.bullet2 = make sure you have permission to use this service through the {0}
+organisationAlreadyRegistered.bullet2 = give yourself permission to use this service through the {0}
 organisationAlreadyRegistered.bullet2.link = tax and scheme management service
 organisationAlreadyRegistered.help = You can email your HMRC Customer Compliance Manager or {0} if you need support with accessing this service.
 
