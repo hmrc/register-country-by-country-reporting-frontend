@@ -320,7 +320,7 @@ preRegistered.information.4 = If you sign in as an administrator, you can give y
 preRegistered.information.4.link = tax and scheme management service
 preRegistered.information.5 = If you sign in as a standard user, an administrator with permission to use this service must give you access.
 preRegistered.subheading.2 = Contact HMRC for support
-preRegistered.help = You can email your HMRC Customer Compliance Manager or {0} if you’re having problems accessing the service.
+preRegistered.help = You can email your HMRC Customer Compliance Manager or {0} if you need support with accessing this service.
 preRegistered.help.linkLocation = mailto:msb.countrybycountryreportingmailbox@hmrc.gov.uk
 
 thereIsAProblem.title = Sorry, there is a problem with the service
