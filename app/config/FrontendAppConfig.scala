@@ -58,9 +58,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontend
   private val feedbackSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
   val feedbackSurveyUrl: String             = s"$feedbackSurveyBaseUrl/feedback-survey/register-for-country-by-country-reporting/beta"
 
-  val betaPhaseEnabled: Boolean =
-    configuration.get[Boolean]("features.beta-phase")
-
   def languageMap: Map[String, Lang] = Map(
     "en" -> Lang("en")
   )
